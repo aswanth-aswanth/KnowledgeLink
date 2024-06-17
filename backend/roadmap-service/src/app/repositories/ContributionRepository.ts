@@ -6,4 +6,9 @@ export default class ContributionRepository {
         const newContribution = new Contribution(contribution);
         return newContribution.save();
     }
+
+    public async getContributionsByRoadmapId(roadmapId: string): Promise<IContribution[]> {
+        const data = await Contribution.find({ roadmapId }).exec();
+        return data;
+    }
 }

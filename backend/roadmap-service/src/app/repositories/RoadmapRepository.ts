@@ -6,4 +6,7 @@ export default class RoadmapRepository {
         const newRoadmap = new Roadmap(roadmap);
         return newRoadmap.save();
     }
+    public async findRoadmapById(roadmapId: string): Promise<IRoadmap | null> {
+        return Roadmap.findById(roadmapId).exec();
+    }
 }
