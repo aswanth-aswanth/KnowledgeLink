@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import RoadmapRepository from "../../../app/repositories/RoadmapRepository"
-import CreateRoadmap from "../../../app/useCases/Roadmap/implementations/CreateRoadmap";
+import CreateRoadmap from "../../../../app/useCases/Roadmap/Implementations/CreateRoadmap";
+import RoadmapRepository from "../../../../app/repositories/RoadmapRepository"
 
 export default class CreateRoadmapController {
     public async handle(req: Request, res: Response) {
