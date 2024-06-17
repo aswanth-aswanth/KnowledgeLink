@@ -1,12 +1,15 @@
-import { Document, Types } from 'mongoose';
 
-interface ITopic {
+import { Document, Types } from "mongoose";
+
+export interface ITopic extends Document {
+    _id: Types.ObjectId;
     name: string;
     content: string;
-    children?: ITopic[];
+    children: ITopic[];
 }
 
-interface IRoadmap extends Document {
+export interface IRoadmap extends Document {
+    _id: Types.ObjectId;
     title: string;
     description: string;
     type: 'expert_collaboration' | 'public_voting' | 'moderator_submission';
@@ -17,5 +20,3 @@ interface IRoadmap extends Document {
     createdAt: Date;
     updatedAt: Date;
 }
-
-export { ITopic, IRoadmap };
