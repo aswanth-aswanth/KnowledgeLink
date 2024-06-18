@@ -7,6 +7,7 @@ export default class RoadmapRepository {
         return newRoadmap.save();
     }
     public async findRoadmapById(roadmapId: string): Promise<IRoadmap | null> {
-        return Roadmap.findById(roadmapId).exec();
+        console.log("RoadmapId from repository : ", roadmapId);
+        return await Roadmap.findById(roadmapId).exec();
     }
 }
