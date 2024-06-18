@@ -5,6 +5,8 @@ export interface ITopic extends Document {
     _id: Types.ObjectId;
     name: string;
     content: string;
+    contributorId: Types.ObjectId,
+    tags: string[],
     children: ITopic[];
 }
 

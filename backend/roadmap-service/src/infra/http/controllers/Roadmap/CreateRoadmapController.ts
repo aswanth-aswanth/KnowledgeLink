@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import CreateRoadmap from "../../../../app/useCases/Roadmap/Implementations/CreateRoadmap";
+import CreateRoadmap from "../../../../app/useCases/Roadmap/CreateRoadmap";
 import RoadmapRepository from "../../../../app/repositories/RoadmapRepository"
 
 export default class CreateRoadmapController {

@@ -1,6 +1,6 @@
-import ContributionRepository from "../../../repositories/ContributionRepository";
-import RoadmapRepository from "../../../repositories/RoadmapRepository";
-import { IContribution } from "../../../../infra/databases/interfaces/IContribution";
+import ContributionRepository from "../../repositories/ContributionRepository";
+import RoadmapRepository from "../../repositories/RoadmapRepository";
+import { IContribution } from "../../../infra/databases/interfaces/IContribution";
 
 export default class GetContributionsByRoadmap {
     private contributionRepository: ContributionRepository;

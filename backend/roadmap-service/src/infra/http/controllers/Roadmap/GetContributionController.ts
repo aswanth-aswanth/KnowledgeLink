@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import GetContributionsByRoadmap from "../../../../app/useCases/Roadmap/Implementations/GetContributionsByRoadmap";
+import GetContributionsByRoadmap from "../../../../app/useCases/Roadmap/GetContributionsByRoadmap";
 import ContributionRepository from "../../../../app/repositories/ContributionRepository";
 import RoadmapRepository from "../../../../app/repositories/RoadmapRepository";
 

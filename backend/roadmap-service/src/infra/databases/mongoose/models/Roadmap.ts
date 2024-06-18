@@ -1,4 +1,3 @@
-
 import mongoose, { Schema, Document } from "mongoose";
 import { IRoadmap, ITopic } from "../../interfaces/IRoadmap";
 
@@ -6,13 +5,22 @@ const TopicSchema: Schema<ITopic> = new Schema({
     _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
     name: { type: String, required: true },
     content: { type: String, required: true },
+    contributorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+    tags: { type: [String], default: [] }, // Tags as array of strings with default empty array
     children: [{
-        type: new Schema({
+        _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
+        name: { type: String, required: true },
+        content: { type: String, required: true },
+        contributorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+        tags: { type: [String], default: [] }, // Tags as array of strings with default empty array
+        children: [{
             _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
             name: { type: String, required: true },
             content: { type: String, required: true },
+            contributorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+            tags: { type: [String], default: [] }, // Tags as array of strings with default empty array
             children: [{ type: Schema.Types.ObjectId, ref: 'Topic' }]
-        }, { _id: false })
+        }]
     }]
 }, { _id: false });
 
@@ -25,7 +33,7 @@ const RoadmapSchema: Schema<IRoadmap> = new Schema({
         required: true,
         enum: ['expert_collaboration', 'public_voting', 'moderator_submission']
     },
-    tags: [{ type: String, required: true }],
+    tags: { type: [String], default: [] }, // Tags as array of strings with default empty array
     members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }],
     creatorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     topics: {
@@ -33,8 +41,10 @@ const RoadmapSchema: Schema<IRoadmap> = new Schema({
             _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
             name: { type: String, required: true },
             content: { type: String, required: true },
+            contributorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+            tags: { type: [String], default: [] }, // Tags as array of strings with default empty array
             children: [TopicSchema]
-        }, { _id: false }),
+        }),
         required: true
     },
     createdAt: { type: Date, default: Date.now },

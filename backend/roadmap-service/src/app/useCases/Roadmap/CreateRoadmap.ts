@@ -1,5 +1,5 @@
-import RoadmapRepository from "../../../repositories/RoadmapRepository";
-import { IRoadmap } from "../../../../infra/databases/interfaces/IRoadmap";
+import RoadmapRepository from "../../repositories/RoadmapRepository";
+import { IRoadmap } from "../../../infra/databases/interfaces/IRoadmap";
 
 export default class CreateRoadmap {
     private roadmapRepository: RoadmapRepository;

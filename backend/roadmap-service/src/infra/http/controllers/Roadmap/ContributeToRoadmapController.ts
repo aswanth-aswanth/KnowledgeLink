@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import ContributeRoadmap from "../../../../app/useCases/Roadmap/Implementations/ContributeRoadmap";
+import ContributeRoadmap from "../../../../app/useCases/Roadmap/ContributeRoadmap";
 import ContributionRepository from "../../../../app/repositories/ContributionRepository";
 
 export default class ContributeToRoadmapController {

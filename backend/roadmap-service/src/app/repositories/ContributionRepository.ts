@@ -11,4 +11,5 @@ export default class ContributionRepository {
         const data = await Contribution.find({ roadmapId }).exec();
         return data;
     }
+
 }
