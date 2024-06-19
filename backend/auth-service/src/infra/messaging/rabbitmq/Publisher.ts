@@ -15,16 +15,26 @@ class Publisher {
     }
 
     private async connect() {
-        const connection = await amqp.connect('amqp://localhost');
-        this.channel = await connection.createChannel();
+        try {
+            const connection = await amqp.connect('amqp://localhost');
+            this.channel = await connection.createChannel();
+            console.log('RabbitMQ connected successfully (auth-service)');
+        } catch (error) {
+            console.error('Failed to connect to RabbitMQ:', error);
+        }
     }
 
     async publish(queue: string, message: string) {
-        if (!this.channel) {
-            await this.connect();
+        try {
+            if (!this.channel) {
+                await this.connect();
+            }
+            this.channel.assertQueue(queue, { durable: true });
+            this.channel.sendToQueue(queue, Buffer.from(message), { persistent: true });
+            console.log(`Message sent to queue ${queue}: ${message}`);
+        } catch (error) {
+            console.error('Failed to publish message:', error);
         }
-        this.channel.assertQueue(queue, { durable: true });
-        this.channel.sendToQueue(queue, Buffer.from(message), { persistent: true });
     }
 }
 
