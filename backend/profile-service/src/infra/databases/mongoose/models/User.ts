@@ -5,7 +5,7 @@ export interface IUser extends Document {
   email: string;
   password: string;
   favourites: string[],
-  subscribed: string[]
+  subscribed?: string[]
 }
 
 const UserSchema: Schema = new Schema({

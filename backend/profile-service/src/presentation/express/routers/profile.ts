@@ -1,12 +1,10 @@
 import { Router } from "express";
-import AuthenticateUserController from '../../../infra/http/controllers/Authenticate/AuthenticateUserController';
-import CreateUserController from '../../../infra/http/controllers/User/CreateUserController';
+import SubscribeController from '../../../infra/http/controllers/Subscribe/SubscribeRoadmapController';
 
 const profileRouter = Router();
 
-const authenticateUserController = new AuthenticateUserController();
-const createUserController = new CreateUserController();
+const subscribeController = new SubscribeController();
 
-profileRouter.post("/", authenticateUserController.handle);
-profileRouter.post("/register", createUserController.handle);
+profileRouter.post("/subscribe", subscribeController.handle);
+
 export default profileRouter;
