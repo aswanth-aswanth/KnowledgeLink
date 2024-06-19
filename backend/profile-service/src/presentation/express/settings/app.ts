@@ -1,9 +1,9 @@
 import express from "express";
-// import profileRouter from "../routers/profile";
+import profileRouter from "../routers/profile";
 
 const app = express();
 
 app.use(express.json());
-// app.use('/profile', profileRouter);
+app.use('/profile', profileRouter);
 
 export default app;
