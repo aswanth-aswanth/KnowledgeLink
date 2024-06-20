@@ -15,4 +15,9 @@ export default class RoadmapRepository {
             .select('_id title description type')
             .exec();
     }
+    public async findRoadmapsByType(type: string): Promise<IRoadmap[]> {
+        return await Roadmap.find({ type: { $in: type } })
+            .select('_id title description type')
+            .exec();
+    }
 }
