@@ -20,4 +20,9 @@ export default class RoadmapRepository {
             .select('_id title description type')
             .exec();
     }
+    public async findRoadmapsByAdmin(userId: string): Promise<IRoadmap[]> {
+        return await Roadmap.find({ creatorId: userId })
+            .select('_id title description type')
+            .exec();
+    }
 }
