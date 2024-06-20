@@ -10,4 +10,9 @@ export default class RoadmapRepository {
         console.log("RoadmapId from repository : ", roadmapId);
         return await Roadmap.findById(roadmapId).exec();
     }
+    public async findRoadmapsByIds(ids: string[]): Promise<IRoadmap[]> {
+        return await Roadmap.find({ _id: { $in: ids } })
+            .select('_id title description type')
+            .exec();
+    }
 }
