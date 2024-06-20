@@ -1,44 +1,47 @@
 import amqp from 'amqplib';
+import RabbitMQConnection from './RabbitMQConnection';
+import UserRepository from '../../../app/repositories/UserRepository';
 
 class Consumer {
     private static instance: Consumer;
-    private channel!: amqp.Channel;
 
     private constructor() { }
 
-    static async getInstance() {
+    static getInstance() {
         if (!Consumer.instance) {
             Consumer.instance = new Consumer();
-            await Consumer.instance.connect();
         }
         return Consumer.instance;
     }
 
-    private async connect() {
+    async consume(queue: string) {
         try {
-            const connection = await amqp.connect('amqp://localhost');
-            this.channel = await connection.createChannel();
-            console.log('RabbitMQ connected successfully (profile-service)');
-        } catch (error) {
-            console.error('Failed to connect to RabbitMQ:', error);
-        }
-    }
+            const channel = RabbitMQConnection.getChannel();
+            const userRepository = new UserRepository();
 
-    async consume(queue: string, callback: (msg: amqp.ConsumeMessage | null) => void) {
-        try {
-            if (!this.channel) {
-                await this.connect();
+            if (!channel) {
+                throw new Error('Channel is not available');
             }
-            this.channel.assertQueue(queue, { durable: true });
-            this.channel.consume(queue, (msg) => {
-                console.log(`Message received from queue ${queue}: ${msg?.content.toString()}`);
-                callback(msg);
-            }, { noAck: true });
-            console.log(`Consumer started for queue ${queue}`);
+
+            channel.assertQueue(queue, { durable: true });
+            channel.consume(queue, async (msg) => {
+                if (msg !== null) {
+                    console.log(`Message received from queue ${queue}: ${msg.content.toString()}`);
+
+                    const { userId } = JSON.parse(msg.content.toString());
+                    const subscribed = await userRepository.getSubscribedRoadmaps(userId);
+
+                    const response = JSON.stringify({ subscribed });
+                    channel.sendToQueue(msg.properties.replyTo, Buffer.from(response), {
+                        correlationId: msg.properties.correlationId,
+                    });
+                    channel.ack(msg);
+                }
+            });
         } catch (error) {
             console.error('Failed to consume message:', error);
         }
     }
 }
 
-export default Consumer;
+export default Consumer.getInstance();

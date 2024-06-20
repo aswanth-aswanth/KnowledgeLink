@@ -1,5 +1,5 @@
 import app from "./app"
-import '../../../infra/messaging/rabbitmq';
+import "../../../infra/messaging/rabbitmq/RabbitMQConnection";
 import connectDB from "../../../infra/databases/mongoose/connection";
 
 const PORT = process.env.PORT || 5002;

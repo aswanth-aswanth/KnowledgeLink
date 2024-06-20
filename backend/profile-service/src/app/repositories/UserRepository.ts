@@ -21,4 +21,11 @@ export default class UserRepository {
         await user.save();
         return user;
     }
+    public async getSubscribedRoadmaps(userId: string): Promise<string[]> {
+        const user = await User.findById(userId);
+        if (!user || !user.subscribed) {
+            return [];
+        }
+        return user.subscribed;
+    }
 }
