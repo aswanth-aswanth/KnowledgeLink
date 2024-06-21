@@ -28,4 +28,11 @@ export default class UserRepository {
         }
         return user.subscribed;
     }
+    public async findUsersById(userIds: string[]): Promise<object[]> {
+        const users = await User.find({
+            _id: { $in: userIds }
+        }).select('_id username email').exec();
+
+        return users;
+    }
 }

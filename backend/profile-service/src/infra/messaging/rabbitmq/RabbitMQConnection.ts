@@ -23,6 +23,7 @@ class RabbitMQConnection {
             this.channel = await this.connection.createChannel();
             console.log('RabbitMQ connected successfully (profile-service)');
             Consumer.consume('profile_queue');
+            Consumer.consume('profile_service_queue');
         } catch (error) {
             console.error('Failed to connect to RabbitMQ (profile-service):', error);
         }
