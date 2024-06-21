@@ -1,5 +1,6 @@
 import Roadmap from "../../infra/databases/mongoose/models/Roadmap";
 import { IRoadmap } from "../../infra/databases/interfaces/IRoadmap";
+import { Types } from "mongoose";
 
 export default class RoadmapRepository {
     public async create(roadmap: IRoadmap): Promise<IRoadmap> {
@@ -24,5 +25,9 @@ export default class RoadmapRepository {
         return await Roadmap.find({ creatorId: userId })
             .select('_id title description type')
             .exec();
+    }
+    public async findRoadmapMembers(roadmapId: string): Promise<Types.ObjectId[]> {
+        const roadmap = await Roadmap.findById(roadmapId).select('members').exec();
+        return roadmap ? roadmap.members : [];
     }
 }

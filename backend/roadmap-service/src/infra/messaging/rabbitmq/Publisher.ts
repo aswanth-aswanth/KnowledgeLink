@@ -39,7 +39,6 @@ class Publisher {
             if (!channel) {
                 return reject(new Error('Channel is not available'));
             }
-
             channel.consume(replyQueue, (msg) => {
                 if (msg && msg.properties.correlationId === correlationId) {
                     resolve(msg.content.toString());
@@ -51,6 +50,7 @@ class Publisher {
                 replyTo: replyQueue,
                 persistent: true
             });
+            console.log(`Message sent to queue ${queue}: ${message}`);
         });
     }
 }

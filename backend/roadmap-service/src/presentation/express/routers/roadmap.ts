@@ -7,6 +7,7 @@ import GetSingleRoadmapController from "../../../infra/http/controllers/Roadmap/
 import GetAllSubscribedController from "../../../infra/http/controllers/Roadmap/GetAllSubscribedController";
 import GetRoadmapsByTypeController from "../../../infra/http/controllers/Roadmap/GetRoadmapsByTypeController";
 import GetRoadmapsByAdminController from "../../../infra/http/controllers/Roadmap/GetRoadmapsByAdminController";
+import GetAllRoadmapMembersController from "../../../infra/http/controllers/Roadmap/GetAllRoadmapMembersController";
 
 const roadmapRouter = Router();
 const createRoadmapController = new CreateRoadmapController();
@@ -17,6 +18,7 @@ const getSingleRoadmapController = new GetSingleRoadmapController();
 const getAllSubscribedController = new GetAllSubscribedController();
 const getRoadmapsByTypeController = new GetRoadmapsByTypeController();
 const getRoadmapsByAdminController = new GetRoadmapsByAdminController();
+const getAllRoadmapMembersController = new GetAllRoadmapMembersController();
 
 roadmapRouter.post("/roadmap", createRoadmapController.handle);
 roadmapRouter.post("/roadmap/:id/contribute", contributeToRoadmapController.handle);
@@ -26,6 +28,7 @@ roadmapRouter.get("/roadmap", getRoadmapsByTypeController.handle);
 roadmapRouter.get("/roadmap/admin", getRoadmapsByAdminController.handle);
 roadmapRouter.get("/roadmap/subscribed", getAllSubscribedController.handle);
 roadmapRouter.get("/roadmap/:id", getSingleRoadmapController.handle);
+roadmapRouter.get("/roadmap/:id/members", getAllRoadmapMembersController.handle);
 
 
 
