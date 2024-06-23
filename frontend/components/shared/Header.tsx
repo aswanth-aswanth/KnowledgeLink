@@ -2,10 +2,11 @@ import React from "react";
 import { FiAlignJustify, FiSearch, FiUser } from "react-icons/fi";
 import { GoBell } from "react-icons/go";
 import { Hamburger } from "./Hamburger";
+import Notifications from "./Notifications";
 
 export default function Header() {
   return (
-    <header className="flex items-center justify-between p-4 bg-white shadow-md">
+    <header className="flex items-center justify-between p-4 relative z-10 bg-white shadow-md">
       <div className="flex items-center">
         {/* <FiAlignJustify className="text-2xl cursor-pointer" /> */}
         <Hamburger />
@@ -23,7 +24,9 @@ export default function Header() {
       </div>
 
       <div className="flex items-center space-x-4 md:mr-10">
-        <GoBell className="text-2xl cursor-pointer" />
+      <Notifications />
+
+        {/* <GoBell className="text-2xl cursor-pointer" /> */}
         <FiUser className="text-2xl cursor-pointer" />
       </div>
     </header>

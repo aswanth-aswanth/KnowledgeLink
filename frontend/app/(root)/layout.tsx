@@ -7,7 +7,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div >
+    <div>
       <Header />
       <main className="max-w-[1224px] px-4 md:px-0 mx-auto ">{children}</main>
       {/* <Footer /> */}
