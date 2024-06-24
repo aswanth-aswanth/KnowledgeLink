@@ -7,7 +7,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { 
+import {
   HiOutlineMenuAlt2,
   HiHome,
   HiUsers,
@@ -17,7 +17,7 @@ import {
   HiVideoCamera,
   HiUser,
   HiMap,
-  HiStar
+  HiStar,
 } from "react-icons/hi";
 
 const SHEET_SIDES = ["left"] as const;
@@ -44,9 +44,14 @@ export function Hamburger() {
           <SheetTrigger asChild>
             <HiOutlineMenuAlt2 className="text-3xl m-2 cursor-pointer hover:text-blue-500 transition-colors duration-200" />
           </SheetTrigger>
-          <SheetContent side={side} className="bg-gradient-to-br from-white to-blue-50 w-74 p-0">
+          <SheetContent
+            side={side}
+            className="bg-gradient-to-br from-white to-blue-50 w-74 p-0"
+          >
             <SheetHeader className="text-white p-6 shadow-md">
-              <SheetTitle className="text-2xl font-bold text-gray-800">KnowledgeLink</SheetTitle>
+              <SheetTitle className="text-2xl font-bold text-gray-800">
+                KnowledgeLink
+              </SheetTitle>
             </SheetHeader>
             <nav className="mt-4 px-4">
               {navItems.map((item, index) => (

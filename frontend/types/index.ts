@@ -9,9 +9,18 @@ export type TabsProps = {
     tabFor: string;
 }
 // src/types/index.ts
+
+
 export interface Topic {
+    id: string;
     name: string;
     content: string;
     no: string;
-    children: Topic[];
+    children: string[];
+    isExpanded: boolean;
   }
+
+export interface TopicsState {
+    topics: { [id: string]: Topic };
+    rootId: string;
+}

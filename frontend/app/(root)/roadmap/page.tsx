@@ -5,17 +5,18 @@ import NoteBody from "../../../components/shared/NoteBody";
 import { RoadmapProvider } from "../../../contexts/RoadmapContext";
 import RoadmapForm from "@/components/shared/RoadmapForm";
 import NestedNodeTaker from "@/components/shared/NestedNoteTaker";
+import { ReduxProvider } from "@/lib/redux-provider";
 
 const Home: React.FC = () => {
   return (
-    <RoadmapProvider>
+    <ReduxProvider>
       <Container maxWidth="md">
         {/* <CustomToolbar  /> */}
         {/* <NoteBody /> */}
         {/* <RoadmapForm /> */}
         <NestedNodeTaker />
       </Container>
-    </RoadmapProvider>
+    </ReduxProvider>
   );
 };
 

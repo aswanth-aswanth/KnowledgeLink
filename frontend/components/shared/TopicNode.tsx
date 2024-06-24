@@ -1,19 +1,21 @@
-import React, { useState, useCallback, useRef, useEffect } from "react";
-import { Topic } from "@/types";
+"use client";
+
+import React, { useCallback, useState, useRef, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState, AppDispatch } from "@/store";
+import {
+  updateTopic,
+  deleteTopic,
+  addTopic,
+  toggleExpand,
+} from "@/store/topicsSlice";
+import { ChevronDown, ChevronRight, Plus, Trash } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ChevronDown, ChevronRight, Plus, Trash } from "lucide-react";
-
-interface TopicNodeProps {
-  topic: Topic;
-  addTopic: (parentNo: string) => void;
-  updateTopic: (no: string, field: keyof Topic, value: string) => void;
-  deleteTopic: (no: string) => void;
-}
 
 const TEXT_STYLES = [
   { name: "Paragraph", style: "p", class: "text-base" },
@@ -24,21 +26,25 @@ const TEXT_STYLES = [
   { name: "Numbered List", style: "ol", class: "list-decimal list-inside" },
 ];
 
-const TopicNode: React.FC<TopicNodeProps> = ({
-  topic,
-  addTopic,
-  updateTopic,
-  deleteTopic,
-}) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+interface TopicNodeProps {
+  id: string;
+}
+
+const TopicNode: React.FC<TopicNodeProps> = ({ id }) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const topic = useSelector((state: RootState) => state.topics.topics[id]);
   const [showStyleMenu, setShowStyleMenu] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
+  if (!topic) {
+    return null;
+  }
+
   const handleNameChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      updateTopic(topic.no, "name", e.target.value);
+      dispatch(updateTopic({ id, updates: { name: e.target.value } }));
     },
-    [topic.no, updateTopic]
+    [dispatch, id]
   );
 
   const handleDelete = useCallback(() => {
@@ -47,18 +53,32 @@ const TopicNode: React.FC<TopicNodeProps> = ({
         "Are you sure you want to delete this topic and all its subtopics?"
       )
     ) {
-      deleteTopic(topic.no);
+      dispatch(deleteTopic(id));
     }
-  }, [topic.no, deleteTopic]);
+  }, [dispatch, id]);
 
-  console.log("Topic : ", topic);
+  const handleAddSubtopic = useCallback(() => {
+    const newTopic = {
+      id: Date.now().toString(),
+      name: "New Topic",
+      content: "",
+      no: `${topic.no}-${topic.children.length + 1}`,
+      children: [],
+      isExpanded: false,
+    };
+    dispatch(addTopic({ parentId: id, newTopic }));
+  }, [dispatch, id, topic.no, topic.children.length]);
+
+  const handleToggleExpand = useCallback(() => {
+    dispatch(toggleExpand(id));
+  }, [dispatch, id]);
 
   const handleContentChange = useCallback(() => {
     if (contentRef.current) {
       const newContent = contentRef.current.innerHTML;
-      updateTopic(topic.no, "content", newContent);
+      dispatch(updateTopic({ id, updates: { content: newContent } }));
     }
-  }, [topic.no, updateTopic]);
+  }, [dispatch, id]);
 
   useEffect(() => {
     if (contentRef.current && contentRef.current.innerHTML !== topic.content) {
@@ -76,18 +96,17 @@ const TopicNode: React.FC<TopicNodeProps> = ({
           const listElement = document.createElement(style);
           listElement.className = styleClass;
           const listItem = document.createElement("li");
-          listItem.className = "pl-1"; // Add left padding to list items
+          listItem.className = "pl-1";
 
           if (range.toString().length > 0) {
             listItem.appendChild(range.extractContents());
           } else {
-            listItem.appendChild(document.createTextNode("\u200B")); // Add a zero-width space
+            listItem.appendChild(document.createTextNode("\u200B"));
           }
 
           listElement.appendChild(listItem);
           range.insertNode(listElement);
 
-          // Move cursor to the end of the list item
           const newRange = document.createRange();
           newRange.selectNodeContents(listItem);
           newRange.collapse(false);
@@ -100,7 +119,7 @@ const TopicNode: React.FC<TopicNodeProps> = ({
           if (range.toString().length > 0) {
             range.surroundContents(newNode);
           } else {
-            newNode.appendChild(document.createTextNode("\u200B")); // Add a zero-width space
+            newNode.appendChild(document.createTextNode("\u200B"));
             range.insertNode(newNode);
             range.setStart(newNode.firstChild!, 1);
             range.setEnd(newNode.firstChild!, 1);
@@ -121,65 +140,23 @@ const TopicNode: React.FC<TopicNodeProps> = ({
       if (e.key === "/" && !showStyleMenu) {
         e.preventDefault();
         setShowStyleMenu(true);
-      } else if (e.key === "Enter") {
-        const selection = window.getSelection();
-        if (selection && selection.rangeCount > 0) {
-          const range = selection.getRangeAt(0);
-          const currentNode = range.startContainer.parentElement;
-
-          if (
-            currentNode &&
-            (currentNode.tagName === "LI" ||
-              currentNode.parentElement?.tagName === "LI")
-          ) {
-            e.preventDefault();
-            const listItem =
-              currentNode.tagName === "LI"
-                ? currentNode
-                : currentNode.parentElement;
-            const list = listItem?.parentElement;
-
-            if (listItem && list) {
-              if (listItem.textContent?.trim() === "") {
-                // If the current list item is empty, exit the list
-                if (listItem.nextElementSibling) {
-                  // If there are items after this one, split the list
-                  const newList = list.cloneNode(false);
-                  while (listItem.nextElementSibling) {
-                    newList.appendChild(listItem.nextElementSibling);
-                  }
-                  list.parentNode?.insertBefore(newList, list.nextSibling);
-                }
-                listItem.remove();
-                if (!list.hasChildNodes()) {
-                  list.remove();
-                }
-              } else {
-                const newItem = document.createElement("li");
-                newItem.appendChild(document.createTextNode("\u200B"));
-                list.insertBefore(newItem, listItem.nextSibling);
-
-                const newRange = document.createRange();
-                newRange.setStart(newItem.firstChild!, 1);
-                newRange.setEnd(newItem.firstChild!, 1);
-                selection.removeAllRanges();
-                selection.addRange(newRange);
-              }
-            }
-          }
-        }
       }
     },
     [showStyleMenu]
   );
+
   return (
     <div className="topic-node mb-3">
       <div className="flex items-center group">
         <button
-          onClick={() => setIsExpanded(!isExpanded)}
+          onClick={handleToggleExpand}
           className="p-1 rounded-md text-gray-400 hover:bg-gray-100 focus:outline-none"
         >
-          {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+          {topic.isExpanded ? (
+            <ChevronDown size={16} />
+          ) : (
+            <ChevronRight size={16} />
+          )}
         </button>
         <input
           type="text"
@@ -190,8 +167,8 @@ const TopicNode: React.FC<TopicNodeProps> = ({
         />
         <span className="text-xs text-gray-400 mr-2">{topic.no}</span>
         <button
-          onClick={() => addTopic(topic.no)}
-          className="p-1 rounded-md text-gray-400 bg-gray-100 hover:bg-gray-200 focus:outline-none opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+          onClick={handleAddSubtopic}
+          className="p-1 rounded-md text-gray-400 bg-gray-100 hover:bg-gray-200 focus:outline-none opacity-0 group-hover:opacity-100 transition-opacity duration-200 mr-1"
         >
           <Plus size={16} />
         </button>
@@ -202,14 +179,14 @@ const TopicNode: React.FC<TopicNodeProps> = ({
           <Trash size={16} />
         </button>
       </div>
-      {isExpanded && (
+      {topic.isExpanded && (
         <div className="ml-6 mt-2">
           <div
             ref={contentRef}
             contentEditable
             onInput={handleContentChange}
             onKeyDown={handleKeyDown}
-            className="min-h-[100px] p-2 mb-2 bg-gray-50 rounded-md focus:outline-none  transition-all duration-200 prose prose-sm max-w-none"
+            className="min-h-[100px] p-2 mb-2 bg-gray-50 rounded-md focus:outline-none transition-all duration-200 prose prose-sm max-w-none"
           />
           <DropdownMenu open={showStyleMenu} onOpenChange={setShowStyleMenu}>
             <DropdownMenuTrigger asChild>
@@ -229,14 +206,8 @@ const TopicNode: React.FC<TopicNodeProps> = ({
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
-          {topic.children.map((childTopic) => (
-            <TopicNode
-              key={childTopic.no}
-              topic={childTopic}
-              addTopic={addTopic}
-              updateTopic={updateTopic}
-              deleteTopic={deleteTopic}
-            />
+          {topic.children.map((childId) => (
+            <TopicNode key={childId} id={childId} />
           ))}
         </div>
       )}
