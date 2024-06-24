@@ -62,6 +62,23 @@ const NestedNoteTaker: React.FC = () => {
       : `${parent.no}-${childrenCount + 1}`;
   };
 
+  const deleteTopic = useCallback((no: string) => {
+    setTopics((prevTopics) => {
+      const updatedTopics = JSON.parse(JSON.stringify(prevTopics)); // Deep clone
+      const deleteFromChildren = (children: Topic[]): Topic[] => {
+        return children.filter((child) => {
+          if (child.no === no) {
+            return false;
+          }
+          child.children = deleteFromChildren(child.children);
+          return true;
+        });
+      };
+      updatedTopics.children = deleteFromChildren(updatedTopics.children);
+      return updatedTopics;
+    });
+  }, []);
+
   console.log("topics : ", topics);
 
   return (
@@ -79,6 +96,7 @@ const NestedNoteTaker: React.FC = () => {
           topic={topic}
           addTopic={addTopic}
           updateTopic={updateTopic}
+          deleteTopic={deleteTopic}
         />
       ))}
     </div>

@@ -6,12 +6,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ChevronDown, ChevronRight, Plus } from "lucide-react";
+import { ChevronDown, ChevronRight, Plus, Trash } from "lucide-react";
 
 interface TopicNodeProps {
   topic: Topic;
   addTopic: (parentNo: string) => void;
   updateTopic: (no: string, field: keyof Topic, value: string) => void;
+  deleteTopic: (no: string) => void;
 }
 
 const TEXT_STYLES = [
@@ -27,6 +28,7 @@ const TopicNode: React.FC<TopicNodeProps> = ({
   topic,
   addTopic,
   updateTopic,
+  deleteTopic,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showStyleMenu, setShowStyleMenu] = useState(false);
@@ -38,6 +40,16 @@ const TopicNode: React.FC<TopicNodeProps> = ({
     },
     [topic.no, updateTopic]
   );
+
+  const handleDelete = useCallback(() => {
+    if (
+      window.confirm(
+        "Are you sure you want to delete this topic and all its subtopics?"
+      )
+    ) {
+      deleteTopic(topic.no);
+    }
+  }, [topic.no, deleteTopic]);
 
   console.log("Topic : ", topic);
 
@@ -183,6 +195,12 @@ const TopicNode: React.FC<TopicNodeProps> = ({
         >
           <Plus size={16} />
         </button>
+        <button
+          onClick={handleDelete}
+          className="p-1 rounded-md text-gray-400 bg-gray-100 hover:bg-gray-200 focus:outline-none opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+        >
+          <Trash size={16} />
+        </button>
       </div>
       {isExpanded && (
         <div className="ml-6 mt-2">
@@ -217,6 +235,7 @@ const TopicNode: React.FC<TopicNodeProps> = ({
               topic={childTopic}
               addTopic={addTopic}
               updateTopic={updateTopic}
+              deleteTopic={deleteTopic}
             />
           ))}
         </div>
