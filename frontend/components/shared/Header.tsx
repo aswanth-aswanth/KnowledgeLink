@@ -6,7 +6,7 @@ import Notifications from "./Notifications";
 
 export default function Header() {
   return (
-    <header className="flex items-center justify-between p-4 relative z-10 bg-white shadow-md">
+    <header className="flex items-center justify-between p-2 relative z-10 bg-white shadow-md">
       <div className="flex items-center">
         {/* <FiAlignJustify className="text-2xl cursor-pointer" /> */}
         <Hamburger />
@@ -23,7 +23,7 @@ export default function Header() {
         </div>
       </div>
 
-      <div className="flex items-center space-x-4 md:mr-10">
+      <div className="flex items-center space-x-4 md:mr-10 ">
       <Notifications />
 
         {/* <GoBell className="text-2xl cursor-pointer" /> */}

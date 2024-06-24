@@ -1,0 +1,18 @@
+/* src/styles/TextStyles.css */
+.text-style-preview {
+    display: inline-block;
+    width: 100%;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+  }
+  
+  .text-style-preview:hover {
+    background-color: #f3f4f6;
+  }
+  
+  .text-style-h1 { font-size: 1.5em; font-weight: bold; }
+  .text-style-h2 { font-size: 1.3em; font-weight: bold; }
+  .text-style-h3 { font-size: 1.1em; font-weight: bold; }
+  .text-style-ul::before { content: '•'; margin-right: 8px; }
+  .text-style-ol::before { content: '1.'; margin-right: 8px; }

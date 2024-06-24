@@ -35,7 +35,7 @@ export default function PopoverDemo() {
       <PopoverTrigger asChild>
         <GoBell className="text-2xl cursor-pointer" />
       </PopoverTrigger>
-      <PopoverContent className="w-80 mt-5 mr-2 z-0 p-4 shadow-lg rounded-lg">
+      <PopoverContent className="w-80 mt-5 mr-2 left-0 right-0 z-0 p-4 shadow-lg rounded-lg">
         <h4 className="font-medium leading-none mb-2">Notifications</h4>
         <div className="space-y-4">
           {notifications.map((notification) => (

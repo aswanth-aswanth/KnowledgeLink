@@ -8,3 +8,10 @@ export type TabsProps = {
     onTabClick: (tabName: string) => void;
     tabFor: string;
 }
+// src/types/index.ts
+export interface Topic {
+    name: string;
+    content: string;
+    no: string;
+    children: Topic[];
+  }
