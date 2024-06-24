@@ -4,7 +4,9 @@ import TopicNode from "./TopicNode";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/store";
 import { addTopic, resetTopics } from "@/store/topicsSlice";
+import { Button } from "@/components/ui/button";
 import { Plus, Trash } from "lucide-react";
+import ChooseRoadmapType from "./ChooseRoadmapType";
 
 const NestedNoteTaker: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -28,33 +30,37 @@ const NestedNoteTaker: React.FC = () => {
     dispatch(resetTopics());
   }, [dispatch]);
 
-
   const currentTopicsState = useSelector((state: RootState) => state.topics);
 
-  // console.log("Current topics state:", currentTopicsState); 
+  // console.log("Current topics state:", currentTopicsState);
 
   return (
-    <div className="nested-note-taker bg-white shadow-sm rounded-lg p-6">
-      <button
-        onClick={handleAddRootTopic}
-        className="flex items-center justify-center w-full py-2 px-4 mb-4 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors duration-200"
-      >
-        <Plus size={16} className="mr-2" />
-        Add Root Topic
-      </button>
-      <div className="flex justify-end">
+    <>
+      <div className="nested-note-taker bg-white shadow-sm rounded-lg p-6">
         <button
-          onClick={handleResetTopics}
-          className="flex items-center justify-center w-max  py-2 px-4 mb-4 text-red-600 bg-red-100 hover:bg-red-200 rounded-md transition-colors duration-200"
+          onClick={handleAddRootTopic}
+          className="flex items-center justify-center w-full py-2 px-4 mb-4 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors duration-200"
         >
-          <Trash size={12} className="mr-2 " />
-          Reset Topics
+          <Plus size={16} className="mr-2" />
+          Add Root Topic
         </button>
+        <div className="flex justify-end">
+          <button
+            onClick={handleResetTopics}
+            className="flex items-center justify-center w-max   py-4 px-4 mb-4 text-red-600 bg-red-100 hover:bg-red-200 rounded-md transition-colors duration-200"
+          >
+            <Trash size={16} />
+          </button>
+        </div>
+        {rootTopic.children.map((childId) => (
+          <TopicNode key={childId} id={childId} />
+        ))}
       </div>
-      {rootTopic.children.map((childId) => (
-        <TopicNode key={childId} id={childId} />
-      ))}
-    </div>
+      <div className="flex justify-end mt-8">
+       
+      </div>
+      <ChooseRoadmapType />
+    </>
   );
 };
 
