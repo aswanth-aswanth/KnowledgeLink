@@ -2,6 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
+.topic-node [contenteditable] {
+  outline: none;
+}
+
+.topic-node [contenteditable] *:first-child {
+  margin-top: 0;
+}
+
+.topic-node [contenteditable] *:last-child {
+  margin-bottom: 0;
+}
+
+.topic-node [contenteditable] ul,
+.topic-node [contenteditable] ol {
+  padding-left: 1.5em;
+}
+
+.topic-node [contenteditable] li {
+  margin-bottom: 0.5em;
+}
+
+.topic-node [contenteditable] h1,
+.topic-node [contenteditable] h2,
+.topic-node [contenteditable] h3 {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+}
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -67,7 +94,7 @@
 }
 
 * {
-  list-style: none;
+  /* list-style: none; */
   padding: 0;
   margin: 0;
   scroll-behavior: smooth;

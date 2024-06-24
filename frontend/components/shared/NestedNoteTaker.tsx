@@ -1,8 +1,8 @@
-// src/components/NestedNoteTaker.tsx
 "use client";
 import React, { useState, useCallback } from "react";
 import TopicNode from "./TopicNode";
 import { Topic } from "@/types";
+import { Plus } from "lucide-react";
 
 const NestedNoteTaker: React.FC = () => {
   const [topics, setTopics] = useState<Topic>({
@@ -14,7 +14,7 @@ const NestedNoteTaker: React.FC = () => {
 
   const addTopic = useCallback((parentNo: string) => {
     setTopics((prevTopics) => {
-      const updatedTopics = { ...prevTopics };
+      const updatedTopics = JSON.parse(JSON.stringify(prevTopics)); // Deep clone
       const parent = findTopicByNo(updatedTopics, parentNo);
       const newTopic: Topic = {
         name: "New Topic",
@@ -24,9 +24,9 @@ const NestedNoteTaker: React.FC = () => {
       };
 
       if (parent) {
-        parent.children = [...parent.children, newTopic];
+        parent.children.push(newTopic);
       } else {
-        updatedTopics.children = [...updatedTopics.children, newTopic];
+        updatedTopics.children.push(newTopic);
       }
       return updatedTopics;
     });
@@ -35,7 +35,7 @@ const NestedNoteTaker: React.FC = () => {
   const updateTopic = useCallback(
     (no: string, field: keyof Topic, value: string) => {
       setTopics((prevTopics) => {
-        const updatedTopics = { ...prevTopics };
+        const updatedTopics = JSON.parse(JSON.stringify(prevTopics)); // Deep clone
         const topic = findTopicByNo(updatedTopics, no);
         if (topic) {
           topic[field] = value;
@@ -65,11 +65,12 @@ const NestedNoteTaker: React.FC = () => {
   console.log("topics : ", topics);
 
   return (
-    <div className="nested-note-taker bg-white shadow-lg rounded-lg p-6">
+    <div className="nested-note-taker bg-white shadow-sm rounded-lg p-6">
       <button
         onClick={() => addTopic("0")}
-        className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg mb-4 transition duration-300 ease-in-out transform hover:scale-105"
+        className="flex items-center justify-center w-full py-2 px-4 mb-4 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors duration-200"
       >
+        <Plus size={16} className="mr-2" />
         Add Root Topic
       </button>
       {topics.children.map((topic) => (

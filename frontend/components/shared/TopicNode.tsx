@@ -1,5 +1,3 @@
-"use client";
-// src/components/TopicNode.tsx
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import { Topic } from "@/types";
 import {
@@ -8,7 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
+import { ChevronDown, ChevronRight, Plus } from "lucide-react";
 
 interface TopicNodeProps {
   topic: Topic;
@@ -17,12 +15,12 @@ interface TopicNodeProps {
 }
 
 const TEXT_STYLES = [
-  { name: "Paragraph", style: "p" },
-  { name: "Heading 1", style: "h1" },
-  { name: "Heading 2", style: "h2" },
-  { name: "Heading 3", style: "h3" },
-  { name: "Bullet List", style: "ul" },
-  { name: "Numbered List", style: "ol" },
+  { name: "Paragraph", style: "p", class: "text-base" },
+  { name: "Heading 1", style: "h1", class: "text-2xl font-bold" },
+  { name: "Heading 2", style: "h2", class: "text-xl font-bold" },
+  { name: "Heading 3", style: "h3", class: "text-lg font-bold" },
+  { name: "Bullet List", style: "ul", class: "list-disc list-inside" },
+  { name: "Numbered List", style: "ol", class: "list-decimal list-inside" },
 ];
 
 const TopicNode: React.FC<TopicNodeProps> = ({
@@ -41,72 +39,150 @@ const TopicNode: React.FC<TopicNodeProps> = ({
     [topic.no, updateTopic]
   );
 
-  const handleContentChange = useCallback(
-    (e: React.FormEvent<HTMLDivElement>) => {
-      updateTopic(topic.no, "content", e.currentTarget.innerHTML);
-    },
-    [topic.no, updateTopic]
-  );
+  console.log("Topic : ", topic);
 
-  const toggleExpand = useCallback(() => {
-    setIsExpanded(!isExpanded);
-  }, [isExpanded]);
+  const handleContentChange = useCallback(() => {
+    if (contentRef.current) {
+      const newContent = contentRef.current.innerHTML;
+      updateTopic(topic.no, "content", newContent);
+    }
+  }, [topic.no, updateTopic]);
+
+  useEffect(() => {
+    if (contentRef.current && contentRef.current.innerHTML !== topic.content) {
+      contentRef.current.innerHTML = topic.content;
+    }
+  }, [topic.content]);
+
+  const applyStyle = useCallback(
+    (style: string, styleClass: string) => {
+      const selection = window.getSelection();
+      if (selection && selection.rangeCount > 0 && contentRef.current) {
+        const range = selection.getRangeAt(0);
+
+        if (style === "ul" || style === "ol") {
+          const listElement = document.createElement(style);
+          listElement.className = styleClass;
+          const listItem = document.createElement("li");
+          listItem.className = "pl-1"; // Add left padding to list items
+
+          if (range.toString().length > 0) {
+            listItem.appendChild(range.extractContents());
+          } else {
+            listItem.appendChild(document.createTextNode("\u200B")); // Add a zero-width space
+          }
+
+          listElement.appendChild(listItem);
+          range.insertNode(listElement);
+
+          // Move cursor to the end of the list item
+          const newRange = document.createRange();
+          newRange.selectNodeContents(listItem);
+          newRange.collapse(false);
+          selection.removeAllRanges();
+          selection.addRange(newRange);
+        } else {
+          const newNode = document.createElement(style);
+          newNode.className = styleClass;
+
+          if (range.toString().length > 0) {
+            range.surroundContents(newNode);
+          } else {
+            newNode.appendChild(document.createTextNode("\u200B")); // Add a zero-width space
+            range.insertNode(newNode);
+            range.setStart(newNode.firstChild!, 1);
+            range.setEnd(newNode.firstChild!, 1);
+          }
+        }
+      }
+      setShowStyleMenu(false);
+      if (contentRef.current) {
+        contentRef.current.focus();
+        handleContentChange();
+      }
+    },
+    [handleContentChange]
+  );
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLDivElement>) => {
       if (e.key === "/" && !showStyleMenu) {
         e.preventDefault();
         setShowStyleMenu(true);
+      } else if (e.key === "Enter") {
+        const selection = window.getSelection();
+        if (selection && selection.rangeCount > 0) {
+          const range = selection.getRangeAt(0);
+          const currentNode = range.startContainer.parentElement;
+
+          if (
+            currentNode &&
+            (currentNode.tagName === "LI" ||
+              currentNode.parentElement?.tagName === "LI")
+          ) {
+            e.preventDefault();
+            const listItem =
+              currentNode.tagName === "LI"
+                ? currentNode
+                : currentNode.parentElement;
+            const list = listItem?.parentElement;
+
+            if (listItem && list) {
+              if (listItem.textContent?.trim() === "") {
+                // If the current list item is empty, exit the list
+                if (listItem.nextElementSibling) {
+                  // If there are items after this one, split the list
+                  const newList = list.cloneNode(false);
+                  while (listItem.nextElementSibling) {
+                    newList.appendChild(listItem.nextElementSibling);
+                  }
+                  list.parentNode?.insertBefore(newList, list.nextSibling);
+                }
+                listItem.remove();
+                if (!list.hasChildNodes()) {
+                  list.remove();
+                }
+              } else {
+                const newItem = document.createElement("li");
+                newItem.appendChild(document.createTextNode("\u200B"));
+                list.insertBefore(newItem, listItem.nextSibling);
+
+                const newRange = document.createRange();
+                newRange.setStart(newItem.firstChild!, 1);
+                newRange.setEnd(newItem.firstChild!, 1);
+                selection.removeAllRanges();
+                selection.addRange(newRange);
+              }
+            }
+          }
+        }
       }
     },
     [showStyleMenu]
   );
-
-  const applyStyle = useCallback((style: string) => {
-    const selection = window.getSelection();
-    if (selection && selection.rangeCount > 0) {
-      const range = selection.getRangeAt(0);
-      const newNode = document.createElement(style);
-      range.surroundContents(newNode);
-      selection.removeAllRanges();
-      selection.addRange(range);
-    }
-    setShowStyleMenu(false);
-  }, []);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        contentRef.current &&
-        !contentRef.current.contains(event.target as Node)
-      ) {
-        setShowStyleMenu(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
   return (
-    <div className="topic-node mb-4">
-      <div className="flex items-center bg-gray-100 rounded-lg p-2 hover:bg-gray-200 transition-colors duration-200">
+    <div className="topic-node mb-3">
+      <div className="flex items-center group">
         <button
-          onClick={toggleExpand}
-          className="mr-2 text-gray-500 hover:text-gray-700 focus:outline-none"
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="p-1 rounded-md text-gray-400 hover:bg-gray-100 focus:outline-none"
         >
-          {isExpanded ? "▼" : "▶"}
+          {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
         </button>
         <input
           type="text"
           value={topic.name}
           onChange={handleNameChange}
-          className="flex-grow bg-transparent border-none focus:outline-none font-medium"
+          className="flex-grow bg-transparent px-2 py-1 focus:outline-none focus:bg-gray-50 rounded-md transition-colors duration-200"
           placeholder="Untitled"
         />
-        <span className="text-sm text-gray-400 ml-2">{topic.no}</span>
+        <span className="text-xs text-gray-400 mr-2">{topic.no}</span>
+        <button
+          onClick={() => addTopic(topic.no)}
+          className="p-1 rounded-md text-gray-400 bg-gray-100 hover:bg-gray-200 focus:outline-none opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+        >
+          <Plus size={16} />
+        </button>
       </div>
       {isExpanded && (
         <div className="ml-6 mt-2">
@@ -115,37 +191,26 @@ const TopicNode: React.FC<TopicNodeProps> = ({
             contentEditable
             onInput={handleContentChange}
             onKeyDown={handleKeyDown}
-            className="min-h-[100px] p-2 mb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            dangerouslySetInnerHTML={{ __html: topic.content }}
+            className="min-h-[100px] p-2 mb-2 bg-gray-50 rounded-md focus:outline-none  transition-all duration-200 prose prose-sm max-w-none"
           />
           <DropdownMenu open={showStyleMenu} onOpenChange={setShowStyleMenu}>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="hidden">
-                Style
-              </Button>
+              <button className="text-sm text-gray-500 hover:text-gray-700 focus:outline-none">
+                Format
+              </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56">
+            <DropdownMenuContent className="w-56 bg-white shadow-lg rounded-md border border-gray-200">
               {TEXT_STYLES.map((style) => (
                 <DropdownMenuItem
                   key={style.style}
-                  onClick={() => applyStyle(style.style)}
-                  className="cursor-pointer hover:bg-gray-100"
+                  onClick={() => applyStyle(style.style, style.class)}
+                  className="cursor-pointer hover:bg-gray-100 px-4 py-2 text-sm"
                 >
-                  <span className={`mr-2 ${getStyleClass(style.style)}`}>
-                    {style.name}
-                  </span>
+                  <span className={`mr-2 ${style.class}`}>{style.name}</span>
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
-          <div className="flex space-x-2 mb-2">
-            <button
-              onClick={() => addTopic(topic.no)}
-              className="bg-green-500 hover:bg-green-600 text-white font-semibold py-1 px-3 rounded-lg text-sm transition duration-300 ease-in-out transform hover:scale-105"
-            >
-              Add Subtopic
-            </button>
-          </div>
           {topic.children.map((childTopic) => (
             <TopicNode
               key={childTopic.no}
@@ -159,22 +224,5 @@ const TopicNode: React.FC<TopicNodeProps> = ({
     </div>
   );
 };
-
-function getStyleClass(style: string): string {
-  switch (style) {
-    case "h1":
-      return "text-2xl font-bold";
-    case "h2":
-      return "text-xl font-bold";
-    case "h3":
-      return "text-lg font-bold";
-    case "ul":
-      return "list-disc";
-    case "ol":
-      return "list-decimal";
-    default:
-      return "";
-  }
-}
 
 export default TopicNode;
