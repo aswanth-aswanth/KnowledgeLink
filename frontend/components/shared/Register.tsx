@@ -1,25 +1,27 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 const Registration = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const router = useRouter();
   const searchParams = useSearchParams();
 
-  useEffect(() => {
-    const error = searchParams.get("error");
-    const success = searchParams.get("success");
+  const error = searchParams.get("error");
+  const success = searchParams.get("success");
 
-    if (error) {
-    } else if (success) {
-      console.log("Success");
-    }
-  }, [searchParams]);
+  if (error) {
+    toast.error("Google authentication was unsuccessful. Please try again.");
+  } else if (success) {
+    console.log("Success");
+    router.push("/");
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,6 +31,11 @@ const Registration = () => {
       password,
       confirmPassword,
     });
+
+    toast("Registration successfull!", {
+      icon: "👏",
+    });
+    router.push("/sign-in");
   };
 
   const handleGoogleAuth = () => {

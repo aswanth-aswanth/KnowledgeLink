@@ -23,6 +23,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Routes
-app.use('/auth', authRouter);
+app.use('/', authRouter);
 
 export default app;

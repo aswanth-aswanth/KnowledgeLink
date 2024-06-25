@@ -7,7 +7,7 @@ dotenv.config();
 
 class GoogleAuthController {
     public login(req: Request, res: Response): void {
-        res.redirect('/auth/google');
+        res.status(401).json({ error: 'Unauthorized' });
     }
 
     public callback(req: Request, res: Response): void {
