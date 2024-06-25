@@ -10,6 +10,7 @@ const Registration = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -26,6 +27,7 @@ const Registration = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     console.log("Registration submitted", {
       username,
       email,
@@ -42,14 +44,24 @@ const Registration = () => {
         }
       );
       console.log("Response : ", response);
-    } catch (error) {
-      console.log("Error : ", error);
-    }
 
-    toast("Registration successfull!", {
-      icon: "👏",
-    });
-    router.push("/sign-in");
+      toast("Registration successful!", {
+        icon: "👏",
+      });
+      router.push("/sign-in");
+    } catch (error) {
+      if (error instanceof Error && error.response && error.response.data) {
+        const axiosError = error as AxiosError;
+        console.log("Error : ", axiosError.response.data.error);
+        const errorMsg = axiosError.response.data.error;
+        toast.error(errorMsg);
+      } else {
+        console.error("Unexpected error:", error);
+        toast.error("An unexpected error occurred");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleGoogleAuth = () => {
@@ -208,12 +220,20 @@ const Registration = () => {
 
           <button
             type="submit"
-            className="w-full bg-indigo-600 py-2 px-4 border border-transparent rounded-md shadow-sm text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="w-full bg-indigo-600 py-2 px-4 border border-transparent rounded-md shadow-sm text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={isLoading}
           >
-            Sign up
+            {isLoading ? (
+              <div className="flex items-center justify-center">
+                <div className="w-5 h-5 border-t-2 border-b-2 border-white rounded-full animate-spin"></div>
+                <span className="ml-2">Signing up...</span>
+              </div>
+            ) : (
+              "Sign up"
+            )}
           </button>
           <p className="text-center text-sm">
-            Already have an account?{" "}
+            Already have an account?
             <Link href={"sign-in"} className="text-blue-500">
               Login here.
             </Link>
