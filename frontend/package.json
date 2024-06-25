@@ -22,6 +22,7 @@
     "@radix-ui/react-radio-group": "^1.2.0",
     "@radix-ui/react-separator": "^1.1.0",
     "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-toast": "^1.2.1",
     "@reduxjs/toolkit": "^2.2.5",
     "@types/styled-components": "^5.1.34",
     "@uploadthing/react": "^6.6.0",

@@ -1,14 +1,27 @@
 "use client";
-import React, { useState } from "react";
+
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 const Registration = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const searchParams = useSearchParams();
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    const error = searchParams.get("error");
+    const success = searchParams.get("success");
+
+    if (error) {
+    } else if (success) {
+      console.log("Success");
+    }
+  }, [searchParams]);
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Registration submitted", {
       username,
@@ -16,7 +29,14 @@ const Registration = () => {
       password,
       confirmPassword,
     });
-    // You can add form validation and submission logic here
+  };
+
+  const handleGoogleAuth = () => {
+    const authServiceUrl = process.env.NEXT_PUBLIC_AUTH_SERVICE_URL;
+    window.location.href = `${authServiceUrl}/google`;
+  };
+  const handleToast = () => {
+    console.log("handleToast click");
   };
 
   const socialButtons = [
@@ -44,6 +64,7 @@ const Registration = () => {
         </svg>
       ),
       color: "bg-gray-200 hover:bg-gray-100",
+      onClick: handleGoogleAuth,
     },
     {
       name: "GitHub",
@@ -53,6 +74,9 @@ const Registration = () => {
         </svg>
       ),
       color: "bg-gray-800 text-white hover:bg-gray-900",
+      onClick: () => {
+        handleToast();
+      },
     },
     {
       name: "Facebook",
@@ -62,6 +86,9 @@ const Registration = () => {
         </svg>
       ),
       color: "bg-gray-200 hover:bg-gray-100",
+      onClick: () => {
+        // Implement Facebook authentication here
+      },
     },
   ];
 
@@ -73,10 +100,11 @@ const Registration = () => {
         </h2>
 
         <div className="flex justify-center space-x-4 mb-4">
-          {socialButtons.map(({ name, icon, color }) => (
+          {socialButtons.map(({ name, icon, color, onClick }) => (
             <button
               key={name}
               className={`flex items-center justify-center w-12 h-12 rounded-full ${color}`}
+              onClick={onClick}
             >
               {icon}
             </button>
@@ -167,7 +195,7 @@ const Registration = () => {
             Sign up
           </button>
           <p className="text-center text-sm">
-            Already have an account ?.
+            Already have an account?{" "}
             <Link href={"sign-in"} className="text-blue-500">
               Login here.
             </Link>
