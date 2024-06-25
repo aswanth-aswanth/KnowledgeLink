@@ -14,7 +14,8 @@ class GoogleAuthController {
         const user = req.user as IUser;
         if (user) {
             const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET!, { expiresIn: '1h' });
-            res.redirect(`${process.env.FRONTEND_URL}/sign-up?success=true`);
+            console.log("User : ",user);
+            res.redirect(`${process.env.FRONTEND_URL}`);
         } else {
             res.redirect(`${process.env.FRONTEND_URL}/sign-up?error=true`);
         }

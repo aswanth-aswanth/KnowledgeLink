@@ -10,12 +10,12 @@ passport.use(new GoogleStrategy({
   async (accessToken, refreshToken, profile, done) => {
     try {
       let user = await User.findOne({ email: profile.emails?.[0].value });
-      console.log("user : ", user);
       if (!user) {
         user = new User({
           username: profile.displayName,
           email: profile.emails?.[0].value,
           isPassportVerified: true,
+          image: profile.photos?.[0].value,
           favourites: [],
           subscribed: []
         });
@@ -35,7 +35,6 @@ passport.serializeUser((user: any, done) => {
 passport.deserializeUser(async (id, done) => {
   try {
     const user = await User.findById(id);
-    console.log("user deserialize : ", user);
     done(null, user);
   } catch (error) {
     done(error);
