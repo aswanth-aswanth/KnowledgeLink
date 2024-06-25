@@ -16,13 +16,9 @@ const Registration = () => {
   const searchParams = useSearchParams();
 
   const error = searchParams.get("error");
-  const success = searchParams.get("success");
 
   if (error) {
     toast.error("Google authentication was unsuccessful. Please try again.");
-  } else if (success) {
-    console.log("Success");
-    router.push("/");
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
