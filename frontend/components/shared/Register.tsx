@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import Link from "next/link";
 
 const Registration = () => {
   const [username, setUsername] = useState("");
@@ -165,6 +166,12 @@ const Registration = () => {
           >
             Sign up
           </button>
+          <p className="text-center text-sm">
+            Already have an account ?.
+            <Link href={"sign-in"} className="text-blue-500">
+              Login here.
+            </Link>
+          </p>
         </form>
       </div>
     </div>

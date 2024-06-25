@@ -186,7 +186,7 @@ const TopicNode: React.FC<TopicNodeProps> = ({ id }) => {
             contentEditable
             onInput={handleContentChange}
             onKeyDown={handleKeyDown}
-            className="min-h-[100px] p-2 mb-2 bg-gray-50 rounded-md focus:outline-none transition-all duration-200 prose prose-sm max-w-none"
+            className="h-min p-2 mb-2 bg-gray-50 rounded-md focus:outline-none transition-all duration-200 prose prose-sm max-w-none"
           />
           <DropdownMenu open={showStyleMenu} onOpenChange={setShowStyleMenu}>
             <DropdownMenuTrigger asChild>
