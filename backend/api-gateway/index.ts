@@ -1,7 +1,18 @@
 import express, { Express, Request, Response } from 'express';
 import { createProxyMiddleware, Options, RequestHandler } from 'http-proxy-middleware';
+import cors from 'cors';
 
 const app: Express = express();
+
+// CORS configuration
+const corsOptions = {
+  origin: 'http://localhost:3000', // Your frontend URL
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: '*',
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 const services: { [key: string]: string } = {
   auth: 'http://localhost:5000',

@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import axios from "axios";
 
 const Registration = () => {
   const [username, setUsername] = useState("");
@@ -23,7 +24,7 @@ const Registration = () => {
     router.push("/");
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Registration submitted", {
       username,
@@ -31,6 +32,19 @@ const Registration = () => {
       password,
       confirmPassword,
     });
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/auth/register`,
+        {
+          username,
+          email,
+          password,
+        }
+      );
+      console.log("Response : ", response);
+    } catch (error) {
+      console.log("Error : ", error);
+    }
 
     toast("Registration successfull!", {
       icon: "👏",
@@ -41,9 +55,6 @@ const Registration = () => {
   const handleGoogleAuth = () => {
     const authServiceUrl = process.env.NEXT_PUBLIC_AUTH_SERVICE_URL;
     window.location.href = `${authServiceUrl}/google`;
-  };
-  const handleToast = () => {
-    console.log("handleToast click");
   };
 
   const socialButtons = [
@@ -71,7 +82,9 @@ const Registration = () => {
         </svg>
       ),
       color: "bg-gray-200 hover:bg-gray-100",
-      onClick: handleGoogleAuth,
+      onClick: () => {
+        handleGoogleAuth();
+      },
     },
     {
       name: "GitHub",
@@ -81,9 +94,7 @@ const Registration = () => {
         </svg>
       ),
       color: "bg-gray-800 text-white hover:bg-gray-900",
-      onClick: () => {
-        handleToast();
-      },
+      onClick: () => {},
     },
     {
       name: "Facebook",
