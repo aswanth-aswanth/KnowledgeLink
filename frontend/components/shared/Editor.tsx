@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import Rectangle from "./Rectangle";
 import Toolbar from "./Toolbar";
 import Connection from "./Connection";
@@ -29,11 +29,18 @@ const Editor: React.FC = () => {
   const [connectionStart, setConnectionStart] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [svgHeight, setSvgHeight] = useState(600);
   const svgRef = useRef<SVGSVGElement>(null);
 
   const handleSelectRect = (id: string) => {
     setSelectedRect(id);
   };
+
+  const updateSvgHeight = useCallback(() => {
+    const maxY = Math.max(...rectangles.map((rect) => rect.y + rect.height));
+    const newHeight = Math.max(600, maxY + 100); // Add some padding
+    setSvgHeight(newHeight);
+  }, [rectangles]);
 
   const handleUpdateRectPosition = useCallback(
     (id: string, newX: number, newY: number) => {
@@ -42,9 +49,47 @@ const Editor: React.FC = () => {
           rect.id === id ? { ...rect, x: newX, y: newY } : rect
         )
       );
+      updateSvgHeight();
     },
-    []
+    [updateSvgHeight]
   );
+
+  const handleUpdateRectSize = useCallback(
+    (id: string, newWidth: number, newHeight: number) => {
+      setRectangles((rects) =>
+        rects.map((rect) =>
+          rect.id === id
+            ? { ...rect, width: newWidth, height: newHeight }
+            : rect
+        )
+      );
+      updateSvgHeight();
+    },
+    [updateSvgHeight]
+  );
+
+  const handleCreateRect = () => {
+    const newRect: Rect = {
+      id: `rect${rectangles.length + 1}`,
+      x: 100,
+      y: 100,
+      width: 100,
+      height: 50,
+    };
+    setRectangles([...rectangles, newRect]);
+    updateSvgHeight();
+  };
+
+  // const handleUpdateRectPosition = useCallback(
+  //   (id: string, newX: number, newY: number) => {
+  //     setRectangles((rects) =>
+  //       rects.map((rect) =>
+  //         rect.id === id ? { ...rect, x: newX, y: newY } : rect
+  //       )
+  //     );
+  //   },
+  //   []
+  // );
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent<SVGSVGElement>) => {
@@ -80,18 +125,18 @@ const Editor: React.FC = () => {
     setIsDragging(false);
   };
 
-  const handleUpdateRectSize = useCallback(
-    (id: string, newWidth: number, newHeight: number) => {
-      setRectangles((rects) =>
-        rects.map((rect) =>
-          rect.id === id
-            ? { ...rect, width: newWidth, height: newHeight }
-            : rect
-        )
-      );
-    },
-    []
-  );
+  // const handleUpdateRectSize = useCallback(
+  //   (id: string, newWidth: number, newHeight: number) => {
+  //     setRectangles((rects) =>
+  //       rects.map((rect) =>
+  //         rect.id === id
+  //           ? { ...rect, width: newWidth, height: newHeight }
+  //           : rect
+  //       )
+  //     );
+  //   },
+  //   []
+  // );
 
   const handleDeleteRect = (id: string) => {
     setRectangles((rects) => rects.filter((rect) => rect.id !== id));
@@ -103,16 +148,16 @@ const Editor: React.FC = () => {
     }
   };
 
-  const handleCreateRect = () => {
-    const newRect: Rect = {
-      id: `rect${rectangles.length + 1}`,
-      x: 100,
-      y: 100,
-      width: 100,
-      height: 50,
-    };
-    setRectangles([...rectangles, newRect]);
-  };
+  // const handleCreateRect = () => {
+  //   const newRect: Rect = {
+  //     id: `rect${rectangles.length + 1}`,
+  //     x: 100,
+  //     y: 100,
+  //     width: 100,
+  //     height: 50,
+  //   };
+  //   setRectangles([...rectangles, newRect]);
+  // };
 
   // const handleCreateConnection = (from: string, to: string) => {
   //   const newConnection: ConnectionType = { from, to };
@@ -145,6 +190,9 @@ const Editor: React.FC = () => {
     }
     setSelectedRect(id);
   };
+  useEffect(() => {
+    updateSvgHeight();
+  }, [rectangles, updateSvgHeight]);
 
   return (
     <div>
@@ -158,7 +206,7 @@ const Editor: React.FC = () => {
       <svg
         ref={svgRef}
         width="100%"
-        height="600px"
+        height={svgHeight}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseDown={handleMouseDown}
