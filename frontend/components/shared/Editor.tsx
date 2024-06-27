@@ -449,9 +449,6 @@ const Editor: React.FC = () => {
       connections.map((conn, i) => (i === index ? { ...conn, style } : conn))
     );
   };
-  // const handleSelectLineStyle = (style: 'straight' | 'curved') => {
-  //   setLineStyle(style);
-  // };
 
   const createRectanglesFromData = useCallback(
     (topic: Topic, level: number = 0, yOffset: number = 0) => {
@@ -491,10 +488,6 @@ const Editor: React.FC = () => {
     setRectangles(initialRectangles);
     updateSvgHeight();
   }, [createRectanglesFromData]);
-
-  // const handleSelectRect = (id: string) => {
-  //   setSelectedRect(id);
-  // };
 
   const updateSvgHeight = useCallback(() => {
     const maxY = Math.max(...rectangles.map((rect) => rect.y + rect.height));
@@ -541,64 +534,6 @@ const Editor: React.FC = () => {
     updateSvgHeight();
   };
 
-  // const handleUpdateRectPosition = useCallback(
-  //   (id: string, newX: number, newY: number) => {
-  //     setRectangles((rects) =>
-  //       rects.map((rect) =>
-  //         rect.id === id ? { ...rect, x: newX, y: newY } : rect
-  //       )
-  //     );
-  //   },
-  //   []
-  // );
-
-  // const handleMouseMove = useCallback(
-  //   (e: React.MouseEvent<SVGSVGElement>) => {
-  //     if (isDragging && selectedRect) {
-  //       const svgRect = svgRef.current?.getBoundingClientRect();
-  //       if (svgRect) {
-  //         const newX = e.clientX - svgRect.left - dragOffset.x;
-  //         const newY = e.clientY - svgRect.top - dragOffset.y;
-  //         handleUpdateRectPosition(selectedRect, newX, newY);
-  //       }
-  //     }
-  //   },
-  //   [isDragging, selectedRect, handleUpdateRectPosition, dragOffset]
-  // );
-
-  // const handleMouseDown = useCallback(
-  //   (e: React.MouseEvent<SVGSVGElement>) => {
-  //     if (e.button === 0 && selectedRect) {
-  //       const svgRect = svgRef.current?.getBoundingClientRect();
-  //       const rect = rectangles.find((r) => r.id === selectedRect);
-  //       if (svgRect && rect) {
-  //         const offsetX = e.clientX - svgRect.left - rect.x;
-  //         const offsetY = e.clientY - svgRect.top - rect.y;
-  //         setDragOffset({ x: offsetX, y: offsetY });
-  //       }
-  //       setIsDragging(true);
-  //     }
-  //   },
-  //   [selectedRect, rectangles]
-  // );
-
-  // const handleMouseUp = () => {
-  //   setIsDragging(false);
-  // };
-
-  // const handleUpdateRectSize = useCallback(
-  //   (id: string, newWidth: number, newHeight: number) => {
-  //     setRectangles((rects) =>
-  //       rects.map((rect) =>
-  //         rect.id === id
-  //           ? { ...rect, width: newWidth, height: newHeight }
-  //           : rect
-  //       )
-  //     );
-  //   },
-  //   []
-  // );
-
   const handleDeleteRect = (id: string) => {
     setRectangles((rects) => rects.filter((rect) => rect.id !== id));
     setConnections((conns) =>
@@ -609,48 +544,23 @@ const Editor: React.FC = () => {
     }
   };
 
-  // const handleCreateRect = () => {
-  //   const newRect: Rect = {
-  //     id: `rect${rectangles.length + 1}`,
-  //     x: 100,
-  //     y: 100,
-  //     width: 100,
-  //     height: 50,
-  //   };
-  //   setRectangles([...rectangles, newRect]);
-  // };
-
-  // const handleCreateConnection = (from: string, to: string) => {
-  //   const newConnection: ConnectionType = { from, to };
-  //   setConnections([...connections, newConnection]);
-  // };
-
   const handleStartConnecting = () => {
     setIsConnecting(true);
   };
-
-  // const handleCreateConnection = () => {
-  //   if (connectionStart && selectedRect && connectionStart !== selectedRect) {
-  //     const newConnection: ConnectionType = {
-  //       from: connectionStart,
-  //       to: selectedRect,
-  //     };
-  //     setConnections([...connections, newConnection]);
-  //     setIsConnecting(false);
-  //     setConnectionStart(null);
-  //   }
-  // };
 
   const handleRectClick = (id: string) => {
     if (isConnecting) {
       if (!connectionStart) {
         setConnectionStart(id);
       } else {
+        setSelectedRect(id);
         handleCreateConnection();
       }
+    } else {
+      setSelectedRect(id);
     }
-    setSelectedRect(id);
   };
+
   useEffect(() => {
     updateSvgHeight();
   }, [rectangles, updateSvgHeight]);
@@ -664,7 +574,6 @@ const Editor: React.FC = () => {
 
   return (
     <div>
-      {/* <Toolbar onAddRectangle={handleCreateRect} /> */}
       <Toolbar
         onAddRectangle={handleCreateRect}
         onStartConnecting={handleStartConnecting}
@@ -704,7 +613,7 @@ const Editor: React.FC = () => {
                 ? selectedRects.includes(rect.id)
                 : rect.id === selectedRect
             }
-            onSelect={(e) => handleSelectRect(rect.id, e)}
+            onSelect={(e) => handleRectClick(rect.id)}
             onUpdatePosition={(newX, newY) =>
               handleUpdateRectPosition(rect.id, newX, newY)
             }
