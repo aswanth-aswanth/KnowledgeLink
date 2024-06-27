@@ -1,8 +1,7 @@
-"use client";
-
-import { useState, useRef, useEffect, useCallback } from "react";
-import Toolbar from "./Toolbar";
+"use client"
+import React, { useState, useRef, useCallback } from "react";
 import Rectangle from "./Rectangle";
+import Toolbar from "./Toolbar";
 import Connection from "./Connection";
 
 interface Rect {
@@ -13,65 +12,31 @@ interface Rect {
   height: number;
 }
 
-interface Conn {
-  id: string;
+interface ConnectionType {
   from: string;
   to: string;
 }
 
 const Editor: React.FC = () => {
   const [rectangles, setRectangles] = useState<Rect[]>([
-    { id: "1", x: 100, y: 100, width: 100, height: 60 },
-    { id: "2", x: 250, y: 200, width: 100, height: 60 },
-    { id: "3", x: 400, y: 100, width: 100, height: 60 },
+    { id: "rect1", x: 50, y: 50, width: 100, height: 50 },
+    { id: "rect2", x: 200, y: 50, width: 100, height: 50 },
+    { id: "rect3", x: 350, y: 50, width: 100, height: 50 },
   ]);
-  const [connections, setConnections] = useState<Conn[]>([]);
+  const [connections, setConnections] = useState<ConnectionType[]>([]);
   const [selectedRect, setSelectedRect] = useState<string | null>(null);
-  const [isConnecting, setIsConnecting] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const svgRef = useRef<SVGSVGElement>(null);
 
-  const handleAddRectangle = useCallback(() => {
-    const newRect: Rect = {
-      id: Date.now().toString(),
-      x: Math.random() * 500,
-      y: Math.random() * 300,
-      width: 100,
-      height: 60,
-    };
-    setRectangles((prev) => [...prev, newRect]);
-  }, []);
-
-  const handleSelectRect = useCallback((id: string) => {
+  const handleSelectRect = (id: string) => {
     setSelectedRect(id);
-  }, []);
-
-  const handleStartConnecting = useCallback(() => {
-    setIsConnecting(true);
-    setSelectedRect(null);
-  }, []);
-
-  const handleCreateConnection = useCallback(() => {
-    if (selectedRect && isConnecting) {
-      const newConn: Conn = {
-        id: Date.now().toString(),
-        from: selectedRect,
-        to: rectangles.find((r) => r.id !== selectedRect)?.id || "",
-      };
-      setConnections((prev) => [...prev, newConn]);
-      setIsConnecting(false);
-      setSelectedRect(null);
-    }
-  }, [selectedRect, isConnecting, rectangles]);
-
-  const handleDeleteConnection = useCallback((id: string) => {
-    setConnections((prev) => prev.filter((conn) => conn.id !== id));
-  }, []);
+  };
 
   const handleUpdateRectPosition = useCallback(
     (id: string, newX: number, newY: number) => {
-      setRectangles((prev) =>
-        prev.map((rect) =>
+      setRectangles((rects) =>
+        rects.map((rect) =>
           rect.id === id ? { ...rect, x: newX, y: newY } : rect
         )
       );
@@ -79,101 +44,93 @@ const Editor: React.FC = () => {
     []
   );
 
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent<SVGSVGElement>) => {
+      if (isDragging && selectedRect) {
+        const svgRect = svgRef.current?.getBoundingClientRect();
+        if (svgRect) {
+          const newX = e.clientX - svgRect.left - dragOffset.x;
+          const newY = e.clientY - svgRect.top - dragOffset.y;
+          handleUpdateRectPosition(selectedRect, newX, newY);
+        }
+      }
+    },
+    [isDragging, selectedRect, handleUpdateRectPosition, dragOffset]
+  );
+
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent<SVGSVGElement>) => {
+      if (e.button === 0 && selectedRect) {
+        const svgRect = svgRef.current?.getBoundingClientRect();
+        const rect = rectangles.find((r) => r.id === selectedRect);
+        if (svgRect && rect) {
+          const offsetX = e.clientX - svgRect.left - rect.x;
+          const offsetY = e.clientY - svgRect.top - rect.y;
+          setDragOffset({ x: offsetX, y: offsetY });
+        }
+        setIsDragging(true);
+      }
+    },
+    [selectedRect, rectangles]
+  );
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
   const handleUpdateRectSize = useCallback(
     (id: string, newWidth: number, newHeight: number) => {
-      setRectangles((prev) =>
-        prev.map((rect) =>
-          rect.id === id
-            ? { ...rect, width: newWidth, height: newHeight }
-            : rect
+      setRectangles((rects) =>
+        rects.map((rect) =>
+          rect.id === id ? { ...rect, width: newWidth, height: newHeight } : rect
         )
       );
     },
     []
   );
 
-  const handleDeleteRect = useCallback((id: string) => {
-    setRectangles((prev) => prev.filter((rect) => rect.id !== id));
-    setConnections((prev) =>
-      prev.filter((conn) => conn.from !== id && conn.to !== id)
+  const handleDeleteRect = (id: string) => {
+    setRectangles((rects) => rects.filter((rect) => rect.id !== id));
+    setConnections((conns) =>
+      conns.filter((conn) => conn.from !== id && conn.to !== id)
     );
-  }, []);
-
-  const handleMouseMove = useCallback(
-    (e: React.MouseEvent<SVGSVGElement>) => {
-      if (isDragging && selectedRect) {
-        const svgRect = svgRef.current?.getBoundingClientRect();
-        if (svgRect) {
-          console.log("svgRect : ", svgRect);
-          const newX = e.clientX - svgRect.left;
-          const newY = e.clientY - svgRect.top;
-          // console.log("SelectedRect : ", selectedRect);
-          // console.log("newX : ",newX);
-          // console.log("newY : ",newY);
-          handleUpdateRectPosition(selectedRect, newX, newY);
-        }
-      }
-    },
-    [isDragging, selectedRect, handleUpdateRectPosition]
-  );
-
-  const handleMouseDown = useCallback(
-    (e: React.MouseEvent<SVGSVGElement>) => {
-      if (e.button === 2 && selectedRect) {
-        // Right mouse button
-        setIsDragging(true);
-      }
-    },
-    [selectedRect]
-  );
-
-  const handleMouseUp = useCallback(() => {
-    setIsDragging(false);
-  }, []);
-
-  useEffect(() => {
-    const svg = svgRef.current;
-    if (svg) {
-      svg.addEventListener("mousemove", handleMouseMove as any);
-      svg.addEventListener("mousedown", handleMouseDown as any);
-      svg.addEventListener("mouseup", handleMouseUp);
-      svg.addEventListener("contextmenu", (e) => e.preventDefault());
-      return () => {
-        svg.removeEventListener("mousemove", handleMouseMove as any);
-        svg.removeEventListener("mousedown", handleMouseDown as any);
-        svg.removeEventListener("mouseup", handleMouseUp);
-        svg.removeEventListener("contextmenu", (e) => e.preventDefault());
-      };
+    if (selectedRect === id) {
+      setSelectedRect(null);
     }
-  }, [handleMouseMove, handleMouseDown, handleMouseUp]);
+  };
+
+  const handleCreateRect = () => {
+    const newRect: Rect = {
+      id: `rect${rectangles.length + 1}`,
+      x: 100,
+      y: 100,
+      width: 100,
+      height: 50,
+    };
+    setRectangles([...rectangles, newRect]);
+  };
+
+  const handleCreateConnection = (from: string, to: string) => {
+    const newConnection: ConnectionType = { from, to };
+    setConnections([...connections, newConnection]);
+  };
 
   return (
-    <div className="w-full h-screen flex flex-col">
-      <Toolbar
-        onAddRectangle={handleAddRectangle}
-        onStartConnecting={handleStartConnecting}
-        isConnecting={isConnecting}
-        onCreateConnection={handleCreateConnection}
-      />
+    <div>
+      <Toolbar onAddRect={handleCreateRect} />
       <svg
         ref={svgRef}
-        className="flex-grow bg-white"
-        viewBox="0 0 800 600"
-        preserveAspectRatio="xMidYMid meet"
+        width="100%"
+        height="600px"
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseDown={handleMouseDown}
       >
-        {connections.map((conn) => (
-          <Connection
-            key={conn.id}
-            connection={conn}
-            rectangles={rectangles}
-            onDelete={() => handleDeleteConnection(conn.id)}
-          />
-        ))}
         {rectangles.map((rect) => (
           <Rectangle
             key={rect.id}
             rect={rect}
-            isSelected={selectedRect === rect.id}
+            isSelected={rect.id === selectedRect}
             onSelect={() => handleSelectRect(rect.id)}
             onUpdatePosition={(newX, newY) =>
               handleUpdateRectPosition(rect.id, newX, newY)
@@ -183,6 +140,9 @@ const Editor: React.FC = () => {
             }
             onDelete={() => handleDeleteRect(rect.id)}
           />
+        ))}
+        {connections.map((conn, index) => (
+          <Connection key={index} from={conn.from} to={conn.to} rectangles={rectangles} />
         ))}
       </svg>
     </div>

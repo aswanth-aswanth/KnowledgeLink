@@ -32,7 +32,7 @@ const Rectangle: React.FC<RectProps> = ({
 
   const handleMouseDown = useCallback(
     (e: React.MouseEvent<SVGRectElement>) => {
-      if (e.button === 2) {
+      if (e.button === 0) {
         // Right mouse button
         e.preventDefault();
         onSelect();
