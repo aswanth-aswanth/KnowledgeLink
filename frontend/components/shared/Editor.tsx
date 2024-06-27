@@ -622,7 +622,7 @@ const Editor: React.FC = () => {
                 ? selectedRects.includes(rect.id)
                 : rect.id === selectedRect
             }
-            onSelect={(e) => handleRectClick(rect.id)}
+            onSelect={(e) => handleSelectRect(rect.id,e)}
             onUpdatePosition={(newX, newY) =>
               handleUpdateRectPosition(rect.id, newX, newY)
             }
