@@ -2,6 +2,7 @@ import React, { useState, useCallback } from "react";
 
 interface RectProps {
   rect: {
+    name: string;
     id: string;
     x: number;
     y: number;
@@ -86,7 +87,6 @@ const Rectangle: React.FC<RectProps> = ({
         stroke={isSelected ? "blue" : "black"}
         strokeWidth={2}
         onClick={handleClick}
-        // onMouseDown={handleMouseDown}
         onContextMenu={handleContextMenu}
         style={{ cursor: "move" }}
       />
@@ -96,8 +96,9 @@ const Rectangle: React.FC<RectProps> = ({
         textAnchor="middle"
         dominantBaseline="central"
         fontSize="14"
+        className="select-none"
       >
-        {rect.id}
+        {rect.name}
       </text>
       {isSelected && (
         <>
