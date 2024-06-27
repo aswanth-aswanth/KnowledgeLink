@@ -599,6 +599,7 @@ const Editor: React.FC = () => {
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseDown={handleMouseDown}
+        className="m-4"
       >
         {connections.map((conn, index) => (
           <Connection
