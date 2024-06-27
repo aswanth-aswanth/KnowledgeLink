@@ -22,20 +22,25 @@ interface Rect {
 interface ConnectionType {
   from: string;
   to: string;
-  style: 'straight' | 'curved';
+  style: "straight" | "curved";
 }
 
 const Editor: React.FC = () => {
   const [rectangles, setRectangles] = useState<Rect[]>([]);
   const [connections, setConnections] = useState<ConnectionType[]>([]);
   const [selectedRect, setSelectedRect] = useState<string | null>(null);
-  const [currentLineStyle, setCurrentLineStyle] = useState<'straight' | 'curved'>('straight');
+  const [currentLineStyle, setCurrentLineStyle] = useState<
+    "straight" | "curved"
+  >("straight");
   const [isConnecting, setIsConnecting] = useState(false);
   const [connectionStart, setConnectionStart] = useState<string | null>(null);
-  const [lineStyle, setLineStyle] = useState<'straight' | 'curved'>('straight');
+  const [lineStyle, setLineStyle] = useState<"straight" | "curved">("straight");
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [svgHeight, setSvgHeight] = useState(600);
+  const [selectedRects, setSelectedRects] = useState<string[]>([]);
+  const [isMultiSelectMode, setIsMultiSelectMode] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const svgRef = useRef<SVGSVGElement>(null);
 
   const topicsData: Topic = {
@@ -339,6 +344,86 @@ const Editor: React.FC = () => {
     ],
   };
 
+  const handleSelectRect = (id: string, event: React.MouseEvent) => {
+    if (isMultiSelectMode) {
+      if (event.ctrlKey) {
+        setSelectedRects((prev) =>
+          prev.includes(id)
+            ? prev.filter((rectId) => rectId !== id)
+            : [...prev, id]
+        );
+      } else {
+        setSelectedRects([id]);
+      }
+    } else {
+      setSelectedRect(id);
+    }
+  };
+
+  const handleMouseDown = useCallback((e: React.MouseEvent<SVGSVGElement>) => {
+    if (e.button === 0) {
+      const svgRect = svgRef.current?.getBoundingClientRect();
+      if (svgRect) {
+        setDragStart({
+          x: e.clientX - svgRect.left,
+          y: e.clientY - svgRect.top,
+        });
+      }
+      setIsDragging(true);
+    }
+  }, []);
+
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent<SVGSVGElement>) => {
+      if (isDragging && (selectedRect || selectedRects.length > 0)) {
+        const svgRect = svgRef.current?.getBoundingClientRect();
+        if (svgRect) {
+          const dx = e.clientX - svgRect.left - dragStart.x;
+          const dy = e.clientY - svgRect.top - dragStart.y;
+
+          setRectangles((prevRects) =>
+            prevRects.map((rect) => {
+              if (
+                (isMultiSelectMode && selectedRects.includes(rect.id)) ||
+                (!isMultiSelectMode && rect.id === selectedRect)
+              ) {
+                return { ...rect, x: rect.x + dx, y: rect.y + dy };
+              }
+              return rect;
+            })
+          );
+
+          setDragStart({
+            x: e.clientX - svgRect.left,
+            y: e.clientY - svgRect.top,
+          });
+        }
+      }
+    },
+    [isDragging, selectedRect, selectedRects, isMultiSelectMode, dragStart]
+  );
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.key === "a") {
+        e.preventDefault();
+        setSelectedRects(rectangles.map((rect) => rect.id));
+      }
+    },
+    [rectangles]
+  );
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [handleKeyDown]);
+
   const handleCreateConnection = () => {
     if (connectionStart && selectedRect && connectionStart !== selectedRect) {
       const newConnection: ConnectionType = {
@@ -352,14 +437,17 @@ const Editor: React.FC = () => {
     }
   };
 
-  const handleSelectLineStyle = (style: 'straight' | 'curved') => {
+  const handleSelectLineStyle = (style: "straight" | "curved") => {
     setCurrentLineStyle(style);
   };
 
-  const handleChangeConnectionStyle = (index: number, style: 'straight' | 'curved') => {
-    setConnections(connections.map((conn, i) => 
-      i === index ? { ...conn, style } : conn
-    ));
+  const handleChangeConnectionStyle = (
+    index: number,
+    style: "straight" | "curved"
+  ) => {
+    setConnections(
+      connections.map((conn, i) => (i === index ? { ...conn, style } : conn))
+    );
   };
   // const handleSelectLineStyle = (style: 'straight' | 'curved') => {
   //   setLineStyle(style);
@@ -404,9 +492,9 @@ const Editor: React.FC = () => {
     updateSvgHeight();
   }, [createRectanglesFromData]);
 
-  const handleSelectRect = (id: string) => {
-    setSelectedRect(id);
-  };
+  // const handleSelectRect = (id: string) => {
+  //   setSelectedRect(id);
+  // };
 
   const updateSvgHeight = useCallback(() => {
     const maxY = Math.max(...rectangles.map((rect) => rect.y + rect.height));
@@ -464,39 +552,39 @@ const Editor: React.FC = () => {
   //   []
   // );
 
-  const handleMouseMove = useCallback(
-    (e: React.MouseEvent<SVGSVGElement>) => {
-      if (isDragging && selectedRect) {
-        const svgRect = svgRef.current?.getBoundingClientRect();
-        if (svgRect) {
-          const newX = e.clientX - svgRect.left - dragOffset.x;
-          const newY = e.clientY - svgRect.top - dragOffset.y;
-          handleUpdateRectPosition(selectedRect, newX, newY);
-        }
-      }
-    },
-    [isDragging, selectedRect, handleUpdateRectPosition, dragOffset]
-  );
+  // const handleMouseMove = useCallback(
+  //   (e: React.MouseEvent<SVGSVGElement>) => {
+  //     if (isDragging && selectedRect) {
+  //       const svgRect = svgRef.current?.getBoundingClientRect();
+  //       if (svgRect) {
+  //         const newX = e.clientX - svgRect.left - dragOffset.x;
+  //         const newY = e.clientY - svgRect.top - dragOffset.y;
+  //         handleUpdateRectPosition(selectedRect, newX, newY);
+  //       }
+  //     }
+  //   },
+  //   [isDragging, selectedRect, handleUpdateRectPosition, dragOffset]
+  // );
 
-  const handleMouseDown = useCallback(
-    (e: React.MouseEvent<SVGSVGElement>) => {
-      if (e.button === 0 && selectedRect) {
-        const svgRect = svgRef.current?.getBoundingClientRect();
-        const rect = rectangles.find((r) => r.id === selectedRect);
-        if (svgRect && rect) {
-          const offsetX = e.clientX - svgRect.left - rect.x;
-          const offsetY = e.clientY - svgRect.top - rect.y;
-          setDragOffset({ x: offsetX, y: offsetY });
-        }
-        setIsDragging(true);
-      }
-    },
-    [selectedRect, rectangles]
-  );
+  // const handleMouseDown = useCallback(
+  //   (e: React.MouseEvent<SVGSVGElement>) => {
+  //     if (e.button === 0 && selectedRect) {
+  //       const svgRect = svgRef.current?.getBoundingClientRect();
+  //       const rect = rectangles.find((r) => r.id === selectedRect);
+  //       if (svgRect && rect) {
+  //         const offsetX = e.clientX - svgRect.left - rect.x;
+  //         const offsetY = e.clientY - svgRect.top - rect.y;
+  //         setDragOffset({ x: offsetX, y: offsetY });
+  //       }
+  //       setIsDragging(true);
+  //     }
+  //   },
+  //   [selectedRect, rectangles]
+  // );
 
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
+  // const handleMouseUp = () => {
+  //   setIsDragging(false);
+  // };
 
   // const handleUpdateRectSize = useCallback(
   //   (id: string, newWidth: number, newHeight: number) => {
@@ -567,6 +655,13 @@ const Editor: React.FC = () => {
     updateSvgHeight();
   }, [rectangles, updateSvgHeight]);
 
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [handleKeyDown]);
+
   return (
     <div>
       {/* <Toolbar onAddRectangle={handleCreateRect} /> */}
@@ -577,6 +672,8 @@ const Editor: React.FC = () => {
         onCreateConnection={handleCreateConnection}
         onSelectLineStyle={handleSelectLineStyle}
         selectedLineStyle={currentLineStyle}
+        isMultiSelectMode={isMultiSelectMode}
+        onToggleMultiSelect={() => setIsMultiSelectMode((prev) => !prev)}
       />
       <svg
         ref={svgRef}
@@ -586,7 +683,7 @@ const Editor: React.FC = () => {
         onMouseUp={handleMouseUp}
         onMouseDown={handleMouseDown}
       >
-         {connections.map((conn, index) => (
+        {connections.map((conn, index) => (
           <Connection
             key={index}
             connection={conn}
@@ -602,8 +699,12 @@ const Editor: React.FC = () => {
           <Rectangle
             key={rect.id}
             rect={rect}
-            isSelected={rect.id === selectedRect}
-            onSelect={() => handleRectClick(rect.id)}
+            isSelected={
+              isMultiSelectMode
+                ? selectedRects.includes(rect.id)
+                : rect.id === selectedRect
+            }
+            onSelect={(e) => handleSelectRect(rect.id, e)}
             onUpdatePosition={(newX, newY) =>
               handleUpdateRectPosition(rect.id, newX, newY)
             }

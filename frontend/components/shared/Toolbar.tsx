@@ -10,6 +10,8 @@ interface ToolbarProps {
   // selectedLineStyle: 'straight' | 'curved';
   onSelectLineStyle: () => void;
   selectedLineStyle: () => void;
+  isMultiSelectMode: boolean;
+  onToggleMultiSelect: () => void;
 }
 
 const Toolbar: React.FC<ToolbarProps> = ({
@@ -19,6 +21,8 @@ const Toolbar: React.FC<ToolbarProps> = ({
   onCreateConnection,
   onSelectLineStyle,
   selectedLineStyle,
+  isMultiSelectMode,
+  onToggleMultiSelect,
 }) => {
   return (
     <div className="bg-gray-800 text-white p-4 flex space-x-4">
@@ -72,6 +76,15 @@ const Toolbar: React.FC<ToolbarProps> = ({
           onClick={() => onSelectLineStyle("curved")}
         >
           New Curved Line
+        </button>
+
+        <button
+          className={`px-4 py-2 rounded ${
+            isMultiSelectMode ? "bg-purple-500" : "bg-gray-500"
+          }`}
+          onClick={onToggleMultiSelect}
+        >
+          {isMultiSelectMode ? "Disable Multi-Select" : "Enable Multi-Select"}
         </button>
       </div>
     </div>

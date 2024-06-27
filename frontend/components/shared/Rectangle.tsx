@@ -2,15 +2,15 @@ import React, { useState, useCallback } from "react";
 
 interface RectProps {
   rect: {
-    name: string;
     id: string;
     x: number;
     y: number;
     width: number;
     height: number;
+    name: string;
   };
   isSelected: boolean;
-  onSelect: () => void;
+  onSelect: (event: React.MouseEvent) => void;
   onUpdatePosition: (newX: number, newY: number) => void;
   onUpdateSize: (newWidth: number, newHeight: number) => void;
   onDelete: () => void;
@@ -72,10 +72,11 @@ const Rectangle: React.FC<RectProps> = ({
   const handleClick = useCallback(
     (e: React.MouseEvent<SVGRectElement>) => {
       e.stopPropagation();
-      onSelect();
+      onSelect(e);
     },
     [onSelect]
   );
+  
   return (
     <g>
       <rect
