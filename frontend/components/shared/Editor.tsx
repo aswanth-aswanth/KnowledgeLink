@@ -555,6 +555,16 @@ const Editor: React.FC = () => {
         onMouseUp={handleMouseUp}
         onMouseDown={handleMouseDown}
       >
+        {connections.map((conn, index) => (
+          <Connection
+            key={index}
+            connection={conn}
+            rectangles={rectangles}
+            onDelete={() => {
+              setConnections(connections.filter((_, i) => i !== index));
+            }}
+          />
+        ))}
         {rectangles.map((rect) => (
           <Rectangle
             key={rect.id}
@@ -568,16 +578,6 @@ const Editor: React.FC = () => {
               handleUpdateRectSize(rect.id, newWidth, newHeight)
             }
             onDelete={() => handleDeleteRect(rect.id)}
-          />
-        ))}
-        {connections.map((conn, index) => (
-          <Connection
-            key={index}
-            connection={conn}
-            rectangles={rectangles}
-            onDelete={() => {
-              setConnections(connections.filter((_, i) => i !== index));
-            }}
           />
         ))}
       </svg>
