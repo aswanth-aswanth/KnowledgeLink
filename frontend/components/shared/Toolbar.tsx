@@ -28,7 +28,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
   onToggleCircleVisibility,
 }) => {
   return (
-    <div className="bg-gray-800 text-white p-4 flex space-x-4">
+    <div className="bg-gray-800 text-white p-4 flex justify-center space-x-4">
       <button
         className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded"
         onClick={onAddRectangle}
