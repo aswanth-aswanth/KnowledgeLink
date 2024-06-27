@@ -1,6 +1,6 @@
 // components/TreeNode.tsx
-import React from 'react';
-import { CalculatedTreeNode } from '../types/TreeTypes';
+import React from "react";
+import { CalculatedTreeNode } from "../../types/TreeTypes";
 
 interface TreeNodeProps {
   node: CalculatedTreeNode;
@@ -33,9 +33,13 @@ const TreeNode: React.FC<TreeNodeProps> = ({ node, x, y }) => {
           fontSize="17px"
           textAnchor="middle"
         >
-          {node.content}
+          {node.name}
         </text>
-        <g transform={`translate(${x + nodeWidth / 2 - 20}, ${y + nodeHeight / 2 - 10})`}>
+        <g
+          transform={`translate(${x + nodeWidth / 2 - 20}, ${
+            y + nodeHeight / 2 - 10
+          })`}
+        >
           <circle r="10" fill="rgb(56,118,29)" />
           <path
             d="M-5.5 0L-1.5 4 5 -2.5"
@@ -50,11 +54,15 @@ const TreeNode: React.FC<TreeNodeProps> = ({ node, x, y }) => {
       {node.children.map((child, index) => {
         const childX = x + (index - (node.children.length - 1) / 2) * 400;
         const childY = y + 150;
-
+        console.log("childx : ", childX);
+        console.log("childy : ", childY);
+        
         return (
           <React.Fragment key={child.name}>
             <path
-              d={`M${x} ${y + nodeHeight}Q${x} ${(y + childY) / 2} ${childX} ${childY}`}
+              d={`M${x} ${y + nodeHeight}Q${x} ${
+                (y + childY) / 2
+              } ${childX} ${childY}`}
               fill="none"
               stroke="rgb(43,120,228)"
               strokeWidth="4"

@@ -10,6 +10,7 @@ interface TreeDiagramProps {
 
 const TreeDiagram: React.FC<TreeDiagramProps> = ({ data }) => {
   const treeData = calculateTreeLayout(data);
+  // console.log("TreeData : ", treeData);
 
   return (
     <svg width="1000" height="600">

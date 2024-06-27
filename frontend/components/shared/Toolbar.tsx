@@ -1,54 +1,38 @@
-'use client';
-
-import React from 'react';
-import { AppBar, Toolbar, IconButton, Typography, Box } from '@mui/material';
-import ToggleButton from '@mui/material/ToggleButton';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import MicIcon from '@mui/icons-material/Mic';
-import ImageIcon from '@mui/icons-material/Image';
-import CreateIcon from '@mui/icons-material/Create';
+import React from "react";
 
 interface ToolbarProps {
-  onToggle: () => void;
+  onAddRectangle: () => void;
+  onStartConnecting: () => void;
+  isConnecting: boolean;
+  onCreateConnection: () => void;
 }
 
-const CustomToolbar: React.FC<ToolbarProps> = () => {
-  const [alignment, setAlignment] = React.useState<string | null>('left');
-
-  const handleAlignment = (
-    event: React.MouseEvent<HTMLElement>,
-    newAlignment: string | null,
-  ) => {
-    setAlignment(newAlignment);
-  };
-
+const Toolbar: React.FC<ToolbarProps> = ({
+  onAddRectangle,
+  onStartConnecting,
+  isConnecting,
+  onCreateConnection,
+}) => {
   return (
-    <AppBar position="static" color="transparent">
-      <Toolbar sx={{ justifyContent: 'center' }}>
-        <Box>
-          <ToggleButtonGroup
-            value={alignment}
-            exclusive
-            onChange={handleAlignment}
-            aria-label="text alignment"
-          >
-            <ToggleButton value="left" aria-label="left aligned">
-              <Typography>Toggle</Typography>
-            </ToggleButton>
-          </ToggleButtonGroup>
-          <IconButton color="inherit">
-            <MicIcon />
-          </IconButton>
-          <IconButton color="inherit">
-            <ImageIcon />
-          </IconButton>
-          <IconButton color="inherit">
-            <CreateIcon />
-          </IconButton>
-        </Box>
-      </Toolbar>
-    </AppBar>
+    <div className="bg-gray-800 text-white p-4 flex space-x-4">
+      <button
+        className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded"
+        onClick={onAddRectangle}
+      >
+        Add Rectangle
+      </button>
+      <button
+        className={`px-4 py-2 rounded ${
+          isConnecting
+            ? "bg-green-500 hover:bg-green-600"
+            : "bg-yellow-500 hover:bg-yellow-600"
+        }`}
+        onClick={isConnecting ? onCreateConnection : onStartConnecting}
+      >
+        {isConnecting ? "Create Connection" : "Start Connecting"}
+      </button>
+    </div>
   );
 };
 
-export default CustomToolbar;
+export default Toolbar;

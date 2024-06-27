@@ -40,6 +40,38 @@ const Home: React.FC = () => {
           },
         ],
       },
+      {
+        name: "Functions",
+        content: "Introduction to functions in JavaScript",
+        children: [
+          {
+            name: "Function Declarations",
+            content: "Understanding function declarations",
+            children: [],
+          },
+          {
+            name: "Function Expressions",
+            content: "Understanding function expressions",
+            children: [],
+          },
+        ],
+      },
+      {
+        name: "Functions",
+        content: "Introduction to functions in JavaScript",
+        children: [
+          {
+            name: "Function Declarations",
+            content: "Understanding function declarations",
+            children: [],
+          },
+          {
+            name: "Function Expressions",
+            content: "Understanding function expressions",
+            children: [],
+          },
+        ],
+      },
     ],
   };
 
