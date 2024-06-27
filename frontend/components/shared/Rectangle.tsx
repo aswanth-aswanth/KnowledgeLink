@@ -68,6 +68,13 @@ const Rectangle: React.FC<RectProps> = ({
     setIsResizing(false);
   }, []);
 
+  const handleClick = useCallback(
+    (e: React.MouseEvent<SVGRectElement>) => {
+      e.stopPropagation();
+      onSelect();
+    },
+    [onSelect]
+  );
   return (
     <g>
       <rect
@@ -78,7 +85,8 @@ const Rectangle: React.FC<RectProps> = ({
         fill={isSelected ? "lightblue" : "white"}
         stroke={isSelected ? "blue" : "black"}
         strokeWidth={2}
-        onMouseDown={handleMouseDown}
+        onClick={handleClick}
+        // onMouseDown={handleMouseDown}
         onContextMenu={handleContextMenu}
         style={{ cursor: "move" }}
       />

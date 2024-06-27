@@ -2,7 +2,6 @@ import React from "react";
 
 interface ConnectionProps {
   connection: {
-    id: string;
     from: string;
     to: string;
   };

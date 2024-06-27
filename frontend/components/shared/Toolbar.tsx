@@ -1,5 +1,3 @@
-import React from "react";
-
 interface ToolbarProps {
   onAddRectangle: () => void;
   onStartConnecting: () => void;
@@ -34,5 +32,4 @@ const Toolbar: React.FC<ToolbarProps> = ({
     </div>
   );
 };
-
 export default Toolbar;

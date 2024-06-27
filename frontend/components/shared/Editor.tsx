@@ -25,6 +25,8 @@ const Editor: React.FC = () => {
   ]);
   const [connections, setConnections] = useState<ConnectionType[]>([]);
   const [selectedRect, setSelectedRect] = useState<string | null>(null);
+  const [isConnecting, setIsConnecting] = useState(false);
+  const [connectionStart, setConnectionStart] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const svgRef = useRef<SVGSVGElement>(null);
@@ -112,14 +114,47 @@ const Editor: React.FC = () => {
     setRectangles([...rectangles, newRect]);
   };
 
-  const handleCreateConnection = (from: string, to: string) => {
-    const newConnection: ConnectionType = { from, to };
-    setConnections([...connections, newConnection]);
+  // const handleCreateConnection = (from: string, to: string) => {
+  //   const newConnection: ConnectionType = { from, to };
+  //   setConnections([...connections, newConnection]);
+  // };
+
+  const handleStartConnecting = () => {
+    setIsConnecting(true);
+  };
+
+  const handleCreateConnection = () => {
+    if (connectionStart && selectedRect && connectionStart !== selectedRect) {
+      const newConnection: ConnectionType = {
+        from: connectionStart,
+        to: selectedRect,
+      };
+      setConnections([...connections, newConnection]);
+      setIsConnecting(false);
+      setConnectionStart(null);
+    }
+  };
+
+  const handleRectClick = (id: string) => {
+    if (isConnecting) {
+      if (!connectionStart) {
+        setConnectionStart(id);
+      } else {
+        handleCreateConnection();
+      }
+    }
+    setSelectedRect(id);
   };
 
   return (
     <div>
-      <Toolbar onAddRectangle={handleCreateRect} />
+      {/* <Toolbar onAddRectangle={handleCreateRect} /> */}
+      <Toolbar
+        onAddRectangle={handleCreateRect}
+        onStartConnecting={handleStartConnecting}
+        isConnecting={isConnecting}
+        onCreateConnection={handleCreateConnection}
+      />
       <svg
         ref={svgRef}
         width="100%"
@@ -133,7 +168,7 @@ const Editor: React.FC = () => {
             key={rect.id}
             rect={rect}
             isSelected={rect.id === selectedRect}
-            onSelect={() => handleSelectRect(rect.id)}
+            onSelect={() => handleRectClick(rect.id)}
             onUpdatePosition={(newX, newY) =>
               handleUpdateRectPosition(rect.id, newX, newY)
             }
@@ -146,9 +181,11 @@ const Editor: React.FC = () => {
         {connections.map((conn, index) => (
           <Connection
             key={index}
-            from={conn.from}
-            to={conn.to}
+            connection={conn}
             rectangles={rectangles}
+            onDelete={() => {
+              setConnections(connections.filter((_, i) => i !== index));
+            }}
           />
         ))}
       </svg>
