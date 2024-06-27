@@ -1,15 +1,18 @@
 // Toolbar.tsx
 import React from "react";
+import { FaEyeSlash, FaEye } from "react-icons/fa";
 
 interface ToolbarProps {
   onAddRectangle: () => void;
   onStartConnecting: () => void;
   isConnecting: boolean;
   onCreateConnection: () => void;
-  onSelectLineStyle: (style: 'straight' | 'curved') => void;
-  selectedLineStyle: 'straight' | 'curved';
+  onSelectLineStyle: (style: "straight" | "curved") => void;
+  selectedLineStyle: "straight" | "curved";
   isMultiSelectMode: boolean;
   onToggleMultiSelect: () => void;
+  circlesVisible: boolean;
+  onToggleCircleVisibility: () => void;
 }
 
 const Toolbar: React.FC<ToolbarProps> = ({
@@ -21,6 +24,8 @@ const Toolbar: React.FC<ToolbarProps> = ({
   selectedLineStyle,
   isMultiSelectMode,
   onToggleMultiSelect,
+  circlesVisible,
+  onToggleCircleVisibility,
 }) => {
   return (
     <div className="bg-gray-800 text-white p-4 flex space-x-4">
@@ -64,6 +69,12 @@ const Toolbar: React.FC<ToolbarProps> = ({
           onClick={onToggleMultiSelect}
         >
           {isMultiSelectMode ? "Disable Multi-Select" : "Enable Multi-Select"}
+        </button>
+        <button
+          className="px-4 py-2 rounded bg-gray-500 hover:bg-gray-600"
+          onClick={onToggleCircleVisibility}
+        >
+          {circlesVisible ? <FaEyeSlash /> : <FaEye />}
         </button>
       </div>
     </div>

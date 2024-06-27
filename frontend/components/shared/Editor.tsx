@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useRef, useCallback, useEffect } from "react";
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import Rectangle from "./Rectangle";
 import Toolbar from "./Toolbar";
 import Connection from "./Connection";
@@ -41,6 +42,7 @@ const Editor: React.FC = () => {
   const [selectedRects, setSelectedRects] = useState<string[]>([]);
   const [isMultiSelectMode, setIsMultiSelectMode] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [circlesVisible, setCirclesVisible] = useState(true);
   const svgRef = useRef<SVGSVGElement>(null);
 
   const topicsData: Topic = {
@@ -344,6 +346,10 @@ const Editor: React.FC = () => {
     ],
   };
 
+  const toggleCircleVisibility = () => {
+    setCirclesVisible(prev => !prev);
+  };
+  
   const handleSelectRect = (id: string, event: React.MouseEvent) => {
     if (isMultiSelectMode) {
       if (event.ctrlKey) {
@@ -583,6 +589,8 @@ const Editor: React.FC = () => {
         selectedLineStyle={currentLineStyle}
         isMultiSelectMode={isMultiSelectMode}
         onToggleMultiSelect={() => setIsMultiSelectMode((prev) => !prev)}
+        circlesVisible={circlesVisible}
+        onToggleCircleVisibility={toggleCircleVisibility}
       />
       <svg
         ref={svgRef}
@@ -601,6 +609,7 @@ const Editor: React.FC = () => {
               setConnections(connections.filter((_, i) => i !== index));
             }}
             onChangeStyle={(style) => handleChangeConnectionStyle(index, style)}
+            circlesVisible={circlesVisible}
           />
         ))}
 
@@ -621,6 +630,7 @@ const Editor: React.FC = () => {
               handleUpdateRectSize(rect.id, newWidth, newHeight)
             }
             onDelete={() => handleDeleteRect(rect.id)}
+            circlesVisible={circlesVisible}
           />
         ))}
       </svg>

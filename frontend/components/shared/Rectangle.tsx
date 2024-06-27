@@ -9,6 +9,7 @@ interface RectProps {
     height: number;
     name: string;
   };
+  circlesVisible: boolean;
   isSelected: boolean;
   onSelect: (event: React.MouseEvent) => void;
   onUpdatePosition: (newX: number, newY: number) => void;
@@ -23,6 +24,7 @@ const Rectangle: React.FC<RectProps> = ({
   onUpdatePosition,
   onUpdateSize,
   onDelete,
+  circlesVisible,
 }) => {
   const [isResizing, setIsResizing] = useState(false);
   const [resizeStart, setResizeStart] = useState({ x: 0, y: 0 });
@@ -76,7 +78,7 @@ const Rectangle: React.FC<RectProps> = ({
     },
     [onSelect]
   );
-  
+
   return (
     <g>
       <rect
@@ -101,7 +103,7 @@ const Rectangle: React.FC<RectProps> = ({
       >
         {rect.name}
       </text>
-      {isSelected && (
+      {isSelected && circlesVisible && (
         <>
           <circle
             cx={rect.x + rect.width}

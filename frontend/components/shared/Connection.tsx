@@ -6,6 +6,7 @@ interface ConnectionProps {
     to: string;
     style: "straight" | "curved";
   };
+  circlesVisible: boolean;
   rectangles: {
     id: string;
     x: number;
@@ -22,6 +23,7 @@ const Connection: React.FC<ConnectionProps> = ({
   rectangles,
   onDelete,
   onChangeStyle,
+  circlesVisible,
 }) => {
   const fromRect = rectangles.find((r) => r.id === connection.from);
   const toRect = rectangles.find((r) => r.id === connection.to);
@@ -62,28 +64,34 @@ const Connection: React.FC<ConnectionProps> = ({
         strokeLinejoin="round"
         strokeDasharray={strokeDasharray}
       />
-      <circle
-        cx={midX}
-        cy={midY}
-        r="8"
-        fill="red"
-        stroke="white"
-        strokeWidth="2"
-        style={{ cursor: "pointer" }}
-        onClick={onDelete}
-      />
-      <circle
-        cx={midX + 20}
-        cy={midY}
-        r="8"
-        fill="blue"
-        stroke="white"
-        strokeWidth="2"
-        style={{ cursor: "pointer" }}
-        onClick={() =>
-          onChangeStyle(connection.style === "straight" ? "curved" : "straight")
-        }
-      />
+      {circlesVisible && (
+        <>
+          <circle
+            cx={midX}
+            cy={midY}
+            r="8"
+            fill="red"
+            stroke="white"
+            strokeWidth="2"
+            style={{ cursor: "pointer" }}
+            onClick={onDelete}
+          />
+          <circle
+            cx={midX + 20}
+            cy={midY}
+            r="8"
+            fill="blue"
+            stroke="white"
+            strokeWidth="2"
+            style={{ cursor: "pointer" }}
+            onClick={() =>
+              onChangeStyle(
+                connection.style === "straight" ? "curved" : "straight"
+              )
+            }
+          />
+        </>
+      )}
     </g>
   );
 };
