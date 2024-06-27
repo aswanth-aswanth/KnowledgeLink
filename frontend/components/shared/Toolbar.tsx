@@ -1,8 +1,15 @@
+// Toolbar.tsx
+import React from "react";
+
 interface ToolbarProps {
   onAddRectangle: () => void;
   onStartConnecting: () => void;
   isConnecting: boolean;
   onCreateConnection: () => void;
+  // onSelectLineStyle: (style: 'straight' | 'curved') => void;
+  // selectedLineStyle: 'straight' | 'curved';
+  onSelectLineStyle: () => void;
+  selectedLineStyle: () => void;
 }
 
 const Toolbar: React.FC<ToolbarProps> = ({
@@ -10,6 +17,8 @@ const Toolbar: React.FC<ToolbarProps> = ({
   onStartConnecting,
   isConnecting,
   onCreateConnection,
+  onSelectLineStyle,
+  selectedLineStyle,
 }) => {
   return (
     <div className="bg-gray-800 text-white p-4 flex space-x-4">
@@ -29,7 +38,44 @@ const Toolbar: React.FC<ToolbarProps> = ({
       >
         {isConnecting ? "Create Connection" : "Start Connecting"}
       </button>
+      {/* <div className="flex space-x-2">
+        <button
+          className={`px-4 py-2 rounded ${
+            selectedLineStyle === "straight" ? "bg-blue-500" : "bg-gray-500"
+          }`}
+          onClick={() => onSelectLineStyle("straight")}
+        >
+          Straight Line
+        </button>
+        <button
+          className={`px-4 py-2 rounded ${
+            selectedLineStyle === "curved" ? "bg-blue-500" : "bg-gray-500"
+          }`}
+          onClick={() => onSelectLineStyle("curved")}
+        >
+          Curved Line
+        </button>
+      </div> */}
+      <div className="flex space-x-2">
+        <button
+          className={`px-4 py-2 rounded ${
+            selectedLineStyle === "straight" ? "bg-blue-500" : "bg-gray-500"
+          }`}
+          onClick={() => onSelectLineStyle("straight")}
+        >
+          New Straight Line
+        </button>
+        <button
+          className={`px-4 py-2 rounded ${
+            selectedLineStyle === "curved" ? "bg-blue-500" : "bg-gray-500"
+          }`}
+          onClick={() => onSelectLineStyle("curved")}
+        >
+          New Curved Line
+        </button>
+      </div>
     </div>
   );
 };
+
 export default Toolbar;

@@ -22,14 +22,17 @@ interface Rect {
 interface ConnectionType {
   from: string;
   to: string;
+  style: 'straight' | 'curved';
 }
 
 const Editor: React.FC = () => {
   const [rectangles, setRectangles] = useState<Rect[]>([]);
   const [connections, setConnections] = useState<ConnectionType[]>([]);
   const [selectedRect, setSelectedRect] = useState<string | null>(null);
+  const [currentLineStyle, setCurrentLineStyle] = useState<'straight' | 'curved'>('straight');
   const [isConnecting, setIsConnecting] = useState(false);
   const [connectionStart, setConnectionStart] = useState<string | null>(null);
+  const [lineStyle, setLineStyle] = useState<'straight' | 'curved'>('straight');
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [svgHeight, setSvgHeight] = useState(600);
@@ -336,6 +339,32 @@ const Editor: React.FC = () => {
     ],
   };
 
+  const handleCreateConnection = () => {
+    if (connectionStart && selectedRect && connectionStart !== selectedRect) {
+      const newConnection: ConnectionType = {
+        from: connectionStart,
+        to: selectedRect,
+        style: currentLineStyle,
+      };
+      setConnections([...connections, newConnection]);
+      setIsConnecting(false);
+      setConnectionStart(null);
+    }
+  };
+
+  const handleSelectLineStyle = (style: 'straight' | 'curved') => {
+    setCurrentLineStyle(style);
+  };
+
+  const handleChangeConnectionStyle = (index: number, style: 'straight' | 'curved') => {
+    setConnections(connections.map((conn, i) => 
+      i === index ? { ...conn, style } : conn
+    ));
+  };
+  // const handleSelectLineStyle = (style: 'straight' | 'curved') => {
+  //   setLineStyle(style);
+  // };
+
   const createRectanglesFromData = useCallback(
     (topic: Topic, level: number = 0, yOffset: number = 0) => {
       const newRects: Rect[] = [];
@@ -512,17 +541,17 @@ const Editor: React.FC = () => {
     setIsConnecting(true);
   };
 
-  const handleCreateConnection = () => {
-    if (connectionStart && selectedRect && connectionStart !== selectedRect) {
-      const newConnection: ConnectionType = {
-        from: connectionStart,
-        to: selectedRect,
-      };
-      setConnections([...connections, newConnection]);
-      setIsConnecting(false);
-      setConnectionStart(null);
-    }
-  };
+  // const handleCreateConnection = () => {
+  //   if (connectionStart && selectedRect && connectionStart !== selectedRect) {
+  //     const newConnection: ConnectionType = {
+  //       from: connectionStart,
+  //       to: selectedRect,
+  //     };
+  //     setConnections([...connections, newConnection]);
+  //     setIsConnecting(false);
+  //     setConnectionStart(null);
+  //   }
+  // };
 
   const handleRectClick = (id: string) => {
     if (isConnecting) {
@@ -546,6 +575,8 @@ const Editor: React.FC = () => {
         onStartConnecting={handleStartConnecting}
         isConnecting={isConnecting}
         onCreateConnection={handleCreateConnection}
+        onSelectLineStyle={handleSelectLineStyle}
+        selectedLineStyle={currentLineStyle}
       />
       <svg
         ref={svgRef}
@@ -555,7 +586,7 @@ const Editor: React.FC = () => {
         onMouseUp={handleMouseUp}
         onMouseDown={handleMouseDown}
       >
-        {connections.map((conn, index) => (
+         {connections.map((conn, index) => (
           <Connection
             key={index}
             connection={conn}
@@ -563,8 +594,10 @@ const Editor: React.FC = () => {
             onDelete={() => {
               setConnections(connections.filter((_, i) => i !== index));
             }}
+            onChangeStyle={(style) => handleChangeConnectionStyle(index, style)}
           />
         ))}
+
         {rectangles.map((rect) => (
           <Rectangle
             key={rect.id}

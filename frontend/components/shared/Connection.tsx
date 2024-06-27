@@ -4,6 +4,7 @@ interface ConnectionProps {
   connection: {
     from: string;
     to: string;
+    style: "straight" | "curved";
   };
   rectangles: {
     id: string;
@@ -13,12 +14,14 @@ interface ConnectionProps {
     height: number;
   }[];
   onDelete: () => void;
+  onChangeStyle: (style: "straight" | "curved") => void;
 }
 
 const Connection: React.FC<ConnectionProps> = ({
   connection,
   rectangles,
   onDelete,
+  onChangeStyle,
 }) => {
   const fromRect = rectangles.find((r) => r.id === connection.from);
   const toRect = rectangles.find((r) => r.id === connection.to);
@@ -33,12 +36,20 @@ const Connection: React.FC<ConnectionProps> = ({
   const midX = (startX + endX) / 2;
   const midY = (startY + endY) / 2;
 
-  const curveX1 = startX + (midX - startX) / 2;
-  const curveY1 = startY;
-  const curveX2 = endX - (endX - midX) / 2;
-  const curveY2 = endY;
+  let pathD: string;
+  let strokeDasharray: string;
 
-  const pathD = `M${startX},${startY} Q${curveX1},${curveY1} ${midX},${midY} T${endX},${endY}`;
+  if (connection.style === "straight") {
+    pathD = `M${startX},${startY} L${endX},${endY}`;
+    strokeDasharray = "-1.2 12";
+  } else {
+    const curveX1 = startX + (midX - startX) / 2;
+    const curveY1 = startY;
+    const curveX2 = endX - (endX - midX) / 2;
+    const curveY2 = endY;
+    pathD = `M${startX},${startY} Q${curveX1},${curveY1} ${midX},${midY} T${endX},${endY}`;
+    strokeDasharray = "0.8 12";
+  }
 
   return (
     <g>
@@ -49,7 +60,7 @@ const Connection: React.FC<ConnectionProps> = ({
         strokeWidth="4"
         strokeLinecap="round"
         strokeLinejoin="round"
-        strokeDasharray="0.8 12"
+        strokeDasharray={strokeDasharray}
       />
       <circle
         cx={midX}
@@ -60,6 +71,18 @@ const Connection: React.FC<ConnectionProps> = ({
         strokeWidth="2"
         style={{ cursor: "pointer" }}
         onClick={onDelete}
+      />
+      <circle
+        cx={midX + 20}
+        cy={midY}
+        r="8"
+        fill="blue"
+        stroke="white"
+        strokeWidth="2"
+        style={{ cursor: "pointer" }}
+        onClick={() =>
+          onChangeStyle(connection.style === "straight" ? "curved" : "straight")
+        }
       />
     </g>
   );
