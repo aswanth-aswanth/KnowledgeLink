@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useRef, useCallback, useEffect } from "react";
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Rectangle from "./Rectangle";
 import Toolbar from "./Toolbar";
 import Connection from "./Connection";
@@ -347,9 +347,9 @@ const Editor: React.FC = () => {
   };
 
   const toggleCircleVisibility = () => {
-    setCirclesVisible(prev => !prev);
+    setCirclesVisible((prev) => !prev);
   };
-  
+
   const handleSelectRect = (id: string, event: React.MouseEvent) => {
     if (isMultiSelectMode) {
       if (event.ctrlKey) {
@@ -622,7 +622,7 @@ const Editor: React.FC = () => {
                 ? selectedRects.includes(rect.id)
                 : rect.id === selectedRect
             }
-            onSelect={(e) => handleSelectRect(rect.id,e)}
+            onSelect={(e) => handleRectClick(rect.id)}
             onUpdatePosition={(newX, newY) =>
               handleUpdateRectPosition(rect.id, newX, newY)
             }
