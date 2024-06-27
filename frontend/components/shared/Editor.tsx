@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState, useRef, useCallback } from "react";
 import Rectangle from "./Rectangle";
 import Toolbar from "./Toolbar";
@@ -82,7 +82,9 @@ const Editor: React.FC = () => {
     (id: string, newWidth: number, newHeight: number) => {
       setRectangles((rects) =>
         rects.map((rect) =>
-          rect.id === id ? { ...rect, width: newWidth, height: newHeight } : rect
+          rect.id === id
+            ? { ...rect, width: newWidth, height: newHeight }
+            : rect
         )
       );
     },
@@ -117,7 +119,7 @@ const Editor: React.FC = () => {
 
   return (
     <div>
-      <Toolbar onAddRect={handleCreateRect} />
+      <Toolbar onAddRectangle={handleCreateRect} />
       <svg
         ref={svgRef}
         width="100%"
@@ -142,7 +144,12 @@ const Editor: React.FC = () => {
           />
         ))}
         {connections.map((conn, index) => (
-          <Connection key={index} from={conn.from} to={conn.to} rectangles={rectangles} />
+          <Connection
+            key={index}
+            from={conn.from}
+            to={conn.to}
+            rectangles={rectangles}
+          />
         ))}
       </svg>
     </div>
