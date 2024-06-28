@@ -1,21 +1,5 @@
 import React, { useState, useCallback } from "react";
-
-interface RectProps {
-  rect: {
-    id: string;
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    name: string;
-  };
-  circlesVisible: boolean;
-  isSelected: boolean;
-  onSelect: (event: React.MouseEvent) => void;
-  onUpdatePosition: (newX: number, newY: number) => void;
-  onUpdateSize: (newWidth: number, newHeight: number) => void;
-  onDelete: () => void;
-}
+import { RectProps } from "@/types/RectangleTypes";
 
 const Rectangle: React.FC<RectProps> = ({
   rect,
@@ -32,17 +16,6 @@ const Rectangle: React.FC<RectProps> = ({
   const handleContextMenu = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
   }, []);
-
-  const handleMouseDown = useCallback(
-    (e: React.MouseEvent<SVGRectElement>) => {
-      if (e.button === 0) {
-        // Right mouse button
-        e.preventDefault();
-        onSelect();
-      }
-    },
-    [onSelect]
-  );
 
   const handleResizeStart = useCallback(
     (e: React.MouseEvent<SVGCircleElement>) => {
