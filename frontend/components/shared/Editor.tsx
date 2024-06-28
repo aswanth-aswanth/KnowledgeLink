@@ -1,349 +1,353 @@
 "use client";
 import React, { useState, useRef, useCallback, useEffect } from "react";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Rectangle from "./Rectangle";
 import Toolbar from "./Toolbar";
 import Connection from "./Connection";
-
-interface Topic {
-  name: string;
-  content: string;
-  children: Topic[];
-}
-
-interface Rect {
-  id: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  name: string;
-}
-
-interface ConnectionType {
-  from: string;
-  to: string;
-  style: "straight" | "curved";
-}
+import { Topic, Rect, ConnectionType } from "@/types/types";
+import { initialTopicsData } from "@/utils/initialData";
+import { calculateHierarchicalLayout } from "@/utils/layoutAlgorithm";
 
 const Editor: React.FC = () => {
   const [rectangles, setRectangles] = useState<Rect[]>([]);
   const [connections, setConnections] = useState<ConnectionType[]>([]);
   const [selectedRect, setSelectedRect] = useState<string | null>(null);
-  const [currentLineStyle, setCurrentLineStyle] = useState<
-    "straight" | "curved"
-  >("straight");
+  const [currentLineStyle, setCurrentLineStyle] = useState<"straight" | "curved">("straight");
   const [isConnecting, setIsConnecting] = useState(false);
   const [connectionStart, setConnectionStart] = useState<string | null>(null);
-  const [lineStyle, setLineStyle] = useState<"straight" | "curved">("straight");
   const [isDragging, setIsDragging] = useState(false);
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [svgHeight, setSvgHeight] = useState(600);
   const [selectedRects, setSelectedRects] = useState<string[]>([]);
   const [isMultiSelectMode, setIsMultiSelectMode] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [circlesVisible, setCirclesVisible] = useState(true);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
   const svgRef = useRef<SVGSVGElement>(null);
 
-  const topicsData: Topic = {
-    name: "JavaScript Basics",
-    content: "Introduction to JavaScript",
-    children: [
-      {
-        name: "Variables and Data Types",
-        content: "Understanding variables and data types in JavaScript",
-        children: [
-          {
-            name: "Primitive Types",
-            content: "Detailed explanation of primitive types",
-            children: [
-              {
-                name: "String",
-                content: "Explanation and examples of strings",
-                children: [],
-              },
-              {
-                name: "Number",
-                content: "Explanation and examples of numbers",
-                children: [],
-              },
-              {
-                name: "Boolean",
-                content: "Explanation and examples of booleans",
-                children: [],
-              },
-              {
-                name: "Undefined",
-                content: "Explanation and examples of undefined",
-                children: [],
-              },
-              {
-                name: "Null",
-                content: "Explanation and examples of null",
-                children: [],
-              },
-              {
-                name: "Symbol",
-                content: "Explanation and examples of symbols",
-                children: [],
-              },
-              {
-                name: "BigInt",
-                content: "Explanation and examples of BigInt",
-                children: [],
-              },
-            ],
-          },
-          {
-            name: "Reference Types",
-            content: "Detailed explanation of reference types",
-            children: [
-              {
-                name: "Objects",
-                content: "Explanation and examples of objects",
-                children: [],
-              },
-              {
-                name: "Arrays",
-                content: "Explanation and examples of arrays",
-                children: [],
-              },
-              {
-                name: "Functions",
-                content:
-                  "Explanation and examples of functions as reference types",
-                children: [],
-              },
-            ],
-          },
-        ],
-      },
-      {
-        name: "Functions",
-        content: "Introduction to functions in JavaScript",
-        children: [
-          {
-            name: "Function Declarations",
-            content: "Understanding function declarations",
-            children: [],
-          },
-          {
-            name: "Function Expressions",
-            content: "Understanding function expressions",
-            children: [],
-          },
-          {
-            name: "Arrow Functions",
-            content: "Understanding arrow functions",
-            children: [],
-          },
-          {
-            name: "Anonymous Functions",
-            content: "Understanding anonymous functions",
-            children: [],
-          },
-          {
-            name: "Callbacks",
-            content: "Understanding callbacks",
-            children: [],
-          },
-          {
-            name: "Higher-Order Functions",
-            content: "Understanding higher-order functions",
-            children: [],
-          },
-          {
-            name: "Closures",
-            content: "Understanding closures",
-            children: [],
-          },
-        ],
-      },
-      {
-        name: "Control Flow",
-        content: "Understanding control flow in JavaScript",
-        children: [
-          {
-            name: "Conditional Statements",
-            content:
-              "Explanation and examples of if, else, and switch statements",
-            children: [],
-          },
-          {
-            name: "Loops",
-            content:
-              "Explanation and examples of for, while, and do-while loops",
-            children: [],
-          },
-          {
-            name: "Break and Continue",
-            content:
-              "Explanation and examples of break and continue statements",
-            children: [],
-          },
-        ],
-      },
-      {
-        name: "Objects and Prototypes",
-        content: "Understanding objects and prototypes in JavaScript",
-        children: [
-          {
-            name: "Object Creation",
-            content: "Different ways to create objects",
-            children: [],
-          },
-          {
-            name: "Prototypes",
-            content: "Explanation of prototypes and prototype chain",
-            children: [],
-          },
-          {
-            name: "Inheritance",
-            content: "Understanding inheritance in JavaScript",
-            children: [],
-          },
-          {
-            name: "Classes",
-            content: "Introduction to ES6 classes",
-            children: [],
-          },
-        ],
-      },
-      {
-        name: "Asynchronous JavaScript",
-        content: "Understanding asynchronous programming in JavaScript",
-        children: [
-          {
-            name: "Callbacks",
-            content: "Explanation and examples of callbacks",
-            children: [],
-          },
-          {
-            name: "Promises",
-            content: "Explanation and examples of promises",
-            children: [],
-          },
-          {
-            name: "Async/Await",
-            content: "Explanation and examples of async/await",
-            children: [],
-          },
-          {
-            name: "Event Loop",
-            content: "Understanding the event loop",
-            children: [],
-          },
-        ],
-      },
-      {
-        name: "DOM Manipulation",
-        content: "Understanding how to manipulate the DOM",
-        children: [
-          {
-            name: "Selecting Elements",
-            content: "Different methods to select DOM elements",
-            children: [],
-          },
-          {
-            name: "Modifying Elements",
-            content: "How to modify DOM elements",
-            children: [],
-          },
-          {
-            name: "Event Handling",
-            content: "How to handle events in the DOM",
-            children: [],
-          },
-        ],
-      },
-      {
-        name: "ES6+ Features",
-        content: "Introduction to modern JavaScript features",
-        children: [
-          {
-            name: "Let and Const",
-            content: "Understanding let and const",
-            children: [],
-          },
-          {
-            name: "Template Literals",
-            content: "Understanding template literals",
-            children: [],
-          },
-          {
-            name: "Destructuring",
-            content: "Understanding destructuring assignments",
-            children: [],
-          },
-          {
-            name: "Modules",
-            content: "Understanding JavaScript modules",
-            children: [],
-          },
-          {
-            name: "Spread and Rest",
-            content: "Understanding spread and rest operators",
-            children: [],
-          },
-          {
-            name: "Default Parameters",
-            content: "Understanding default function parameters",
-            children: [],
-          },
-          {
-            name: "Classes",
-            content: "Understanding ES6 classes",
-            children: [],
-          },
-          {
-            name: "Promises",
-            content: "Understanding promises",
-            children: [],
-          },
-          {
-            name: "Async/Await",
-            content: "Understanding async/await",
-            children: [],
-          },
-        ],
-      },
-      {
-        name: "Advanced Topics",
-        content: "Diving deeper into JavaScript",
-        children: [
-          {
-            name: "Currying",
-            content: "Understanding currying",
-            children: [],
-          },
-          {
-            name: "Memoization",
-            content: "Understanding memoization",
-            children: [],
-          },
-          {
-            name: "Event Delegation",
-            content: "Understanding event delegation",
-            children: [],
-          },
-          {
-            name: "Modules and Bundling",
-            content: "Understanding modules and how to bundle them",
-            children: [],
-          },
-          {
-            name: "Web Workers",
-            content: "Understanding web workers",
-            children: [],
-          },
-          {
-            name: "Service Workers",
-            content: "Understanding service workers",
-            children: [],
-          },
-        ],
-      },
-    ],
+  useEffect(() => {
+    const initialRectangles = calculateHierarchicalLayout(initialTopicsData);
+    setRectangles(initialRectangles);
+    updateSvgHeight();
+  }, []);
+
+  // const topicsData: Topic = {
+  //   name: "JavaScript Basics",
+  //   content: "Introduction to JavaScript",
+  //   children: [
+  //     {
+  //       name: "Variables and Data Types",
+  //       content: "Understanding variables and data types in JavaScript",
+  //       children: [
+  //         {
+  //           name: "Primitive Types",
+  //           content: "Detailed explanation of primitive types",
+  //           children: [
+  //             {
+  //               name: "String",
+  //               content: "Explanation and examples of strings",
+  //               children: [],
+  //             },
+  //             {
+  //               name: "Number",
+  //               content: "Explanation and examples of numbers",
+  //               children: [],
+  //             },
+  //             {
+  //               name: "Boolean",
+  //               content: "Explanation and examples of booleans",
+  //               children: [],
+  //             },
+  //             {
+  //               name: "Undefined",
+  //               content: "Explanation and examples of undefined",
+  //               children: [],
+  //             },
+  //             {
+  //               name: "Null",
+  //               content: "Explanation and examples of null",
+  //               children: [],
+  //             },
+  //             {
+  //               name: "Symbol",
+  //               content: "Explanation and examples of symbols",
+  //               children: [],
+  //             },
+  //             {
+  //               name: "BigInt",
+  //               content: "Explanation and examples of BigInt",
+  //               children: [],
+  //             },
+  //           ],
+  //         },
+  //         {
+  //           name: "Reference Types",
+  //           content: "Detailed explanation of reference types",
+  //           children: [
+  //             {
+  //               name: "Objects",
+  //               content: "Explanation and examples of objects",
+  //               children: [],
+  //             },
+  //             {
+  //               name: "Arrays",
+  //               content: "Explanation and examples of arrays",
+  //               children: [],
+  //             },
+  //             {
+  //               name: "Functions",
+  //               content:
+  //                 "Explanation and examples of functions as reference types",
+  //               children: [],
+  //             },
+  //           ],
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       name: "Functions",
+  //       content: "Introduction to functions in JavaScript",
+  //       children: [
+  //         {
+  //           name: "Function Declarations",
+  //           content: "Understanding function declarations",
+  //           children: [],
+  //         },
+  //         {
+  //           name: "Function Expressions",
+  //           content: "Understanding function expressions",
+  //           children: [],
+  //         },
+  //         {
+  //           name: "Arrow Functions",
+  //           content: "Understanding arrow functions",
+  //           children: [],
+  //         },
+  //         {
+  //           name: "Anonymous Functions",
+  //           content: "Understanding anonymous functions",
+  //           children: [],
+  //         },
+  //         {
+  //           name: "Callbacks",
+  //           content: "Understanding callbacks",
+  //           children: [],
+  //         },
+  //         {
+  //           name: "Higher-Order Functions",
+  //           content: "Understanding higher-order functions",
+  //           children: [],
+  //         },
+  //         {
+  //           name: "Closures",
+  //           content: "Understanding closures",
+  //           children: [],
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       name: "Control Flow",
+  //       content: "Understanding control flow in JavaScript",
+  //       children: [
+  //         {
+  //           name: "Conditional Statements",
+  //           content:
+  //             "Explanation and examples of if, else, and switch statements",
+  //           children: [],
+  //         },
+  //         {
+  //           name: "Loops",
+  //           content:
+  //             "Explanation and examples of for, while, and do-while loops",
+  //           children: [],
+  //         },
+  //         {
+  //           name: "Break and Continue",
+  //           content:
+  //             "Explanation and examples of break and continue statements",
+  //           children: [],
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       name: "Objects and Prototypes",
+  //       content: "Understanding objects and prototypes in JavaScript",
+  //       children: [
+  //         {
+  //           name: "Object Creation",
+  //           content: "Different ways to create objects",
+  //           children: [],
+  //         },
+  //         {
+  //           name: "Prototypes",
+  //           content: "Explanation of prototypes and prototype chain",
+  //           children: [],
+  //         },
+  //         {
+  //           name: "Inheritance",
+  //           content: "Understanding inheritance in JavaScript",
+  //           children: [],
+  //         },
+  //         {
+  //           name: "Classes",
+  //           content: "Introduction to ES6 classes",
+  //           children: [],
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       name: "Asynchronous JavaScript",
+  //       content: "Understanding asynchronous programming in JavaScript",
+  //       children: [
+  //         {
+  //           name: "Callbacks",
+  //           content: "Explanation and examples of callbacks",
+  //           children: [],
+  //         },
+  //         {
+  //           name: "Promises",
+  //           content: "Explanation and examples of promises",
+  //           children: [],
+  //         },
+  //         {
+  //           name: "Async/Await",
+  //           content: "Explanation and examples of async/await",
+  //           children: [],
+  //         },
+  //         {
+  //           name: "Event Loop",
+  //           content: "Understanding the event loop",
+  //           children: [],
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       name: "DOM Manipulation",
+  //       content: "Understanding how to manipulate the DOM",
+  //       children: [
+  //         {
+  //           name: "Selecting Elements",
+  //           content: "Different methods to select DOM elements",
+  //           children: [],
+  //         },
+  //         {
+  //           name: "Modifying Elements",
+  //           content: "How to modify DOM elements",
+  //           children: [],
+  //         },
+  //         {
+  //           name: "Event Handling",
+  //           content: "How to handle events in the DOM",
+  //           children: [],
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       name: "ES6+ Features",
+  //       content: "Introduction to modern JavaScript features",
+  //       children: [
+  //         {
+  //           name: "Let and Const",
+  //           content: "Understanding let and const",
+  //           children: [],
+  //         },
+  //         {
+  //           name: "Template Literals",
+  //           content: "Understanding template literals",
+  //           children: [],
+  //         },
+  //         {
+  //           name: "Destructuring",
+  //           content: "Understanding destructuring assignments",
+  //           children: [],
+  //         },
+  //         {
+  //           name: "Modules",
+  //           content: "Understanding JavaScript modules",
+  //           children: [],
+  //         },
+  //         {
+  //           name: "Spread and Rest",
+  //           content: "Understanding spread and rest operators",
+  //           children: [],
+  //         },
+  //         {
+  //           name: "Default Parameters",
+  //           content: "Understanding default function parameters",
+  //           children: [],
+  //         },
+  //         {
+  //           name: "Classes",
+  //           content: "Understanding ES6 classes",
+  //           children: [],
+  //         },
+  //         {
+  //           name: "Promises",
+  //           content: "Understanding promises",
+  //           children: [],
+  //         },
+  //         {
+  //           name: "Async/Await",
+  //           content: "Understanding async/await",
+  //           children: [],
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       name: "Advanced Topics",
+  //       content: "Diving deeper into JavaScript",
+  //       children: [
+  //         {
+  //           name: "Currying",
+  //           content: "Understanding currying",
+  //           children: [],
+  //         },
+  //         {
+  //           name: "Memoization",
+  //           content: "Understanding memoization",
+  //           children: [],
+  //         },
+  //         {
+  //           name: "Event Delegation",
+  //           content: "Understanding event delegation",
+  //           children: [],
+  //         },
+  //         {
+  //           name: "Modules and Bundling",
+  //           content: "Understanding modules and how to bundle them",
+  //           children: [],
+  //         },
+  //         {
+  //           name: "Web Workers",
+  //           content: "Understanding web workers",
+  //           children: [],
+  //         },
+  //         {
+  //           name: "Service Workers",
+  //           content: "Understanding service workers",
+  //           children: [],
+  //         },
+  //       ],
+  //     },
+  //   ],
+  // };
+
+  const handleZoom = (delta: number) => {
+    setZoomLevel((prevZoom) => Math.max(0.5, Math.min(2, prevZoom + delta)));
+  };
+
+  const handlePan = (dx: number, dy: number) => {
+    setPanOffset((prev) => ({ x: prev.x + dx, y: prev.y + dy }));
+  };
+
+  const handleToggleDarkMode = () => {
+    setIsDarkMode((prev) => !prev);
+  };
+
+  const handleUpdateProgress = (id: string, progress: number) => {
+    setRectangles((rects) =>
+      rects.map((rect) => (rect.id === id ? { ...rect, progress } : rect))
+    );
   };
 
   const toggleCircleVisibility = () => {
@@ -497,7 +501,7 @@ const Editor: React.FC = () => {
   );
 
   useEffect(() => {
-    const initialRectangles = createRectanglesFromData(topicsData);
+    const initialRectangles = createRectanglesFromData(initialTopicsData);
     setRectangles(initialRectangles);
     updateSvgHeight();
   }, [createRectanglesFromData]);
@@ -603,7 +607,7 @@ const Editor: React.FC = () => {
   }, [handleKeyDown]);
 
   return (
-    <div>
+    <div className={`h-screen ${isDarkMode ? "bg-gray-900 text-white" : "bg-white text-black"}`}>
       <Toolbar
         onAddRectangle={handleCreateRect}
         onStartConnecting={handleStartConnecting}
@@ -615,50 +619,71 @@ const Editor: React.FC = () => {
         onToggleMultiSelect={() => setIsMultiSelectMode((prev) => !prev)}
         circlesVisible={circlesVisible}
         onToggleCircleVisibility={toggleCircleVisibility}
+        isDarkMode={isDarkMode}
+        onToggleDarkMode={handleToggleDarkMode}
+        onZoomIn={() => handleZoom(0.1)}
+        onZoomOut={() => handleZoom(-0.1)}
       />
-      <svg
-        ref={svgRef}
-        width="100%"
-        height={svgHeight}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseDown={handleMouseDown}
-        className="m-4"
+      <div
+        className="overflow-hidden"
+        onWheel={(e) => {
+          if (e.ctrlKey) {
+            e.preventDefault();
+            handleZoom(e.deltaY > 0 ? -0.1 : 0.1);
+          } else {
+            handlePan(-e.deltaX, -e.deltaY);
+          }
+        }}
       >
-        {connections.map((conn, index) => (
-          <Connection
-            key={index}
-            connection={conn}
-            rectangles={rectangles}
-            onDelete={() => {
-              setConnections(connections.filter((_, i) => i !== index));
-            }}
-            onChangeStyle={(style) => handleChangeConnectionStyle(index, style)}
-            circlesVisible={circlesVisible}
-          />
-        ))}
+        <svg
+          ref={svgRef}
+          width="100%"
+          height={svgHeight}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseDown={handleMouseDown}
+          className="m-4"
+        >
+          <g transform={`scale(${zoomLevel}) translate(${panOffset.x}, ${panOffset.y})`}>
+            {connections.map((conn, index) => (
+              <Connection
+                key={index}
+                connection={conn}
+                rectangles={rectangles}
+                onDelete={() => {
+                  setConnections(connections.filter((_, i) => i !== index));
+                }}
+                onChangeStyle={(style) => handleChangeConnectionStyle(index, style)}
+                circlesVisible={circlesVisible}
+                isDarkMode={isDarkMode}
+              />
+            ))}
 
-        {rectangles.map((rect) => (
-          <Rectangle
-            key={rect.id}
-            rect={rect}
-            isSelected={
-              isMultiSelectMode
-                ? selectedRects.includes(rect.id)
-                : rect.id === selectedRect
-            }
-            onSelect={(e) => handleRectInteraction(rect.id, e)}
-            onUpdatePosition={(newX, newY) =>
-              handleUpdateRectPosition(rect.id, newX, newY)
-            }
-            onUpdateSize={(newWidth, newHeight) =>
-              handleUpdateRectSize(rect.id, newWidth, newHeight)
-            }
-            onDelete={() => handleDeleteRect(rect.id)}
-            circlesVisible={circlesVisible}
-          />
-        ))}
-      </svg>
+            {rectangles.map((rect) => (
+              <Rectangle
+                key={rect.id}
+                rect={rect}
+                isSelected={
+                  isMultiSelectMode
+                    ? selectedRects.includes(rect.id)
+                    : rect.id === selectedRect
+                }
+                onSelect={(e) => handleRectInteraction(rect.id, e)}
+                onUpdatePosition={(newX, newY) =>
+                  handleUpdateRectPosition(rect.id, newX, newY)
+                }
+                onUpdateSize={(newWidth, newHeight) =>
+                  handleUpdateRectSize(rect.id, newWidth, newHeight)
+                }
+                onDelete={() => handleDeleteRect(rect.id)}
+                circlesVisible={circlesVisible}
+                isDarkMode={isDarkMode}
+                onUpdateProgress={(progress) => handleUpdateProgress(rect.id, progress)}
+              />
+            ))}
+          </g>
+        </svg>
+      </div>
     </div>
   );
 };

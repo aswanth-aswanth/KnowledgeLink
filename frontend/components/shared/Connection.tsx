@@ -1,21 +1,14 @@
+// Connection.tsx
 import React from "react";
+import { ConnectionType, Rect } from "@/types/types";
 
 interface ConnectionProps {
-  connection: {
-    from: string;
-    to: string;
-    style: "straight" | "curved";
-  };
-  circlesVisible: boolean;
-  rectangles: {
-    id: string;
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  }[];
+  connection: ConnectionType;
+  rectangles: Rect[];
   onDelete: () => void;
   onChangeStyle: (style: "straight" | "curved") => void;
+  circlesVisible: boolean;
+  isDarkMode: boolean;
 }
 
 const Connection: React.FC<ConnectionProps> = ({
@@ -24,6 +17,7 @@ const Connection: React.FC<ConnectionProps> = ({
   onDelete,
   onChangeStyle,
   circlesVisible,
+  isDarkMode,
 }) => {
   const fromRect = rectangles.find((r) => r.id === connection.from);
   const toRect = rectangles.find((r) => r.id === connection.to);
@@ -43,14 +37,14 @@ const Connection: React.FC<ConnectionProps> = ({
 
   if (connection.style === "straight") {
     pathD = `M${startX},${startY} L${endX},${endY}`;
-    strokeDasharray = "-1.2 12";
+    strokeDasharray = "4 4";
   } else {
     const curveX1 = startX + (midX - startX) / 2;
     const curveY1 = startY;
     const curveX2 = endX - (endX - midX) / 2;
     const curveY2 = endY;
-    pathD = `M${startX},${startY} Q${curveX1},${curveY1} ${midX},${midY} T${endX},${endY}`;
-    strokeDasharray = "0.8 12";
+    pathD = `M${startX},${startY} C${curveX1},${curveY1} ${curveX2},${curveY2} ${endX},${endY}`;
+    strokeDasharray = "none";
   }
 
   return (
@@ -58,8 +52,8 @@ const Connection: React.FC<ConnectionProps> = ({
       <path
         d={pathD}
         fill="none"
-        stroke="rgb(43,120,228)"
-        strokeWidth="4"
+        stroke={isDarkMode ? "rgb(156,163,175)" : "rgb(107,114,128)"}
+        strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeDasharray={strokeDasharray}
@@ -69,17 +63,19 @@ const Connection: React.FC<ConnectionProps> = ({
           <circle
             cx={midX}
             cy={midY}
-            r="8"
+            r="6"
             fill="red"
             stroke="white"
             strokeWidth="2"
             style={{ cursor: "pointer" }}
             onClick={onDelete}
-          />
+          >
+            <title>Delete Connection</title>
+          </circle>
           <circle
-            cx={midX + 20}
+            cx={midX + 15}
             cy={midY}
-            r="8"
+            r="6"
             fill="blue"
             stroke="white"
             strokeWidth="2"
@@ -89,7 +85,9 @@ const Connection: React.FC<ConnectionProps> = ({
                 connection.style === "straight" ? "curved" : "straight"
               )
             }
-          />
+          >
+            <title>Change Style</title>
+          </circle>
         </>
       )}
     </g>
