@@ -10,7 +10,9 @@ const Editor: React.FC = () => {
   const [rectangles, setRectangles] = useState<Rect[]>([]);
   const [connections, setConnections] = useState<ConnectionType[]>([]);
   const [selectedRect, setSelectedRect] = useState<string | null>(null);
-  const [currentLineStyle, setCurrentLineStyle] = useState<"straight" | "curved">("straight");
+  const [currentLineStyle, setCurrentLineStyle] = useState<
+    "straight" | "curved"
+  >("straight");
   const [isConnecting, setIsConnecting] = useState(false);
   const [connectionStart, setConnectionStart] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -21,12 +23,16 @@ const Editor: React.FC = () => {
   const [circlesVisible, setCirclesVisible] = useState(true);
   const svgRef = useRef<SVGSVGElement>(null);
 
-  const toggleCircleVisibility = () => setCirclesVisible(prev => !prev);
+  const toggleCircleVisibility = () => setCirclesVisible((prev) => !prev);
 
   const handleSelectRect = (id: string, event: React.MouseEvent) => {
     if (isMultiSelectMode) {
       if (event.ctrlKey) {
-        setSelectedRects(prev => prev.includes(id) ? prev.filter(rectId => rectId !== id) : [...prev, id]);
+        setSelectedRects((prev) =>
+          prev.includes(id)
+            ? prev.filter((rectId) => rectId !== id)
+            : [...prev, id]
+        );
       } else {
         setSelectedRects([id]);
       }
@@ -46,39 +52,50 @@ const Editor: React.FC = () => {
     }
   }, []);
 
-  const handleMouseMove = useCallback((e: React.MouseEvent<SVGSVGElement>) => {
-    if (isDragging && (selectedRect || selectedRects.length > 0) && svgRef.current) {
-      const svgRect = svgRef.current.getBoundingClientRect();
-      const dx = e.clientX - svgRect.left - dragStart.x;
-      const dy = e.clientY - svgRect.top - dragStart.y;
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent<SVGSVGElement>) => {
+      if (
+        isDragging &&
+        (selectedRect || selectedRects.length > 0) &&
+        svgRef.current
+      ) {
+        const svgRect = svgRef.current.getBoundingClientRect();
+        const dx = e.clientX - svgRect.left - dragStart.x;
+        const dy = e.clientY - svgRect.top - dragStart.y;
 
-      setRectangles(prevRects =>
-        prevRects.map(rect =>
-          (isMultiSelectMode && selectedRects.includes(rect.id)) || (!isMultiSelectMode && rect.id === selectedRect)
-            ? { ...rect, x: rect.x + dx, y: rect.y + dy }
-            : rect
-        )
-      );
+        setRectangles((prevRects) =>
+          prevRects.map((rect) =>
+            (isMultiSelectMode && selectedRects.includes(rect.id)) ||
+            (!isMultiSelectMode && rect.id === selectedRect)
+              ? { ...rect, x: rect.x + dx, y: rect.y + dy }
+              : rect
+          )
+        );
 
-      setDragStart({
-        x: e.clientX - svgRect.left,
-        y: e.clientY - svgRect.top,
-      });
-    }
-  }, [isDragging, selectedRect, selectedRects, isMultiSelectMode, dragStart]);
+        setDragStart({
+          x: e.clientX - svgRect.left,
+          y: e.clientY - svgRect.top,
+        });
+      }
+    },
+    [isDragging, selectedRect, selectedRects, isMultiSelectMode, dragStart]
+  );
 
   const handleMouseUp = () => setIsDragging(false);
 
-  const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if (e.ctrlKey && e.key === "a") {
-      e.preventDefault();
-      if (selectedRects.length === rectangles.length) {
-        setSelectedRects([]);
-      } else {
-        setSelectedRects(rectangles.map(rect => rect.id));
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.key === "a") {
+        e.preventDefault();
+        if (selectedRects.length === rectangles.length) {
+          setSelectedRects([]);
+        } else {
+          setSelectedRects(rectangles.map((rect) => rect.id));
+        }
       }
-    }
-  }, [rectangles, selectedRects]);
+    },
+    [rectangles, selectedRects]
+  );
 
   useEffect(() => {
     window.addEventListener("keydown", handleKeyDown);
@@ -99,37 +116,50 @@ const Editor: React.FC = () => {
     }
   };
 
-  const handleSelectLineStyle = (style: "straight" | "curved") => setCurrentLineStyle(style);
+  const handleSelectLineStyle = (style: "straight" | "curved") =>
+    setCurrentLineStyle(style);
 
-  const handleChangeConnectionStyle = (index: number, style: "straight" | "curved") => {
-    setConnections(connections.map((conn, i) => i === index ? { ...conn, style } : conn));
+  const handleChangeConnectionStyle = (
+    index: number,
+    style: "straight" | "curved"
+  ) => {
+    setConnections(
+      connections.map((conn, i) => (i === index ? { ...conn, style } : conn))
+    );
   };
 
-  const createRectanglesFromData = useCallback((topic: Topic, level: number = 0, yOffset: number = 0) => {
-    const newRects: Rect[] = [];
-    const rectWidth = 200;
-    const rectHeight = 50;
-    const xOffset = level * 250;
+  const createRectanglesFromData = useCallback(
+    (topic: Topic, level: number = 0, yOffset: number = 0) => {
+      const newRects: Rect[] = [];
+      const rectWidth = 200;
+      const rectHeight = 50;
+      const xOffset = level * 250;
 
-    const rect: Rect = {
-      id: `rect-${level}-${yOffset}`,
-      x: xOffset,
-      y: yOffset,
-      width: rectWidth,
-      height: rectHeight,
-      name: topic.name,
-    };
-    newRects.push(rect);
+      const rect: Rect = {
+        id: `rect-${level}-${yOffset}`,
+        x: xOffset,
+        y: yOffset,
+        width: rectWidth,
+        height: rectHeight,
+        name: topic.name,
+      };
+      newRects.push(rect);
 
-    let currentYOffset = yOffset + rectHeight + 20;
-    topic.children.forEach(child => {
-      const childRects = createRectanglesFromData(child, level + 1, currentYOffset);
-      newRects.push(...childRects);
-      currentYOffset += childRects.length * (rectHeight + 20);
-    });
+      let currentYOffset = yOffset + rectHeight + 20;
+      topic.children.forEach((child) => {
+        const childRects = createRectanglesFromData(
+          child,
+          level + 1,
+          currentYOffset
+        );
+        newRects.push(...childRects);
+        currentYOffset += childRects.length * (rectHeight + 20);
+      });
 
-    return newRects;
-  }, []);
+      return newRects;
+    },
+    []
+  );
 
   useEffect(() => {
     const initialRectangles = createRectanglesFromData(topicsData);
@@ -138,20 +168,36 @@ const Editor: React.FC = () => {
   }, [createRectanglesFromData]);
 
   const updateSvgHeight = useCallback(() => {
-    const maxY = Math.max(...rectangles.map(rect => rect.y + rect.height));
+    const maxY = Math.max(...rectangles.map((rect) => rect.y + rect.height));
     const newHeight = Math.max(600, maxY + 100); // Add some padding
     setSvgHeight(newHeight);
   }, [rectangles]);
 
-  const handleUpdateRectPosition = useCallback((id: string, newX: number, newY: number) => {
-    setRectangles(rects => rects.map(rect => rect.id === id ? { ...rect, x: newX, y: newY } : rect));
-    updateSvgHeight();
-  }, [updateSvgHeight]);
+  const handleUpdateRectPosition = useCallback(
+    (id: string, newX: number, newY: number) => {
+      setRectangles((rects) =>
+        rects.map((rect) =>
+          rect.id === id ? { ...rect, x: newX, y: newY } : rect
+        )
+      );
+      updateSvgHeight();
+    },
+    [updateSvgHeight]
+  );
 
-  const handleUpdateRectSize = useCallback((id: string, newWidth: number, newHeight: number) => {
-    setRectangles(rects => rects.map(rect => rect.id === id ? { ...rect, width: newWidth, height: newHeight } : rect));
-    updateSvgHeight();
-  }, [updateSvgHeight]);
+  const handleUpdateRectSize = useCallback(
+    (id: string, newWidth: number, newHeight: number) => {
+      setRectangles((rects) =>
+        rects.map((rect) =>
+          rect.id === id
+            ? { ...rect, width: newWidth, height: newHeight }
+            : rect
+        )
+      );
+      updateSvgHeight();
+    },
+    [updateSvgHeight]
+  );
 
   const handleCreateRect = () => {
     const newRect: Rect = {
@@ -167,8 +213,10 @@ const Editor: React.FC = () => {
   };
 
   const handleDeleteRect = (id: string) => {
-    setRectangles(rects => rects.filter(rect => rect.id !== id));
-    setConnections(conns => conns.filter(conn => conn.from !== id && conn.to !== id));
+    setRectangles((rects) => rects.filter((rect) => rect.id !== id));
+    setConnections((conns) =>
+      conns.filter((conn) => conn.from !== id && conn.to !== id)
+    );
     if (selectedRect === id) setSelectedRect(null);
   };
 
@@ -199,7 +247,7 @@ const Editor: React.FC = () => {
         onSelectLineStyle={handleSelectLineStyle}
         selectedLineStyle={currentLineStyle}
         isMultiSelectMode={isMultiSelectMode}
-        onToggleMultiSelect={() => setIsMultiSelectMode(prev => !prev)}
+        onToggleMultiSelect={() => setIsMultiSelectMode((prev) => !prev)}
         circlesVisible={circlesVisible}
         onToggleCircleVisibility={toggleCircleVisibility}
       />
@@ -217,20 +265,30 @@ const Editor: React.FC = () => {
             key={index}
             connection={conn}
             rectangles={rectangles}
-            onDelete={() => setConnections(connections.filter((_, i) => i !== index))}
+            onDelete={() =>
+              setConnections(connections.filter((_, i) => i !== index))
+            }
             onChangeStyle={(style) => handleChangeConnectionStyle(index, style)}
             circlesVisible={circlesVisible}
           />
         ))}
 
-        {rectangles.map(rect => (
+        {rectangles.map((rect) => (
           <Rectangle
             key={rect.id}
             rect={rect}
-            isSelected={isMultiSelectMode ? selectedRects.includes(rect.id) : rect.id === selectedRect}
+            isSelected={
+              isMultiSelectMode
+                ? selectedRects.includes(rect.id)
+                : rect.id === selectedRect
+            }
             onSelect={(e) => handleRectInteraction(rect.id, e)}
-            onUpdatePosition={(newX, newY) => handleUpdateRectPosition(rect.id, newX, newY)}
-            onUpdateSize={(newWidth, newHeight) => handleUpdateRectSize(rect.id, newWidth, newHeight)}
+            onUpdatePosition={(newX, newY) =>
+              handleUpdateRectPosition(rect.id, newX, newY)
+            }
+            onUpdateSize={(newWidth, newHeight) =>
+              handleUpdateRectSize(rect.id, newWidth, newHeight)
+            }
             onDelete={() => handleDeleteRect(rect.id)}
             circlesVisible={circlesVisible}
           />
