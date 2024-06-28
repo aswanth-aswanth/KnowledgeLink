@@ -5,10 +5,16 @@ import Toolbar from "./Toolbar";
 import Connection from "./Connection";
 import { topicsData } from "@/data/topic";
 import { Topic, Rect, ConnectionType } from "@/types/EditorTypes";
+import { useEditorContext } from "@/contexts/EditorContext";
 
 const Editor: React.FC = () => {
-  const [rectangles, setRectangles] = useState<Rect[]>([]);
-  const [connections, setConnections] = useState<ConnectionType[]>([]);
+  const {
+    rectangles,
+    setRectangles,
+    connections,
+    setConnections,
+    isInitialized,
+  } = useEditorContext();
   const [selectedRect, setSelectedRect] = useState<string | null>(null);
   const [currentLineStyle, setCurrentLineStyle] = useState<
     "straight" | "curved"
@@ -24,6 +30,55 @@ const Editor: React.FC = () => {
   const svgRef = useRef<SVGSVGElement>(null);
 
   const toggleCircleVisibility = () => setCirclesVisible((prev) => !prev);
+
+  const createRectanglesFromData = useCallback(
+    (topic: Topic, level: number = 0, yOffset: number = 0, existingRects: Rect[] = []) => {
+      const newRects: Rect[] = [];
+      const rectWidth = 200;
+      const rectHeight = 50;
+      const xOffset = level * 250;
+  
+      const existingRect = existingRects.find(r => r.name === topic.name);
+      const rect: Rect = existingRect || {
+        id: `rect-${level}-${yOffset}`,
+        x: xOffset,
+        y: yOffset,
+        width: rectWidth,
+        height: rectHeight,
+        name: topic.name,
+      };
+      newRects.push(rect);
+  
+      let currentYOffset = yOffset + rectHeight + 20;
+      topic.children.forEach((child) => {
+        const childRects = createRectanglesFromData(child, level + 1, currentYOffset, existingRects);
+        newRects.push(...childRects);
+        currentYOffset += childRects.length * (rectHeight + 20);
+      });
+  
+      return newRects;
+    },
+    []
+  );
+
+  useEffect(() => {
+    if (isInitialized) {
+      if (rectangles.length === 0) {
+        const initialRectangles = createRectanglesFromData(topicsData);
+        setRectangles(initialRectangles);
+      } else {
+        // Ensure all topics from topicsData are represented in rectangles
+        const updatedRectangles = createRectanglesFromData(topicsData, 0, 0, rectangles);
+        // Only update if there are new rectangles
+        if (updatedRectangles.length !== rectangles.length) {
+          setRectangles(updatedRectangles);
+        }
+      }
+      updateSvgHeight();
+    }
+  }, [isInitialized, rectangles, setRectangles, createRectanglesFromData]);
+
+
 
   const handleSelectRect = (id: string, event: React.MouseEvent) => {
     if (isMultiSelectMode) {
@@ -128,7 +183,7 @@ const Editor: React.FC = () => {
     );
   };
 
-  const createRectanglesFromData = useCallback(
+  /* const createRectanglesFromData = useCallback(
     (topic: Topic, level: number = 0, yOffset: number = 0) => {
       const newRects: Rect[] = [];
       const rectWidth = 200;
@@ -159,13 +214,13 @@ const Editor: React.FC = () => {
       return newRects;
     },
     []
-  );
+  ); */
 
-  useEffect(() => {
+/*   useEffect(() => {
     const initialRectangles = createRectanglesFromData(topicsData);
     setRectangles(initialRectangles);
     updateSvgHeight();
-  }, [createRectanglesFromData]);
+  }, [createRectanglesFromData]); */
 
   const updateSvgHeight = useCallback(() => {
     const maxY = Math.max(...rectangles.map((rect) => rect.y + rect.height));
