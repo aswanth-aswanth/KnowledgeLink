@@ -417,10 +417,16 @@ const Editor: React.FC = () => {
     (e: KeyboardEvent) => {
       if (e.ctrlKey && e.key === "a") {
         e.preventDefault();
-        setSelectedRects(rectangles.map((rect) => rect.id));
+        if (selectedRects.length === rectangles.length) {
+          // If all rectangles are selected, deselect all
+          setSelectedRects([]);
+        } else {
+          // Otherwise, select all rectangles
+          setSelectedRects(rectangles.map((rect) => rect.id));
+        }
       }
     },
-    [rectangles]
+    [rectangles, selectedRects]
   );
 
   useEffect(() => {
@@ -440,6 +446,7 @@ const Editor: React.FC = () => {
       setConnections([...connections, newConnection]);
       setIsConnecting(false);
       setConnectionStart(null);
+      setSelectedRect(null);
     }
   };
 
@@ -567,6 +574,23 @@ const Editor: React.FC = () => {
     }
   };
 
+  const handleRectInteraction = (id: string, event: React.MouseEvent) => {
+    if (isConnecting) {
+      handleConnectionInteraction(id);
+    } else {
+      handleSelectRect(id, event);
+    }
+  };
+
+  const handleConnectionInteraction = (id: string) => {
+    if (!connectionStart) {
+      setConnectionStart(id);
+    } else {
+      setSelectedRect(id);
+      handleCreateConnection();
+    }
+  };
+
   useEffect(() => {
     updateSvgHeight();
   }, [rectangles, updateSvgHeight]);
@@ -623,7 +647,7 @@ const Editor: React.FC = () => {
                 ? selectedRects.includes(rect.id)
                 : rect.id === selectedRect
             }
-            onSelect={(e) => handleRectClick(rect.id)}
+            onSelect={(e) => handleRectInteraction(rect.id, e)}
             onUpdatePosition={(newX, newY) =>
               handleUpdateRectPosition(rect.id, newX, newY)
             }
