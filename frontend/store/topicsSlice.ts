@@ -1,5 +1,6 @@
+// topicsSlice.ts
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { TopicsState, Topic } from '@/types';
+import { TopicsState, Topic, Rect, ConnectionType } from '@/types';
 
 const initialState: TopicsState = {
   topics: {
@@ -13,6 +14,8 @@ const initialState: TopicsState = {
     },
   },
   rootId: 'root',
+  rectangles: [],
+  connections: [],
 };
 
 const topicsSlice = createSlice({
@@ -58,9 +61,30 @@ const topicsSlice = createSlice({
       const id = action.payload;
       state.topics[id].isExpanded = !state.topics[id].isExpanded;
     },
+    setRectangles: (state, action: PayloadAction<Rect[]>) => {
+      state.rectangles = action.payload;
+    },
+    setConnections: (state, action: PayloadAction<ConnectionType[]>) => {
+      state.connections = action.payload;
+    },
     resetTopics: () => initialState,
+
+    extraReducers: (builder) => {
+      builder.addCase('IMPORT_STATE', (state, action: PayloadAction<any>) => {
+        return { ...state, ...action.payload.topics };
+      });
+    },
   },
 });
 
-export const { addTopic, updateTopic, deleteTopic, toggleExpand, resetTopics } = topicsSlice.actions;
+export const {
+  addTopic,
+  updateTopic,
+  deleteTopic,
+  toggleExpand,
+  setRectangles,
+  setConnections,
+  resetTopics
+} = topicsSlice.actions;
+
 export default topicsSlice.reducer;

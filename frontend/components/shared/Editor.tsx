@@ -1,9 +1,22 @@
 "use client";
 import React, { useState, useRef, useCallback, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Rectangle from "./Rectangle";
 import Toolbar from "./Toolbar";
 import Connection from "./Connection";
+import { RootState,store } from "@/store";
+import {
+  setRectangles,
+  setConnections,
+  resetTopics,
+} from "@/store/topicsSlice";
+import {
+  setSvgHeight,
+  setMultiSelectMode,
+  setCirclesVisible,
+  resetEditor,
+} from "@/store/editorSlice";
 
 interface Topic {
   name: string;
@@ -27,22 +40,24 @@ interface ConnectionType {
 }
 
 const Editor: React.FC = () => {
-  const [rectangles, setRectangles] = useState<Rect[]>([]);
-  const [connections, setConnections] = useState<ConnectionType[]>([]);
+  const dispatch = useDispatch();
+  const { rectangles, connections } = useSelector(
+    (state: RootState) => state.topics
+  );
+  const { svgHeight, isMultiSelectMode, circlesVisible } = useSelector(
+    (state: RootState) => state.editor
+  );
+
   const [selectedRect, setSelectedRect] = useState<string | null>(null);
   const [currentLineStyle, setCurrentLineStyle] = useState<
     "straight" | "curved"
   >("straight");
   const [isConnecting, setIsConnecting] = useState(false);
   const [connectionStart, setConnectionStart] = useState<string | null>(null);
-  const [lineStyle, setLineStyle] = useState<"straight" | "curved">("straight");
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-  const [svgHeight, setSvgHeight] = useState(600);
   const [selectedRects, setSelectedRects] = useState<string[]>([]);
-  const [isMultiSelectMode, setIsMultiSelectMode] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
-  const [circlesVisible, setCirclesVisible] = useState(true);
   const svgRef = useRef<SVGSVGElement>(null);
 
   const topicsData: Topic = {
@@ -350,6 +365,54 @@ const Editor: React.FC = () => {
     setCirclesVisible((prev) => !prev);
   };
 
+  const handleCreateConnection = () => {
+    if (connectionStart && selectedRect && connectionStart !== selectedRect) {
+      const newConnection: ConnectionType = {
+        from: connectionStart,
+        to: selectedRect,
+        style: currentLineStyle,
+      };
+      dispatch(setConnections([...connections, newConnection]));
+      setIsConnecting(false);
+      setConnectionStart(null);
+      setSelectedRect(null);
+    }
+  };
+
+  // Add this function to Editor.tsx
+
+  const exportToJson = () => {
+    const state = {
+      topics: store.getState().topics,
+      editor: store.getState().editor,
+    };
+    const jsonString = JSON.stringify(state, null, 2);
+
+    // You can now send this jsonString to your database or save it to a file
+    console.log(jsonString); // For demonstration purposes
+
+    // If you want to save it as a file in the browser
+    const blob = new Blob([jsonString], { type: "application/json" });
+    const href = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = href;
+    link.download = "roadmap_data.json";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleUpdateRectPosition = useCallback(
+    (id: string, newX: number, newY: number) => {
+      const updatedRectangles = rectangles.map((rect) =>
+        rect.id === id ? { ...rect, x: newX, y: newY } : rect
+      );
+      dispatch(setRectangles(updatedRectangles));
+      updateSvgHeight();
+    },
+    [rectangles, dispatch]
+  );
+
   const handleSelectRect = (id: string, event: React.MouseEvent) => {
     if (isMultiSelectMode) {
       if (event.ctrlKey) {
@@ -436,7 +499,7 @@ const Editor: React.FC = () => {
     };
   }, [handleKeyDown]);
 
-  const handleCreateConnection = () => {
+  /* const handleCreateConnection = () => {
     if (connectionStart && selectedRect && connectionStart !== selectedRect) {
       const newConnection: ConnectionType = {
         from: connectionStart,
@@ -448,7 +511,7 @@ const Editor: React.FC = () => {
       setConnectionStart(null);
       setSelectedRect(null);
     }
-  };
+  }; */
 
   const handleSelectLineStyle = (style: "straight" | "curved") => {
     setCurrentLineStyle(style);
@@ -496,42 +559,37 @@ const Editor: React.FC = () => {
     []
   );
 
+  const updateSvgHeight = useCallback(() => {
+    const maxY = Math.max(...rectangles.map((rect) => rect.y + rect.height));
+    const newHeight = Math.max(600, maxY + 100); // Add some padding
+    dispatch(setSvgHeight(newHeight));
+  }, [rectangles, dispatch]);
+
+  useEffect(() => {
+    updateSvgHeight();
+  }, [rectangles, updateSvgHeight]);
+
   useEffect(() => {
     const initialRectangles = createRectanglesFromData(topicsData);
     setRectangles(initialRectangles);
     updateSvgHeight();
   }, [createRectanglesFromData]);
 
-  const updateSvgHeight = useCallback(() => {
+  /*  const updateSvgHeight = useCallback(() => {
     const maxY = Math.max(...rectangles.map((rect) => rect.y + rect.height));
     const newHeight = Math.max(600, maxY + 100); // Add some padding
     setSvgHeight(newHeight);
-  }, [rectangles]);
-
-  const handleUpdateRectPosition = useCallback(
-    (id: string, newX: number, newY: number) => {
-      setRectangles((rects) =>
-        rects.map((rect) =>
-          rect.id === id ? { ...rect, x: newX, y: newY } : rect
-        )
-      );
-      updateSvgHeight();
-    },
-    [updateSvgHeight]
-  );
+  }, [rectangles]); */
 
   const handleUpdateRectSize = useCallback(
     (id: string, newWidth: number, newHeight: number) => {
-      setRectangles((rects) =>
-        rects.map((rect) =>
-          rect.id === id
-            ? { ...rect, width: newWidth, height: newHeight }
-            : rect
-        )
+      const updatedRectangles = rectangles.map((rect) =>
+        rect.id === id ? { ...rect, width: newWidth, height: newHeight } : rect
       );
+      dispatch(setRectangles(updatedRectangles));
       updateSvgHeight();
     },
-    [updateSvgHeight]
+    [rectangles, dispatch]
   );
 
   const handleCreateRect = () => {
@@ -543,11 +601,62 @@ const Editor: React.FC = () => {
       width: 100,
       height: 50,
     };
-    setRectangles([...rectangles, newRect]);
+    dispatch(setRectangles([...rectangles, newRect]));
     updateSvgHeight();
   };
 
   const handleDeleteRect = (id: string) => {
+    dispatch(setRectangles(rectangles.filter((rect) => rect.id !== id)));
+    dispatch(
+      setConnections(
+        connections.filter((conn) => conn.from !== id && conn.to !== id)
+      )
+    );
+    if (selectedRect === id) {
+      setSelectedRect(null);
+    }
+  };
+
+  /*  const handleUpdateRectPosition = useCallback(
+    (id: string, newX: number, newY: number) => {
+      setRectangles((rects) =>
+        rects.map((rect) =>
+          rect.id === id ? { ...rect, x: newX, y: newY } : rect
+        )
+      );
+      updateSvgHeight();
+    },
+    [updateSvgHeight]
+  ); */
+
+  /* const handleUpdateRectSize = useCallback(
+    (id: string, newWidth: number, newHeight: number) => {
+      setRectangles((rects) =>
+        rects.map((rect) =>
+          rect.id === id
+            ? { ...rect, width: newWidth, height: newHeight }
+            : rect
+        )
+      );
+      updateSvgHeight();
+    },
+    [updateSvgHeight]
+  ); */
+
+  /*   const handleCreateRect = () => {
+    const newRect: Rect = {
+      id: `rect${rectangles.length + 1}`,
+      name: "newContent",
+      x: 100,
+      y: 100,
+      width: 100,
+      height: 50,
+    };
+    setRectangles([...rectangles, newRect]);
+    updateSvgHeight();
+  }; */
+
+  /* const handleDeleteRect = (id: string) => {
     setRectangles((rects) => rects.filter((rect) => rect.id !== id));
     setConnections((conns) =>
       conns.filter((conn) => conn.from !== id && conn.to !== id)
@@ -555,7 +664,7 @@ const Editor: React.FC = () => {
     if (selectedRect === id) {
       setSelectedRect(null);
     }
-  };
+  }; */
 
   const handleStartConnecting = () => {
     setIsConnecting(true);
@@ -571,6 +680,17 @@ const Editor: React.FC = () => {
       }
     } else {
       setSelectedRect(id);
+    }
+  };
+
+  const importFromJson = (jsonString: string) => {
+    try {
+      const state = JSON.parse(jsonString);
+      dispatch(resetTopics()); // Reset the current state before importing
+      dispatch({ type: 'IMPORT_STATE', payload: state }); // Dispatch a custom action to import the entire state
+      updateSvgHeight(); // Update SVG height after importing
+    } catch (error) {
+      console.error('Error importing JSON:', error);
     }
   };
 
@@ -592,10 +712,6 @@ const Editor: React.FC = () => {
   };
 
   useEffect(() => {
-    updateSvgHeight();
-  }, [rectangles, updateSvgHeight]);
-
-  useEffect(() => {
     window.addEventListener("keydown", handleKeyDown);
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
@@ -612,9 +728,19 @@ const Editor: React.FC = () => {
         onSelectLineStyle={handleSelectLineStyle}
         selectedLineStyle={currentLineStyle}
         isMultiSelectMode={isMultiSelectMode}
-        onToggleMultiSelect={() => setIsMultiSelectMode((prev) => !prev)}
+        onToggleMultiSelect={() =>
+          dispatch(setMultiSelectMode(!isMultiSelectMode))
+        }
         circlesVisible={circlesVisible}
-        onToggleCircleVisibility={toggleCircleVisibility}
+        onToggleCircleVisibility={() =>
+          dispatch(setCirclesVisible(!circlesVisible))
+        }
+        onClearAll={() => {
+          dispatch(resetTopics());
+          dispatch(resetEditor());
+        }}
+        onExportJson={exportToJson}
+        onImportJson={importFromJson}
       />
       <svg
         ref={svgRef}
@@ -631,9 +757,16 @@ const Editor: React.FC = () => {
             connection={conn}
             rectangles={rectangles}
             onDelete={() => {
-              setConnections(connections.filter((_, i) => i !== index));
+              dispatch(
+                setConnections(connections.filter((_, i) => i !== index))
+              );
             }}
-            onChangeStyle={(style) => handleChangeConnectionStyle(index, style)}
+            onChangeStyle={(style) => {
+              const updatedConnections = connections.map((c, i) =>
+                i === index ? { ...c, style } : c
+              );
+              dispatch(setConnections(updatedConnections));
+            }}
             circlesVisible={circlesVisible}
           />
         ))}

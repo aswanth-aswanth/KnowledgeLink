@@ -13,6 +13,10 @@ interface ToolbarProps {
   onToggleMultiSelect: () => void;
   circlesVisible: boolean;
   onToggleCircleVisibility: () => void;
+  onClearAll: () => void;
+  onExportJson: () => void;
+  onImportJson: (jsonString: string) => void;
+
 }
 
 const Toolbar: React.FC<ToolbarProps> = ({
@@ -26,7 +30,21 @@ const Toolbar: React.FC<ToolbarProps> = ({
   onToggleMultiSelect,
   circlesVisible,
   onToggleCircleVisibility,
+  onClearAll,
+  onExportJson,
+  onImportJson
 }) => {
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const content = e.target?.result as string;
+        onImportJson(content);
+      };
+      reader.readAsText(file);
+    }
+  };
   return (
     <div className="bg-gray-800 text-white p-4 flex justify-center space-x-4">
       <button
@@ -76,6 +94,33 @@ const Toolbar: React.FC<ToolbarProps> = ({
         >
           {circlesVisible ? <FaEyeSlash /> : <FaEye />}
         </button>
+        <button
+          className="px-4 py-2 rounded bg-red-500 hover:bg-red-600"
+          onClick={onClearAll}
+        >
+          Clear All
+        </button>
+        <button
+          className="px-4 py-2 rounded bg-green-500 hover:bg-green-600"
+          onClick={onExportJson}
+        >
+          Export to JSON
+        </button>
+      </div>
+      <div>
+        <input
+          type="file"
+          accept=".json"
+          style={{ display: "none" }}
+          id="json-file-input"
+          onChange={handleFileUpload}
+        />
+        <label
+          htmlFor="json-file-input"
+          className="px-4 py-2 rounded bg-green-500 hover:bg-green-600 cursor-pointer"
+        >
+          Import JSON
+        </label>
       </div>
     </div>
   );

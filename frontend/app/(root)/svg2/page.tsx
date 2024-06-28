@@ -1,3 +1,5 @@
+// app/page.tsx
+
 import Editor from "@/components/shared/Editor";
 
 export default function Home() {

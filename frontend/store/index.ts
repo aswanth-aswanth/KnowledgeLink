@@ -1,7 +1,9 @@
+// store/index.ts
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import topicsReducer from './topicsSlice';
+import editorReducer from './editorSlice';
 
 const persistConfig = {
   key: 'root',
@@ -10,6 +12,7 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   topics: topicsReducer,
+  editor: editorReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
