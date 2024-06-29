@@ -10,10 +10,12 @@ import { Hamburger } from "./Hamburger";
 import Notifications from "./Notifications";
 import Image from "next/image";
 import defaultUserImage from "@/public/defaultUserImage.png";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
   const { isAuthenticated, user } = useSelector(selectAuthState);
   const dispatch = useDispatch();
+  const router = useRouter();
 
   useEffect(() => {
     dispatch(checkTokenExpiration());
@@ -56,7 +58,10 @@ export default function Header() {
             />
           </div>
         ) : (
-          <FiUser className="text-2xl cursor-pointer" />
+          <FiUser
+            className="text-2xl cursor-pointer"
+            onClick={() => router.push("/sign-in")}
+          />
         )}
       </div>
     </header>
