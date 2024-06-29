@@ -26,7 +26,7 @@ export default function Header() {
   };
 
   return (
-    <header className="flex items-center justify-between p-2 relative z-10 bg-white shadow-md">
+    <header className="flex items-center justify-between p-2 relative z-10 bg-gradient-to-r from-gray-900 to-gray-800 shadow-lg border-b border-gray-600">
       <div className="flex items-center">
         <Hamburger />
       </div>
@@ -36,7 +36,7 @@ export default function Header() {
           <input
             type="text"
             placeholder="Search..."
-            className="w-full py-2 pl-10 pr-4 max-w-5xl text-gray-700 bg-gray-100 rounded-xl focus:outline-none focus:bg-gray-200 focus:shadow-outline"
+            className="w-full py-2 pl-10 pr-4 max-w-5xl text-gray-200 bg-gray-700 rounded-xl focus:outline-none focus:bg-gray-600 focus:ring-2 focus:ring-blue-400 transition-all duration-200 placeholder-gray-400"
           />
           <FiSearch className="absolute top-3 left-3 text-gray-400" />
         </div>
@@ -47,11 +47,11 @@ export default function Header() {
 
         {isAuthenticated && user ? (
           <div className="flex items-center">
-            <span className="text-gray-500 font-medium mr-2">{user.name}</span>
+            <span className="text-gray-200 font-medium mr-2">{user.name}</span>
             <Image
               src={user.imageUrl || defaultUserImage}
               alt="User Image"
-              className="w-8 h-8 rounded-full cursor-pointer"
+              className="w-8 h-8 rounded-full cursor-pointer ring-2 ring-gray-500 hover:ring-blue-400 transition-all duration-200"
               width={32}
               height={32}
               onClick={handleLogout}
@@ -59,7 +59,7 @@ export default function Header() {
           </div>
         ) : (
           <FiUser
-            className="text-2xl cursor-pointer"
+            className="text-2xl cursor-pointer text-gray-200 hover:text-blue-400 transition-colors duration-200"
             onClick={() => router.push("/sign-in")}
           />
         )}

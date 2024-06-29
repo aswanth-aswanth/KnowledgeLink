@@ -17,7 +17,9 @@ export default function RootLayout({
     <>
       <Provider store={store}>
         <Header />
-        <main className="max-w-[1224px] px-4 md:px-0 mx-auto ">{children}</main>
+        <main className="bg-gray-900">
+          <div className="max-w-[1224px] px-4 md:px-0 mx-auto ">{children}</div>
+        </main>
       </Provider>
     </>
   );
