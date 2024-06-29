@@ -4,7 +4,6 @@ import TopicNode from "./TopicNode";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/store";
 import { addTopic, resetTopics } from "@/store/topicsSlice";
-import { Button } from "@/components/ui/button";
 import { Plus, Trash } from "lucide-react";
 import ChooseRoadmapType from "./ChooseRoadmapType";
 
@@ -32,7 +31,7 @@ const NestedNoteTaker: React.FC = () => {
 
   const currentTopicsState = useSelector((state: RootState) => state.topics);
 
-  // console.log("Current topics state:", currentTopicsState);
+  console.log("Current topics state:", currentTopicsState);
 
   return (
     <>
@@ -56,9 +55,7 @@ const NestedNoteTaker: React.FC = () => {
           <TopicNode key={childId} id={childId} />
         ))}
       </div>
-      <div className="flex justify-end mt-8">
-       
-      </div>
+      <div className="flex justify-end mt-8"></div>
       <ChooseRoadmapType />
     </>
   );

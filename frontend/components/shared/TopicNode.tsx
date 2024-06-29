@@ -162,7 +162,7 @@ const TopicNode: React.FC<TopicNodeProps> = ({ id }) => {
           type="text"
           value={topic.name}
           onChange={handleNameChange}
-          className="flex-grow bg-transparent px-2 py-1 focus:outline-none focus:bg-gray-50 rounded-md transition-colors duration-200"
+          className="flex-grow bg-transparent px-2 py-1 focus:outline-none focus:bg-gray-50 rounded-md font-semibold text-gray-800 transition-colors duration-200"
           placeholder="Untitled"
         />
         <span className="text-xs text-gray-400 mr-2">{topic.no}</span>
@@ -186,7 +186,7 @@ const TopicNode: React.FC<TopicNodeProps> = ({ id }) => {
             contentEditable
             onInput={handleContentChange}
             onKeyDown={handleKeyDown}
-            className="h-min p-2 mb-2 bg-gray-50 rounded-md focus:outline-none transition-all duration-200 prose prose-sm max-w-none"
+            className="h-min p-2 mb-2 bg-gray-50 rounded-md focus:outline-none transition-all duration-200 prose prose-sm text-base tracking-wider leading-9 max-w-none"
           />
           <DropdownMenu open={showStyleMenu} onOpenChange={setShowStyleMenu}>
             <DropdownMenuTrigger asChild>
