@@ -9,7 +9,7 @@ import darkmodeReducer from './darkmodeSlice';
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['auth', 'darkmode'],
+  whitelist: ['auth', 'darkmode', 'topics'],
 };
 
 const rootReducer = combineReducers({
