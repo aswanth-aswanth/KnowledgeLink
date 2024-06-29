@@ -7,12 +7,16 @@ import TrendingArticles from "@/components/shared/TrendingArticles";
 import Tabs from "@/components/shared/Tabs";
 import { Tab } from "@/types";
 import Roadmaps from "@/components/shared/Roadmaps";
+import { Provider } from "react-redux";
+import { useDarkMode } from "@/hooks/useDarkMode";
+import { store } from "@/store";
 
 const TabNavigation: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>("Explore");
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
+  const { isDarkMode } = useDarkMode();
 
   useEffect(() => {
     if (token) {
@@ -27,33 +31,35 @@ const TabNavigation: React.FC = () => {
   ];
 
   return (
-    <div className="mt-4">
-      <Tabs
-        tabs={tabs}
-        activeTab={activeTab}
-        onTabClick={setActiveTab}
-        tabFor="explore"
-      />
-      {/* <WelcomeComponent /> */}
-      <p className="text-gray-500 font-medium text-lg mt-6 mb-8">
-        Recommended for you
-      </p>
-      <div className="flex justify-center mx-auto w-[86%]">
-        <CarousalSize />
+    <Provider store={store}>
+      <div className="mt-4">
+        <Tabs
+          tabs={tabs}
+          activeTab={activeTab}
+          onTabClick={setActiveTab}
+          tabFor="explore"
+        />
+        {/* <WelcomeComponent /> */}
+        <p className="text-gray-500 font-medium text-lg mt-6 mb-8">
+          Recommended for you
+        </p>
+        <div className="flex justify-center mx-auto w-[86%]">
+          <CarousalSize />
+        </div>
+        <p className="text-gray-500 font-medium text-lg mt-6 mb-8">
+          Popular writers
+        </p>
+        <PopularContributors />
+        <p className="text-gray-500 font-medium text-lg mt-6 mb-8">
+          Trending articles
+        </p>
+        <TrendingArticles />
+        <p className="text-gray-500 font-bold text-center text-4xl mt-6 mb-8">
+          Roadmaps
+        </p>
+        <Roadmaps />
       </div>
-      <p className="text-gray-500 font-medium text-lg mt-6 mb-8">
-        Popular writers
-      </p>
-      <PopularContributors />
-      <p className="text-gray-500 font-medium text-lg mt-6 mb-8">
-        Trending articles
-      </p>
-      <TrendingArticles />
-      <p className="text-gray-500 font-bold text-center text-4xl mt-6 mb-8">
-        Roadmaps
-      </p>
-      <Roadmaps />
-    </div>
+    </Provider>
   );
 };
 

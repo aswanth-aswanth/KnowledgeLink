@@ -6,12 +6,14 @@ import { RootState, AppDispatch } from "@/store";
 import { addTopic, resetTopics } from "@/store/topicsSlice";
 import { Plus, Trash } from "lucide-react";
 import ChooseRoadmapType from "./ChooseRoadmapType";
+import { useDarkMode } from "@/hooks/useDarkMode";
 
 const NestedNoteTaker: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const rootTopic = useSelector(
     (state: RootState) => state.topics.topics[state.topics.rootId]
   );
+  const { isDarkMode } = useDarkMode();
 
   const handleAddRootTopic = useCallback(() => {
     const newTopic = {
@@ -35,10 +37,18 @@ const NestedNoteTaker: React.FC = () => {
 
   return (
     <>
-      <div className="nested-note-taker bg-white shadow-sm rounded-lg p-6">
+      <div
+        className={`nested-note-taker  rounded-lg ${
+          isDarkMode ? "bg-gray-900 shadow-lg" : "bg-white shadow-sm"
+        } p-6`}
+      >
         <button
           onClick={handleAddRootTopic}
-          className="flex items-center justify-center w-full py-2 px-4 mb-4 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors duration-200"
+          className={`flex items-center justify-center w-full py-2 px-4 mb-4  ${
+            isDarkMode
+              ? "text-gray-300 bg-gray-800 hover:bg-gray-700 "
+              : "text-gray-600 bg-gray-100 hover:bg-gray-200"
+          } rounded-md transition-colors duration-200`}
         >
           <Plus size={16} className="mr-2" />
           Add Root Topic
@@ -46,7 +56,11 @@ const NestedNoteTaker: React.FC = () => {
         <div className="flex justify-end">
           <button
             onClick={handleResetTopics}
-            className="flex items-center justify-center w-max   py-4 px-4 mb-4 text-red-600 bg-red-100 hover:bg-red-200 rounded-md transition-colors duration-200"
+            className={`flex items-center justify-center w-max   py-4 px-4 mb-4 ${
+              isDarkMode
+                ? "text-red-400 bg-red-900 hover:bg-red-800"
+                : "text-red-600 bg-red-100 hover:bg-red-200"
+            } rounded-md transition-colors duration-200`}
           >
             <Trash size={16} />
           </button>

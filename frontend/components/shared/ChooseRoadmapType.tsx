@@ -12,13 +12,17 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import RadioGroupForm from "./RadioGroupForm";
+import { useDarkMode } from "@/hooks/useDarkMode";
 
 export default function ChooseRoadmapType() {
+  const { isDarkMode } = useDarkMode();
   return (
     <AlertDialog>
       <div className="flex justify-center mt-8">
         <AlertDialogTrigger>
-          <Button variant="outline">Submit</Button>
+          <Button variant="outline" className={`${isDarkMode && "bg-dark-900 text-white"}`}>
+            Submit
+          </Button>
         </AlertDialogTrigger>
       </div>
       <AlertDialogContent className="bg-white p-8">

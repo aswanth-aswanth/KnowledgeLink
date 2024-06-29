@@ -4,15 +4,18 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import topicsReducer from './topicsSlice';
 import authReducer from './authSlice';
+import darkmodeReducer from './darkmodeSlice';
 
 const persistConfig = {
   key: 'root',
   storage,
+  whitelist: ['auth', 'darkmode'],
 };
 
 const rootReducer = combineReducers({
   topics: topicsReducer,
   auth: authReducer,
+  darkmode: darkmodeReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
