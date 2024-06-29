@@ -66,30 +66,54 @@ const Connection: React.FC<ConnectionProps> = ({
       />
       {circlesVisible && (
         <>
-          <circle
-            cx={midX}
-            cy={midY}
-            r="8"
-            fill="red"
-            stroke="white"
-            strokeWidth="2"
-            style={{ cursor: "pointer" }}
-            onClick={onDelete}
-          />
-          <circle
-            cx={midX + 20}
-            cy={midY}
-            r="8"
-            fill="blue"
-            stroke="white"
-            strokeWidth="2"
-            style={{ cursor: "pointer" }}
+          <g onClick={onDelete} style={{ cursor: "pointer" }}>
+            <circle
+              cx={midX}
+              cy={midY}
+              r="10"
+              fill="#ff4d4d"
+              stroke="#ffffff"
+              strokeWidth="2"
+            />
+            <path
+              d="M-4,-4 L4,4 M-4,4 L4,-4"
+              stroke="#ffffff"
+              strokeWidth="2"
+              strokeLinecap="round"
+              transform={`translate(${midX}, ${midY})`}
+            />
+            <title>Delete connection</title>
+          </g>
+
+          <g
             onClick={() =>
               onChangeStyle(
                 connection.style === "straight" ? "curved" : "straight"
               )
             }
-          />
+            style={{ cursor: "pointer" }}
+          >
+            <circle
+              cx={midX + 25}
+              cy={midY}
+              r="10"
+              fill="#4d79ff"
+              stroke="#ffffff"
+              strokeWidth="2"
+            />
+            <path
+              d={
+                connection.style === "straight"
+                  ? "M-4,4 Q0,-4 4,4"
+                  : "M-4,0 L4,0"
+              }
+              stroke="#ffffff"
+              strokeWidth="2"
+              strokeLinecap="round"
+              transform={`translate(${midX + 25}, ${midY})`}
+            />
+            <title>Change connection style</title>
+          </g>
         </>
       )}
     </g>
