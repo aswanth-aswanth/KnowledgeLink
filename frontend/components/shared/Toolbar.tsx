@@ -13,6 +13,7 @@ interface ToolbarProps {
   onToggleMultiSelect: () => void;
   circlesVisible: boolean;
   onToggleCircleVisibility: () => void;
+  onCopySVG: () => void;
 }
 
 const Toolbar: React.FC<ToolbarProps> = ({
@@ -26,6 +27,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
   onToggleMultiSelect,
   circlesVisible,
   onToggleCircleVisibility,
+  onCopySVG,
 }) => {
   return (
     <div className="bg-gray-800 text-white p-4 flex justify-center space-x-4">
@@ -76,6 +78,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
         >
           {circlesVisible ? <FaEyeSlash /> : <FaEye />}
         </button>
+        <button onClick={onCopySVG}>Copy SVG</button>
       </div>
     </div>
   );

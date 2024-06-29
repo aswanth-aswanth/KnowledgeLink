@@ -48,7 +48,6 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({
     if (isInitialized) {
       localStorage.setItem("rectangles", JSON.stringify(rectangles));
     }
-    console.log("local Rectangles : ", rectangles);
   }, [rectangles, isInitialized]);
 
   useEffect(() => {

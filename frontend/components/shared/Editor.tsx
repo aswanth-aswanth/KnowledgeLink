@@ -78,7 +78,31 @@ const Editor: React.FC = () => {
     }
   }, [isInitialized, rectangles, setRectangles, createRectanglesFromData]);
 
-
+  const handleCopySVG = () => {
+    if (svgRef.current) {
+      // Get the outer HTML of the SVG element
+      const svgContent = svgRef.current.outerHTML;
+      
+      // Create a Blob with the SVG content
+      const blob = new Blob([svgContent], { type: 'image/svg+xml' });
+      
+      // Create a URL for the Blob
+      const url = URL.createObjectURL(blob);
+      
+      // Create a temporary anchor element
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'diagram.svg';
+      
+      // Programmatically click the link to trigger the download
+      document.body.appendChild(link);
+      link.click();
+      
+      // Clean up
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+  };
 
   const handleSelectRect = (id: string, event: React.MouseEvent) => {
     if (isMultiSelectMode) {
@@ -305,6 +329,7 @@ const Editor: React.FC = () => {
         onToggleMultiSelect={() => setIsMultiSelectMode((prev) => !prev)}
         circlesVisible={circlesVisible}
         onToggleCircleVisibility={toggleCircleVisibility}
+        onCopySVG={handleCopySVG}
       />
       <svg
         ref={svgRef}
