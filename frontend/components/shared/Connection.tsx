@@ -38,82 +38,61 @@ const Connection: React.FC<ConnectionProps> = ({
   const midX = (startX + endX) / 2;
   const midY = (startY + endY) / 2;
 
-  let pathD: string;
-  let strokeDasharray: string;
-
-  if (connection.style === "straight") {
-    pathD = `M${startX},${startY} L${endX},${endY}`;
-    strokeDasharray = "-1.2 12";
-  } else {
-    const curveX1 = startX + (midX - startX) / 2;
-    const curveY1 = startY;
-    const curveX2 = endX - (endX - midX) / 2;
-    const curveY2 = endY;
-    pathD = `M${startX},${startY} Q${curveX1},${curveY1} ${midX},${midY} T${endX},${endY}`;
-    strokeDasharray = "0.8 12";
-  }
+  const pathD =
+    connection.style === "straight"
+      ? `M${startX},${startY} L${endX},${endY}`
+      : `M${startX},${startY} C${startX + (endX - startX) * 0.25},${
+          startY + (endY - startY) * 0.1
+        } ${startX + (endX - startX) * 0.75},${
+          endY - (endY - startY) * 0.1
+        } ${endX},${endY}`;
 
   return (
     <g>
+      <defs>
+        <linearGradient
+          id="lineGradient"
+          gradientTransform="rotate(62, 0.5, 0.5)"
+        >
+          <stop stopColor="hsl(180, 69%, 40%)" offset="0"></stop>
+          <stop stopColor="hsl(180, 69%, 60%)" offset="1"></stop>
+        </linearGradient>
+      </defs>
       <path
         d={pathD}
         fill="none"
-        stroke="rgb(43,120,228)"
-        strokeWidth="4"
+        stroke="url(#lineGradient)"
+        strokeWidth="3"
         strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeDasharray={strokeDasharray}
+        strokeDasharray="10 8"
+        strokeOpacity="1"
       />
       {circlesVisible && (
         <>
-          <g onClick={onDelete} style={{ cursor: "pointer" }}>
-            <circle
-              cx={midX}
-              cy={midY}
-              r="10"
-              fill="#ff4d4d"
-              stroke="#ffffff"
-              strokeWidth="2"
-            />
-            <path
-              d="M-4,-4 L4,4 M-4,4 L4,-4"
-              stroke="#ffffff"
-              strokeWidth="2"
-              strokeLinecap="round"
-              transform={`translate(${midX}, ${midY})`}
-            />
-            <title>Delete connection</title>
-          </g>
-
-          <g
+          <circle
+            cx={midX}
+            cy={midY}
+            r="8"
+            fill="red"
+            stroke="white"
+            strokeWidth="2"
+            style={{ cursor: "pointer" }}
+            onClick={onDelete}
+          />
+          <circle
+            cx={midX + 20}
+            cy={midY}
+            r="8"
+            fill="blue"
+            stroke="white"
+            strokeWidth="2"
+            style={{ cursor: "pointer" }}
             onClick={() =>
               onChangeStyle(
                 connection.style === "straight" ? "curved" : "straight"
               )
             }
-            style={{ cursor: "pointer" }}
-          >
-            <circle
-              cx={midX + 25}
-              cy={midY}
-              r="10"
-              fill="#4d79ff"
-              stroke="#ffffff"
-              strokeWidth="2"
-            />
-            <path
-              d={
-                connection.style === "straight"
-                  ? "M-4,4 Q0,-4 4,4"
-                  : "M-4,0 L4,0"
-              }
-              stroke="#ffffff"
-              strokeWidth="2"
-              strokeLinecap="round"
-              transform={`translate(${midX + 25}, ${midY})`}
-            />
-            <title>Change connection style</title>
-          </g>
+          />
         </>
       )}
     </g>
