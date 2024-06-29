@@ -15,6 +15,7 @@ export default class AuthenticateUser {
 
     public async execute(email: string, password: string): Promise<string> {
         const user = await this.userRepository.findByEmail(email);
+
         if (!user) {
             throw new Error('Invalid credentials');
         }
@@ -28,6 +29,6 @@ export default class AuthenticateUser {
             throw new Error("Invalid credentials");
         }
 
-        return this.tokenManager.generateToken(user.id);
+        return this.tokenManager.generateToken({ userId: user.id, username: user.username, email: user.email, image: user.image });
     }
 }

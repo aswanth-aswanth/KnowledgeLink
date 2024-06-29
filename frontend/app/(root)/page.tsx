@@ -1,6 +1,6 @@
 "use client";
-import React, { useState } from "react";
-// import WelcomeComponent from "@/components/shared/WelcomeComponent";
+import React, { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import CarousalSize from "@/components/shared/CarousalSize";
 import PopularContributors from "@/components/shared/PopularContributors";
 import TrendingArticles from "@/components/shared/TrendingArticles";
@@ -10,6 +10,16 @@ import Roadmaps from "@/components/shared/Roadmaps";
 
 const TabNavigation: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>("Explore");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const token = searchParams.get("token");
+
+  useEffect(() => {
+    if (token) {
+      localStorage.setItem("token", token);
+      router.push("/");
+    }
+  }, [token]);
 
   const tabs: Tab[] = [
     { name: "Explore", icon: "🌎" },
@@ -28,7 +38,7 @@ const TabNavigation: React.FC = () => {
       <p className="text-gray-500 font-medium text-lg mt-6 mb-8">
         Recommended for you
       </p>
-      <div className=" flex justify-center mx-auto w-[86%]">
+      <div className="flex justify-center mx-auto w-[86%]">
         <CarousalSize />
       </div>
       <p className="text-gray-500 font-medium text-lg mt-6 mb-8">

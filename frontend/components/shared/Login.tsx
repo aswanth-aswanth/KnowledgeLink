@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -31,7 +31,8 @@ const Login = () => {
           password,
         }
       );
-      console.log("Response : ", response);
+      const token = response.data.token;
+      localStorage.setItem("token", token);
 
       toast("Login successful!", {
         icon: "👏",

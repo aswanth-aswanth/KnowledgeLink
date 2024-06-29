@@ -13,9 +13,17 @@ class GoogleAuthController {
     public callback(req: Request, res: Response): void {
         const user = req.user as IUser;
         if (user) {
-            const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET!, { expiresIn: '1h' });
-            console.log("User : ",user);
-            res.redirect(`${process.env.FRONTEND_URL}`);
+            const token = jwt.sign(
+                {
+                    id: user.id,
+                    username: user.username,
+                    email: user.email,
+                    image: user.image
+                },
+                process.env.JWT_SECRET!,
+                { expiresIn: '1h' }
+            );
+            res.redirect(`${process.env.FRONTEND_URL}?token=${token}`);
         } else {
             res.redirect(`${process.env.FRONTEND_URL}/sign-up?error=true`);
         }

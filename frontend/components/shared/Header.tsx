@@ -1,14 +1,31 @@
-import React from "react";
-import { FiAlignJustify, FiSearch, FiUser } from "react-icons/fi";
-import { GoBell } from "react-icons/go";
+import React, { useEffect } from "react";
+import { FiSearch, FiUser } from "react-icons/fi";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  selectAuthState,
+  clearAuthState,
+  checkTokenExpiration,
+} from "@/store/authSlice";
 import { Hamburger } from "./Hamburger";
 import Notifications from "./Notifications";
+import Image from "next/image";
+import defaultUserImage from "@/public/defaultUserImage.png";
 
 export default function Header() {
+  const { isAuthenticated, user } = useSelector(selectAuthState);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(checkTokenExpiration());
+  }, [dispatch]);
+
+  const handleLogout = () => {
+    dispatch(clearAuthState());
+  };
+
   return (
     <header className="flex items-center justify-between p-2 relative z-10 bg-white shadow-md">
       <div className="flex items-center">
-        {/* <FiAlignJustify className="text-2xl cursor-pointer" /> */}
         <Hamburger />
       </div>
 
@@ -23,11 +40,24 @@ export default function Header() {
         </div>
       </div>
 
-      <div className="flex items-center space-x-4 md:mr-10 ">
-      <Notifications />
+      <div className="flex items-center space-x-4 md:mr-10">
+        <Notifications />
 
-        {/* <GoBell className="text-2xl cursor-pointer" /> */}
-        <FiUser className="text-2xl cursor-pointer" />
+        {isAuthenticated && user ? (
+          <div className="flex items-center">
+            <span className="text-gray-500 font-medium mr-2">{user.name}</span>
+            <Image
+              src={user.imageUrl || defaultUserImage}
+              alt="User Image"
+              className="w-8 h-8 rounded-full cursor-pointer"
+              width={32}
+              height={32}
+              onClick={handleLogout}
+            />
+          </div>
+        ) : (
+          <FiUser className="text-2xl cursor-pointer" />
+        )}
       </div>
     </header>
   );
