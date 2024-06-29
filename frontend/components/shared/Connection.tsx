@@ -38,33 +38,47 @@ const Connection: React.FC<ConnectionProps> = ({
   const midX = (startX + endX) / 2;
   const midY = (startY + endY) / 2;
 
-  const pathD =
-    connection.style === "straight"
-      ? `M${startX},${startY} L${endX},${endY}`
-      : `M${startX},${startY} C${startX + (endX - startX) * 0.25},${
-          startY + (endY - startY) * 0.1
-        } ${startX + (endX - startX) * 0.75},${
-          endY - (endY - startY) * 0.1
-        } ${endX},${endY}`;
+  let pathD: string;
+  let strokeDasharray: string;
+  let stroke: string;
+  let strokeWidth: string;
+
+  if (connection.style === "straight") {
+    const curveX1 = startX + (midX - startX) / 2;
+    const curveY1 = startY - 88; // Adjust this value to increase the curvature
+    const curveX2 = endX - (endX - midX) / 2;
+    const curveY2 = endY + 90; // Adjust this value to increase the curvature
+    pathD = `M${startX},${startY} C${curveX1},${curveY1} ${curveX2},${curveY2} ${endX},${endY}`;
+    strokeDasharray = "0 0";
+    stroke = "url(#straightLineGradient)";
+    strokeWidth = "7";
+  } else {
+    const curveX1 = startX + (midX - startX) / 2;
+    const curveY1 = startY;
+    const curveX2 = endX - (endX - midX) / 2;
+    const curveY2 = endY;
+    pathD = `M${startX},${startY} Q${curveX1},${curveY1} ${midX},${midY} T${endX},${endY}`;
+    strokeDasharray = "0.8 12";
+    stroke = "rgb(43,120,228)";
+    strokeWidth = "4";
+  }
 
   return (
     <g>
       <defs>
-        <linearGradient
-          id="lineGradient"
-          gradientTransform="rotate(62, 0.5, 0.5)"
-        >
-          <stop stopColor="hsl(180, 69%, 40%)" offset="0"></stop>
-          <stop stopColor="hsl(180, 69%, 60%)" offset="1"></stop>
+        <linearGradient id="straightLineGradient">
+          <stop stopColor="hsl(180, 78%, 61%)" offset="0"></stop>
+          <stop stopColor="hsl(277, 56%, 68%)" offset="1"></stop>
         </linearGradient>
       </defs>
       <path
         d={pathD}
         fill="none"
-        stroke="url(#lineGradient)"
-        strokeWidth="3"
+        stroke={stroke}
+        strokeWidth={strokeWidth}
         strokeLinecap="round"
-        strokeDasharray="10 8"
+        strokeLinejoin="round"
+        strokeDasharray={strokeDasharray}
         strokeOpacity="1"
       />
       {circlesVisible && (
