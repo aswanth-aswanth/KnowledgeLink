@@ -71,7 +71,7 @@ export default function Header() {
         <Notifications />
 
         {isAuthenticated && user ? (
-          <div className="flex items-center">
+          <div className="flex items-center border p-2">
             <span className="text-gray-500 font-medium mr-2">{user.name}</span>
             <Image
               src={user.imageUrl || defaultUserImage}
@@ -83,10 +83,12 @@ export default function Header() {
             />
           </div>
         ) : (
-          <FiUser
-            className="text-2xl cursor-pointer"
+          <div
+            className=" hover:bg-gray-100 p-2 cursor-pointer rounded-full"
             onClick={() => router.push("/sign-in")}
-          />
+          >
+            <FiUser className="text-2xl   rounded-full " />
+          </div>
         )}
       </div>
     </header>
