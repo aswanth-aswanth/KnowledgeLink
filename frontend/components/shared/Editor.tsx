@@ -34,8 +34,8 @@ const Editor: React.FC = () => {
   const createRectanglesFromData = useCallback(
     (topic: Topic, level: number = 0, yOffset: number = 0, existingRects: Rect[] = []) => {
       const newRects: Rect[] = [];
-      const rectWidth = 200;
-      const rectHeight = 50;
+      const rectWidth = 180;
+      const rectHeight = 40;
       const xOffset = level * 250;
   
       const existingRect = existingRects.find(r => r.name === topic.name);
