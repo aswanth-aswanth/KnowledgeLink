@@ -35,13 +35,18 @@ const Editor: React.FC<EditorProps> = ({ topicsData }) => {
   const toggleCircleVisibility = () => setCirclesVisible((prev) => !prev);
 
   const createRectanglesFromData = useCallback(
-    (topic: Topic, level: number = 0, yOffset: number = 0, existingRects: Rect[] = []) => {
+    (
+      topic: Topic,
+      level: number = 0,
+      yOffset: number = 0,
+      existingRects: Rect[] = []
+    ) => {
       const newRects: Rect[] = [];
       const rectWidth = 180;
       const rectHeight = 40;
       const xOffset = level * 250;
-      console.log("Topics Editor: ",topic);
-      const existingRect = existingRects.find(r => r.name === topic?.name);
+      console.log("Topics Editor: ", topic);
+      const existingRect = existingRects.find((r) => r.name === topic?.name);
       const rect: Rect = existingRect || {
         id: `rect-${level}-${yOffset}`,
         x: xOffset,
@@ -51,14 +56,19 @@ const Editor: React.FC<EditorProps> = ({ topicsData }) => {
         name: topic?.name,
       };
       newRects.push(rect);
-  
+
       let currentYOffset = yOffset + rectHeight + 20;
       topic?.children.forEach((child) => {
-        const childRects = createRectanglesFromData(child, level + 1, currentYOffset, existingRects);
+        const childRects = createRectanglesFromData(
+          child,
+          level + 1,
+          currentYOffset,
+          existingRects
+        );
         newRects.push(...childRects);
         currentYOffset += childRects.length * (rectHeight + 20);
       });
-  
+
       return newRects;
     },
     []
@@ -70,9 +80,14 @@ const Editor: React.FC<EditorProps> = ({ topicsData }) => {
         const initialRectangles = createRectanglesFromData(topicsData);
         setRectangles(initialRectangles);
       } else {
-        console.log("topics DAtata : ",topicsData);
+        console.log("topics DAtata : ", topicsData);
         // Ensure all topics from topicsData are represented in rectangles
-        const updatedRectangles = createRectanglesFromData(topicsData, 0, 0, rectangles);
+        const updatedRectangles = createRectanglesFromData(
+          topicsData,
+          0,
+          0,
+          rectangles
+        );
         // Only update if there are new rectangles
         if (updatedRectangles.length !== rectangles.length) {
           setRectangles(updatedRectangles);
@@ -86,22 +101,22 @@ const Editor: React.FC<EditorProps> = ({ topicsData }) => {
     if (svgRef.current) {
       // Get the outer HTML of the SVG element
       const svgContent = svgRef.current.outerHTML;
-      
+
       // Create a Blob with the SVG content
-      const blob = new Blob([svgContent], { type: 'image/svg+xml' });
-      
+      const blob = new Blob([svgContent], { type: "image/svg+xml" });
+
       // Create a URL for the Blob
       const url = URL.createObjectURL(blob);
-      
+
       // Create a temporary anchor element
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = url;
-      link.download = 'diagram.svg';
-      
+      link.download = "diagram.svg";
+
       // Programmatically click the link to trigger the download
       document.body.appendChild(link);
       link.click();
-      
+
       // Clean up
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
@@ -244,7 +259,7 @@ const Editor: React.FC<EditorProps> = ({ topicsData }) => {
     []
   ); */
 
-/*   useEffect(() => {
+  /*   useEffect(() => {
     const initialRectangles = createRectanglesFromData(topicsData);
     setRectangles(initialRectangles);
     updateSvgHeight();
@@ -319,14 +334,6 @@ const Editor: React.FC<EditorProps> = ({ topicsData }) => {
   };
 
   useEffect(() => updateSvgHeight(), [rectangles, updateSvgHeight]);
-
-  useEffect(() => {
-    if (isInitialized && topicsData) {
-      const initialRectangles = createRectanglesFromData(topicsData);
-      setRectangles(initialRectangles);
-      updateSvgHeight();
-    }
-  }, [isInitialized, topicsData, createRectanglesFromData, updateSvgHeight]);
 
   return (
     <div>
