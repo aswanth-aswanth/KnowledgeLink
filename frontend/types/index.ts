@@ -8,8 +8,6 @@ export type TabsProps = {
     onTabClick: (tabName: string) => void;
     tabFor: string;
 }
-// src/types/index.ts
-
 
 export interface Topic {
     id: string;
@@ -18,10 +16,17 @@ export interface Topic {
     no: string;
     children: string[];
     isExpanded: boolean;
-  }
+}
 
+export interface RoadmapInfo {
+    image: string | null;
+    title: string;
+    description: string;
+
+}
 export interface TopicsState {
     topics: { [id: string]: Topic };
     rootId: string;
     editorData?: any | null;
+    roadmapInfo: RoadmapInfo;
 }

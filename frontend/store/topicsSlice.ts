@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { TopicsState, Topic } from '@/types';
+import { TopicsState, Topic, RoadmapInfo } from '@/types';
 
 const initialState: TopicsState = {
   topics: {
@@ -14,6 +14,11 @@ const initialState: TopicsState = {
   },
   rootId: 'root',
   editorData: null,
+  roadmapInfo: {
+    image: null,
+    title: '',
+    description: '',
+  },
 };
 
 const topicsSlice = createSlice({
@@ -63,8 +68,11 @@ const topicsSlice = createSlice({
     setEditorData: (state, action: PayloadAction<any>) => {
       state.editorData = action.payload;
     },
+    updateRoadmapInfo: (state, action: PayloadAction<Partial<RoadmapInfo>>) => {
+      state.roadmapInfo = { ...state.roadmapInfo, ...action.payload };
+    },
   },
 });
 
-export const { addTopic, updateTopic, deleteTopic, toggleExpand, resetTopics, setEditorData } = topicsSlice.actions;
+export const { addTopic, updateTopic, deleteTopic, toggleExpand, resetTopics, setEditorData, updateRoadmapInfo } = topicsSlice.actions;
 export default topicsSlice.reducer;
