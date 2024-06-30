@@ -13,14 +13,22 @@ import {
 import { Button } from "@/components/ui/button";
 import RadioGroupForm from "./RadioGroupForm";
 import { useDarkMode } from "@/hooks/useDarkMode";
+interface ChooseRoadmapTypeProps {
+  onContinue: () => void;
+}
 
-export default function ChooseRoadmapType() {
+export default function ChooseRoadmapType({
+  onContinue,
+}: ChooseRoadmapTypeProps) {
   const { isDarkMode } = useDarkMode();
   return (
     <AlertDialog>
       <div className="flex justify-center mt-8">
         <AlertDialogTrigger>
-          <Button variant="outline" className={`${isDarkMode && "bg-dark-900 text-white"}`}>
+          <Button
+            variant="outline"
+            className={`${isDarkMode && "bg-dark-900 text-white"}`}
+          >
             Submit
           </Button>
         </AlertDialogTrigger>
@@ -36,7 +44,7 @@ export default function ChooseRoadmapType() {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction>Continue</AlertDialogAction>
+          <AlertDialogAction onClick={onContinue}>Continue</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

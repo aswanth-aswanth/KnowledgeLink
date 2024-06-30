@@ -2,6 +2,8 @@ export interface Topic {
     name: string;
     content: string;
     children: Topic[];
+    id: string;
+    no: string;
 }
 
 export interface Rect {

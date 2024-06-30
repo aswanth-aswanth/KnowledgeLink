@@ -6,8 +6,11 @@ import Connection from "./Connection";
 import { topicsData } from "@/data/topic";
 import { Topic, Rect, ConnectionType } from "@/types/EditorTypes";
 import { useEditorContext } from "@/contexts/EditorContext";
+interface EditorProps {
+  topicsData: Topic;
+}
 
-const Editor: React.FC = () => {
+const Editor: React.FC<EditorProps> = ({ topicsData }) => {
   const {
     rectangles,
     setRectangles,
@@ -37,20 +40,20 @@ const Editor: React.FC = () => {
       const rectWidth = 180;
       const rectHeight = 40;
       const xOffset = level * 250;
-  
-      const existingRect = existingRects.find(r => r.name === topic.name);
+      console.log("Topics Editor: ",topic);
+      const existingRect = existingRects.find(r => r.name === topic?.name);
       const rect: Rect = existingRect || {
         id: `rect-${level}-${yOffset}`,
         x: xOffset,
         y: yOffset,
         width: rectWidth,
         height: rectHeight,
-        name: topic.name,
+        name: topic?.name,
       };
       newRects.push(rect);
   
       let currentYOffset = yOffset + rectHeight + 20;
-      topic.children.forEach((child) => {
+      topic?.children.forEach((child) => {
         const childRects = createRectanglesFromData(child, level + 1, currentYOffset, existingRects);
         newRects.push(...childRects);
         currentYOffset += childRects.length * (rectHeight + 20);
@@ -67,6 +70,7 @@ const Editor: React.FC = () => {
         const initialRectangles = createRectanglesFromData(topicsData);
         setRectangles(initialRectangles);
       } else {
+        console.log("topics DAtata : ",topicsData);
         // Ensure all topics from topicsData are represented in rectangles
         const updatedRectangles = createRectanglesFromData(topicsData, 0, 0, rectangles);
         // Only update if there are new rectangles
@@ -315,6 +319,14 @@ const Editor: React.FC = () => {
   };
 
   useEffect(() => updateSvgHeight(), [rectangles, updateSvgHeight]);
+
+  useEffect(() => {
+    if (isInitialized && topicsData) {
+      const initialRectangles = createRectanglesFromData(topicsData);
+      setRectangles(initialRectangles);
+      updateSvgHeight();
+    }
+  }, [isInitialized, topicsData, createRectanglesFromData, updateSvgHeight]);
 
   return (
     <div>
