@@ -43,14 +43,11 @@ const NestedNoteTaker: React.FC = () => {
     const newRootId = Date.now().toString();
 
     function populateChildren(node: any) {
-      if (!node.children || node.children.length === 0) {
-        const { isExpanded, ...cleanedNode } = node;
-        return { ...cleanedNode, children: [] };
-      }
-
       const { isExpanded, ...cleanedNode } = node;
       return {
-        ...cleanedNode,
+        name: cleanedNode.name,
+        content: cleanedNode.content,
+        tags: [],
         children: node.children.map((childId: string) => {
           const childNode = topics[childId];
           return populateChildren(childNode);
@@ -61,9 +58,16 @@ const NestedNoteTaker: React.FC = () => {
     const transformedRoot = populateChildren(root);
 
     return {
-      ...transformedRoot,
+      title: transformedRoot.name,
+      description: transformedRoot.content,
+      type: roadmapType,
+      tags: [],
+      members: [],
+      creatorId: "",
+      topics: transformedRoot,
+      createdAt: new Date(),
+      updatedAt: new Date(),
       id: newRootId,
-      roadmapType: roadmapType,
     };
   }
 

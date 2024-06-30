@@ -8,6 +8,8 @@ import { Topic, Rect, ConnectionType } from "@/types/EditorTypes";
 import { useEditorContext } from "@/contexts/EditorContext";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
+import apiClient from "@/api/apiClient";
+import toast from "react-hot-toast";
 
 const Editor: React.FC = () => {
   const {
@@ -32,6 +34,9 @@ const Editor: React.FC = () => {
   const svgRef = useRef<SVGSVGElement>(null);
   const editorData = useSelector((state: RootState) => state.topics.editorData);
   const [scale, setScale] = useState(1);
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.auth.isAuthenticated
+  );
 
   console.log("EditorData : ", editorData);
 
@@ -80,13 +85,13 @@ const Editor: React.FC = () => {
   useEffect(() => {
     if (isInitialized) {
       if (rectangles.length === 0) {
-        const initialRectangles = createRectanglesFromData(editorData);
+        const initialRectangles = createRectanglesFromData(editorData.topics);
         setRectangles(initialRectangles);
       } else {
         console.log("topics DAtata : ", topicsData);
         // Ensure all topics from topicsData are represented in rectangles
         const updatedRectangles = createRectanglesFromData(
-          editorData,
+          editorData.topics,
           0,
           0,
           rectangles
@@ -305,6 +310,30 @@ const Editor: React.FC = () => {
     }
   };
 
+  console.log("Editor Data");
+  const handleSubmitRoadmap = async () => {
+    if (isAuthenticated) {
+      try {
+        const response = await apiClient.post("/roadmap", {
+          title: editorData.title,
+          description: editorData.description,
+          type: editorData.type,
+          topics: editorData.topics,
+        });
+
+        console.log("response : ", response.data);
+        toast(response.data.message, {
+          icon: "👏",
+        });
+      } catch (error) {
+        console.log("Error : ", error);
+        toast.error("An unexpected error occurred");
+      }
+    } else {
+      toast.error("You need to login!!!");
+    }
+  };
+
   useEffect(() => updateSvgHeight(), [rectangles, updateSvgHeight]);
 
   return (
@@ -368,7 +397,10 @@ const Editor: React.FC = () => {
           />
         ))}
       </svg>
-      <button className="absolute bottom-8 right-6 px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 transition-colors duration-200 ease-in-out">
+      <button
+        onClick={handleSubmitRoadmap}
+        className="absolute bottom-8 right-6 px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 transition-colors duration-200 ease-in-out"
+      >
         Submit roadmap
       </button>
     </div>

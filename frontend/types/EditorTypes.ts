@@ -2,10 +2,20 @@ export interface Topic {
     name: string;
     content: string;
     children: Topic[];
+    tags?: string[];
+}
+
+export interface Roadmap {
+    title: string;
+    description: string;
+    type: string;
+    tags?: string[];
+    members?: string[];
+    creatorId?: string;
+    topics: Topic;
+    createdAt?: Date;
+    updatedAt?: Date;
     id: string;
-    no: string;
-    roadmapType?: string;
-    rootId?: string;
 }
 
 export interface Rect {

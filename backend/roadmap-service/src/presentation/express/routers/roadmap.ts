@@ -8,6 +8,7 @@ import GetAllSubscribedController from "../../../infra/http/controllers/Roadmap/
 import GetRoadmapsByTypeController from "../../../infra/http/controllers/Roadmap/GetRoadmapsByTypeController";
 import GetRoadmapsByAdminController from "../../../infra/http/controllers/Roadmap/GetRoadmapsByAdminController";
 import GetAllRoadmapMembersController from "../../../infra/http/controllers/Roadmap/GetAllRoadmapMembersController";
+import authMiddleware from '../../../infra/http/middleware/authMiddleware';
 
 const roadmapRouter = Router();
 const createRoadmapController = new CreateRoadmapController();
@@ -20,15 +21,15 @@ const getRoadmapsByTypeController = new GetRoadmapsByTypeController();
 const getRoadmapsByAdminController = new GetRoadmapsByAdminController();
 const getAllRoadmapMembersController = new GetAllRoadmapMembersController();
 
-roadmapRouter.post("/roadmap", createRoadmapController.handle);
-roadmapRouter.post("/roadmap/:id/contribute", contributeToRoadmapController.handle);
-roadmapRouter.get("/roadmap/:id/contributions", getContributionsController.handle);
-roadmapRouter.patch("/roadmap/:id/merge", mergeContributionController.handle);
-roadmapRouter.get("/roadmap", getRoadmapsByTypeController.handle);
-roadmapRouter.get("/roadmap/admin", getRoadmapsByAdminController.handle);
-roadmapRouter.get("/roadmap/subscribed", getAllSubscribedController.handle);
-roadmapRouter.get("/roadmap/:id", getSingleRoadmapController.handle);
-roadmapRouter.get("/roadmap/:id/members", getAllRoadmapMembersController.handle);
+roadmapRouter.post("/", authMiddleware, createRoadmapController.handle);
+roadmapRouter.post("/:id/contribute", contributeToRoadmapController.handle);
+roadmapRouter.get("/:id/contributions", getContributionsController.handle);
+roadmapRouter.patch("/:id/merge", mergeContributionController.handle);
+roadmapRouter.get("/", getRoadmapsByTypeController.handle);
+roadmapRouter.get("/admin", getRoadmapsByAdminController.handle);
+roadmapRouter.get("/subscribed", getAllSubscribedController.handle);
+roadmapRouter.get("/:id/members", getAllRoadmapMembersController.handle);
+roadmapRouter.get("/:id", getSingleRoadmapController.handle);
 
 
 
