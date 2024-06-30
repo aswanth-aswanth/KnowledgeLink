@@ -23,4 +23,5 @@ export interface Topic {
 export interface TopicsState {
     topics: { [id: string]: Topic };
     rootId: string;
+    editorData?: any | null;
 }

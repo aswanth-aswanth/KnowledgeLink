@@ -6,11 +6,10 @@ import Connection from "./Connection";
 import { topicsData } from "@/data/topic";
 import { Topic, Rect, ConnectionType } from "@/types/EditorTypes";
 import { useEditorContext } from "@/contexts/EditorContext";
-interface EditorProps {
-  topicsData: Topic;
-}
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
-const Editor: React.FC<EditorProps> = ({ topicsData }) => {
+const Editor: React.FC = () => {
   const {
     rectangles,
     setRectangles,
@@ -31,6 +30,8 @@ const Editor: React.FC<EditorProps> = ({ topicsData }) => {
   const [isMultiSelectMode, setIsMultiSelectMode] = useState(false);
   const [circlesVisible, setCirclesVisible] = useState(true);
   const svgRef = useRef<SVGSVGElement>(null);
+  const editorData = useSelector((state: RootState) => state.topics.editorData);
+  const [scale, setScale] = useState(1);
 
   const toggleCircleVisibility = () => setCirclesVisible((prev) => !prev);
 
@@ -77,13 +78,13 @@ const Editor: React.FC<EditorProps> = ({ topicsData }) => {
   useEffect(() => {
     if (isInitialized) {
       if (rectangles.length === 0) {
-        const initialRectangles = createRectanglesFromData(topicsData);
+        const initialRectangles = createRectanglesFromData(editorData);
         setRectangles(initialRectangles);
       } else {
         console.log("topics DAtata : ", topicsData);
         // Ensure all topics from topicsData are represented in rectangles
         const updatedRectangles = createRectanglesFromData(
-          topicsData,
+          editorData,
           0,
           0,
           rectangles
@@ -137,6 +138,14 @@ const Editor: React.FC<EditorProps> = ({ topicsData }) => {
     } else {
       setSelectedRect(id);
     }
+  };
+
+  const handleScaleUp = () => {
+    setScale((prevScale) => Math.min(prevScale + 0.1, 2));
+  };
+
+  const handleScaleDown = () => {
+    setScale((prevScale) => Math.max(prevScale - 0.1, 0.5));
   };
 
   const handleMouseDown = useCallback((e: React.MouseEvent<SVGSVGElement>) => {
@@ -226,44 +235,6 @@ const Editor: React.FC<EditorProps> = ({ topicsData }) => {
     );
   };
 
-  /* const createRectanglesFromData = useCallback(
-    (topic: Topic, level: number = 0, yOffset: number = 0) => {
-      const newRects: Rect[] = [];
-      const rectWidth = 200;
-      const rectHeight = 50;
-      const xOffset = level * 250;
-
-      const rect: Rect = {
-        id: `rect-${level}-${yOffset}`,
-        x: xOffset,
-        y: yOffset,
-        width: rectWidth,
-        height: rectHeight,
-        name: topic.name,
-      };
-      newRects.push(rect);
-
-      let currentYOffset = yOffset + rectHeight + 20;
-      topic.children.forEach((child) => {
-        const childRects = createRectanglesFromData(
-          child,
-          level + 1,
-          currentYOffset
-        );
-        newRects.push(...childRects);
-        currentYOffset += childRects.length * (rectHeight + 20);
-      });
-
-      return newRects;
-    },
-    []
-  ); */
-
-  /*   useEffect(() => {
-    const initialRectangles = createRectanglesFromData(topicsData);
-    setRectangles(initialRectangles);
-    updateSvgHeight();
-  }, [createRectanglesFromData]); */
 
   const updateSvgHeight = useCallback(() => {
     const maxY = Math.max(...rectangles.map((rect) => rect.y + rect.height));
@@ -349,6 +320,8 @@ const Editor: React.FC<EditorProps> = ({ topicsData }) => {
         circlesVisible={circlesVisible}
         onToggleCircleVisibility={toggleCircleVisibility}
         onCopySVG={handleCopySVG}
+        onScaleUp={handleScaleUp}
+        onScaleDown={handleScaleDown}
       />
       <svg
         ref={svgRef}
@@ -358,6 +331,7 @@ const Editor: React.FC<EditorProps> = ({ topicsData }) => {
         onMouseUp={handleMouseUp}
         onMouseDown={handleMouseDown}
         className="m-4"
+        style={{ transform: `scale(${scale})`, transformOrigin: "top left" }}
       >
         {connections.map((conn, index) => (
           <Connection

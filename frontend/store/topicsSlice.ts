@@ -13,6 +13,7 @@ const initialState: TopicsState = {
     },
   },
   rootId: 'root',
+  editorData: null,
 };
 
 const topicsSlice = createSlice({
@@ -59,8 +60,11 @@ const topicsSlice = createSlice({
       state.topics[id].isExpanded = !state.topics[id].isExpanded;
     },
     resetTopics: () => initialState,
+    setEditorData: (state, action: PayloadAction<any>) => {
+      state.editorData = action.payload;
+    },
   },
 });
 
-export const { addTopic, updateTopic, deleteTopic, toggleExpand, resetTopics } = topicsSlice.actions;
+export const { addTopic, updateTopic, deleteTopic, toggleExpand, resetTopics, setEditorData } = topicsSlice.actions;
 export default topicsSlice.reducer;

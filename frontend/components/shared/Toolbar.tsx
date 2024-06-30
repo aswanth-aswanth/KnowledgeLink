@@ -1,6 +1,5 @@
-// Toolbar.tsx
 import React from "react";
-import { FaEyeSlash, FaEye } from "react-icons/fa";
+import { FaEyeSlash, FaEye, FaSearchPlus, FaSearchMinus } from "react-icons/fa";
 
 interface ToolbarProps {
   onAddRectangle: () => void;
@@ -14,6 +13,8 @@ interface ToolbarProps {
   circlesVisible: boolean;
   onToggleCircleVisibility: () => void;
   onCopySVG: () => void;
+  onScaleUp: () => void;
+  onScaleDown: () => void;
 }
 
 const Toolbar: React.FC<ToolbarProps> = ({
@@ -28,6 +29,8 @@ const Toolbar: React.FC<ToolbarProps> = ({
   circlesVisible,
   onToggleCircleVisibility,
   onCopySVG,
+  onScaleUp,
+  onScaleDown,
 }) => {
   return (
     <div className="bg-gray-800 text-white p-4 flex justify-center space-x-4">
@@ -79,6 +82,12 @@ const Toolbar: React.FC<ToolbarProps> = ({
           {circlesVisible ? <FaEyeSlash /> : <FaEye />}
         </button>
         <button onClick={onCopySVG}>Copy SVG</button>
+        <button onClick={onScaleUp} className="toolbar-button">
+          <FaSearchPlus /> 
+        </button>
+        <button onClick={onScaleDown} className="toolbar-button">
+          <FaSearchMinus /> 
+        </button>
       </div>
     </div>
   );

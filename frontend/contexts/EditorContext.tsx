@@ -28,7 +28,6 @@ export const EditorProvider: React.FC<{ children: React.ReactNode }> = ({
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    // Load data from localStorage on the client side
     const savedRectangles = localStorage.getItem("rectangles");
     const savedConnections = localStorage.getItem("connections");
 

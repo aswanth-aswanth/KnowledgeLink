@@ -105,9 +105,7 @@ const Login = () => {
         </svg>
       ),
       color: "bg-gray-200 hover:bg-gray-100",
-      onClick: () => {
-        // Implement Facebook authentication here
-      },
+      onClick: () => {},
     },
   ];
 
