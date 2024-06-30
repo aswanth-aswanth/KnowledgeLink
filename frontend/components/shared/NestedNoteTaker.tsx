@@ -35,17 +35,19 @@ const NestedNoteTaker: React.FC = () => {
 
   console.log("Current topics state:", currentTopicsState);
 
-  function transformTopics(topics: any) {
+  function transformTopics(topics) {
     const root = topics.root;
 
-    function populateChildren(node: any) {
+    function populateChildren(node) {
       if (!node.children || node.children.length === 0) {
-        return { ...node, children: [] };
+        const { isExpanded, ...cleanedNode } = node;
+        return { ...cleanedNode, children: [] };
       }
 
+      const { isExpanded, ...cleanedNode } = node;
       return {
-        ...node,
-        children: node.children.map((childId: string) => {
+        ...cleanedNode,
+        children: node.children.map((childId) => {
           const childNode = topics[childId];
           return populateChildren(childNode);
         }),
