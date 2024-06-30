@@ -39,6 +39,7 @@ const NestedNoteTaker: React.FC = () => {
 
   function transformTopics(topics: any) {
     const root = topics.root;
+    const newRootId = Date.now().toString();
 
     function populateChildren(node: any) {
       if (!node.children || node.children.length === 0) {
@@ -56,9 +57,15 @@ const NestedNoteTaker: React.FC = () => {
       };
     }
 
-    return populateChildren(root);
+    const transformedRoot = populateChildren(root);
+
+    return {
+      ...transformedRoot,
+      rootId: newRootId,
+    };
   }
 
+  console.log("transformTopics : ", transformTopics(currentTopicsState.topics));
   const handleContinue = useCallback(() => {
     const transformedTopics: any = transformTopics(currentTopicsState.topics);
     dispatch(setEditorData(transformedTopics));
