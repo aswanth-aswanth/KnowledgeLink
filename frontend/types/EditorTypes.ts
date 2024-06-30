@@ -4,6 +4,8 @@ export interface Topic {
     children: Topic[];
     id: string;
     no: string;
+    roadmapType?: string;
+    rootId?: string;
 }
 
 export interface Rect {

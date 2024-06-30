@@ -8,7 +8,7 @@ interface User {
   id: string;
   name: string;
   email: string;
-  imageUrl?: string; // Add imageUrl field for storing user image
+  imageUrl?: string; 
 }
 
 interface AuthState {

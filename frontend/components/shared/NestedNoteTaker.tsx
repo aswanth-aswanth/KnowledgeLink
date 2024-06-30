@@ -15,6 +15,7 @@ const NestedNoteTaker: React.FC = () => {
     (state: RootState) => state.topics.topics[state.topics.rootId]
   );
   const { isDarkMode } = useDarkMode();
+  const [roadmapType, setRoadmapType] = useState("public_voting");
   const router = useRouter();
 
   const handleAddRootTopic = useCallback(() => {
@@ -61,16 +62,20 @@ const NestedNoteTaker: React.FC = () => {
 
     return {
       ...transformedRoot,
-      rootId: newRootId,
+      id: newRootId,
+      roadmapType: roadmapType,
     };
   }
 
-  console.log("transformTopics : ", transformTopics(currentTopicsState.topics));
-  const handleContinue = useCallback(() => {
-    const transformedTopics: any = transformTopics(currentTopicsState.topics);
-    dispatch(setEditorData(transformedTopics));
-    router.push("/svg2");
-  }, [currentTopicsState.topics, dispatch, router]);
+  const handleContinue = useCallback(
+    (selectedRoadmapType: string) => {
+      setRoadmapType(selectedRoadmapType);
+      const transformedTopics: any = transformTopics(currentTopicsState.topics);
+      dispatch(setEditorData(transformedTopics));
+      router.push("/svg2");
+    },
+    [currentTopicsState.topics, dispatch, router]
+  );
 
   return (
     <>
@@ -106,8 +111,9 @@ const NestedNoteTaker: React.FC = () => {
           <TopicNode key={childId} id={childId} />
         ))}
       </div>
-      <div className="flex justify-end mt-8"></div>
-      <ChooseRoadmapType onContinue={handleContinue} />
+      <div className="flex justify-end my-8">
+        <ChooseRoadmapType onContinue={handleContinue} />
+      </div>
     </>
   );
 };

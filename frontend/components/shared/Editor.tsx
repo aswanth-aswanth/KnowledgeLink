@@ -33,6 +33,8 @@ const Editor: React.FC = () => {
   const editorData = useSelector((state: RootState) => state.topics.editorData);
   const [scale, setScale] = useState(1);
 
+  console.log("EditorData : ", editorData);
+
   const toggleCircleVisibility = () => setCirclesVisible((prev) => !prev);
 
   const createRectanglesFromData = useCallback(
@@ -235,7 +237,6 @@ const Editor: React.FC = () => {
     );
   };
 
-
   const updateSvgHeight = useCallback(() => {
     const maxY = Math.max(...rectangles.map((rect) => rect.y + rect.height));
     const newHeight = Math.max(600, maxY + 100); // Add some padding
@@ -307,7 +308,7 @@ const Editor: React.FC = () => {
   useEffect(() => updateSvgHeight(), [rectangles, updateSvgHeight]);
 
   return (
-    <div>
+    <div className="relative">
       <Toolbar
         onAddRectangle={handleCreateRect}
         onStartConnecting={handleStartConnecting}
@@ -367,6 +368,9 @@ const Editor: React.FC = () => {
           />
         ))}
       </svg>
+      <button className="absolute bottom-8 right-6 px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 transition-colors duration-200 ease-in-out">
+        Submit roadmap
+      </button>
     </div>
   );
 };
