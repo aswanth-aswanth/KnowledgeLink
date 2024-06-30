@@ -1,12 +1,12 @@
 "use client";
 import React, { useCallback } from "react";
-import TopicNode from "./TopicNode";
 import { useSelector, useDispatch } from "react-redux";
+import { Plus, Trash } from "lucide-react";
 import { RootState, AppDispatch } from "@/store";
 import { addTopic, resetTopics } from "@/store/topicsSlice";
-import { Plus, Trash } from "lucide-react";
-import ChooseRoadmapType from "./ChooseRoadmapType";
 import { useDarkMode } from "@/hooks/useDarkMode";
+import ChooseRoadmapType from "./ChooseRoadmapType";
+import TopicNode from "./TopicNode";
 
 const NestedNoteTaker: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -34,6 +34,30 @@ const NestedNoteTaker: React.FC = () => {
   const currentTopicsState = useSelector((state: RootState) => state.topics);
 
   console.log("Current topics state:", currentTopicsState);
+
+  function transformTopics(topics: any) {
+    const root = topics.root;
+
+    function populateChildren(node: any) {
+      if (!node.children || node.children.length === 0) {
+        return { ...node, children: [] };
+      }
+
+      return {
+        ...node,
+        children: node.children.map((childId: string) => {
+          const childNode = topics[childId];
+          return populateChildren(childNode);
+        }),
+      };
+    }
+
+    return populateChildren(root);
+  }
+
+  // Usage
+  const transformedTopics = transformTopics(currentTopicsState.topics);
+  console.log("Transformed : ", transformedTopics);
 
   return (
     <>
