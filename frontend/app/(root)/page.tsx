@@ -8,7 +8,6 @@ import Tabs from "@/components/shared/Tabs";
 import { Tab } from "@/types";
 import Roadmaps from "@/components/shared/Roadmaps";
 import { Provider } from "react-redux";
-import { useDarkMode } from "@/hooks/useDarkMode";
 import { store } from "@/store";
 
 const TabNavigation: React.FC = () => {
@@ -16,7 +15,6 @@ const TabNavigation: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
-  const { isDarkMode } = useDarkMode();
 
   useEffect(() => {
     if (token) {
@@ -32,7 +30,7 @@ const TabNavigation: React.FC = () => {
 
   return (
     <Provider store={store}>
-      <div className="-mt-6 pt-4">
+      <div className="-mt-6 pt-4 pb-8">
         <Tabs
           tabs={tabs}
           activeTab={activeTab}

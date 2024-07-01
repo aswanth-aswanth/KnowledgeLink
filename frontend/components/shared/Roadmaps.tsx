@@ -1,68 +1,63 @@
-import React, { useState } from "react";
+// Roadmaps.tsx
+import React, { useState, useEffect } from "react";
 import { Tab } from "@/types";
 import Tabs from "@/components/shared/Tabs";
 import RoadmapItems from "./RoadmapItems";
+import apiClient from "@/api/apiClient";
 
 export default function Roadmaps() {
   const [activeTab, setActiveTab] = useState<string>(
     "Expert Collaboration Roadmap"
   );
+  const [roadmapData, setRoadmapData] = useState([]);
+
+  const getRoadmapByType = async (roadmapType: string) => {
+    try {
+      const res = await apiClient.get(`/roadmap?type=${roadmapType}`);
+      setRoadmapData(res.data);
+    } catch (error) {
+      console.log("Error: ", error);
+    }
+  };
+
+  useEffect(() => {
+    const tab = tabs.find((t) => t.name === activeTab);
+    if (tab) {
+      getRoadmapByType(tab.dbName);
+    }
+  }, [activeTab]);
+
+  const handleTabClick = (name: string, dbName: string) => {
+    setActiveTab(name);
+    getRoadmapByType(dbName);
+  };
 
   const tabs: Tab[] = [
-    { name: "Expert Collaboration Roadmap", icon: "👨‍🏫" },
-    { name: "Public Voting Roadmap", icon: "🗳️" },
-    { name: "Moderated Submission Roadmap", icon: "📝" },
+    {
+      name: "Expert Collaboration Roadmap",
+      icon: "👨‍🏫",
+      dbName: "expert_collaboration",
+    },
+    { name: "Public Voting Roadmap", icon: "🗳️", dbName: "public_voting" },
+    {
+      name: "Moderated Submission Roadmap",
+      icon: "📝",
+      dbName: "moderator_submission",
+    },
   ];
 
-  const cards = [
-    {
-      title: "Card Title 1",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      likes: 20,
-    },
-    {
-      title: "Card Title 2",
-      description:
-        "Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.",
-      likes: 15,
-    },
-    {
-      title: "Card Title 3",
-      description:
-        "Nulla facilisi. Duis tincidunt libero in nulla elementum, sit amet suscipit dolor fermentum.",
-      likes: 10,
-    },
-    {
-      title: "Card Title 4",
-      description:
-        "Suspendisse potenti. Nam ut erat a leo varius ultricies nec sit amet eros.",
-      likes: 18,
-    },
-    {
-      title: "Card Title 5",
-      description:
-        "Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae.",
-      likes: 25,
-    },
-    {
-      title: "Card Title 6",
-      description:
-        "Maecenas vehicula dolor sed nulla maximus, sit amet gravida nunc cursus.",
-      likes: 12,
-    },
-  ];
   return (
     <>
       <div className="flex justify-around">
         <Tabs
           tabs={tabs}
           activeTab={activeTab}
-          onTabClick={setActiveTab}
+          onTabClick={handleTabClick}
           tabFor="typesofroadmap"
         />
       </div>
       <div className="grid grid-cols-1 mt-14 md:grid-cols-3 gap-4">
-        {cards.map((card, index) => (
+        {roadmapData.map((card, index) => (
           <div key={index}>
             <RoadmapItems
               title={card.title}
