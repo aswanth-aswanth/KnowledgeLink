@@ -46,7 +46,7 @@ export default function RoadmapPage() {
       {isEditMode ? (
         <RoadmapViewer transformedTopics={roadmapData} />
       ) : (
-        <div className="max-w-[1000px] mx-auto">
+        <div className="max-w-[900px] mx-auto">
           {/* // <NestedNoteTaker initialData={roadmapData} /> */}
           <RoadmapViewer transformedTopics={roadmapData} />
         </div>
