@@ -12,6 +12,7 @@ export default function page() {
   const isDarkMode = useDarkMode();
   const router = useRouter();
   const [adminRoadmaps, setAdminRoadmaps] = useState([]);
+  const [subscribedRoadmaps, setSubscribedRoadmaps] = useState([]);
   const cards = [
     {
       title: "Card Title 1",
@@ -60,8 +61,19 @@ export default function page() {
     }
   };
 
+  const getUserSubscribedRoadmaps = async () => {
+    try {
+      const res = await apiClient("/roadmap/subscribed");
+      console.log("Res : ", res.data);
+      setSubscribedRoadmaps(res.data);
+    } catch (error) {
+      console.log("Error : ", error);
+    }
+  };
+
   useEffect(() => {
     getAdminRoadmaps();
+    getUserSubscribedRoadmaps();
   }, []);
 
   return (
@@ -126,7 +138,7 @@ export default function page() {
         User Subscribed Roadmaps
       </h1>
       <div className="grid grid-cols-12 mt-14 gap-4 md:px-4">
-        {cards.map((card, index) => (
+        {subscribedRoadmaps.map((card, index) => (
           <div
             key={index}
             className="flex w-full

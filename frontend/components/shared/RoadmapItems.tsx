@@ -21,16 +21,18 @@ const RoadmapItems: React.FC<CardProps> = ({
   const router = useRouter();
 
   const subscribe = async (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    id: string
   ) => {
     e.stopPropagation();
     try {
       console.log("Subscribed to roadmap:", id);
       const res = await apiClient.post("/profile/subscribe", { roadmapId: id });
-      toast(res.data.message, { icon: "👍" });
-      console.log("Response : ", res);
+      toast.success(res.data.message);
+      console.log("Response:", res);
     } catch (error) {
-      console.log("Error : ", error);
+      toast.error("Subscription failed");
+      console.log("Error:", error);
     }
   };
 
@@ -47,7 +49,7 @@ const RoadmapItems: React.FC<CardProps> = ({
           <span>{likes} Likes</span>
         </div>
         <button
-          onClick={subscribe}
+          onClick={(e) => subscribe(e, id)}
           className="ml-4 px-4 py-2 border border-green-500 text-black font-semibold rounded-lg shadow-md hover:bg-green-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75"
         >
           Subscribe

@@ -2,7 +2,7 @@
 import User, { IUser } from '../../infra/databases/mongoose/models/User';
 
 export default class UserRepository {
-    public async create(user: IUser): Promise<IUser> {
+    public async create(user: any): Promise<IUser> {
         const newUser = new User(user);
         return newUser.save();
     }
@@ -14,11 +14,21 @@ export default class UserRepository {
     }
     public async subscribe(userId: string, roadmapId: string): Promise<IUser | null> {
         const user = await User.findById(userId);
+        console.log("roadmapId,subscribe : ", roadmapId);
         if (!user) {
             return null;
         }
-        user.subscribed?.push(roadmapId) || (user.subscribed = [roadmapId]);
+
+        if (!user.subscribed) {
+            user.subscribed = [];
+        }
+
+        if (!user.subscribed.includes(roadmapId)) {
+            user.subscribed.push(roadmapId);
+        }
+
         await user.save();
+
         return user;
     }
     public async getSubscribedRoadmaps(userId: string): Promise<string[]> {

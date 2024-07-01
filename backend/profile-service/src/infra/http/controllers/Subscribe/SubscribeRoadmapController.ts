@@ -6,6 +6,7 @@ export default class SubscribeRoadmapController {
     public async handle(req: any, res: Response): Promise<Response> {
         const { roadmapId } = req.body;
         const userId = req.user.userId;
+        console.log("RoadmapId : ", roadmapId);
         const subscribeToRoadmap = new SubscribeToRoadmap(
             new UserRepository()
         );

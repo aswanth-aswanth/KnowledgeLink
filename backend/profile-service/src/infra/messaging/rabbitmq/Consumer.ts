@@ -29,6 +29,7 @@ class Consumer {
             const functionMap: { [key: string]: QueueFunction } = {
                 'profile_queue': this.getSubscribedRoadmaps,
                 'profile_service_queue': this.getAllMembersOfRoadmap,
+                'user.registration': this.handleUserRegistration, // Add this new function
             };
 
             channel.assertQueue(queue, { durable: true });
@@ -67,6 +68,19 @@ class Consumer {
         channel.sendToQueue(msg.properties.replyTo, Buffer.from(response), {
             correlationId: msg.properties.correlationId,
         });
+    }
+
+    private async handleUserRegistration(msg: amqp.Message, channel: amqp.Channel, userRepository: UserRepository) {
+        const userData = JSON.parse(msg.content.toString());
+        console.log("userData", userData);
+        try {
+            const newUser = await userRepository.create({
+                ...userData
+            });
+            console.log(`User created in profile service: ${newUser._id}`);
+        } catch (error) {
+            console.error('Failed to create user in profile service:', error);
+        }
     }
 }
 

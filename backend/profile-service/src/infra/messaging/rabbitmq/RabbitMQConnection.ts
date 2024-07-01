@@ -24,6 +24,7 @@ class RabbitMQConnection {
             console.log('RabbitMQ connected successfully (profile-service)');
             Consumer.consume('profile_queue');
             Consumer.consume('profile_service_queue');
+            Consumer.consume('user.registration');
         } catch (error) {
             console.error('Failed to connect to RabbitMQ (profile-service):', error);
         }
