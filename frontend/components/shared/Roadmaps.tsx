@@ -63,6 +63,7 @@ export default function Roadmaps() {
               title={card.title}
               description={card.description}
               likes={card.likes}
+              id={card._id}
             />
           </div>
         ))}
