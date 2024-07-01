@@ -29,7 +29,7 @@ export default function Header() {
 
   return (
     <header
-      className={`flex items-center justify-between p-2 relative z-10  shadow-md ${
+      className={`flex items-center justify-between p-2  relative z-10  shadow-md ${
         isDarkMode
           ? "bg-gradient-to-r from-gray-900 to-gray-800 shadow-lg text-white"
           : "bg-white"
@@ -39,7 +39,7 @@ export default function Header() {
         <Hamburger />
       </div>
 
-      <div className="flex-grow mx-4">
+      <div className="flex-grow mx-0 sm:mx-4">
         <div className="relative">
           <input
             type="text"
@@ -54,10 +54,10 @@ export default function Header() {
         </div>
       </div>
 
-      <div className="flex items-center space-x-4 md:mr-10">
+      <div className="flex items-center sm:space-x-4 md:mr-10">
         <button
           onClick={toggleDarkMode}
-          className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
+          className="p-0 sm:p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
           aria-label={
             isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"
           }
@@ -71,8 +71,10 @@ export default function Header() {
         <Notifications />
 
         {isAuthenticated && user ? (
-          <div className="flex items-center border p-2">
-            <span className="text-gray-500 font-medium mr-2">{user.name}</span>
+          <div className="flex items-center p-0 sm:p-2 shrink-0">
+            <span className="text-gray-500 hidden sm:block font-medium mr-2">
+              {user.name}
+            </span>
             <Image
               src={user.imageUrl || defaultUserImage}
               alt="User Image"

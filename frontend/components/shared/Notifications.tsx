@@ -12,7 +12,7 @@ export default function PopoverDemo() {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" className="p-4 outline-none border-none">
+        <Button variant="outline" className="p-0 sm:p-4 outline-none border-none">
           <GoBell className="text-xl"/>
         </Button>
       </PopoverTrigger>

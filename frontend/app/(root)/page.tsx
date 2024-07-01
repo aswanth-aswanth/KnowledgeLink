@@ -32,7 +32,7 @@ const TabNavigation: React.FC = () => {
 
   return (
     <Provider store={store}>
-      <div className="mt-4">
+      <div className="-mt-6 pt-4">
         <Tabs
           tabs={tabs}
           activeTab={activeTab}
