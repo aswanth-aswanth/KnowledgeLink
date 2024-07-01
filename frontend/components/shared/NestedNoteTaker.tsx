@@ -3,6 +3,7 @@ import React, { useCallback, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { Plus, Trash } from "lucide-react";
+import { v4 as uuid } from "uuid";
 import { RootState, AppDispatch } from "@/store";
 import { addTopic, resetTopics, setEditorData } from "@/store/topicsSlice";
 import { useDarkMode } from "@/hooks/useDarkMode";
@@ -20,7 +21,7 @@ const NestedNoteTaker: React.FC = () => {
 
   const handleAddRootTopic = useCallback(() => {
     const newTopic = {
-      id: Date.now().toString(),
+      id: uuid().slice(0, 13),
       name: "New Topic",
       content: "",
       no: `${rootTopic.children.length + 1}`,
@@ -40,11 +41,12 @@ const NestedNoteTaker: React.FC = () => {
 
   function transformTopics(topics: any) {
     const root = topics.root;
-    const newRootId = Date.now().toString();
+    const newRootId = uuid().slice(0, 13);
 
     function populateChildren(node: any) {
       const { isExpanded, ...cleanedNode } = node;
       return {
+        uniqueId: uuid().slice(0, 13),
         name: cleanedNode.name,
         content: cleanedNode.content,
         tags: [],
@@ -58,6 +60,7 @@ const NestedNoteTaker: React.FC = () => {
     const transformedRoot = populateChildren(root);
 
     return {
+      uniqueId: uuid().slice(0, 13),
       title: transformedRoot.name,
       description: transformedRoot.content,
       type: roadmapType,
@@ -65,12 +68,14 @@ const NestedNoteTaker: React.FC = () => {
       members: [],
       creatorId: "",
       topics: transformedRoot,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: "",
+      updatedAt: "",
       id: newRootId,
     };
   }
 
+  console.log("TransformedTopics : ", transformTopics(currentTopicsState.topics));
+  
   const handleContinue = useCallback(
     (selectedRoadmapType: string) => {
       setRoadmapType(selectedRoadmapType);
@@ -115,7 +120,7 @@ const NestedNoteTaker: React.FC = () => {
           <TopicNode key={childId} id={childId} />
         ))}
       </div>
-      <div className="flex justify-end my-8">
+      <div className="flex justify-end py-8">
         <ChooseRoadmapType onContinue={handleContinue} />
       </div>
     </>

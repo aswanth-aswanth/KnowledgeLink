@@ -3,6 +3,7 @@ export interface Topic {
     content: string;
     children: Topic[];
     tags?: string[];
+    uniqueId?: string;
 }
 
 export interface Roadmap {
@@ -16,6 +17,7 @@ export interface Roadmap {
     createdAt?: Date;
     updatedAt?: Date;
     id: string;
+    uniqueId?: string;
 }
 
 export interface Rect {

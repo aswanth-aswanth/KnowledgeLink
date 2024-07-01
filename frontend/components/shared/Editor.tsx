@@ -54,9 +54,9 @@ const Editor: React.FC = () => {
       const rectHeight = 40;
       const xOffset = level * 250;
       console.log("Topics Editor: ", topic);
-      const existingRect = existingRects.find((r) => r.name === topic?.name);
+      const existingRect = existingRects.find((r) => r.id === topic?.unqueId);
       const rect: Rect = existingRect || {
-        id: `rect-${level}-${yOffset}`,
+        id: `${topic.uniqueId}`,
         x: xOffset,
         y: yOffset,
         width: rectWidth,
@@ -361,7 +361,7 @@ const Editor: React.FC = () => {
         onMouseUp={handleMouseUp}
         onMouseDown={handleMouseDown}
         className="m-4"
-        style={{ transform: `scale(${scale})`, transformOrigin: "top left" }}
+        style={{ transform: `scale(${scale})`, transformOrigin: "top" }}
       >
         {connections.map((conn, index) => (
           <Connection
