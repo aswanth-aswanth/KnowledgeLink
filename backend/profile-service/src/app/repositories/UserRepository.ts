@@ -12,9 +12,9 @@ export default class UserRepository {
     public async findById(userId: string): Promise<IUser | null> {
         return User.findById(userId);
     }
-    public async subscribe(userId: string, roadmapId: string): Promise<IUser | null> {
-        const user = await User.findById(userId);
-        console.log("roadmapId,subscribe : ", roadmapId);
+    public async subscribe(email: string, roadmapId: string): Promise<IUser | null> {
+        const user = await User.findOne({ email });
+        console.log("user subscribe : ", user);
         if (!user) {
             return null;
         }
@@ -31,8 +31,8 @@ export default class UserRepository {
 
         return user;
     }
-    public async getSubscribedRoadmaps(userId: string): Promise<string[]> {
-        const user = await User.findById(userId);
+    public async getSubscribedRoadmaps(email: string): Promise<string[]> {
+        const user = await User.findOne({ email });
         if (!user || !user.subscribed) {
             return [];
         }

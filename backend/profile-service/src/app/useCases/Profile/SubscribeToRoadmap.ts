@@ -8,8 +8,8 @@ export default class SubscribeToRoadmap {
         this.userRepository = userRepository;
     }
 
-    public async execute(userId: string, roadmapId: string): Promise<IUser | object | null> {
-        await this.userRepository.subscribe(userId, roadmapId);
+    public async execute(email: string, roadmapId: string): Promise<IUser | object | null> {
+        await this.userRepository.subscribe(email, roadmapId);
         return { message: "Subscribed to roadmap" };
     }
 }

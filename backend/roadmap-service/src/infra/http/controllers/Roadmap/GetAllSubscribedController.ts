@@ -5,14 +5,14 @@ import RoadmapRepository from "../../../../app/repositories/RoadmapRepository";
 export default class GetAllSubscribedController {
     public async handle(req: any, res: Response) {
 
-        const userId = req.user.userId;
+        const email = req.user.email;
 
         const getAllSubscribedRoadmaps = new GetAllSubscribedRoadmaps(
             new RoadmapRepository()
         );
 
         try {
-            const roadmaps = await getAllSubscribedRoadmaps.execute(userId);
+            const roadmaps = await getAllSubscribedRoadmaps.execute(email);
             return res.status(200).json(roadmaps);
         } catch (err) {
             if (err instanceof Error) {

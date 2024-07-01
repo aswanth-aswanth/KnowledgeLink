@@ -11,9 +11,9 @@ export default class GetAllSubscribedRoadmaps {
         this.roadmapRepository = roadmapRepository;
     }
 
-    public async execute(userId: string): Promise<IRoadmap[]> {
+    public async execute(email: string): Promise<IRoadmap[]> {
         try {
-            const message = JSON.stringify({ userId });
+            const message = JSON.stringify({ email });
             const response = await Publisher.publishAndWait('profile_queue', message);
             const subscribedRoadmapIds = JSON.parse(response).subscribed;
 
