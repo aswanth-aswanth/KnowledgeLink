@@ -1,6 +1,7 @@
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import User, { IUser } from '../../databases/mongoose/models/User';
+import Publisher from '../../../infra/messaging/rabbitmq/Publisher';
 
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID!,
@@ -20,6 +21,12 @@ passport.use(new GoogleStrategy({
           subscribed: []
         });
         await user.save();
+        const publisher = await Publisher.getInstance();
+        await publisher.publish('user.registration', JSON.stringify({
+          email: user.email,
+          username: user.username,
+          image: user.image
+        }));
       }
 
       done(null, user);
