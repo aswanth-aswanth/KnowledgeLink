@@ -45,4 +45,10 @@ export default class UserRepository {
 
         return users;
     }
+    public async getUsers(): Promise<object[]> {
+        const users = await User.find().select('_id username email image').exec();
+
+        return users;
+    }
+
 }
