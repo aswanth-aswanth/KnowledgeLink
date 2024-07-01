@@ -1,7 +1,7 @@
 // components/shared/RoadmapItems.tsx
 import React from "react";
 import { FiHeart } from "react-icons/fi";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import apiClient from "@/api/apiClient";
 import toast from "react-hot-toast";
 
@@ -19,6 +19,7 @@ const RoadmapItems: React.FC<CardProps> = ({
   id,
 }) => {
   const router = useRouter();
+  const pathname = usePathname();
 
   const subscribe = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -48,12 +49,14 @@ const RoadmapItems: React.FC<CardProps> = ({
           <FiHeart className="mr-1" />
           <span>{likes} Likes</span>
         </div>
-        <button
-          onClick={(e) => subscribe(e, id)}
-          className="ml-4 px-4 py-2 border border-green-500 text-black font-semibold rounded-lg shadow-md hover:bg-green-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75"
-        >
-          Subscribe
-        </button>
+        {pathname !== "/favourites-roadmaps" && (
+          <button
+            onClick={(e) => subscribe(e, id)}
+            className="ml-4 px-4 py-2 border border-green-500 text-black font-semibold rounded-lg shadow-md hover:bg-green-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75"
+          >
+            Subscribe
+          </button>
+        )}
       </div>
     </div>
   );
