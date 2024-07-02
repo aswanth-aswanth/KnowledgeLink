@@ -55,5 +55,33 @@ export default class UserRepository {
 
         return user;
     }
+    public async followUser(followerEmail: string, followeeEmail: string): Promise<string | object> {
+        // Find the follower and followee users by their email addresses
+        const follower = await User.findOne({ email: followerEmail });
+        const followee = await User.findOne({ email: followeeEmail });
+
+        if (!follower || !followee) {
+            throw new Error('User not found');
+        }
+
+        // Check if the followee is already being followed by the follower
+        if (follower.following?.includes(followee.email)) {
+            return 'Already following';
+        }
+
+        // Add the followee's email to the follower's following array
+        follower.following?.push(followee.email);
+        await follower.save();
+
+        // Check if the followee's followers array is defined and then check if the follower is already in it
+        if (followee.followers?.indexOf(follower.email) === -1) {
+            // Add the follower's email to the followee's followers array
+            followee.followers?.push(follower.email);
+            await followee.save();
+        }
+
+        // Return success message or status
+        return 'User followed successfully';
+    }
 
 }

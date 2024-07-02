@@ -5,6 +5,7 @@ import { AiOutlinePlus } from "react-icons/ai";
 import { Separator } from "@/components/ui/separator";
 import { useDarkMode } from "@/hooks/useDarkMode";
 import { usePathname } from "next/navigation";
+import toast from "react-hot-toast";
 import apiClient from "@/api/apiClient";
 
 export default function Profile() {
@@ -22,7 +23,24 @@ export default function Profile() {
       console.log("Error : ", error);
     }
   };
-  // console.log(email, pathname.split("/")[2]);
+
+  const followUser = async () => {
+    try {
+      const email = pathname.split("/")[2];
+      const res = await apiClient.patch(`/profile/user/${email}/follow`);
+      console.log("Res : ", res.data);
+      toast(res.data, {
+        icon: "👏",
+        style: {
+          borderRadius: "10px",
+          background: "#333",
+          color: "#fff",
+        },
+      });
+    } catch (error) {
+      console.log("Error : ", error);
+    }
+  };
 
   useEffect(() => {
     getUser();
@@ -40,7 +58,7 @@ export default function Profile() {
       <div
         className={`rounded-full absolute top-[90px] left-0 right-0 mx-auto w-56 h-56 ${
           isDarkMode ? "bg-gray-600" : "bg-gray-300"
-        } p-4 overflow-hidden border-4 border-gray-600` }
+        } p-4 overflow-hidden border-4 border-gray-600`}
       >
         <Image
           src={user.image}
@@ -82,7 +100,10 @@ export default function Profile() {
             />
           </div>
           <div className="h-16 flex items-center mt-8 px-4">
-            <button className="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">
+            <button
+              onClick={() => followUser()}
+              className="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
+            >
               Follow
             </button>
           </div>

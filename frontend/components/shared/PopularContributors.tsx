@@ -1,22 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import apiClient from "@/api/apiClient";
-
-const contributors = [
-  { name: "John Doe", designation: "Software Engineer" },
-  { name: "Jane Smith", designation: "Product Manager" },
-  { name: "Alice Johnson", designation: "UI/UX Designer" },
-  { name: "Bob Brown", designation: "Data Scientist" },
-  { name: "Charlie Green", designation: "DevOps Engineer" },
-  { name: "Diana White", designation: "Frontend Developer" },
-  { name: "Eve Black", designation: "Backend Developer" },
-  { name: "Frank Blue", designation: "QA Engineer" },
-  { name: "Grace Yellow", designation: "Business Analyst" },
-  { name: "Hank Red", designation: "Project Manager" },
-];
+import { useRouter } from "next/navigation";
 
 export default function PopularContributors() {
   const [contributors, setContributors] = useState([]);
+  const router = useRouter();
+
   const getUsers = async () => {
     try {
       const res = await apiClient.get("/profile/users");
@@ -41,7 +31,10 @@ export default function PopularContributors() {
           key={index}
           className="flex flex-col items-center text-center w-max "
         >
-          <div className="h-10 w-10 sm:h-20 sm:w-20 rounded-full flex justify-center items-center border-4 border-gray-300">
+          <div
+            onClick={() => router.push(`/profile/${contributor.email}`)}
+            className="h-10 w-10 sm:h-20 sm:w-20 rounded-full flex justify-center items-center border-4 border-gray-300"
+          >
             <Avatar className="h-16 w-16 cursor-pointer">
               <AvatarImage
                 src={

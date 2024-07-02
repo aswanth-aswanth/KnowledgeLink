@@ -1,12 +1,14 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IUser extends Document {
-  username: string,
+  username: string;
   email: string;
   password?: string;
-  favourites?: string[],
-  subscribed?: string[],
-  image?: string
+  favourites?: string[];
+  subscribed?: string[];
+  following?: string[];
+  followers?: string[];
+  image?: string;
 }
 
 const UserSchema: Schema = new Schema({
@@ -14,8 +16,10 @@ const UserSchema: Schema = new Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String },
   image: { type: String, default: "" },
-  favourites: { type: Array, default: [] },
-  subscribed: { type: Array, default: [] }
+  favourites: { type: [String], default: [] },
+  subscribed: { type: [String], default: [] },
+  following: { type: [String], default: [] },
+  followers: { type: [String], default: [] },
 });
 
 export default mongoose.model<IUser>('User', UserSchema);
