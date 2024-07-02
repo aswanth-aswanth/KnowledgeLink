@@ -2,6 +2,7 @@
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
+import { FaUserCircle } from "react-icons/fa";
 import { Separator } from "@/components/ui/separator";
 import { useDarkMode } from "@/hooks/useDarkMode";
 import { usePathname } from "next/navigation";
@@ -17,7 +18,6 @@ export default function Profile() {
     try {
       const email = pathname.split("/")[2];
       const profile = await apiClient(`/profile/user/${email}`);
-      console.log("Profile : ", profile.data);
       setUser(profile.data);
     } catch (error) {
       console.log("Error : ", error);
@@ -28,8 +28,7 @@ export default function Profile() {
     try {
       const email = pathname.split("/")[2];
       const res = await apiClient.patch(`/profile/user/${email}/follow`);
-      console.log("Res : ", res.data);
-      toast(res.data, {
+      toast(res.data.message, {
         icon: "👏",
         style: {
           borderRadius: "10px",
@@ -37,6 +36,7 @@ export default function Profile() {
           color: "#fff",
         },
       });
+      getUser();
     } catch (error) {
       console.log("Error : ", error);
     }
@@ -60,12 +60,16 @@ export default function Profile() {
           isDarkMode ? "bg-gray-600" : "bg-gray-300"
         } p-4 overflow-hidden border-4 border-gray-600`}
       >
-        <Image
-          src={user.image}
-          layout="fill"
-          objectFit="cover"
-          alt="Profile Picture"
-        />
+        {user.image ? (
+          <Image
+            src={user.image}
+            layout="fill"
+            objectFit="cover"
+            alt="Profile Picture"
+          />
+        ) : (
+          <FaUserCircle className="w-full h-full text-gray-400" />
+        )}
       </div>
       <div className="flex mt-36 items-center flex-col">
         <h3
@@ -101,10 +105,12 @@ export default function Profile() {
           </div>
           <div className="h-16 flex items-center mt-8 px-4">
             <button
-              onClick={() => followUser()}
+              onClick={() => {
+                followUser();
+              }}
               className="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
             >
-              Follow
+              {user?.isFollowing ? "Unfollow" : "Follow"}
             </button>
           </div>
         </div>
