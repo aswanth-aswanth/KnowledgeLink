@@ -8,6 +8,7 @@ import GetAllSubscribedController from "../../../infra/http/controllers/Roadmap/
 import GetRoadmapsByTypeController from "../../../infra/http/controllers/Roadmap/GetRoadmapsByTypeController";
 import GetRoadmapsByAdminController from "../../../infra/http/controllers/Roadmap/GetRoadmapsByAdminController";
 import GetAllRoadmapMembersController from "../../../infra/http/controllers/Roadmap/GetAllRoadmapMembersController";
+import GetRoadmapsByMemberController from "../../../infra/http/controllers/Roadmap/GetRoadmapsByMemberController";
 import authMiddleware from '../../../infra/http/middleware/authMiddleware';
 
 const roadmapRouter = Router();
@@ -20,11 +21,13 @@ const getAllSubscribedController = new GetAllSubscribedController();
 const getRoadmapsByTypeController = new GetRoadmapsByTypeController();
 const getRoadmapsByAdminController = new GetRoadmapsByAdminController();
 const getAllRoadmapMembersController = new GetAllRoadmapMembersController();
+const getRoadmapsByMemberController = new GetRoadmapsByMemberController();
 
 roadmapRouter.post("/", authMiddleware, createRoadmapController.handle);
 roadmapRouter.post("/:id/contribute", contributeToRoadmapController.handle);
 roadmapRouter.get("/:id/contributions", getContributionsController.handle);
 roadmapRouter.patch("/:id/merge", mergeContributionController.handle);
+roadmapRouter.get("/member", authMiddleware, getRoadmapsByMemberController.handle);
 roadmapRouter.get("/", getRoadmapsByTypeController.handle);
 roadmapRouter.get("/admin", authMiddleware, getRoadmapsByAdminController.handle);
 roadmapRouter.get("/subscribed", authMiddleware, getAllSubscribedController.handle);

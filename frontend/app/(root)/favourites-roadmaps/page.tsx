@@ -13,6 +13,7 @@ export default function page() {
   const router = useRouter();
   const [adminRoadmaps, setAdminRoadmaps] = useState([]);
   const [subscribedRoadmaps, setSubscribedRoadmaps] = useState([]);
+  const [userMemberedRoadmaps, setUserMemberedRoadmaps] = useState([]);
 
   const getAdminRoadmaps = async () => {
     try {
@@ -34,9 +35,20 @@ export default function page() {
     }
   };
 
+  const getUserMemberedRoadmaps = async () => {
+    try {
+      const res = await apiClient("/roadmap/member");
+      console.log("Res user membered : ", res.data);
+      setUserMemberedRoadmaps(res.data);
+    } catch (error) {
+      console.log("Error : ", error);
+    }
+  };
+
   useEffect(() => {
     getAdminRoadmaps();
     getUserSubscribedRoadmaps();
+    getUserMemberedRoadmaps();
   }, []);
 
   return (
@@ -48,12 +60,12 @@ export default function page() {
       >
         User Created Roadmaps
       </h1>
-      <div className="flex justify-center">
+      <div className="flex gap-4 px-2 md:px-4 flex-wrap justify-center">
         {adminRoadmaps.length > 0 ? (
           adminRoadmaps.map((roadmapItem: any) => {
             return (
-              <div className="border rounded-md p-10 mx-auto max-w-[380px] flex flex-col  bg-white shadow-lg">
-                <h3 className="mb-2 text-gray-800 font-semibold">
+              <div className="border justify-center items-center rounded-md p-10 mx-auto max-w-[380px] flex flex-col  bg-white shadow-lg">
+                <h3 className="mb-2 text-gray-800 text-center font-semibold">
                   Roadmap Name : {roadmapItem.title}
                 </h3>
                 <p>RoadmapType : {roadmapItem.type}</p>
@@ -112,7 +124,7 @@ export default function page() {
       </h1>
       <div className="grid grid-cols-12 mt-14 gap-4 md:px-4">
         {subscribedRoadmaps.length > 0 ? (
-          subscribedRoadmaps.map((card, index) => (
+          subscribedRoadmaps.map((card: any, index) => (
             <div
               key={index}
               className="flex w-full
@@ -152,6 +164,52 @@ export default function page() {
       >
         Your favorite roadmaps will appear here.
       </p>
+      <Separator className="my-10" />
+      <h1
+        className={`font-bold text-center text-2xl mt-20 pb-6 ${
+          isDarkMode ? "text-white" : "text-gray-800"
+        }`}
+      >
+        User membered roadmaps
+      </h1>
+      <div className="flex gap-4 px-2 md:px-4 flex-wrap justify-center">
+        {userMemberedRoadmaps.length > 0 ? (
+          userMemberedRoadmaps.map((roadmapItem: any) => {
+            return (
+              <div className="border justify-center items-center rounded-md gap-4 px-2 md:px-4 flex-wrap  p-10 mx-auto max-w-[380px] flex flex-col  bg-white shadow-lg">
+                <h3 className="mb-2 text-gray-800 text-center font-semibold">
+                  Roadmap Name : {roadmapItem.title}
+                </h3>
+                <p>RoadmapType : {roadmapItem.type}</p>
+                <p className="mb-6 mt-2">
+                  RoadmapDescription : {roadmapItem.description}
+                </p>
+                <div className="flex flex-wrap justify-center gap-4">
+                  <Button
+                    onClick={() =>
+                      router.push(`/roadmap-viewer/${roadmapItem._id}`)
+                    }
+                    className="bg-lime-600 hover:bg-blue-600  text-xs text-white  px-4 rounded-md shadow-md"
+                  >
+                    View Roadmap
+                  </Button>
+                  <Button className="bg-blue-500 hover:bg-blue-600  text-xs text-white  px-4 rounded-md shadow-md">
+                    Contribute
+                  </Button>
+                </div>
+              </div>
+            );
+          })
+        ) : (
+          <p
+            className={`text-center ${
+              isDarkMode ? "text-white" : "text-gray-800"
+            }`}
+          >
+            You've not been a member of any roadmap yet.
+          </p>
+        )}
+      </div>
     </>
   );
 }
