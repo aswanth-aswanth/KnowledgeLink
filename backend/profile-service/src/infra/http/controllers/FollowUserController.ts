@@ -11,13 +11,12 @@ export default class FollowUserController {
         const followeeEmail = req.params.email;
 
         try {
-
-            const user = await followUser.execute(followerEmail, followeeEmail);
-            if (!user) {
-                return res.status(404).json({ error: "User not found" });
+            if (followerEmail === followeeEmail) {
+                return res.status(400).json({ error: "You cannot follow yourself" });
             }
-            return res.status(200).json(user);
 
+            const result = await followUser.execute(followerEmail, followeeEmail);
+            return res.status(200).json(result);
         } catch (err) {
             if (err instanceof Error) {
                 return res.status(400).json({ error: err.message });

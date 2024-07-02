@@ -70,8 +70,7 @@ export default class UserRepository {
             return null;
         }
     }
-    public async followUser(followerEmail: string, followeeEmail: string): Promise<string | object> {
-        // Find the follower and followee users by their email addresses
+    public async toggleFollowUser(followerEmail: string, followeeEmail: string): Promise<object> {
         const follower = await User.findOne({ email: followerEmail });
         const followee = await User.findOne({ email: followeeEmail });
 
@@ -79,24 +78,23 @@ export default class UserRepository {
             throw new Error('User not found');
         }
 
-        // Check if the followee is already being followed by the follower
-        if (follower.following?.includes(followee.email)) {
-            return 'Already following';
-        }
+        const isFollowing = follower.following?.includes(followee.email);
 
-        // Add the followee's email to the follower's following array
-        follower.following?.push(followee.email);
-        await follower.save();
-
-        // Check if the followee's followers array is defined and then check if the follower is already in it
-        if (followee.followers?.indexOf(follower.email) === -1) {
-            // Add the follower's email to the followee's followers array
-            followee.followers?.push(follower.email);
+        if (isFollowing) {
+            // Unfollow
+            follower.following = follower.following?.filter(email => email !== followee.email);
+            followee.followers = followee.followers?.filter(email => email !== follower.email);
+            await follower.save();
             await followee.save();
+            return { message: 'User unfollowed successfully', action: 'unfollow' };
+        } else {
+            // Follow
+            follower.following?.push(followee.email);
+            followee.followers?.push(follower.email);
+            await follower.save();
+            await followee.save();
+            return { message: 'User followed successfully', action: 'follow' };
         }
-
-        // Return success message or status
-        return 'User followed successfully';
     }
 
 }
