@@ -1,12 +1,33 @@
 "use client";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { Separator } from "@/components/ui/separator";
 import { useDarkMode } from "@/hooks/useDarkMode";
+import { usePathname } from "next/navigation";
+import apiClient from "@/api/apiClient";
 
 export default function Profile() {
   const { isDarkMode } = useDarkMode();
+  const pathname = usePathname();
+  const [user, setUser] = useState({});
+
+  const getUser = async () => {
+    try {
+      const email = pathname.split("/")[2];
+      const profile = await apiClient(`/profile/user/${email}`);
+      console.log("Profile : ", profile.data);
+      setUser(profile.data);
+    } catch (error) {
+      console.log("Error : ", error);
+    }
+  };
+  // console.log(email, pathname.split("/")[2]);
+
+  useEffect(() => {
+    getUser();
+  }, []);
+
   return (
     <div
       className={`relative ${
@@ -17,11 +38,16 @@ export default function Profile() {
         className={`h-52 ${isDarkMode ? "bg-gray-700" : "bg-gray-500"}`}
       ></div>
       <div
-        className={`rounded-full absolute top-[90px] left-0 right-0 mx-auto w-56 ${
+        className={`rounded-full absolute top-[90px] left-0 right-0 mx-auto w-56 h-56 ${
           isDarkMode ? "bg-gray-600" : "bg-gray-300"
-        } h-56`}
+        } p-4 overflow-hidden border-4 border-gray-600` }
       >
-        <Image src={""}  />
+        <Image
+          src={user.image}
+          layout="fill"
+          objectFit="cover"
+          alt="Profile Picture"
+        />
       </div>
       <div className="flex mt-36 items-center flex-col">
         <h3

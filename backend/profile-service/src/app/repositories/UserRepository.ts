@@ -50,5 +50,10 @@ export default class UserRepository {
 
         return users;
     }
+    public async getUser(email: string): Promise<IUser | null> {
+        const user = await User.findOne({ email }).select('_id username email image').exec();
+
+        return user;
+    }
 
 }
