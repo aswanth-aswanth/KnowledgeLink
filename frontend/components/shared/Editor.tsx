@@ -54,7 +54,7 @@ const Editor: React.FC = () => {
       const rectHeight = 40;
       const xOffset = level * 250;
       console.log("Topics Editor: ", topic);
-      const existingRect = existingRects.find((r) => r.id === topic?.unqueId);
+      const existingRect = existingRects.find((r) => r.id === topic?.uniqueId);
       const rect: Rect = existingRect || {
         id: `${topic.uniqueId}`,
         x: xOffset,
@@ -62,6 +62,7 @@ const Editor: React.FC = () => {
         width: rectWidth,
         height: rectHeight,
         name: topic?.name,
+        uniqueId: `${topic.uniqueId}`,
       };
       newRects.push(rect);
 

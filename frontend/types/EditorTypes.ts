@@ -27,6 +27,7 @@ export interface Rect {
     width: number;
     height: number;
     name: string;
+    uniqueId: string;
 }
 
 export interface ConnectionType {

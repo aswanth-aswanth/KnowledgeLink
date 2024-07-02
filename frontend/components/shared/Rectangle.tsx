@@ -65,6 +65,7 @@ const Rectangle: React.FC<RectProps> = ({
         onClick={handleClick}
         onContextMenu={handleContextMenu}
         style={{ cursor: "move" }}
+        data-unique-id={`${rect.uniqueId}`}
       />
       <text
         x={rect.x + rect.width / 2}
