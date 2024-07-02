@@ -2,7 +2,6 @@ import React from "react";
 import { FaEyeSlash, FaEye, FaSearchPlus, FaSearchMinus } from "react-icons/fa";
 
 interface ToolbarProps {
-  onAddRectangle: () => void;
   onStartConnecting: () => void;
   isConnecting: boolean;
   onCreateConnection: () => void;
@@ -18,7 +17,6 @@ interface ToolbarProps {
 }
 
 const Toolbar: React.FC<ToolbarProps> = ({
-  onAddRectangle,
   onStartConnecting,
   isConnecting,
   onCreateConnection,
@@ -34,12 +32,6 @@ const Toolbar: React.FC<ToolbarProps> = ({
 }) => {
   return (
     <div className="bg-gray-800 text-white p-4 flex justify-center space-x-4">
-      <button
-        className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded"
-        onClick={onAddRectangle}
-      >
-        Add Rectangle
-      </button>
       <button
         className={`px-4 py-2 rounded ${
           isConnecting
@@ -83,10 +75,10 @@ const Toolbar: React.FC<ToolbarProps> = ({
         </button>
         <button onClick={onCopySVG}>Copy SVG</button>
         <button onClick={onScaleUp} className="toolbar-button">
-          <FaSearchPlus /> 
+          <FaSearchPlus />
         </button>
         <button onClick={onScaleDown} className="toolbar-button">
-          <FaSearchMinus /> 
+          <FaSearchMinus />
         </button>
       </div>
     </div>

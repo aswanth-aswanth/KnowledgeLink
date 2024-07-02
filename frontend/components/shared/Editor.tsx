@@ -274,19 +274,6 @@ const Editor: React.FC = () => {
     [updateSvgHeight]
   );
 
-  const handleCreateRect = () => {
-    const newRect: Rect = {
-      id: `rect${rectangles.length + 1}`,
-      name: "newContent",
-      x: 100,
-      y: 100,
-      width: 100,
-      height: 50,
-    };
-    setRectangles([...rectangles, newRect]);
-    updateSvgHeight();
-  };
-
   const handleDeleteRect = (id: string) => {
     setRectangles((rects) => rects.filter((rect) => rect.id !== id));
     setConnections((conns) =>
@@ -339,7 +326,6 @@ const Editor: React.FC = () => {
   return (
     <div className="relative">
       <Toolbar
-        onAddRectangle={handleCreateRect}
         onStartConnecting={handleStartConnecting}
         isConnecting={isConnecting}
         onCreateConnection={handleCreateConnection}
@@ -360,7 +346,7 @@ const Editor: React.FC = () => {
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseDown={handleMouseDown}
-        className="m-4"
+        className="p-4"
         style={{ transform: `scale(${scale})`, transformOrigin: "top" }}
       >
         {connections.map((conn, index) => (
