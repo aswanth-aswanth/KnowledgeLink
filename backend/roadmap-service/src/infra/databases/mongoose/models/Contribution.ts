@@ -5,8 +5,8 @@ import { IContribution } from '../../interfaces/IContribution';
 
 const ContributionSchema: Schema<IContribution> = new Schema({
     roadmapId: { type: String, required: true },
-    contributedDocumentIds: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Roadmap', required: true }],
-    contributorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    contributedDocumentIds: [{ type: String }],
+    contributorEmail: { type: String },
     contributions: [{ type: Object }],
     createdAt: Date,
     updatedAt: Date

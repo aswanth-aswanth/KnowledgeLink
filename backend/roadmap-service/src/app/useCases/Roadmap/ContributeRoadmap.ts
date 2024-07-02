@@ -8,7 +8,7 @@ export default class ContributeRoadmap {
         this.contributionRepository = contributionRepository;
     }
 
-    public async execute(contributionData: IContribution): Promise<IContribution> {
+    public async execute(contributionData: IContribution): Promise<string> {
         const contribution = await this.contributionRepository.create(contributionData);
         return contribution;
     }

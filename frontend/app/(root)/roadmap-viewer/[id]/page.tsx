@@ -2,8 +2,17 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import RoadmapViewer from "@/components/shared/RoadmapViewer";
-import NestedNoteTaker from "@/components/shared/NestedNoteTaker";
 import apiClient from "@/api/apiClient";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { useToast } from "@/components/ui/use-toast";
 
 async function getRoadmapData(id: string) {
   try {
@@ -15,10 +24,28 @@ async function getRoadmapData(id: string) {
   }
 }
 
+async function submitContribution(roadmapId: string, contributionData: any) {
+  try {
+    console.log("contributionData : ", contributionData);
+    const res = await apiClient.post(
+      `/roadmap/${roadmapId}/contribute`,
+      contributionData
+    );
+    console.log("Res submit Controller : ", res.data);
+    return res.data;
+  } catch (error) {
+    console.log("Error submitting contribution: ", error);
+    throw error;
+  }
+}
+
 export default function RoadmapPage() {
   const params = useParams();
   const [roadmapData, setRoadmapData] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [contributions, setContributions] = useState({});
+  const { toast } = useToast();
 
   useEffect(() => {
     if (params.id) {
@@ -28,29 +55,92 @@ export default function RoadmapPage() {
     }
   }, [params.id]);
 
+  const handleContentChange = (uniqueId: string, newContent: string) => {
+    setContributions((prev) => ({
+      ...prev,
+      [uniqueId]: newContent,
+    }));
+  };
+
+  const handleSubmit = async () => {
+    setIsDialogOpen(true);
+  };
+
+  const confirmSubmit = async () => {
+    try {
+      const contributionData = {
+        contributedDocumentIds: Object.keys(contributions),
+        contributorId: "user_id_here",
+        contributions: Object.entries(contributions).map(([id, content]) => ({
+          id,
+          content: { data: content },
+        })),
+      };
+
+      await submitContribution(params.id, contributionData);
+      setIsDialogOpen(false);
+      setContributions({});
+      setIsEditMode(false);
+      toast({
+        title: "Contribution submitted",
+        description: "Your contribution has been successfully submitted.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to submit contribution. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   if (!roadmapData) {
     return <div>Loading...</div>;
   }
-
+  console.log("contributions : ", contributions);
   return (
     <div>
-      <div className="flex justify-between items-center  mb-4 pt-10">
-        <h1 className="text-2xl font-bold text-gray-600">Roadmap: </h1>
-        <button
-          onClick={() => setIsEditMode(!isEditMode)}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          {isEditMode ? "View Mode" : "Edit Mode"}
-        </button>
-      </div>
-      {isEditMode ? (
-        <RoadmapViewer transformedTopics={roadmapData} />
-      ) : (
-        <div className="max-w-[900px] mx-auto">
-          {/* // <NestedNoteTaker initialData={roadmapData} /> */}
-          <RoadmapViewer transformedTopics={roadmapData} />
+      <div className="flex justify-between items-center mb-4 pt-10">
+        <h1 className="text-2xl font-bold text-gray-600">
+          Roadmap: {roadmapData.title}
+        </h1>
+        <div>
+          <Button
+            onClick={() => setIsEditMode(!isEditMode)}
+            variant="outline"
+            className="mr-2"
+          >
+            {isEditMode ? "View Mode" : "Edit Mode"}
+          </Button>
+          {isEditMode && Object.keys(contributions).length > 0 && (
+            <Button onClick={handleSubmit}>Submit Contribution</Button>
+          )}
         </div>
-      )}
+      </div>
+      <div className="max-w-[900px] mx-auto">
+        <RoadmapViewer
+          transformedTopics={roadmapData}
+          isEditMode={isEditMode}
+          onContentChange={handleContentChange}
+        />
+      </div>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Submission</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to submit your contribution to this roadmap?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={confirmSubmit}>Confirm</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

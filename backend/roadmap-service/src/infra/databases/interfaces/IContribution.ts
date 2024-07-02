@@ -1,9 +1,9 @@
-import { Document, Types } from 'mongoose';
+import { Document } from 'mongoose';
 
 interface IContribution extends Document {
   roadmapId: string;
-  contributorId: Types.ObjectId;
-  contributedDocumentIds: Types.ObjectId[],
+  contributorEmail: string;
+  contributedDocumentIds: string[],
   contributions: object[],
   createdAt: Date;
   updatedAt: Date;

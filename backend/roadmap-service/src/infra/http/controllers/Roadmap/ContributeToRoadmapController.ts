@@ -3,9 +3,10 @@ import ContributeRoadmap from "../../../../app/useCases/Roadmap/ContributeRoadma
 import ContributionRepository from "../../../../app/repositories/ContributionRepository";
 
 export default class ContributeToRoadmapController {
-    public async handle(req: Request, res: Response) {
+    public async handle(req: any, res: Response) {
         const contributionData = {
             roadmapId: req.params.id,
+            contributorEmail: req.user.email,
             ...req.body
         };
         const contributions = new ContributeRoadmap(

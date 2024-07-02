@@ -1,6 +1,8 @@
-import React, { useState } from "react";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { ChevronDown, ChevronRight, Edit, Save } from "lucide-react";
 import { useDarkMode } from "@/hooks/useDarkMode";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 
 interface TopicProps {
   topic: {
@@ -12,6 +14,8 @@ interface TopicProps {
   level: string;
   expandedTopics: string[];
   setExpandedTopics: React.Dispatch<React.SetStateAction<string[]>>;
+  isEditMode: boolean;
+  onContentChange: (uniqueId: string, newContent: string) => void;
 }
 
 const Topic: React.FC<TopicProps> = ({
@@ -19,10 +23,17 @@ const Topic: React.FC<TopicProps> = ({
   level,
   expandedTopics,
   setExpandedTopics,
+  isEditMode,
+  onContentChange,
 }) => {
   const { isDarkMode } = useDarkMode();
-
   const isExpanded = expandedTopics.includes(topic.uniqueId);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedContent, setEditedContent] = useState(topic.content);
+
+  useEffect(() => {
+    setEditedContent(topic.content);
+  }, [topic.content]);
 
   const toggleExpand = () => {
     if (isExpanded) {
@@ -30,6 +41,15 @@ const Topic: React.FC<TopicProps> = ({
     } else {
       setExpandedTopics([...expandedTopics, topic.uniqueId]);
     }
+  };
+
+  const handleEditClick = () => {
+    setIsEditing(true);
+  };
+
+  const handleSaveClick = () => {
+    onContentChange(topic.uniqueId, editedContent);
+    setIsEditing(false);
   };
 
   return (
@@ -72,14 +92,35 @@ const Topic: React.FC<TopicProps> = ({
       </div>
       {isExpanded && (
         <div className="ml-6 mt-2">
-          <div
-            className={`h-min p-2 mb-2 rounded-md transition-all duration-200 prose font-medium prose-sm text-base tracking-wider ${
-              isDarkMode
-                ? "bg-gray-800 text-gray-300"
-                : "bg-gray-50 text-gray-600"
-            } leading-9 max-w-none`}
-            dangerouslySetInnerHTML={{ __html: topic.content }}
-          />
+          {isEditMode && !isEditing ? (
+            <Button onClick={handleEditClick} size="sm" className="mb-2">
+              <Edit className="mr-2 h-4 w-4" /> Edit Content
+            </Button>
+          ) : isEditMode && isEditing ? (
+            <Button onClick={handleSaveClick} size="sm" className="mb-2">
+              <Save className="mr-2 h-4 w-4" /> Save Content
+            </Button>
+          ) : null}
+          {isEditing ? (
+            <Textarea
+              value={editedContent}
+              onChange={(e) => setEditedContent(e.target.value)}
+              className={`h-min p-2 mb-2 rounded-md transition-all duration-200 ${
+                isDarkMode
+                  ? "bg-gray-800 text-gray-300"
+                  : "bg-gray-50 text-gray-600"
+              }`}
+            />
+          ) : (
+            <div
+              className={`h-min p-2 mb-2 rounded-md transition-all duration-200 prose font-medium prose-sm text-base tracking-wider ${
+                isDarkMode
+                  ? "bg-gray-800 text-gray-300"
+                  : "bg-gray-50 text-gray-600"
+              } leading-9 max-w-none`}
+              dangerouslySetInnerHTML={{ __html: topic.content }}
+            />
+          )}
           {topic.children.map((child, index) => (
             <Topic
               key={child.uniqueId}
@@ -87,6 +128,8 @@ const Topic: React.FC<TopicProps> = ({
               level={`${level}-${index + 1}`}
               expandedTopics={expandedTopics}
               setExpandedTopics={setExpandedTopics}
+              isEditMode={isEditMode}
+              onContentChange={onContentChange}
             />
           ))}
         </div>
@@ -101,9 +144,15 @@ interface RoadmapViewerProps {
     description: string;
     topics: TopicProps["topic"];
   };
+  isEditMode: boolean;
+  onContentChange: (uniqueId: string, newContent: string) => void;
 }
 
-const RoadmapViewer: React.FC<RoadmapViewerProps> = ({ transformedTopics }) => {
+const RoadmapViewer: React.FC<RoadmapViewerProps> = ({
+  transformedTopics,
+  isEditMode,
+  onContentChange,
+}) => {
   const { isDarkMode } = useDarkMode();
   const [expandedTopics, setExpandedTopics] = useState<string[]>([]);
 
@@ -130,6 +179,8 @@ const RoadmapViewer: React.FC<RoadmapViewerProps> = ({ transformedTopics }) => {
           level={`${index + 1}`}
           expandedTopics={expandedTopics}
           setExpandedTopics={setExpandedTopics}
+          isEditMode={isEditMode}
+          onContentChange={onContentChange}
         />
       ))}
     </div>
