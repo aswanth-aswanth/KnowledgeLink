@@ -96,5 +96,24 @@ export default class UserRepository {
             return { message: 'User followed successfully', action: 'follow' };
         }
     }
+    public async getSearchUsers(searchText: string, limit: number = 10): Promise<object[]> {
+        try {
+            const regex = new RegExp(searchText, 'i');
 
+            const users = await User.find({
+                $or: [
+                    { email: { $regex: regex } },
+                    { username: { $regex: regex } }
+                ]
+            })
+                .select('_id username email image')
+                .limit(limit)
+                .exec();
+
+            return users.map(user => user.toObject());
+        } catch (error) {
+            console.error('Error searching users:', error);
+            return [];
+        }
+    }
 }
