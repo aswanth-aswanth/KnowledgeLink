@@ -50,10 +50,25 @@ export default class UserRepository {
 
         return users;
     }
-    public async getUser(email: string): Promise<IUser | null> {
-        const user = await User.findOne({ email }).select('_id username email image').exec();
+    public async getUser(email: string, loggedInUserEmail: string | null): Promise<IUser | object | null> {
+        try {
+            const user = await User.findOne({ email }).select('_id username email image following followers').exec();
 
-        return user;
+            if (!user) {
+                throw new Error('User not found');
+            }
+
+            let isFollowing = false;
+
+            if (loggedInUserEmail && user.followers) {
+                isFollowing = user.followers.includes(loggedInUserEmail);
+            }
+
+            return { ...user.toObject(), isFollowing };
+        } catch (error) {
+            console.error('Error fetching user:', error);
+            return null;
+        }
     }
     public async followUser(followerEmail: string, followeeEmail: string): Promise<string | object> {
         // Find the follower and followee users by their email addresses

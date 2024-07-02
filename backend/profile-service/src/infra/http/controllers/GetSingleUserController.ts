@@ -9,8 +9,8 @@ export default class GetSingleUserController {
         );
 
         try {
-
-            const user = await getSingleUser.execute(req.params.id);
+            const loggedInUserEmail = req.user ? req.user.email : null;
+            const user = await getSingleUser.execute(req.params.id, loggedInUserEmail);
             if (!user) {
                 return res.status(404).json({ error: "User not found" });
             }
