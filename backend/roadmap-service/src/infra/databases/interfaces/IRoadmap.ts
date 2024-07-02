@@ -24,3 +24,29 @@ export interface IRoadmap extends Document {
     createdAt: Date;
     updatedAt: Date;
 }
+
+
+export interface IRectangle {
+    id: string;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    name: string;
+    uniqueId: string;
+}
+export interface IConnection {
+    from: string;
+    to: string;
+    style: string;
+}
+export interface IRectanglesData {
+    roadmapUniqueId: string;
+    rectangles: IRectangle[];
+}
+
+export interface IConnectionsData {
+    roadmapUniqueId: string;
+    connections: IConnection[];
+}
+

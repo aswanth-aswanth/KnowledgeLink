@@ -6,19 +6,25 @@ export default class CreateRoadmapController {
     public async handle(req: any, res: any) {
         console.log("req.user : ", req.user);
         console.log("req.body : ", req.body);
-        const roadmapData = { ...req.body, creatorId: req.user.userId };
+        const { editorData, rectanglesData, connectionsData } = req.body;
+        const roadmapData = {
+            ...editorData,
+            creatorId: req.user.userId,
+        };
         const roadmap = new CreateRoadmap(
             new RoadmapRepository()
         );
         try {
-            roadmap.execute(roadmapData);
-            return res.status(201).json({ "message": "Roadmap created successfully" })
+            const createdRoadmap = await roadmap.execute(roadmapData, rectanglesData, connectionsData);
+            return res.status(201).json({
+                message: "Roadmap created successfully",
+                roadmapId: createdRoadmap._id
+            });
         } catch (err) {
             if (err instanceof Error) {
                 return res.status(400).json({ error: err.message });
             }
-            return res.status(400).json({ error: 'Unknown error' });
+            return res.status(500).json({ error: 'Unknown error' });
         }
-
     }
 }

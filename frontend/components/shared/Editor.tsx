@@ -299,14 +299,26 @@ const Editor: React.FC = () => {
   };
 
   console.log("Editor Data");
+
   const handleSubmitRoadmap = async () => {
     if (isAuthenticated) {
       try {
         const response = await apiClient.post("/roadmap", {
-          title: editorData.title,
-          description: editorData.description,
-          type: editorData.type,
-          topics: editorData.topics,
+          editorData: {
+            title: editorData.title,
+            description: editorData.description,
+            type: editorData.type,
+            topics: editorData.topics,
+            uniqueId: editorData.uniqueId,
+          },
+          rectanglesData: {
+            roadmapUniqueId: editorData.uniqueId,
+            rectangles: rectangles,
+          },
+          connectionsData: {
+            roadmapUniqueId: editorData.uniqueId,
+            connections: connections,
+          },
         });
 
         console.log("response : ", response.data);

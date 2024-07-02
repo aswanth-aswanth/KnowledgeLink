@@ -6,6 +6,7 @@ export interface RectProps {
         width: number;
         height: number;
         name: string;
+        uniqueId?: string;
     };
     circlesVisible: boolean;
     isSelected: boolean;
