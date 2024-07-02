@@ -74,12 +74,16 @@ const NestedNoteTaker: React.FC = () => {
     };
   }
 
-  console.log("TransformedTopics : ", transformTopics(currentTopicsState.topics));
-  
+  console.log(
+    "TransformedTopics : ",
+    transformTopics(currentTopicsState.topics)
+  );
+
   const handleContinue = useCallback(
-    (selectedRoadmapType: string) => {
-      setRoadmapType(selectedRoadmapType);
+    (selectedRoadmapType: string, selectedMembers: any[]) => {
       const transformedTopics: any = transformTopics(currentTopicsState.topics);
+      transformedTopics.members = selectedMembers.map((member) => member.email);
+      transformedTopics.type = selectedRoadmapType; // Use the selected type
       dispatch(setEditorData(transformedTopics));
       router.push("/svg2");
     },
@@ -121,7 +125,11 @@ const NestedNoteTaker: React.FC = () => {
         ))}
       </div>
       <div className="flex justify-end py-8">
-        <ChooseRoadmapType onContinue={handleContinue} />
+        <ChooseRoadmapType
+          onContinue={handleContinue}
+          roadmapType={roadmapType}
+          setRoadmapType={setRoadmapType}
+        />
       </div>
     </>
   );

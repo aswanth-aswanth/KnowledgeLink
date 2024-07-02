@@ -16,18 +16,24 @@ import { Button } from "@/components/ui/button";
 import RadioGroupForm from "./RadioGroupForm";
 import { useDarkMode } from "@/hooks/useDarkMode";
 import { RootState } from "@/store";
+import UserSearch from "./UserSearch";
 
 interface ChooseRoadmapTypeProps {
-  onContinue: (roadmapType: string) => void;
+  onContinue: (roadmapType: string, members: any[]) => void;
+  roadmapType: string;
+  setRoadmapType: (type: string) => void;
 }
 
 export default function ChooseRoadmapType({
   onContinue,
+  roadmapType,
+  setRoadmapType,
 }: ChooseRoadmapTypeProps) {
   const { isDarkMode } = useDarkMode();
-  const [roadmapType, setRoadmapType] = useState("public_voting");
   const [showAuthWarning, setShowAuthWarning] = useState(false);
   const [showRoadmapTypeDialog, setShowRoadmapTypeDialog] = useState(false);
+  const [showUserSearch, setShowUserSearch] = useState(false);
+  const [members, setMembers] = useState([]);
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
   );
@@ -46,8 +52,22 @@ export default function ChooseRoadmapType({
   };
 
   const handleContinue = () => {
-    setShowRoadmapTypeDialog(false);
-    onContinue(roadmapType);
+    if (
+      roadmapType === "expert_collaboration" ||
+      roadmapType === "moderator_submission"
+    ) {
+      setShowUserSearch(true);
+      setShowRoadmapTypeDialog(false);
+    } else {
+      setShowRoadmapTypeDialog(false);
+      onContinue(roadmapType, []);
+    }
+  };
+
+  const handleAddMembers = (selectedMembers: any) => {
+    setMembers(selectedMembers);
+    setShowUserSearch(false);
+    onContinue(roadmapType, selectedMembers);
   };
 
   return (
@@ -83,6 +103,19 @@ export default function ChooseRoadmapType({
               Continue
             </AlertDialogAction>
           </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={showUserSearch} onOpenChange={setShowUserSearch}>
+        <AlertDialogContent
+          className={`${isDarkMode ? "bg-gray-800 text-white" : "bg-white"}`}
+        >
+          <AlertDialogHeader>
+            <AlertDialogTitle>Add Members</AlertDialogTitle>
+            <AlertDialogDescription>
+              <UserSearch onAddMembers={handleAddMembers} />
+            </AlertDialogDescription>
+          </AlertDialogHeader>
         </AlertDialogContent>
       </AlertDialog>
 

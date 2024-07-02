@@ -18,7 +18,7 @@ export interface IRoadmap extends Document {
     uniqueId?: string;
     type: 'expert_collaboration' | 'public_voting' | 'moderator_submission';
     tags: string[];
-    members: Types.ObjectId[];
+    members: string[];
     creatorId: Types.ObjectId;
     topics: ITopic;
     createdAt: Date;

@@ -38,7 +38,7 @@ const RoadmapSchema: Schema<IRoadmap> = new Schema({
     },
     tags: { type: [String], default: [] }, // Tags as array of strings with default empty array
     uniqueId: { type: String, unique: true },
-    members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    members: { type: [String], default: [] },
     creatorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     topics: {
         type: new Schema({

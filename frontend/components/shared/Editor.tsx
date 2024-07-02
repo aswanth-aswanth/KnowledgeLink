@@ -309,6 +309,7 @@ const Editor: React.FC = () => {
             description: editorData.description,
             type: editorData.type,
             topics: editorData.topics,
+            members: editorData.members,
             uniqueId: editorData.uniqueId,
           },
           rectanglesData: {
