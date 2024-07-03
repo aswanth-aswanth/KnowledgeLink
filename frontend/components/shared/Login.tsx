@@ -62,8 +62,9 @@ const Login = () => {
           password,
         }
       );
-      const token = response.data.token;
-      localStorage.setItem("token", token);
+      const { accessToken, refreshToken } = response.data;
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
 
       toast("Login successful!", {
         icon: "👏",

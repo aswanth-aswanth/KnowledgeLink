@@ -3,12 +3,13 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { jwtDecode } from 'jwt-decode';
 import { RootState } from './index';
 import { isTokenExpired } from '@/utils/auth';
+import { refreshAccessToken } from '@/utils/auth';
 
 interface User {
   id: string;
   name: string;
   email: string;
-  imageUrl?: string; 
+  imageUrl?: string;
 }
 
 interface AuthState {
@@ -36,16 +37,31 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.user = null;
       state.token = null;
-      localStorage.removeItem('token');
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
     },
     checkTokenExpiration: (state) => {
-      const storedToken = localStorage.getItem('token');
+      const storedToken = localStorage.getItem('accessToken');
       if (storedToken) {
         if (isTokenExpired(storedToken)) {
-          localStorage.removeItem('token');
-          state.isAuthenticated = false;
-          state.user = null;
-          state.token = null;
+          refreshAccessToken().then(newToken => {
+            if (newToken) {
+              const decoded = jwtDecode<{ id: string; username: string; email: string; image?: string }>(newToken);
+              state.isAuthenticated = true;
+              state.user = {
+                id: decoded.id,
+                name: decoded.username,
+                email: decoded.email,
+                imageUrl: decoded.image,
+              };
+              state.token = newToken;
+            } else {
+              localStorage.removeItem('accessToken');
+              state.isAuthenticated = false;
+              state.user = null;
+              state.token = null;
+            }
+          });
         } else {
           const decoded = jwtDecode<{ id: string; username: string; email: string; image?: string }>(storedToken);
           state.isAuthenticated = true;
