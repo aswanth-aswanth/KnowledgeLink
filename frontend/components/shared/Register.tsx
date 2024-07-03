@@ -4,7 +4,42 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+import { z } from "zod";
+
+const registrationSchema = z
+  .object({
+    username: z
+      .string()
+      .min(6)
+      .max(12)
+      .regex(
+        /^[a-zA-Z]+$/,
+        "Username should only contain letters and should not contain spaces or special characters"
+      ),
+    email: z
+      .string()
+      .max(20)
+      .email("Invalid email address")
+      .regex(/^\S+$/, "Email should not contain spaces"),
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .max(32, "Password must be at most 32 characters")
+      .regex(/^\S+$/, "Password should not contain spaces")
+      .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+      .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+      .regex(/\d/, "Password must contain at least one number")
+      .regex(
+        /[^a-zA-Z0-9]/,
+        "Password must contain at least one special character"
+      ),
+    confirmPassword: z.string().nonempty("Confirm password is required"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
 const Registration = () => {
   const [username, setUsername] = useState("");
@@ -24,12 +59,25 @@ const Registration = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    console.log("Registration submitted", {
+
+    const registrationData = {
       username,
       email,
       password,
       confirmPassword,
-    });
+    };
+
+    const parsed = registrationSchema.safeParse(registrationData);
+
+    if (!parsed.success) {
+      const errorMessages = parsed.error.errors.map((err) => err.message);
+      errorMessages.forEach((errorMsg) => toast.error(errorMsg));
+      setIsLoading(false);
+      return;
+    }
+
+    console.log("Registration submitted", registrationData);
+
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BASE_URL}/auth/register`,
@@ -46,7 +94,11 @@ const Registration = () => {
       });
       router.push("/sign-in");
     } catch (error) {
-      if (error instanceof Error && error.response && error.response.data) {
+      if (
+        error instanceof AxiosError &&
+        error.response &&
+        error.response.data
+      ) {
         const axiosError = error as AxiosError;
         console.log("Error : ", axiosError.response.data.error);
         const errorMsg = axiosError.response.data.error;
