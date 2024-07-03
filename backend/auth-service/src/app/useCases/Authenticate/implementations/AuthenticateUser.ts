@@ -13,7 +13,7 @@ export default class AuthenticateUser {
         this.tokenManager = tokenManager;
     }
 
-    public async execute(email: string, password: string): Promise<string> {
+    public async execute(email: string, password: string): Promise<{ accessToken: string, refreshToken: string }> {
         const user = await this.userRepository.findByEmail(email);
 
         if (!user) {
@@ -29,6 +29,10 @@ export default class AuthenticateUser {
             throw new Error("Invalid credentials");
         }
 
-        return this.tokenManager.generateToken({ userId: user.id, username: user.username, email: user.email, image: user.image });
+        const accessToken = this.tokenManager.generateAccessToken({ userId: user.id, username: user.username, email: user.email, image: user.image });
+        const refreshToken = this.tokenManager.generateRefreshToken({ userId: user.id, username: user.username, email: user.email, image: user.image });
+
+        return { accessToken, refreshToken };
     }
+
 }

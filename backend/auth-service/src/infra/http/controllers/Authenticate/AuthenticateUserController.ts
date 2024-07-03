@@ -13,13 +13,14 @@ export default class AuthenticateUserController {
             new TokenManager()
         );
         try {
-            const token = await authenticateUser.execute(email, password);
-            return res.json({ token });
+            const { accessToken, refreshToken } = await authenticateUser.execute(email, password);
+            return res.json({ accessToken, refreshToken });
         } catch (err) {
             if (err instanceof Error) {
                 return res.status(400).json({ error: err.message });
             }
-            return res.status(400).json({ error: "Unkown error" });
+            return res.status(400).json({ error: "Unknown error" });
         }
     }
+
 }

@@ -8,14 +8,15 @@ interface TokenPayload {
 }
 
 export default class TokenManager {
-    public generateToken(payload: TokenPayload): string {
-        const token = jwt.sign(payload, process.env.JWT_SECRET!, {
-            expiresIn: '1h'
-        });
-        return token;
+    public generateAccessToken(payload: TokenPayload): string {
+        return jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: '15m' });
     }
 
-    public verifyToken(token: string): string | object {
-        return jwt.verify(token, process.env.JWT_SECRET!);
+    public generateRefreshToken(payload: TokenPayload): string {
+        return jwt.sign(payload, process.env.JWT_REFRESH_SECRET!, { expiresIn: '7d' });
+    }
+
+    public verifyToken(token: string, secret: string): string | object {
+        return jwt.verify(token, secret);
     }
 }
