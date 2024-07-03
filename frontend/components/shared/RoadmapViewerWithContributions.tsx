@@ -208,8 +208,7 @@ export default function RoadmapViewerWithContributions() {
         contributedDocument: {
           id: topicId,
           data: {
-            content: `${content}
-            }`,
+            content: `${content}`,
           },
         },
       };
