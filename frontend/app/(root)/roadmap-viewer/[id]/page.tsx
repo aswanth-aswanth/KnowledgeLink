@@ -13,6 +13,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { useToast } from "@/components/ui/use-toast";
+import ViewDiagram from "@/components/shared/ViewDiagram";
 
 async function getRoadmapData(id: string) {
   try {
@@ -46,12 +47,17 @@ export default function RoadmapPage() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [contributions, setContributions] = useState({});
+  const [rectangles, setRectangles] = useState([]);
+  const [connections, setConnections] = useState([]);
   const { toast } = useToast();
 
   useEffect(() => {
     if (params.id) {
       getRoadmapData(params.id as string)
-        .then((data) => setRoadmapData(data))
+        .then((data) => {
+          setRoadmapData(data);
+          getDiagramData(data);
+        })
         .catch(console.error);
     }
   }, [params.id]);
@@ -95,14 +101,30 @@ export default function RoadmapPage() {
     }
   };
 
+  const getDiagramData = async (roadmapData: any) => {
+    try {
+      if (roadmapData.uniqueId) {
+        const res = await apiClient(`/roadmap/diagram/${roadmapData.uniqueId}`);
+        setRectangles(res.data[0].rectangles);
+        setConnections(res.data[1].connections);
+        console.log("Response Rect: ", res.data[0].rectangles);
+      }
+    } catch (error) {
+      console.log("Error : ", error);
+    }
+  };
+
   if (!roadmapData) {
     return <div>Loading...</div>;
   }
-  console.log("Pathname : ", pathname.split("/")[1]);
-  console.log("contributions : ", contributions);
+  console.log("roadmapData unique : ", roadmapData);
   return (
     <div>
-      <div className="flex justify-between items-center mb-4 pt-10">
+      {rectangles.length > 0 && (
+        <ViewDiagram rectangles={rectangles} connections={connections} />
+      )}
+      <div className="flex justify-between items-center ">
+        <div></div>
         <h1 className="text-2xl font-bold text-gray-600">
           {/* Roadmap: {roadmapData.title} */}
         </h1>
