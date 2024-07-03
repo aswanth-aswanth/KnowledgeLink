@@ -6,6 +6,7 @@ import apiClient from "@/api/apiClient";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useDarkMode } from "@/hooks/useDarkMode";
 
 interface Contribution {
   _id: string;
@@ -35,6 +36,7 @@ export default function ContributionsPage() {
   const [contributions, setContributions] = useState<Contribution[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { isDarkMode } = useDarkMode();
 
   useEffect(() => {
     if (params.id) {
@@ -91,7 +93,9 @@ export default function ContributionsPage() {
           </ScrollArea>
         </div>
       ) : (
-        <div>No contributions</div>
+        <div className={`pb-10 ${isDarkMode ? "text-white" : "text-gray-800"}`}>
+          No contributions
+        </div>
       )}
     </>
   );

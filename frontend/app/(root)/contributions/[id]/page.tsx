@@ -12,7 +12,6 @@ export default function RoadmapPage() {
   return (
     <div>
       <div className="flex justify-between items-center mb-4 pt-10">
-        <h1 className="text-2xl font-bold text-gray-500">Roadmap</h1>
       </div>
       <div className="max-w-[900px] mx-auto">
         <RoadmapViewerWithContributions />

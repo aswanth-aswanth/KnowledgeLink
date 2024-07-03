@@ -178,6 +178,7 @@ export default function RoadmapViewerWithContributions() {
   const [roadmapData, setRoadmapData] = useState<RoadmapData | null>(null);
   const [contributions, setContributions] = useState<Contribution[]>([]);
   const { toast } = useToast();
+  const { isDarkMode } = useDarkMode();
 
   useEffect(() => {
     if (params.id) {
@@ -234,23 +235,32 @@ export default function RoadmapViewerWithContributions() {
     }
   };
 
-  if (!roadmapData) {
+  if (!roadmapData || !roadmapData.topics.children) {
     return <div>Loading...</div>;
   }
 
   return (
     <div className="container mx-auto p-4">
       <ContributionsPage />
-      <h1 className="text-2xl font-bold text-gray-500 mb-4">
+      <h1
+        className={`text-2xl font-bold ${
+          isDarkMode ? "text-white" : "text-gray-500"
+        } mb-4`}
+      >
         {roadmapData.title}
       </h1>
-      <p className="mb-6">{roadmapData.description}</p>
-      <TopicWithContributions
-        topic={roadmapData.topics}
-        contributions={contributions}
-        level="1"
-        onMerge={handleMerge}
-      />
+      <p className={`mb-6 ${isDarkMode ? "text-white" : "text-gray-500"}`}>
+        {roadmapData.description}
+      </p>
+      {roadmapData.topics.children.map((child, index) => (
+        <TopicWithContributions
+          key={child.uniqueId}
+          topic={child}
+          contributions={contributions}
+          level={`${index + 1}`}
+          onMerge={handleMerge}
+        />
+      ))}
     </div>
   );
 }
