@@ -123,6 +123,32 @@ export default class RoadmapRepository {
         }
     }
 
+    public async findRectanglesByRoadmapId(roadmapId: string): Promise<any> {
+        try {
+            return await RectanglesData.findOne({ roadmapUniqueId: roadmapId }).exec();
+        } catch (error) {
+            if (error instanceof Error) {
+                console.error(`Error finding roadmaps by admin: ${error.message}`);
+                throw new Error('Failed to find roadmaps by admin');
+            } else {
+                console.error('Unknown error finding roadmaps by admin');
+                throw new Error('Unknown error');
+            }
+        }
+    }
+    public async findConnectionsByRoadmapId(roadmapId: string): Promise<any> {
+        try {
+            return await ConnectionsData.findOne({ roadmapUniqueId: roadmapId }).exec();
+        } catch (error) {
+            if (error instanceof Error) {
+                console.error(`Error finding roadmaps by admin: ${error.message}`);
+                throw new Error('Failed to find roadmaps by admin');
+            } else {
+                console.error('Unknown error finding roadmaps by admin');
+                throw new Error('Unknown error');
+            }
+        }
+    }
     /* public async findRoadmapWithDetails(roadmapId: string): Promise<IRoadmap | null> {
         const roadmap = await Roadmap.findById(roadmapId).exec();
         if (!roadmap) return null;
