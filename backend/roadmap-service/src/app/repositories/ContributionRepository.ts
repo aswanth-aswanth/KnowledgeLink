@@ -18,26 +18,50 @@ export default class ContributionRepository {
                 return roadmap.members.includes(userEmail);
             }
         } catch (error) {
-            console.error(error);
-            return false;
+            if (error instanceof Error) {
+                console.error(`Error checking user contribution permission: ${error.message}`);
+                throw new Error('Failed to check user contribution permission');
+            } else {
+                console.error('Unknown error checking user contribution permission');
+                throw new Error('Unknown error');
+            }
         }
-    };
+    }
 
     public async create(contribution: IContribution): Promise<string> {
-        const canContribute = await this.checkUserContributionPermission(contribution.roadmapId, contribution.contributorEmail);
+        try {
+            const canContribute = await this.checkUserContributionPermission(contribution.roadmapId, contribution.contributorEmail);
 
-        if (!canContribute) {
-            throw new Error('User is not allowed to contribute to this roadmap');
+            if (!canContribute) {
+                throw new Error('User is not allowed to contribute to this roadmap');
+            }
+
+            const newContribution = new Contribution(contribution);
+            await newContribution.save();
+            return "Successfully contributed";
+        } catch (error) {
+            if (error instanceof Error) {
+                console.error(`Error creating contribution: ${error.message}`);
+                throw new Error('Failed to create contribution');
+            } else {
+                console.error('Unknown error creating contribution');
+                throw new Error('Unknown error');
+            }
         }
-
-        const newContribution = new Contribution(contribution);
-        await newContribution.save();
-        return "Successfully contributed";
     }
 
     public async getContributionsByRoadmapId(roadmapId: string): Promise<IContribution[]> {
-        const data = await Contribution.find({ roadmapId, isMerged: false }).exec();
-        return data;
+        try {
+            const data = await Contribution.find({ roadmapId, isMerged: false }).exec();
+            return data;
+        } catch (error) {
+            if (error instanceof Error) {
+                console.error(`Error fetching contributions for roadmapId ${roadmapId}: ${error.message}`);
+                throw new Error('Failed to fetch contributions');
+            } else {
+                console.error('Unknown error fetching contributions');
+                throw new Error('Unknown error');
+            }
+        }
     }
-
 }
