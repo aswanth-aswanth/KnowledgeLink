@@ -5,14 +5,14 @@ import RoadmapRepository from "../../../../app/repositories/RoadmapRepository";
 export default class GetRoadmapsByAdminController {
     public async handle(req: any, res: Response) {
 
-        const userId = req.user.userId;
+        const email = req.user.email;
 
         const getRoadmapsByAdmin = new GetRoadmapsByAdmin(
             new RoadmapRepository()
         );
 
         try {
-            const roadmaps = await getRoadmapsByAdmin.execute(userId);
+            const roadmaps = await getRoadmapsByAdmin.execute(email);
             return res.status(200).json(roadmaps);
         } catch (err) {
             if (err instanceof Error) {

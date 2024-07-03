@@ -19,7 +19,7 @@ export interface IRoadmap extends Document {
     type: 'expert_collaboration' | 'public_voting' | 'moderator_submission';
     tags: string[];
     members: string[];
-    creatorId: Types.ObjectId;
+    creatorEmail: string;
     topics: ITopic;
     createdAt: Date;
     updatedAt: Date;

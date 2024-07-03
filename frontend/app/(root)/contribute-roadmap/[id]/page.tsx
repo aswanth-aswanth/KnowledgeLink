@@ -4,6 +4,7 @@ import { useParams, usePathname } from "next/navigation";
 import RoadmapViewer from "@/components/shared/RoadmapViewer";
 import apiClient from "@/api/apiClient";
 import { Button } from "@/components/ui/button";
+import { useDarkMode } from "@/hooks/useDarkMode";
 import {
   Dialog,
   DialogContent,
@@ -46,6 +47,7 @@ export default function RoadmapPage() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [contributions, setContributions] = useState({});
+  const { isDarkMode } = useDarkMode();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -111,7 +113,7 @@ export default function RoadmapPage() {
             <Button
               onClick={() => setIsEditMode(!isEditMode)}
               variant="outline"
-              className="mr-2"
+              className={`mr-2 md:mr-16 lg:mr-32 ${isDarkMode&&'text-white '}`}
             >
               {isEditMode ? "View Mode" : "Edit Mode"}
             </Button>

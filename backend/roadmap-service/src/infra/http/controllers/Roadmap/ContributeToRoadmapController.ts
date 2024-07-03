@@ -14,8 +14,8 @@ export default class ContributeToRoadmapController {
         );
 
         try {
-            contributions.execute(contributionData);
-            return res.json({ "message": "Contributed successfully" })
+            await contributions.execute(contributionData);
+            return res.json({ "message": "Contributed successfully" });
         } catch (err) {
             if (err instanceof Error) {
                 return res.status(400).json({ error: err.message });

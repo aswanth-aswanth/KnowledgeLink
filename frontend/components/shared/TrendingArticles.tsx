@@ -1,5 +1,6 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
+import { useDarkMode } from "@/hooks/useDarkMode";
 
 const trendingArticles = [
   {
@@ -41,6 +42,7 @@ const trendingArticles = [
 ];
 
 export default function TrendingArticles() {
+  const { isDarkMode } = useDarkMode();
   return (
     <div className="max-w-6xl mx-auto p-8">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -78,7 +80,12 @@ export default function TrendingArticles() {
         ))}
       </div>
       <div className="flex justify-center mt-16">
-        <Button variant="outline">Load more</Button>
+        <Button
+          variant="outline"
+          className={`${isDarkMode ? "text-white" : "text-gray-800"}`}
+        >
+          Load more
+        </Button>
       </div>
     </div>
   );

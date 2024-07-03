@@ -7,6 +7,7 @@ interface IContribution extends Document {
   contributions: object[],
   createdAt: Date;
   updatedAt: Date;
+  isMerged: Boolean;
 }
 
 export { IContribution };

@@ -25,8 +25,8 @@ const getRoadmapsByMemberController = new GetRoadmapsByMemberController();
 
 roadmapRouter.post("/", authMiddleware, createRoadmapController.handle);
 roadmapRouter.post("/:id/contribute", authMiddleware, contributeToRoadmapController.handle);
-roadmapRouter.get("/:id/contributions", getContributionsController.handle);
-roadmapRouter.patch("/:id/merge", mergeContributionController.handle);
+roadmapRouter.get("/:id/contributions", authMiddleware, getContributionsController.handle);
+roadmapRouter.patch("/:id/merge", authMiddleware, mergeContributionController.handle);
 roadmapRouter.get("/member", authMiddleware, getRoadmapsByMemberController.handle);
 roadmapRouter.get("/", getRoadmapsByTypeController.handle);
 roadmapRouter.get("/admin", authMiddleware, getRoadmapsByAdminController.handle);

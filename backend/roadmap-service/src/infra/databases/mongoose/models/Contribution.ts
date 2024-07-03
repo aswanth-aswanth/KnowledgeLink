@@ -9,7 +9,8 @@ const ContributionSchema: Schema<IContribution> = new Schema({
     contributorEmail: { type: String },
     contributions: [{ type: Object }],
     createdAt: Date,
-    updatedAt: Date
+    updatedAt: Date,
+    isMerged: { type: Boolean, default: false }
 });
 
 const Contribution = mongoose.model<IContribution>('Contribution', ContributionSchema);

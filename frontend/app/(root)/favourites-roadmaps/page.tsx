@@ -81,10 +81,15 @@ export default function page() {
                   >
                     View Roadmap
                   </Button>
-                  <Button className="bg-blue-500 hover:bg-blue-600  text-xs text-white  px-4 rounded-md shadow-md">
+                  {/* <Button className="bg-blue-500 hover:bg-blue-600  text-xs text-white  px-4 rounded-md shadow-md">
                     Edit Roadmap
-                  </Button>
-                  <Button className="bg-blue-500 hover:bg-blue-600 text-xs text-white  px-4 rounded-md shadow-md">
+                  </Button> */}
+                  <Button
+                    onClick={() =>
+                      router.push(`/contributions/${roadmapItem._id}`)
+                    }
+                    className="bg-blue-500 hover:bg-blue-600 text-xs text-white  px-4 rounded-md shadow-md"
+                  >
                     Merge Contributions
                   </Button>
                 </div>
@@ -193,7 +198,12 @@ export default function page() {
                   >
                     View Roadmap
                   </Button>
-                  <Button className="bg-blue-500 hover:bg-blue-600  text-xs text-white  px-4 rounded-md shadow-md">
+                  <Button
+                    onClick={() =>
+                      router.push(`/contribute-roadmap/${roadmapItem._id}`)
+                    }
+                    className="bg-blue-500 hover:bg-blue-600  text-xs text-white  px-4 rounded-md shadow-md"
+                  >
                     Contribute
                   </Button>
                 </div>

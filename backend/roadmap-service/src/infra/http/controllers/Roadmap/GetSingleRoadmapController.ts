@@ -5,7 +5,6 @@ import RoadmapRepository from "../../../../app/repositories/RoadmapRepository";
 export default class GetSingleRoadmapController {
     public async handle(req: Request, res: Response) {
         const { id } = req.params;
-        const userId = "60d9f8f8f8f8f8f8f8f8f8f9";
 
         const getSingleRoadmap = new GetSingleRoadmap(
             new RoadmapRepository()
