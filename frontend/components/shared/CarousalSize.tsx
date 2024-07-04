@@ -15,7 +15,7 @@ export default function CarouselSize() {
       opts={{
         align: "start",
       }}
-      className="max-w-[98%] custom-sm:max-w-[50%] custom-sm:bg-blue-u md:max-w-[98%] lg:max-w-full"
+      className="max-w-[80%] custom-sm:max-w-[50%] custom-sm:bg-blue-u md:max-w-[98%] lg:max-w-full"
     >
       <CarouselContent>
         {Array.from({ length: 10 }).map((_, index) => (

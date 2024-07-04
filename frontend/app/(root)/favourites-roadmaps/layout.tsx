@@ -25,9 +25,9 @@ const LayoutContent = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <>
-      <main className={`${isDarkMode && "bg-gray-900"} -mt-[80px]`}>
-        <div className="max-w-[1224px] px-4 md:px-0 mx-auto">{children}</div>
-      </main>
+      {/* <main className={`${isDarkMode && "bg-gray-900"} -mt-[80px]`}> */}
+      <div className="-mt-[80px]">{children}</div>
+      {/* </main> */}
     </>
   );
 };

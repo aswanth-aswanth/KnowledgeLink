@@ -29,7 +29,7 @@ export default function Header() {
 
   return (
     <header
-      className={`flex items-center justify-between p-2  relative z-10  shadow-md ${
+      className={`flex items-center justify-between p-2 relative z-10 max-w-[100vw] overflow-hidden shadow-md ${
         isDarkMode
           ? "bg-gradient-to-r from-gray-900 to-gray-800 shadow-lg text-white"
           : "bg-white"
@@ -39,14 +39,14 @@ export default function Header() {
         <Hamburger />
       </div>
 
-      <div className="flex-grow mx-0 sm:mx-4">
+      <div className="flex-grow mx-2 sm:mx-4">
         <div className="relative">
           <input
             type="text"
             placeholder="Search..."
-            className={`w-full py-2 pl-10 pr-4 max-w-5xl  rounded-xl focus:outline-none focus:ring-2  focus:shadow-outline ${
+            className={`w-full py-2 pl-10 pr-4 max-w-full rounded-xl focus:outline-none focus:ring-2 focus:shadow-outline ${
               isDarkMode
-                ? " text-gray-200 bg-gray-700 focus:bg-gray-600  focus:ring-blue-400"
+                ? "text-gray-200 bg-gray-700 focus:bg-gray-600 focus:ring-blue-400"
                 : "text-gray-700 bg-gray-100 focus:bg-gray-200"
             }`}
           />
@@ -54,10 +54,10 @@ export default function Header() {
         </div>
       </div>
 
-      <div className="flex items-center sm:space-x-4 md:mr-10">
+      <div className="flex items-center space-x-2 sm:space-x-4 mr-2 sm:mr-10">
         <button
           onClick={toggleDarkMode}
-          className="p-0 sm:p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
+          className="p-2 sm:p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
           aria-label={
             isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"
           }
@@ -86,10 +86,10 @@ export default function Header() {
           </div>
         ) : (
           <div
-            className=" hover:bg-gray-100 p-2 cursor-pointer rounded-full"
+            className="hover:bg-gray-100 p-2 cursor-pointer rounded-full"
             onClick={() => router.push("/sign-in")}
           >
-            <FiUser className="text-2xl   rounded-full " />
+            <FiUser className="text-2xl rounded-full" />
           </div>
         )}
       </div>

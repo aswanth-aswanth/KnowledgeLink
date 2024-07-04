@@ -26,8 +26,8 @@ const LayoutContent = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       <Header />
-      <main className={`${isDarkMode && "bg-gray-900"} min-h-[91vh]`}>
-        <div className="max-w-[1224px] px-4 md:px-0 mx-auto">{children}</div>
+      <main className={`${isDarkMode && "bg-gray-900"} min-h-[91vh] max-w-[100vw] overflow-hidden`}>
+        <div className="max-w-[1224px] px-0 sm:px-4 md:px-0 mx-auto">{children}</div>
       </main>
     </>
   );
