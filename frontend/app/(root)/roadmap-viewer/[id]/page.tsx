@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { useToast } from "@/components/ui/use-toast";
 import ViewDiagram from "@/components/shared/ViewDiagram";
+import RoadmapIndex from "@/components/shared/RoadmapIndex";
 
 async function getRoadmapData(id: string) {
   try {
@@ -43,6 +44,7 @@ async function submitContribution(roadmapId: string, contributionData: any) {
 export default function RoadmapPage() {
   const params = useParams();
   const pathname = usePathname();
+  const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
   const [roadmapData, setRoadmapData] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -117,11 +119,54 @@ export default function RoadmapPage() {
   if (!roadmapData) {
     return <div>Loading...</div>;
   }
+
+  const findTopicContent = (topics: any, uniqueId: string): string | null => {
+    if (topics.uniqueId === uniqueId) {
+      return topics.content;
+    }
+    if (topics.children) {
+      for (const child of topics.children) {
+        const content = findTopicContent(child, uniqueId);
+        if (content) return content;
+      }
+    }
+    return null;
+  };
+
   console.log("roadmapData unique : ", roadmapData);
   return (
     <div>
-      {rectangles.length > 0 && (
+      {/* {roadmapData && (
+        <div className="w-1/4 p-4">
+          <RoadmapIndex roadmapData={roadmapData} />
+        </div>
+      )} */}
+      {/* {rectangles.length > 0 && (
         <ViewDiagram rectangles={rectangles} connections={connections} />
+      )} */}
+      {rectangles.length > 0 && (
+        <ViewDiagram
+          rectangles={rectangles}
+          connections={connections}
+          onRectangleClick={(uniqueId) => {
+            const content = findTopicContent(roadmapData.topics, uniqueId);
+            if (content) {
+              setSelectedTopic(uniqueId);
+            }
+          }}
+        />
+      )}
+      {selectedTopic && (
+        <div className="mt-4 p-4 max-w-[72%] mx-auto border rounded">
+          <h2 className="text-xl font-bold mb-2">
+            {rectangles.find((r) => r.uniqueId === selectedTopic)?.name}
+          </h2>
+          <div
+            dangerouslySetInnerHTML={{
+              __html: findTopicContent(roadmapData.topics, selectedTopic) || "",
+            }}
+          />
+        </div>
       )}
       <div className="flex justify-between items-center ">
         <div></div>

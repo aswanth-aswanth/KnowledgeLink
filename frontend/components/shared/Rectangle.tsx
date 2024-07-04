@@ -47,9 +47,9 @@ const Rectangle: React.FC<RectProps> = ({
   const handleClick = useCallback(
     (e: React.MouseEvent<SVGRectElement>) => {
       e.stopPropagation();
-      onSelect(e);
+      onSelect(rect.uniqueId);
     },
-    [onSelect]
+    [onSelect, rect.uniqueId]
   );
 
   return (

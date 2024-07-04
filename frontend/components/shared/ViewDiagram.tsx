@@ -18,11 +18,13 @@ interface ViewDiagramProps {
     to: string;
     style: "straight" | "curved";
   }[];
+  onRectangleClick: (uniqueId: string) => void;
 }
 
 const ViewDiagram: React.FC<ViewDiagramProps> = ({
   rectangles,
   connections,
+  onRectangleClick,
 }) => {
   const [scale, setScale] = useState(1);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -115,7 +117,7 @@ const ViewDiagram: React.FC<ViewDiagramProps> = ({
                 key={rect.id}
                 rect={rect}
                 isSelected={false}
-                onSelect={() => {}}
+                onSelect={() => onRectangleClick(rect.uniqueId)}
                 onUpdatePosition={() => {}}
                 onUpdateSize={() => {}}
                 onDelete={() => {}}
