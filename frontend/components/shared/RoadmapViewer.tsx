@@ -115,7 +115,7 @@ const Topic: React.FC<TopicProps> = ({
             <div
               className={`h-min p-2 mb-2 rounded-md transition-all duration-200 prose font-medium prose-sm text-base tracking-wider ${
                 isDarkMode
-                  ? "bg-gray-800 text-gray-300"
+                  ? "bg-transparent text-gray-300"
                   : "bg-gray-50 text-gray-600"
               } leading-9 max-w-none`}
               dangerouslySetInnerHTML={{ __html: topic.content }}
@@ -160,7 +160,7 @@ const RoadmapViewer: React.FC<RoadmapViewerProps> = ({
     <div
       className={`nested-note-taker rounded-lg ${
         isDarkMode ? "bg-gray-900 shadow-lg" : "bg-white shadow-sm"
-      } p-6`}
+      } p-4 sm:p-6`}
     >
       <h1
         className={`text-2xl font-bold mb-4 ${
