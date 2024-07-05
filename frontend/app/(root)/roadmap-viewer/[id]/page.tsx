@@ -52,6 +52,7 @@ export default function RoadmapPage() {
   const [rectangles, setRectangles] = useState([]);
   const [connections, setConnections] = useState([]);
   const { toast } = useToast();
+  const [expandedTopics, setExpandedTopics] = useState<string[]>([]);
 
   useEffect(() => {
     if (params.id) {
@@ -63,6 +64,16 @@ export default function RoadmapPage() {
         .catch(console.error);
     }
   }, [params.id]);
+
+  const expandTopic = (uniqueId: string): string[] => {
+    const topicPath = findTopicAndParents(roadmapData.topics, uniqueId);
+    if (topicPath) {
+      const newExpanded = new Set([...expandedTopics, ...topicPath]);
+      setExpandedTopics(Array.from(newExpanded));
+      return Array.from(newExpanded);
+    }
+    return expandedTopics;
+  };
 
   const handleContentChange = (uniqueId: string, newContent: string) => {
     setContributions((prev) => ({
@@ -133,6 +144,26 @@ export default function RoadmapPage() {
     return null;
   };
 
+  function findTopicAndParents(
+    topics: any,
+    targetId: string,
+    parents: string[] = []
+  ): string[] | null {
+    if (topics.uniqueId === targetId) {
+      return [...parents, topics.uniqueId];
+    }
+    if (topics.children) {
+      for (const child of topics.children) {
+        const result = findTopicAndParents(child, targetId, [
+          ...parents,
+          topics.uniqueId,
+        ]);
+        if (result) return result;
+      }
+    }
+    return null;
+  }
+
   console.log("roadmapData unique : ", roadmapData);
   return (
     <div>
@@ -149,10 +180,24 @@ export default function RoadmapPage() {
           rectangles={rectangles}
           connections={connections}
           onRectangleClick={(uniqueId) => {
-            const content = findTopicContent(roadmapData.topics, uniqueId);
-            if (content) {
-              setSelectedTopic(uniqueId);
-            }
+            setSelectedTopic(uniqueId);
+            const newExpandedTopics = expandTopic(uniqueId);
+
+            // Force a re-render to ensure all topics are expanded
+            setExpandedTopics([...newExpandedTopics]);
+
+            // Use requestAnimationFrame to scroll after the DOM has updated
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                const element = document.getElementById(`topic-${uniqueId}`);
+                if (element) {
+                  element.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center",
+                  });
+                }
+              });
+            });
           }}
         />
       )}
@@ -193,6 +238,10 @@ export default function RoadmapPage() {
           transformedTopics={roadmapData}
           isEditMode={isEditMode}
           onContentChange={handleContentChange}
+          selectedTopic={selectedTopic}
+          expandTopic={expandTopic}
+          expandedTopics={expandedTopics}
+          setExpandedTopics={setExpandedTopics}
         />
       </div>
 

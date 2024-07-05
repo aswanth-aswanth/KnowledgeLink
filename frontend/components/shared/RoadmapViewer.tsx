@@ -4,6 +4,18 @@ import { useDarkMode } from "@/hooks/useDarkMode";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
+interface RoadmapViewerProps {
+  transformedTopics: {
+    title: string;
+    description: string;
+    topics: TopicProps["topic"];
+  };
+  isEditMode: boolean;
+  onContentChange: (uniqueId: string, newContent: string) => void;
+  selectedTopic: string | null;
+  expandTopic: (uniqueId: string) => void;
+}
+
 interface TopicProps {
   topic: {
     uniqueId: string;
@@ -16,6 +28,8 @@ interface TopicProps {
   setExpandedTopics: React.Dispatch<React.SetStateAction<string[]>>;
   isEditMode: boolean;
   onContentChange: (uniqueId: string, newContent: string) => void;
+  selectedTopic: string | null;
+  expandTopic: (uniqueId: string) => void;
 }
 
 const Topic: React.FC<TopicProps> = ({
@@ -25,6 +39,8 @@ const Topic: React.FC<TopicProps> = ({
   setExpandedTopics,
   isEditMode,
   onContentChange,
+  selectedTopic,
+  expandTopic,
 }) => {
   const { isDarkMode } = useDarkMode();
   const isExpanded = expandedTopics.includes(topic.uniqueId);
@@ -34,6 +50,12 @@ const Topic: React.FC<TopicProps> = ({
   useEffect(() => {
     setEditedContent(topic.content);
   }, [topic.content]);
+
+  useEffect(() => {
+    if (selectedTopic === topic.uniqueId) {
+      expandTopic(topic.uniqueId);
+    }
+  }, [selectedTopic, topic.uniqueId, expandTopic]);
 
   const toggleExpand = () => {
     if (isExpanded) {
@@ -53,7 +75,8 @@ const Topic: React.FC<TopicProps> = ({
   };
 
   return (
-    <div className="topic-node mb-3">
+    // <div className="topic-node mb-3">
+    <div id={`topic-${topic.uniqueId}`} className="topic-node mb-3">
       <div className="flex items-center group">
         <button
           onClick={toggleExpand}
@@ -130,6 +153,8 @@ const Topic: React.FC<TopicProps> = ({
               setExpandedTopics={setExpandedTopics}
               isEditMode={isEditMode}
               onContentChange={onContentChange}
+              selectedTopic={selectedTopic}
+              expandTopic={expandTopic}
             />
           ))}
         </div>
