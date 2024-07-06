@@ -59,12 +59,17 @@ const topicsSlice = createSlice({
       const id = action.payload;
       state.topics[id].isExpanded = !state.topics[id].isExpanded;
     },
-    resetTopics: () => initialState,
     setEditorData: (state, action: PayloadAction<any>) => {
       state.editorData = action.payload;
     },
+    setRootTitleAndContent: (state, action: PayloadAction<{ title: string; content: string }>) => {
+      const { title, content } = action.payload;
+      state.topics[state.rootId].name = title;
+      state.topics[state.rootId].content = content;
+    },
+    resetTopics: () => initialState,
   },
 });
 
-export const { addTopic, updateTopic, deleteTopic, toggleExpand, resetTopics, setEditorData } = topicsSlice.actions;
+export const { addTopic, updateTopic, deleteTopic, toggleExpand, resetTopics, setEditorData, setRootTitleAndContent } = topicsSlice.actions;
 export default topicsSlice.reducer;
