@@ -6,7 +6,7 @@ export interface ITopic extends Document {
     name: string;
     content: string;
     uniqueId?: string;
-    contributorId: Types.ObjectId;
+    contributorEmail: string;
     tags: string[];
     children: ITopic[];
 }

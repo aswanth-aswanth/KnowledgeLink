@@ -4,24 +4,24 @@ import { IRoadmap, ITopic } from "../../interfaces/IRoadmap";
 const TopicSchema: Schema<ITopic> = new Schema({
     _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
     name: { type: String, required: true },
-    uniqueId: { type: String, unique: true },
+    uniqueId: { type: String },
     content: { type: String },
-    contributorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
-    tags: { type: [String], default: [] }, // Tags as array of strings with default empty array
+    contributorEmail: { type: String, default: "" },
+    tags: { type: [String], default: [] },
     children: [{
         _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
         name: { type: String, required: true },
-        uniqueId: { type: String, unique: true },
+        uniqueId: { type: String },
         content: { type: String },
-        contributorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
-        tags: { type: [String], default: [] }, // Tags as array of strings with default empty array
+        contributorEmail: { type: String, default: "" },
+        tags: { type: [String], default: [] },
         children: [{
             _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
             name: { type: String, required: true },
             content: { type: String },
-            uniqueId: { type: String, unique: true },
-            contributorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
-            tags: { type: [String], default: [] }, // Tags as array of strings with default empty array
+            uniqueId: { type: String },
+            contributorEmail: { type: String, default: "" },
+            tags: { type: [String], default: [] },
             children: [{ type: Schema.Types.ObjectId, ref: 'Topic' }]
         }]
     }]
@@ -36,8 +36,8 @@ const RoadmapSchema: Schema<IRoadmap> = new Schema({
         required: true,
         enum: ['expert_collaboration', 'public_voting', 'moderator_submission']
     },
-    tags: { type: [String], default: [] }, // Tags as array of strings with default empty array
-    uniqueId: { type: String, unique: true },
+    tags: { type: [String], default: [] },
+    uniqueId: { type: String },
     members: { type: [String], default: [] },
     creatorEmail: { type: String, required: true },
     topics: {
@@ -45,9 +45,9 @@ const RoadmapSchema: Schema<IRoadmap> = new Schema({
             _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
             name: { type: String, required: true },
             content: { type: String },
-            uniqueId: { type: String, unique: true },
-            contributorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
-            tags: { type: [String], default: [] }, // Tags as array of strings with default empty array
+            uniqueId: { type: String },
+            contributorEmail: { type: String, default: "" },
+            tags: { type: [String], default: [] },
             children: [TopicSchema]
         }),
         required: true
