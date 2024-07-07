@@ -1,25 +1,89 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
-export interface IPost extends Document {
-    username: string;
-    email: string;
-    password?: string;
-    favourites?: string[];
-    subscribed?: string[];
-    following?: string[];
-    followers?: string[];
-    image?: string;
+interface Video {
+    type: 'youtubeVideo' | 'videoFile';
+    url: string;
+    duration: number;
 }
 
-const PostSchema: Schema = new Schema({
-    username: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String },
-    image: { type: String, default: "" },
-    favourites: { type: [String], default: [] },
-    subscribed: { type: [String], default: [] },
-    following: { type: [String], default: [] },
-    followers: { type: [String], default: [] },
+interface Image {
+    url: string;
+}
+
+export interface IPost extends Document {
+    title?: string;
+    description: string;
+    content: {
+        videos: Video[];
+        images: Image[];
+    };
+    audios?: string[];
+    tags?: string[];
+    createdAt: Date;
+    updatedAt: Date;
+    creatorEmail: string;
+    likes: string[]
+}
+
+// Define the Post schema
+const PostSchema = new Schema<IPost>({
+    title: {
+        type: String,
+        trim: true
+    },
+    description: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    content: {
+        videos: [{
+            type: {
+                type: String,
+                enum: ['youtubeVideo', 'videoFile'],
+                required: true
+            },
+            url: {
+                type: String,
+                required: true
+            },
+            duration: {
+                type: Number,
+                required: true
+            }
+        }],
+        images: [{
+            url: {
+                type: String,
+                required: true
+            }
+        }]
+    },
+    audios: [{
+        type: String,
+        required: false
+    }],
+    tags: [{
+        type: String,
+        required: false
+    }],
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now
+    },
+    creatorEmail: { type: String, required: true },
+    likes: { type: [String], default: [] },
 });
 
-export default mongoose.model<IPost>('Post', PostSchema);
+// Middleware to update the updatedAt field before saving
+PostSchema.pre('save', function (next) {
+    this.updatedAt = new Date();
+    next();
+});
+
+const Post = mongoose.model<IPost>('Post', PostSchema);
+export default Post;

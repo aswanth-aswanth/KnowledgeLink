@@ -38,9 +38,6 @@ roadmapRouter.get("/diagram/:id", getDiagramController.handle);
 roadmapRouter.get("/:id/members", getAllRoadmapMembersController.handle);
 roadmapRouter.get("/:id", getSingleRoadmapController.handle);
 
-
-
-
 export default roadmapRouter;
 
 /* 
