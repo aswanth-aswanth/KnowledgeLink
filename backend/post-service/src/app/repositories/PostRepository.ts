@@ -49,4 +49,29 @@ export default class PostRepository {
             }
         }
     }
+    public async toggleLike(postId: string, email: string) {
+        try {
+            const post = await Post.findById(postId);
+            if (!post) {
+                throw new Error('Post not found');
+            }
+
+            const likeIndex = post.likes.indexOf(email);
+            if (likeIndex === -1) {
+                // User hasn't liked the post, so like it
+                post.likes.push(email);
+            } else {
+                // User already liked the post, so unlike it
+                post.likes.splice(likeIndex, 1);
+            }
+
+            await post.save();
+            return post;
+        } catch (error) {
+            console.error('Error toggling like:', error);
+            throw error;
+        }
+    }
+
+
 }
