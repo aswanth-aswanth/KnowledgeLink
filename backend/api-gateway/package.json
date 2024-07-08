@@ -8,6 +8,7 @@
     "start:auth": "cd ../auth-service/src/presentation/express/settings && ts-node server.ts",
     "start:profile": "cd ../profile-service/src/presentation/express/settings && ts-node server.ts",
     "start:roadmap": "cd ../roadmap-service/src/presentation/express/settings && ts-node server.ts",
+    "start:post": "cd ../post-service/src/presentation/express/settings && ts-node server.ts",
     "start:api": "ts-node index.ts",
     "build": "tsc",
     "dev": "tsc --watch & nodemon dist/index.ts"
