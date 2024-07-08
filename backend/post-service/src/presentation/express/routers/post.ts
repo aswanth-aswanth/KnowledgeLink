@@ -3,7 +3,7 @@ import authMiddleware from '../../../infra/http/middleware/authMiddleware';
 import nonAuthMiddleware from '../../../infra/http/middleware/nonAuthMiddleware';
 import CreatePostController from '../../../infra/http/controllers/CreatePostController';
 import LikePostController from '../../../infra/http/controllers/LikePostController';
-import CommentPostController from '../../../infra/http/controllers/CommentPostController';
+import CommentPostController from '../../..//infra/http/controllers/CommentPostController';
 import ReplyCommentController from '../../../infra/http/controllers/ReplyCommentController';
 import DeleteCommentController from '../../../infra/http/controllers/DeleteCommentController';
 import DeleteReplyController from '../../../infra/http/controllers/DeleteReplyController';

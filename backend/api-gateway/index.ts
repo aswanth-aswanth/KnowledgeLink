@@ -18,6 +18,7 @@ const services: { [key: string]: string } = {
   auth: 'http://localhost:5000',
   roadmap: 'http://localhost:5001',
   profile: 'http://localhost:5002',
+  post: 'http://localhost:5003',
 };
 
 const authProxy: RequestHandler = createProxyMiddleware({
@@ -35,9 +36,15 @@ const roadmapProxy: RequestHandler = createProxyMiddleware({
   changeOrigin: true,
 });
 
+const postProxy: RequestHandler = createProxyMiddleware({
+  target: services.roadmap,
+  changeOrigin: true,
+});
+
 app.use('/auth', authProxy);
 app.use('/profile', profileProxy);
 app.use('/roadmap', roadmapProxy);
+app.use('/post', postProxy);
 
 const PORT: number = 4000;
 app.listen(PORT, () => {

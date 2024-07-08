@@ -128,7 +128,7 @@ export default class PostRepository {
             throw error;
         }
     };
-    public async getPosts(currentUserEmail: string, userEmails: string[]): Promise<(IPost & { isLiked: boolean })[]> {
+    public async getPosts(currentUserEmail: string, userEmails: string[]): Promise<any> {
         try {
             const posts = await Post.find({ creatorEmail: { $in: userEmails } })
                 .sort({ createdAt: -1 })

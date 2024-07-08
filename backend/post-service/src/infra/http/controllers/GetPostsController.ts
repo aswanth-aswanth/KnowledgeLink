@@ -10,7 +10,7 @@ export default class GetPostsController {
                 new PostRepository()
             );
             const result = await getPosts.execute(email);
-            console.log("result : ",result);
+            console.log("result : ", result);
             return res.status(201).json({ posts: result, message: "Success" });
         } catch (err) {
             if (err instanceof Error) {
