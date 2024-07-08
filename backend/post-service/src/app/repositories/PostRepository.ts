@@ -1,8 +1,8 @@
-// src/app/repositories/PostRepository.ts
-
 import Post, { IPost } from '../../infra/databases/mongoose/models/Post';
+import Comment, { IComment } from '../../infra/databases/mongoose/models/Comment';
 import S3Service from '../../infra/services/S3Service';
 import { File } from 'formidable';
+import mongoose from 'mongoose';
 
 
 export default class PostRepository {
@@ -72,6 +72,108 @@ export default class PostRepository {
             throw error;
         }
     }
+    public async commentPost(postId: string, email: string, text: string) {
+        try {
+            const post = await Post.findById(postId);
+            if (!post) {
+                throw new Error('Post not found');
+            }
 
+            const comment = new Comment({ text, author: email, replies: [] });
+            await comment.save();
 
+            post.comments.push(comment._id);
+            await post.save();
+
+            return "Commented successfully";
+        } catch (error) {
+            console.error('Error toggling like:', error);
+            throw error;
+        }
+    }
+    public async addReply(commentId: string, text: string, author: string) {
+        try {
+
+            const comment = await Comment.findById(commentId);
+            if (!comment) {
+                throw new Error('Comment not found');
+            }
+            const replyData = { text, author };
+
+            comment.replies.push(replyData);
+            await comment.save();
+
+            return "comment successful";
+        } catch (error) {
+            console.error('Error adding reply : ', error);
+            throw error;
+        }
+    };
+    public async deleteComment(commentId: string, author: string) {
+        try {
+            const comment = await Comment.findById(commentId);
+            if (!comment) {
+                throw new Error('Comment not found');
+            }
+            if (comment.author !== author) {
+                throw new Error('You are not the author of the comment');
+            }
+
+            comment.isDeleted = true;
+            await comment.save();
+
+            return "Comment removed successfully";
+        } catch (error) {
+            console.error('Error deleting comment:', error);
+            throw error;
+        }
+    };
+    public async getPosts(currentUserEmail: string, userEmails: string[]): Promise<(IPost & { isLiked: boolean })[]> {
+        try {
+            const posts = await Post.find({ creatorEmail: { $in: userEmails } })
+                .sort({ createdAt: -1 })
+                .exec();
+
+            const postsWithIsLiked = posts.map((post) => ({
+                ...post.toObject(),
+                isLiked: post.likes.includes(currentUserEmail)
+            }));
+
+            return postsWithIsLiked;
+        } catch (error) {
+            console.error('Error retrieving posts:', error);
+            throw error;
+        }
+    }
+    public async deleteReply(commentId: string, replyId: string, author: string) {
+        try {
+            const objectId = new mongoose.Types.ObjectId(commentId);
+            const replyObjectId = new mongoose.Types.ObjectId(replyId);
+
+            const comment = await Comment.findById(objectId);
+            if (!comment) {
+                throw new Error('Comment not found');
+            }
+
+            // Find the reply by its ObjectId within the comment's replies array
+            const replyIndex = comment.replies.findIndex(reply => reply._id?.equals(replyObjectId));
+            if (replyIndex === -1) {
+                throw new Error('Reply not found');
+            }
+
+            // Check if the author matches
+            if (comment.replies[replyIndex].author !== author) {
+                throw new Error('You are not the author of the reply');
+            }
+
+            comment.replies[replyIndex].isDeleted = true;
+
+            await comment.save();
+
+            return "Reply deleted successfully";
+        } catch (error) {
+            console.error('Error deleting reply:', error);
+            throw error;
+        }
+    };
 }

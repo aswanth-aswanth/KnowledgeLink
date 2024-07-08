@@ -1,6 +1,6 @@
 import RoadmapRepository from "../../repositories/RoadmapRepository";
-import { IRoadmap } from "../../../infra/databases/interfaces/IRoadmap";
 import Publisher from "../../../infra/messaging/rabbitmq/Publisher";
+import { IRoadmap } from "../../../infra/databases/interfaces/IRoadmap";
 
 export default class GetAllRoadmapMembers {
     private roadmapRepository: RoadmapRepository;

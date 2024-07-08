@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
+import { IComment } from './Comment';
 
 interface Video {
     type: 'youtubeVideo' | 'videoFile';
@@ -22,7 +23,8 @@ export interface IPost extends Document {
     createdAt: Date;
     updatedAt: Date;
     creatorEmail: string;
-    likes: string[]
+    likes: string[];
+    comments: IComment['_id'][];
 }
 
 // Define the Post schema
@@ -75,8 +77,18 @@ const PostSchema = new Schema<IPost>({
         type: Date,
         default: Date.now
     },
-    creatorEmail: { type: String, required: true },
-    likes: { type: [String], default: [] },
+    comments: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Comment'
+    }],
+    creatorEmail: {
+        type: String,
+        required: true
+    },
+    likes: {
+        type: [String],
+        default: []
+    },
 });
 
 // Middleware to update the updatedAt field before saving
