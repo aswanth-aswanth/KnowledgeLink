@@ -1,5 +1,4 @@
 import Notification, { INotification } from '../../infra/databases/mongoose/models/Notification';
-import mongoose from 'mongoose';
 
 
 export default class PostRepository {
@@ -13,5 +12,22 @@ export default class PostRepository {
             throw error;
         }
     }
+
+    public async getUnreadNotificationCount(email: string) {
+        try {
+            const recipientNotifications = await Notification.findOne({ recipient: email });
+
+            if (recipientNotifications) {
+                const unreadCount = recipientNotifications.notifications.filter(notification => !notification.read).length;
+                return unreadCount;
+            } else {
+                return 0;
+            }
+        } catch (error) {
+            console.error('Error getting unread notification count:', error);
+            throw error;
+        }
+    }
+
 
 }

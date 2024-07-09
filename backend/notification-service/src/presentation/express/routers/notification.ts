@@ -1,8 +1,8 @@
 import { Router } from "express";
 import authMiddleware from '../../../infra/http/middleware/authMiddleware';
 import GetNotificationController from '../../../infra/http/controllers/GetNotificationController';
-import MarkAsReadController from '../../../infra/http/controllers/MarkAsReadController';
 import GetNotificationCountController from '../../../infra/http/controllers/GetNotificationCountController';
+import MarkAsReadController from '../../../infra/http/controllers/MarkAsReadController';
 
 const notificationRouter = Router();
 

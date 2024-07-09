@@ -1,5 +1,3 @@
-// src/app/useCases/CreatePost.ts
-
 import { IPost } from '../../infra/databases/mongoose/models/Post';
 import PostRepository from '../repositories/PostRepository';
 
