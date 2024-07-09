@@ -1,4 +1,5 @@
 import Notification, { INotification } from '../../infra/databases/mongoose/models/Notification';
+import { Types } from 'mongoose';
 
 
 export default class PostRepository {
@@ -29,5 +30,32 @@ export default class PostRepository {
         }
     }
 
+    public async markNotificationsAsRead(email: string, notificationIds: string[]): Promise<{ message: string }> {
+        try {
+            const result = await Notification.findOneAndUpdate(
+                { recipient: email },
+                {
+                    $set: {
+                        'notifications.$[elem].read': true
+                    }
+                },
+                {
+                    arrayFilters: [{ 'elem._id': { $in: notificationIds } }],
+                    new: true
+                }
+            );
+
+            if (!result) {
+                throw new Error('User not found or no notifications updated');
+            }
+
+            const updatedCount = result.notifications.filter(n => notificationIds.includes(n._id.toString()) && n.read).length;
+
+            return { message: `${updatedCount} notification(s) marked as read` };
+        } catch (error) {
+            console.error('Error marking notifications as read:', error);
+            throw error;
+        }
+    }
 
 }

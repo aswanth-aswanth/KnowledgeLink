@@ -2,6 +2,7 @@ import mongoose, { Schema, Document, Model, model } from 'mongoose';
 
 // Notification Interface
 export interface INotification extends Document {
+    _id: mongoose.Types.ObjectId;
     type: string;
     content: string;
     createdAt?: Date;
