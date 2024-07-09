@@ -1,4 +1,4 @@
-import Notification, { INotification } from '../../infra/databases/mongoose/models/Notification';
+import Notification, { INotification, IRecipientNotifications } from '../../infra/databases/mongoose/models/Notification';
 import { Types } from 'mongoose';
 
 
@@ -58,4 +58,25 @@ export default class PostRepository {
         }
     }
 
+    public async save(notificationData: { recipient: string, notification: Partial<INotification> }): Promise<IRecipientNotifications> {
+        try {
+            const { recipient, notification } = notificationData;
+            const result = await Notification.findOneAndUpdate(
+                { recipient },
+                {
+                    $push: {
+                        notifications: {
+                            $each: [notification],
+                            $slice: -30 // Keep only the last 30 notifications
+                        }
+                    }
+                },
+                { upsert: true, new: true }
+            );
+            return result;
+        } catch (error) {
+            console.error('Error saving notification:', error);
+            throw error;
+        }
+    }
 }
