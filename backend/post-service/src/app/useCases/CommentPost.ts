@@ -17,6 +17,6 @@ export default class CommentPost {
             postOwner: result.creatorEmail
         });
         await Publisher.publish('notification_exchange', notificationMessage);
-        return result;
+        return "Commented successfully";
     }
 }

@@ -60,6 +60,10 @@ class Consumer {
                     notificationContent = `${content.liker} commented on your post`;
                     socketMessage = `${content.liker} commented on your post`;
                     break;
+                case 'reply':
+                    notificationContent = `${content.replier} replied to your comment`;
+                    socketMessage = `${content.replier} replied to your comment`;
+                    break;
                 default:
                     console.log(`Unknown notification type: ${content.type}`);
                     return;

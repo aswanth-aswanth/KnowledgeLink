@@ -102,7 +102,7 @@ export default class PostRepository {
             comment.replies.push(replyData);
             await comment.save();
 
-            return "comment successful";
+            return comment;
         } catch (error) {
             console.error('Error adding reply : ', error);
             throw error;

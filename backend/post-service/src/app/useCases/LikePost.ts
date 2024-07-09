@@ -10,7 +10,7 @@ export default class LikePost {
         this.postRepository = postRepository;
     }
 
-    public async execute(postId: string, email: string): Promise<IPost> {
+    public async execute(postId: string, email: string): Promise<any> {
         const result = await this.postRepository.toggleLike(postId, email);
 
         const notificationMessage = JSON.stringify({
@@ -21,6 +21,6 @@ export default class LikePost {
         });
         await Publisher.publish('notification_exchange', notificationMessage);
 
-        return result;
+        return "success";
     }
 }
