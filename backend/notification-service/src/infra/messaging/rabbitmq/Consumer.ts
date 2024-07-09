@@ -1,5 +1,3 @@
-// src/infra/messaging/rabbitmq/Consumer.ts
-
 import amqp from 'amqplib';
 import RabbitMQConnection from './RabbitMQConnection';
 import NotificationRepository from '../../../app/repositories/NotificationRepository';
@@ -50,21 +48,36 @@ class Consumer {
 
     private async handleMessage(content: any) {
         try {
-            // Save notification to database
+            let notificationContent = '';
+            let socketMessage = '';
+
+            switch (content.type) {
+                case 'like':
+                    notificationContent = `${content.liker} liked your post`;
+                    socketMessage = `${content.liker} liked your post`;
+                    break;
+                case 'comment':
+                    notificationContent = `${content.liker} commented on your post`;
+                    socketMessage = `${content.liker} commented on your post`;
+                    break;
+                default:
+                    console.log(`Unknown notification type: ${content.type}`);
+                    return;
+            }
+
             await this.notificationRepository.save({
                 recipient: content.postOwner,
                 notification: {
                     type: content.type,
-                    content: `${content.liker} liked your post`,
+                    content: notificationContent,
                     createdAt: new Date(),
                     read: false
                 }
             });
 
-            // Send real-time notification
             this.socketService.sendNotification(content.postOwner, {
                 type: content.type,
-                message: `${content.liker} liked your post`,
+                message: socketMessage,
                 postId: content.postId
             });
         } catch (error) {

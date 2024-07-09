@@ -83,9 +83,8 @@ export default class PostRepository {
             await comment.save();
 
             post.comments.push(comment._id);
-            await post.save();
+            return await post.save();
 
-            return "Commented successfully";
         } catch (error) {
             console.error('Error toggling like:', error);
             throw error;

@@ -1,6 +1,6 @@
 import { IPost } from '../../infra/databases/mongoose/models/Post';
 import PostRepository from '../repositories/PostRepository';
-
+import Publisher from '../../infra/messaging/rabbitmq/Publisher';
 export default class CommentPost {
     private postRepository: PostRepository;
 
@@ -9,6 +9,14 @@ export default class CommentPost {
     }
 
     public async execute(postId: string, email: string, text: string): Promise<any> {
-        return await this.postRepository.commentPost(postId, email, text);
+        const result = await this.postRepository.commentPost(postId, email, text);
+        const notificationMessage = JSON.stringify({
+            type: 'comment',
+            postId,
+            commenter: email,
+            postOwner: result.creatorEmail
+        });
+        await Publisher.publish('notification_exchange', notificationMessage);
+        return result;
     }
 }
