@@ -1,7 +1,7 @@
 "use client";
 
 import ClientOnly from "@/contexts/ClientOnly";
-import Editor from "@/components/shared/Editor";
+import Editor from "@/app/(root)/svg2/Editor";
 import { EditorProvider } from "@/contexts/EditorContext";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";

@@ -1,8 +1,8 @@
 "use client";
 import React, { useState, useRef, useCallback, useEffect } from "react";
-import Rectangle from "./Rectangle";
-import Toolbar from "./Toolbar";
-import Connection from "./Connection";
+import Rectangle from "../../../components/shared/Rectangle";
+import Toolbar from "../../../components/shared/Toolbar";
+import Connection from "../../../components/shared/Connection";
 import { topicsData } from "@/data/topic";
 import { Topic, Rect, ConnectionType } from "@/types/EditorTypes";
 import { useEditorContext } from "@/contexts/EditorContext";

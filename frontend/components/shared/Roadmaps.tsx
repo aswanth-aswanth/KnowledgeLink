@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Tab } from "@/types";
 import Tabs from "@/components/shared/Tabs";
-import RoadmapItems from "./RoadmapItems";
+import RoadmapItems from "../../app/(root)/favourites-roadmaps/RoadmapItems";
 import apiClient from "@/api/apiClient";
 
 export default function Roadmaps() {

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CiSquarePlus } from "react-icons/ci";
 import { Separator } from "@/components/ui/separator";
-import RoadmapItems from "@/components/shared/RoadmapItems";
+import RoadmapItems from "@/app/(root)/favourites-roadmaps/RoadmapItems";
 import { useDarkMode } from "@/hooks/useDarkMode";
 import { useRouter } from "next/navigation";
 import apiClient from "@/api/apiClient";
