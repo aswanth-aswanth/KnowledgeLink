@@ -19,6 +19,7 @@ const services: { [key: string]: string } = {
   roadmap: 'http://localhost:5001',
   profile: 'http://localhost:5002',
   post: 'http://localhost:5003',
+  notification: 'http://localhost:5004',
 };
 
 const authProxy: RequestHandler = createProxyMiddleware({
@@ -41,10 +42,16 @@ const postProxy: RequestHandler = createProxyMiddleware({
   changeOrigin: true,
 });
 
+const notificationProxy: RequestHandler = createProxyMiddleware({
+  target: services.roadmap,
+  changeOrigin: true,
+});
+
 app.use('/auth', authProxy);
 app.use('/profile', profileProxy);
 app.use('/roadmap', roadmapProxy);
 app.use('/post', postProxy);
+app.use('/notification', notificationProxy);
 
 const PORT: number = 4000;
 app.listen(PORT, () => {
