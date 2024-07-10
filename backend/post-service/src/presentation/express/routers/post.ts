@@ -8,6 +8,7 @@ import ReplyCommentController from '../../../infra/http/controllers/ReplyComment
 import DeleteCommentController from '../../../infra/http/controllers/DeleteCommentController';
 import DeleteReplyController from '../../../infra/http/controllers/DeleteReplyController';
 import GetPostsController from '../../../infra/http/controllers/GetPostsController';
+import GetCommentsController from '../../../infra/http/controllers/GetCommentsController';
 
 const postRouter = Router();
 
@@ -18,6 +19,7 @@ const replyCommentController = new ReplyCommentController();
 const deleteCommentController = new DeleteCommentController();
 const deleteReplyController = new DeleteReplyController();
 const getPostsController = new GetPostsController();
+const getCommentsController = new GetCommentsController();
 
 
 postRouter.post("/", authMiddleware, createPostController.handle);
@@ -27,6 +29,6 @@ postRouter.patch("/comment", authMiddleware, deleteCommentController.handle);
 postRouter.post("/reply", authMiddleware, replyCommentController.handle);
 postRouter.patch("/reply", authMiddleware, deleteReplyController.handle);
 postRouter.get("/posts", authMiddleware, getPostsController.handle);
-
+postRouter.get("/comments/:postId", nonAuthMiddleware, getCommentsController.handle);
 
 export default postRouter;

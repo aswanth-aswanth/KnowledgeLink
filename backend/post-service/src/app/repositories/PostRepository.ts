@@ -175,4 +175,35 @@ export default class PostRepository {
             throw error;
         }
     };
+    public async getComments(postId: string, page: number, limit: number): Promise<any> {
+        try {
+            const post = await Post.findById(postId).populate({
+                path: 'comments',
+                match: { isDeleted: false },
+                options: {
+                    skip: (page - 1) * limit,
+                    limit: limit,
+                    sort: { createdAt: -1 }
+                }
+            }).exec();
+
+            if (!post) {
+                throw new Error('Post not found');
+            }
+
+            const commentsWithReplyCount = post.comments.map((comment: any) => ({
+                _id: comment._id,
+                text: comment.text,
+                author: comment.author,
+                createdAt: comment.createdAt,
+                updatedAt: comment.updatedAt,
+                replyCount: comment.replies.length
+            }));
+
+            return commentsWithReplyCount;
+        } catch (error) {
+            console.error('Error retrieving comments:', error);
+            throw error;
+        }
+    }
 }

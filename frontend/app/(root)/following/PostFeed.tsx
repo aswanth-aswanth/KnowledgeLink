@@ -35,6 +35,7 @@ export function PostFeed() {
     try {
       const response = await apiClient("/post/posts");
       const { data } = response;
+      console.log("Data posts : ", data.posts);
       setPosts(data.posts);
     } catch (error) {
       console.error("Error fetching posts:", error);
