@@ -66,7 +66,11 @@ export default function ContributionsPage() {
     <>
       {contributions.length != 0 ? (
         <div className="container mx-auto p-4">
-          <h1 className="text-2xl font-bold mb-4">Contributions for Roadmap</h1>
+          <h1
+            className={`text-2xl font-bold mb-4 ${isDarkMode && "text-white"} `}
+          >
+            Contributions for Roadmap
+          </h1>
           <ScrollArea className="h-max rounded-md border p-4">
             {contributions.map((contribution) => (
               <Card key={contribution._id} className="mb-4">

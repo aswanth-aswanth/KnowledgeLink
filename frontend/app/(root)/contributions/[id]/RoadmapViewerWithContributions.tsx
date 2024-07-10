@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import apiClient from "@/api/apiClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight, Circle } from "lucide-react";
 import { useDarkMode } from "@/hooks/useDarkMode";
 import { useToast } from "@/components/ui/use-toast";
 import ContributionsPage from "./Contributions";
@@ -43,6 +43,7 @@ interface RoadmapData {
 
 async function getRoadmapData(id: string): Promise<RoadmapData> {
   const res = await apiClient.get(`/roadmap/${id}`);
+  console.log("getRoadmapData : ", res.data);
   return res.data;
 }
 
@@ -62,6 +63,10 @@ async function mergeContribution(roadmapId: string, mergeData: any) {
   return res.data;
 }
 
+const AnimatedHighlight = () => (
+  <div className="absolute -inset-1 bg-blue-500 opacity-75 rounded-lg blur animate-pulse"></div>
+);
+
 const TopicWithContributions: React.FC<{
   topic: Topic;
   contributions: Contribution[];
@@ -74,6 +79,17 @@ const TopicWithContributions: React.FC<{
   const topicContributions = contributions.filter((c) =>
     c.contributions.some((cont) => cont.id === topic.uniqueId)
   );
+
+  const hasDirectContribution = topicContributions.length > 0;
+
+  const hasChildContribution = topic.children.some(
+    (child) =>
+      contributions.some((c) =>
+        c.contributions.some((cont) => cont.id === child.uniqueId)
+      ) || child.children.length > 0
+  );
+
+  const shouldHighlight = hasDirectContribution || hasChildContribution;
 
   return (
     <div className="topic-node mb-3">
@@ -112,19 +128,29 @@ const TopicWithContributions: React.FC<{
         >
           {level}
         </span>
+        {shouldHighlight && (
+          <Circle
+            size={12}
+            className="text-blue-500 animate-pulse"
+            fill="currentColor"
+          />
+        )}
       </div>
       {isExpanded && (
         <div className="ml-6 mt-2">
           <div
-            className={`h-min p-2 mb-2 rounded-md transition-all duration-200 prose font-medium prose-sm text-base tracking-wider ${
-              isDarkMode
-                ? "bg-gray-800 text-gray-300"
-                : "bg-gray-50 text-gray-600"
+            className={`h-min bg-transparent p-2 mb-2 rounded-md transition-all duration-200 prose font-medium prose-sm text-base tracking-wider ${
+              isDarkMode ? " text-gray-300" : "bg-gray-50 text-gray-600"
             } leading-9 max-w-none`}
             dangerouslySetInnerHTML={{ __html: topic.content }}
           />
           {topicContributions.map((contribution) => (
-            <Card key={contribution._id} className="mb-4">
+            <Card
+              key={contribution._id}
+              className={`h-min bg-transparent p-0 mb-2 rounded-md transition-all duration-200 prose font-medium prose-sm text-base tracking-wider ${
+                isDarkMode ? " text-gray-300" : "bg-gray-50 text-gray-600"
+              } leading-9 max-w-none`}
+            >
               <CardHeader>
                 <CardTitle className="text-sm">
                   Contribution by {contribution.contributorEmail}
@@ -132,11 +158,7 @@ const TopicWithContributions: React.FC<{
               </CardHeader>
               <CardContent>
                 {contribution.contributions
-                  .filter((cont) => {
-                    console.log("filter cont : ", cont);
-                    console.log("filter topic : ", topic);
-                    return cont.id === topic.uniqueId;
-                  })
+                  .filter((cont) => cont.id === topic.uniqueId)
                   .map((cont) => (
                     <div key={cont.id} className="mb-2">
                       <p>{cont.content.data}</p>
@@ -193,9 +215,6 @@ export default function RoadmapViewerWithContributions() {
         .catch(console.error);
     }
   }, [params.id]);
-
-  console.log("roadmapdata State : ", roadmapData);
-  console.log("contribution State : ", contributions);
 
   const handleMerge = async (
     topicId: string,
