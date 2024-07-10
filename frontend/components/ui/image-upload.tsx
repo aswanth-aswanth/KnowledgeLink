@@ -4,18 +4,17 @@ import { Input } from "@/components/ui/input";
 import { X } from "lucide-react";
 
 interface ImageUploadProps {
-  images: { url: string }[];
-  onChange: (images: { url: string }[]) => void;
+  images: { url: string; file?: File }[];
+  onChange: (images: { url: string; file?: File }[]) => void;
   className?: string;
 }
 
 export function ImageUpload({ images, onChange, className }: ImageUploadProps) {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Implement image upload logic here
-    // For now, we'll just use the file name as the URL
     if (e.target.files) {
       const newImages = Array.from(e.target.files).map((file) => ({
         url: URL.createObjectURL(file),
+        file: file,
       }));
       onChange([...images, ...newImages]);
     }

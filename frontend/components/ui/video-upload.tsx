@@ -1,33 +1,28 @@
-// components/ui/video-upload.tsx
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { X } from "lucide-react";
 
+interface Video {
+  type: "youtubeVideo" | "videoFile";
+  url: string;
+  duration: number;
+  file?: File;
+}
+
 interface VideoUploadProps {
-  videos: {
-    type: "youtubeVideo" | "videoFile";
-    url: string;
-    duration: number;
-  }[];
-  onChange: (
-    videos: {
-      type: "youtubeVideo" | "videoFile";
-      url: string;
-      duration: number;
-    }[]
-  ) => void;
+  videos: Video[];
+  onChange: (videos: Video[]) => void;
   className?: string;
 }
 
 export function VideoUpload({ videos, onChange, className }: VideoUploadProps) {
   const handleVideoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Implement video upload logic here
-    // For now, we'll just use the file name as the URL and set a dummy duration
     if (e.target.files) {
       const newVideos = Array.from(e.target.files).map((file) => ({
         type: "videoFile" as const,
         url: URL.createObjectURL(file),
-        duration: 0, // You'll need to implement a way to get the actual duration
+        duration: 0,
+        file: file,
       }));
       onChange([...videos, ...newVideos]);
     }

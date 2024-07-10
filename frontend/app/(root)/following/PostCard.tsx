@@ -148,23 +148,6 @@ export function PostCard({
         {showComments && (
           <CommentSection postId={post._id} onAddComment={handleAddComment} />
         )}
-
-        {/* Comment Input */}
-        {/* <div className="flex items-center">
-          <input
-            type="text"
-            value={commentText}
-            onChange={(e) => setCommentText(e.target.value)}
-            placeholder="Write a comment..."
-            className="flex-grow border rounded-l-full py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <button
-            onClick={handleCommentSubmit}
-            className="bg-blue-500 text-white rounded-r-full py-2 px-4 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <Send className="w-5 h-5" />
-          </button>
-        </div> */}
       </div>
     </div>
   );
