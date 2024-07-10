@@ -206,4 +206,29 @@ export default class PostRepository {
             throw error;
         }
     }
+    public async getReplies(commentId: string, page: number, limit: number): Promise<any> {
+        try {
+            const comment = await Comment.findById(commentId).exec();
+
+            if (!comment) {
+                throw new Error('Comment not found');
+            }
+
+            const repliesWithPagination = comment.replies
+                .filter(reply => !reply.isDeleted)
+                .slice((page - 1) * limit, page * limit)
+                .map(reply => ({
+                    _id: reply._id,
+                    text: reply.text,
+                    author: reply.author,
+                    createdAt: reply.createdAt,
+                    updatedAt: reply.updatedAt
+                }));
+
+            return repliesWithPagination;
+        } catch (error) {
+            console.error('Error retrieving replies:', error);
+            throw error;
+        }
+    }
 }
