@@ -49,7 +49,7 @@ export default class PostRepository {
             }
         }
     }
-    public async toggleLike(postId: string, email: string) {
+    public async toggleLike(postId: string, email: string): Promise<{ post: IPost, liked: boolean }> {
         try {
             const post = await Post.findById(postId);
             if (!post) {
@@ -57,21 +57,24 @@ export default class PostRepository {
             }
 
             const likeIndex = post.likes.indexOf(email);
+            let liked = false;
             if (likeIndex === -1) {
                 // User hasn't liked the post, so like it
                 post.likes.push(email);
+                liked = true;
             } else {
                 // User already liked the post, so unlike it
                 post.likes.splice(likeIndex, 1);
             }
 
             await post.save();
-            return post;
+            return { post, liked };
         } catch (error) {
             console.error('Error toggling like:', error);
             throw error;
         }
     }
+
     public async commentPost(postId: string, email: string, text: string) {
         try {
             const post = await Post.findById(postId);

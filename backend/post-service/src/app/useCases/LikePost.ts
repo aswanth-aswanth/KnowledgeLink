@@ -2,7 +2,6 @@ import { IPost } from '../../infra/databases/mongoose/models/Post';
 import PostRepository from '../repositories/PostRepository';
 import Publisher from '../../infra/messaging/rabbitmq/Publisher';
 
-
 export default class LikePost {
     private postRepository: PostRepository;
 
@@ -11,15 +10,17 @@ export default class LikePost {
     }
 
     public async execute(postId: string, email: string): Promise<any> {
-        const result = await this.postRepository.toggleLike(postId, email);
+        const { post, liked } = await this.postRepository.toggleLike(postId, email);
 
-        const notificationMessage = JSON.stringify({
-            type: 'like',
-            postId,
-            liker: email,
-            postOwner: result.creatorEmail
-        });
-        await Publisher.publish('notification_exchange', notificationMessage);
+        if (liked) {
+            const notificationMessage = JSON.stringify({
+                type: 'like',
+                postId,
+                liker: email,
+                postOwner: post.creatorEmail
+            });
+            await Publisher.publish('notification_exchange', notificationMessage);
+        }
 
         return "success";
     }
