@@ -121,7 +121,7 @@ export default function RoadmapPage() {
   return (
     <div>
       {rectangles.length > 0 && (
-        <ViewDiagram rectangles={rectangles} connections={connections} />
+        <ViewDiagram rectangles={rectangles} connections={connections} roadmapData={roadmapData}/>
       )}
       <div className="flex justify-between items-center ">
         <div></div>
