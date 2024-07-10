@@ -16,10 +16,9 @@ interface Comment {
 
 interface CommentSectionProps {
   postId: string;
-  onAddComment: (text: string) => void;
 }
 
-export function CommentSection({ postId, onAddComment }: CommentSectionProps) {
+export function CommentSection({ postId }: CommentSectionProps) {
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState("");
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
@@ -50,7 +49,7 @@ export function CommentSection({ postId, onAddComment }: CommentSectionProps) {
   const handleAddComment = async () => {
     if (newComment.trim()) {
       try {
-        await onAddComment(newComment);
+        await apiClient.post("/post/comment", { postId, text: newComment });
         setNewComment("");
         fetchComments(); // Refresh comments after adding a new one
       } catch (err) {

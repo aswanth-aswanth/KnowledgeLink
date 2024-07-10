@@ -30,18 +30,11 @@ interface Post {
 interface PostCardProps {
   post: Post;
   onLike: (postId: string) => void;
-  onComment: (postId: string, comment: string) => void;
   onShare: (postId: string) => void;
   onSave: (postId: string) => void;
 }
 
-export function PostCard({
-  post,
-  onLike,
-  onComment,
-  onShare,
-  onSave,
-}: PostCardProps) {
+export function PostCard({ post, onLike, onShare, onSave }: PostCardProps) {
   const [commentText, setCommentText] = useState("");
   const [showComments, setShowComments] = useState(false);
 
@@ -150,9 +143,7 @@ export function PostCard({
             <span>Save</span>
           </button>
         </div>
-        {showComments && (
-          <CommentSection postId={post._id} onAddComment={handleAddComment} />
-        )}
+        {showComments && <CommentSection postId={post._id} />}
       </div>
     </div>
   );
