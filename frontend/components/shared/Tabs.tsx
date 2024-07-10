@@ -21,7 +21,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs, activeTab, onTabClick, tabFor }) => {
       {tabs.map((tab) => (
         <button
           key={tab.name}
-          onClick={() => onTabClick(tab.name, tab.dbName)}
+          onClick={() => onTabClick(tab.name)}
           className={`relative flex flex-col sm:flex-row items-center space-x-2 px-2 py-4 md:py-2 rounded-md transition-all duration-300 ease-in-out
             ${
               activeTab === tab.name

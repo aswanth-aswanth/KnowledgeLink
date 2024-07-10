@@ -13,6 +13,7 @@ export default class GetPosts {
             const message = JSON.stringify({ email: currentUserEmail });
             const response = await Publisher.publishAndWait('profile_queue2', message);
             const { following } = JSON.parse(response);
+            console.log("Following : ", following);
 
             if (!following || following.length === 0) {
                 return [];

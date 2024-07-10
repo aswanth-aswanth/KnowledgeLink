@@ -34,7 +34,9 @@ const TabNavigation: React.FC = () => {
         <Tabs
           tabs={tabs}
           activeTab={activeTab}
-          onTabClick={setActiveTab}
+          onTabClick={(value) => {
+            if (value === "Following") router.push("/following");
+          }}
           tabFor="explore"
         />
         {/* <WelcomeComponent /> */}

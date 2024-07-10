@@ -7,9 +7,10 @@ import { Provider } from "react-redux";
 import { store } from "@/store";
 import { CreatePostButton } from "./CreatePostButton";
 import { CreatePostModal } from "./CreatePostModal";
+import { PostFeed } from "./PostFeed";
 
 const Following: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<string>("Explore");
+  const [activeTab, setActiveTab] = useState<string>("Following");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -33,18 +34,21 @@ const Following: React.FC = () => {
         <Tabs
           tabs={tabs}
           activeTab={activeTab}
-          onTabClick={setActiveTab}
+          onTabClick={(value) => {
+            if (value === "Explore") router.push("/");
+          }}
           tabFor="explore"
         />
       </div>
-      <div className="flex flex-col  items-center font-semibold gap-4 text-gray-700 mt-4">
+      <div className="flex flex-col mb-6 items-center font-semibold gap-4 text-gray-700 mt-4">
         <CreatePostButton onClick={() => setIsModalOpen(true)} />
         <p>Create a post</p>
+        <CreatePostModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        />
       </div>
-      <CreatePostModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      />
+      <PostFeed />
     </Provider>
   );
 };

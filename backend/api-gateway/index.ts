@@ -38,12 +38,12 @@ const roadmapProxy: RequestHandler = createProxyMiddleware({
 });
 
 const postProxy: RequestHandler = createProxyMiddleware({
-  target: services.roadmap,
+  target: services.post,
   changeOrigin: true,
 });
 
 const notificationProxy: RequestHandler = createProxyMiddleware({
-  target: services.roadmap,
+  target: services.notification,
   changeOrigin: true,
 });
 
