@@ -20,7 +20,8 @@ interface Post {
   createdAt: Date;
   creatorName: string;
   creatorEmail: string;
-  likes: number;
+  likes: string[];
+  isLiked: boolean;
 }
 
 interface PostCardProps {
@@ -95,10 +96,15 @@ export function PostCard({
         <div className="flex justify-start gap-4 mb-4">
           <button
             onClick={() => onLike(post._id)}
-            className="flex items-center text-gray-600 hover:text-red-500"
+            className={`flex items-center ${
+              post.isLiked ? "text-red-500" : "text-gray-600 hover:text-red-500"
+            }`}
           >
-            <Heart className="w-5 h-5 mr-1" />
-            <span>Like</span>
+            <Heart
+              className="w-5 h-5 mr-1"
+              fill={post.isLiked ? "currentColor" : "none"}
+            />
+            <span>Like ({post.likes.length})</span>
           </button>
           <button
             onClick={() => onSave(post._id)}

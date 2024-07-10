@@ -1,4 +1,3 @@
-// components/PostFeed.tsx
 import { useState, useEffect } from "react";
 import { PostCard } from "./PostCard";
 import apiClient from "@/api/apiClient";
@@ -34,14 +33,8 @@ export function PostFeed() {
 
   const fetchPosts = async () => {
     try {
-      /* const response = await fetch("/api/posts", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      }); */
       const response = await apiClient("/post/posts");
-      console.log("response : ", response);
       const { data } = response;
-      console.log("Data : ", data);
       setPosts(data.posts);
     } catch (error) {
       console.error("Error fetching posts:", error);
@@ -50,11 +43,20 @@ export function PostFeed() {
 
   const handleLike = async (postId: string) => {
     try {
-      await fetch(`/api/posts/${postId}/like`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      });
-      fetchPosts(); // Refetch posts to update the UI
+      await apiClient.put(`/post/like/${postId}`);
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post._id === postId
+            ? {
+                ...post,
+                isLiked: !post.isLiked,
+                likes: post.isLiked
+                  ? post.likes.filter((likeId) => likeId !== "currentUserEmail")
+                  : [...post.likes, "currentUserEmail"],
+              }
+            : post
+        )
+      );
     } catch (error) {
       console.error("Error liking post:", error);
     }
