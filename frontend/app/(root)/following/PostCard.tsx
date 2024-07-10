@@ -8,6 +8,8 @@ import {
   MessageSquareMore,
 } from "lucide-react";
 import { MediaGallery } from "./MediaGallery";
+import { CommentSection } from "./CommentSection";
+import apiClient from "@/api/apiClient";
 
 interface Post {
   _id: string;
@@ -40,6 +42,7 @@ export function PostCard({
   onSave,
 }: PostCardProps) {
   const [commentText, setCommentText] = useState("");
+  const [showComments, setShowComments] = useState(false);
 
   const mediaItems = [
     ...post.content.images.map((image) => ({
@@ -56,6 +59,20 @@ export function PostCard({
     if (commentText.trim()) {
       onComment(post._id, commentText);
       setCommentText("");
+    }
+  };
+
+  const handleAddReply = (commentId: string, replyText: string) => {
+    // Implement reply functionality here
+    console.log(`Replying to comment ${commentId}: ${replyText}`);
+  };
+
+  const handleAddComment = async (text: string) => {
+    try {
+      await apiClient.post(`/post/comment/${post._id}`, { text });
+      // You might want to update the post's comment count here
+    } catch (error) {
+      console.error("Error adding comment:", error);
     }
   };
 
@@ -107,11 +124,11 @@ export function PostCard({
             <span>Like ({post.likes.length})</span>
           </button>
           <button
-            onClick={() => onSave(post._id)}
+            onClick={() => setShowComments(!showComments)}
             className="flex items-center text-gray-600 hover:text-green-500"
           >
             <MessageSquareMore className="w-5 h-5 mr-1" />
-            <span>Comments</span>
+            <span>Comments ({post.comments.length})</span>
           </button>
           <button
             onClick={() => onShare(post._id)}
@@ -128,6 +145,9 @@ export function PostCard({
             <span>Save</span>
           </button>
         </div>
+        {showComments && (
+          <CommentSection postId={post._id} onAddComment={handleAddComment} />
+        )}
 
         {/* Comment Input */}
         <div className="flex items-center">

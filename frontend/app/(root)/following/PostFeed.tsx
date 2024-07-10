@@ -65,11 +65,16 @@ export function PostFeed() {
 
   const handleComment = async (postId: string, comment: string) => {
     try {
-      await fetch(`/api/posts/${postId}/comment`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const response = await apiClient.post(`/post/comment/${postId}`, {
+        text: comment,
       });
-      fetchPosts(); // Refetch posts to update the UI
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post._id === postId
+            ? { ...post, comments: [...post.comments, response.data] }
+            : post
+        )
+      );
     } catch (error) {
       console.error("Error commenting on post:", error);
     }
