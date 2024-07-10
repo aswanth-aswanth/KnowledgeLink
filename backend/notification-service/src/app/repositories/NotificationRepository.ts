@@ -6,13 +6,19 @@ export default class PostRepository {
 
     public async getNotification(email: string) {
         try {
-            const notifications = await Notification.find({ recipient: email });
-            return notifications;
+            const notifications = await Notification.findOne({ recipient: email })
+                .populate({
+                    path: 'notifications',
+                    options: { sort: { createdAt: -1 } }
+                });
+
+            return notifications?.notifications || [];
         } catch (error) {
-            console.error('Error toggling like:', error);
+            console.error('Error fetching notifications:', error);
             throw error;
         }
     }
+
 
     public async getUnreadNotificationCount(email: string) {
         try {
