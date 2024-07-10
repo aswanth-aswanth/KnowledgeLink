@@ -150,7 +150,7 @@ export function PostCard({
         )}
 
         {/* Comment Input */}
-        <div className="flex items-center">
+        {/* <div className="flex items-center">
           <input
             type="text"
             value={commentText}
@@ -164,7 +164,7 @@ export function PostCard({
           >
             <Send className="w-5 h-5" />
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );

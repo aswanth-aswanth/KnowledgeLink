@@ -43,6 +43,7 @@
     "react-redux": "^9.1.2",
     "react-responsive-carousel": "^3.2.23",
     "redux-persist": "^6.0.0",
+    "socket.io-client": "^4.7.5",
     "styled-components": "^6.1.11",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
