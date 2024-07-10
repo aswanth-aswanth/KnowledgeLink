@@ -12,6 +12,7 @@ interface Comment {
   author: string;
   createdAt: string;
   replyCount: number;
+  replies?: Comment[];
 }
 
 interface CommentSectionProps {
@@ -65,10 +66,10 @@ export function CommentSection({ postId }: CommentSectionProps) {
   const handleAddReply = async (commentId: string) => {
     if (newComment.trim()) {
       try {
-        await apiClient.post(`/post/reply/${commentId}`, { text: newComment });
+        await apiClient.post("/post/reply", { commentId, text: newComment });
         setNewComment("");
         setReplyingTo(null);
-        fetchComments(); // Refresh comments to show new reply count
+        fetchComments(); // Refresh comments to show new reply
       } catch (err) {
         console.error("Error adding reply:", err);
       }
