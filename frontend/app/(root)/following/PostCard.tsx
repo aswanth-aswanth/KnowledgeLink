@@ -19,6 +19,7 @@ interface Post {
     videos: { type: string; url: string; duration: number }[];
     images: { url: string }[];
   };
+  audios?: string[];
   createdAt: Date;
   creatorName: string;
   creatorEmail: string;
@@ -53,6 +54,10 @@ export function PostCard({
       type: "video" as const,
       url: video.url,
     })),
+    ...(post.audios?.map((audio) => ({
+      type: "audio" as const,
+      url: audio,
+    })) || []),
   ];
 
   const handleCommentSubmit = () => {

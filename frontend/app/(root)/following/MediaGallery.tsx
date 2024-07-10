@@ -3,9 +3,10 @@ import { useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { AudioPlayer } from "./AudioPlayer";
 
 interface MediaItem {
-  type: "image" | "video";
+  type: "image" | "video" | "audio";
   url: string;
 }
 
@@ -81,7 +82,7 @@ export function MediaGallery({ mediaItems }: MediaGalleryProps) {
           onClick={() => !inModal && openModal(index)}
         />
       );
-    } else {
+    } else if (item.type === "video") {
       return (
         <video
           src={item.url}
@@ -94,6 +95,8 @@ export function MediaGallery({ mediaItems }: MediaGalleryProps) {
           onClick={() => !inModal && openModal(index)}
         />
       );
+    } else if (item.type === "audio") {
+      return <AudioPlayer url={item.url} />;
     }
   };
 
@@ -102,11 +105,14 @@ export function MediaGallery({ mediaItems }: MediaGalleryProps) {
       <div className="relative">
         <div
           ref={scrollContainerRef}
-          className="flex overflow-x-auto max-h-[calc(100vh-200px)] overflow-y-hidden scrollbar-hide snap-x snap-mandatory"
+          className="flex items-center overflow-x-auto max-h-[calc(100vh-200px)] overflow-y-hidden scrollbar-hide snap-x snap-mandatory"
           onScroll={handleScroll}
         >
           {mediaItems.map((item, index) => (
-            <div key={index} className="flex-shrink-0 w-full h-max snap-center">
+            <div
+              key={index}
+              className="flex-shrink-0  w-full h-max snap-center"
+            >
               {renderMediaItem(item, index)}
             </div>
           ))}
