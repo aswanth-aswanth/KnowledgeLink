@@ -8,11 +8,14 @@ import { useDarkMode } from "@/hooks/useDarkMode";
 import { usePathname } from "next/navigation";
 import toast from "react-hot-toast";
 import apiClient from "@/api/apiClient";
+import { PostFeed } from "./PostFeed";
 
 export default function Profile() {
   const { isDarkMode } = useDarkMode();
   const pathname = usePathname();
   const [user, setUser] = useState({});
+  const [posts, setPosts] = useState([]);
+  const [selectedTab, setSelectedTab] = useState("Profile");
 
   const getUser = async () => {
     try {
@@ -43,9 +46,22 @@ export default function Profile() {
     }
   };
 
+  const getPosts = async () => {
+    try {
+      const email = pathname.split("/")[2];
+      const userPosts = await apiClient(`/posts/user/${email}`);
+      setPosts(userPosts.data);
+    } catch (error) {
+      console.log("Error : ", error);
+    }
+  };
+
   useEffect(() => {
     getUser();
-  }, []);
+    if (selectedTab === "Posts") {
+      getPosts();
+    }
+  }, [selectedTab]);
 
   return (
     <div
@@ -123,71 +139,48 @@ export default function Profile() {
             : "border-gray-200 text-gray-600"
         } border-x-0`}
       >
-        <h3 className="hover:text-blue-500 cursor-pointer transition-colors duration-300">
+        <h3
+          className="hover:text-blue-500 cursor-pointer transition-colors duration-300"
+          onClick={() => setSelectedTab("Profile")}
+        >
           Profile
         </h3>
-        <h3 className="hover:text-blue-500 cursor-pointer transition-colors duration-300">
+        <h3
+          className="hover:text-blue-500 cursor-pointer transition-colors duration-300"
+          onClick={() => setSelectedTab("Posts")}
+        >
           Posts
         </h3>
-        <h3 className="hover:text-blue-500 cursor-pointer transition-colors duration-300">
+        <h3
+          className="hover:text-blue-500 cursor-pointer transition-colors duration-300"
+          onClick={() => setSelectedTab("Groups")}
+        >
           Groups
         </h3>
       </div>
-      <div>
-        <h3 className="font-bold my-4 text-xl mt-14">About</h3>
-        <p className="max-w-[880px] font-semibold tracking-wide leading-10">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Corrupti nisi
-          deleniti sunt dignissimos quam unde hic placeat veniam itaque incidunt
-          nulla vero fugit culpa, praesentium inventore sequi sapiente quia sed.
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque ut
-          quia, iure, quis optio, voluptas ipsa magnam dicta beatae mollitia
-          aperiam velit totam ipsam ullam assumenda eius? Aliquam, explicabo
-          nemo.
-        </p>
-      </div>
-      <div className="pb-16">
-        <h3 className="font-bold my-4 text-xl mt-14">Tags</h3>
-        <div className="flex gap-6 flex-wrap">
-          <span
-            className={`border ${
-              isDarkMode
-                ? "border-gray-500 text-gray-300"
-                : "border-gray-400 text-gray-700"
-            } py-0 px-4 rounded-3xl text-sm flex items-center`}
-          >
-            Tag1
-          </span>
-          <span
-            className={`border ${
-              isDarkMode
-                ? "border-gray-500 text-gray-300"
-                : "border-gray-400 text-gray-700"
-            } py-0 px-4 rounded-3xl text-sm flex items-center`}
-          >
-            Tag2
-          </span>
-          <span
-            className={`border ${
-              isDarkMode
-                ? "border-gray-500 text-gray-300"
-                : "border-gray-400 text-gray-700"
-            } py-0 px-4 rounded-3xl text-sm flex items-center`}
-          >
-            Tag3
-          </span>
-
-          {/* Add new tag button */}
-          <button
-            className={`border ${
-              isDarkMode
-                ? "border-blue-300 text-blue-300"
-                : "border-blue-500 text-blue-500"
-            } rounded-full p-2 hover:bg-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 flex items-center justify-center`}
-          >
-            <AiOutlinePlus className="w-5 h-5" />
-          </button>
+      {/* Conditional rendering based on selected tab */}
+      {selectedTab === "Profile" && (
+        <div>
+          <h3 className="font-bold my-4 text-xl mt-14">About</h3>
+          <p className="max-w-[880px] font-semibold tracking-wide leading-10">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Corrupti
+            nisi deleniti sunt dignissimos quam unde hic placeat veniam itaque
+            incidunt nulla vero fugit culpa, praesentium inventore sequi
+            sapiente quia sed. Lorem ipsum dolor sit amet, consectetur
+            adipisicing elit. Itaque ut quia, iure, quis optio, voluptas ipsa
+            magnam dicta beatae mollitia aperiam velit totam ipsam ullam
+            assumenda eius? Aliquam, explicabo nemo.
+          </p>
         </div>
-      </div>
+      )}
+      {selectedTab === "Posts" && (
+        <div>
+          <h3 className="font-bold my-4 text-xl mt-14">Posts</h3>
+          <PostFeed posts={posts} />{" "}
+          {/* Render PostFeed with the fetched posts */}
+        </div>
+      )}
+      {selectedTab === "Groups" && <div>{/* Groups content */}</div>}
     </div>
   );
 }
