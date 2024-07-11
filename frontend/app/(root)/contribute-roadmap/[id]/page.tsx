@@ -132,7 +132,7 @@ export default function RoadmapPage() {
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent>
+        <DialogContent className="bg-white">
           <DialogHeader>
             <DialogTitle>Confirm Submission</DialogTitle>
             <DialogDescription>
