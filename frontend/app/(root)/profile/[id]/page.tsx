@@ -18,6 +18,7 @@ export default function Profile() {
     try {
       const email = pathname.split("/")[2];
       const profile = await apiClient(`/profile/user/${email}`);
+      console.log("user Profile : ", profile);
       setUser(profile.data);
     } catch (error) {
       console.log("Error : ", error);
@@ -60,7 +61,7 @@ export default function Profile() {
           isDarkMode ? "bg-gray-600" : "bg-gray-300"
         } p-4 overflow-hidden border-4 border-gray-600`}
       >
-        {user.image ? (
+        {user?.image ? (
           <Image
             src={user.image}
             layout="fill"
@@ -77,14 +78,14 @@ export default function Profile() {
             isDarkMode ? "text-gray-100" : "text-gray-800"
           }`}
         >
-          Username
+          {user?.username}
         </h3>
         <p className={`${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
-          username@gmail.com
+          {user?.email}
         </p>
         <div className="flex items-center text-center">
           <div className="flex justify-center flex-col relative h-16 mt-8 px-4">
-            <p className="font-bold">324</p>
+            <p className="font-bold">{user?.following?.length}</p>
             <p>Followers</p>
             <Separator
               orientation="vertical"
@@ -94,7 +95,7 @@ export default function Profile() {
             />
           </div>
           <div className="flex justify-center flex-col relative h-16 mt-8 px-4">
-            <p className="font-bold">324</p>
+            <p className="font-bold">{user?.followers?.length}</p>
             <p>Followings</p>
             <Separator
               orientation="vertical"
