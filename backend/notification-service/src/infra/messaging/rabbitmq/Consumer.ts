@@ -57,8 +57,8 @@ class Consumer {
                     socketMessage = `${content.liker} liked your post`;
                     break;
                 case 'comment':
-                    notificationContent = `${content.liker} commented on your post`;
-                    socketMessage = `${content.liker} commented on your post`;
+                    notificationContent = `${content.commenter} commented on your post`;
+                    socketMessage = `${content.commenter} commented on your post`;
                     break;
                 case 'reply':
                     notificationContent = `${content.replier} replied to your comment`;
