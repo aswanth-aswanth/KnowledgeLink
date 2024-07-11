@@ -2,7 +2,7 @@
 import React, { useCallback, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
-import { Plus, Trash, Edit } from "lucide-react";
+import { Plus, Trash, Edit, AlertCircle } from "lucide-react";
 import { v4 as uuid } from "uuid";
 import { RootState, AppDispatch } from "@/store";
 import {
@@ -14,6 +14,18 @@ import {
 import { useDarkMode } from "@/hooks/useDarkMode";
 import ChooseRoadmapType from "./ChooseRoadmapType";
 import TopicNode from "./TopicNode";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "@/components/ui/use-toast";
 
 const NestedNoteTaker: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -25,6 +37,8 @@ const NestedNoteTaker: React.FC = () => {
   const router = useRouter();
 
   const [showRootEditModal, setShowRootEditModal] = useState(false);
+  const [showResetConfirmation, setShowResetConfirmation] = useState(false);
+  const [showEmptyRootWarning, setShowEmptyRootWarning] = useState(false);
   const [rootTitle, setRootTitle] = useState(rootTopic.name);
   const [rootContent, setRootContent] = useState(rootTopic.content);
 
@@ -52,12 +66,19 @@ const NestedNoteTaker: React.FC = () => {
   }, [dispatch, rootTopic.id, rootTopic.children.length]);
 
   const handleResetTopics = useCallback(() => {
+    setShowResetConfirmation(true);
+  }, []);
+
+  const confirmResetTopics = useCallback(() => {
     dispatch(resetTopics());
+    setShowResetConfirmation(false);
+    toast({
+      title: "Topics Reset",
+      description: "All topics have been reset to the initial state.",
+    });
   }, [dispatch]);
 
   const currentTopicsState = useSelector((state: RootState) => state.topics);
-
-  console.log("Current topics state:", currentTopicsState);
 
   function transformTopics(topics: any) {
     const root = topics.root;
@@ -94,16 +115,20 @@ const NestedNoteTaker: React.FC = () => {
     };
   }
 
-  console.log(
-    "TransformedTopics : ",
-    transformTopics(currentTopicsState.topics)
-  );
-
   const handleContinue = useCallback(
     (selectedRoadmapType: string, selectedMembers: any[]) => {
       const transformedTopics: any = transformTopics(currentTopicsState.topics);
+      console.log("TransformedTopics title : ", transformedTopics.title);
+      console.log(
+        "TransformedTopics description : ",
+        transformedTopics.description
+      );
+      if (!transformedTopics.title || !transformedTopics.description) {
+        setShowEmptyRootWarning(true);
+        return;
+      }
       transformedTopics.members = selectedMembers.map((member) => member.email);
-      transformedTopics.type = selectedRoadmapType; // Use the selected type
+      transformedTopics.type = selectedRoadmapType;
       dispatch(setEditorData(transformedTopics));
       router.push("/svg2");
     },
@@ -118,39 +143,23 @@ const NestedNoteTaker: React.FC = () => {
         } p-6`}
       >
         <div className="flex justify-between items-center mb-4">
-          <button
+          <Button
             onClick={handleAddRootTopic}
-            className={`flex items-center justify-center py-2 px-4 ${
-              isDarkMode
-                ? "text-gray-300 bg-gray-800 hover:bg-gray-700"
-                : "text-gray-600 bg-gray-100 hover:bg-gray-200"
-            } rounded-md transition-colors duration-200`}
+            variant="outline"
+            className={`${isDarkMode && "text-white"}`}
           >
-            <Plus size={16} className="mr-2" />
-            Add Root Topic
-          </button>
-          <button
+            <Plus className="mr-2 h-4 w-4" /> Add Root Topic
+          </Button>
+          <Button
             onClick={handleEditRoot}
-            className={`flex items-center justify-center py-2 px-4 ${
-              isDarkMode
-                ? "text-gray-300 bg-gray-800 hover:bg-gray-700"
-                : "text-gray-600 bg-gray-100 hover:bg-gray-200"
-            } rounded-md transition-colors duration-200`}
+            variant="outline"
+            className={`${isDarkMode && "text-white"}`}
           >
-            <Edit size={16} className="mr-2" />
-            Edit Root
-          </button>
-          <button
-            onClick={handleResetTopics}
-            className={`flex items-center justify-center py-2 px-4 ${
-              isDarkMode
-                ? "text-red-400 bg-red-900 hover:bg-red-800"
-                : "text-red-600 bg-red-100 hover:bg-red-200"
-            } rounded-md transition-colors duration-200`}
-          >
-            <Trash size={16} className="mr-2" />
-            Reset
-          </button>
+            <Edit className="mr-2 h-4 w-4" /> Edit Root
+          </Button>
+          <Button onClick={handleResetTopics} variant="destructive">
+            <Trash className="mr-2 h-4 w-4" /> Reset
+          </Button>
         </div>
         {rootTopic.children.map((childId) => (
           <TopicNode key={childId} id={childId} />
@@ -163,61 +172,85 @@ const NestedNoteTaker: React.FC = () => {
           setRoadmapType={setRoadmapType}
         />
       </div>
-      {showRootEditModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div
-            className={`bg-white p-6 rounded-lg ${
-              isDarkMode ? "bg-gray-800" : ""
-            }`}
-          >
-            <h2
-              className={`text-xl font-bold mb-4 ${
-                isDarkMode ? "text-white" : ""
-              }`}
+
+      <Dialog
+        open={showEmptyRootWarning}
+        onOpenChange={setShowEmptyRootWarning}
+      >
+        <DialogContent className="bg-white">
+          <DialogHeader>
+            <DialogTitle>
+              <AlertCircle className="h-6 w-6 text-yellow-500 inline mr-2" />
+              Empty Root Topic
+            </DialogTitle>
+            <DialogDescription>
+              The root title and content cannot be empty. Please add a title and
+              content to the root topic before submitting the roadmap.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button onClick={() => setShowEmptyRootWarning(false)}>OK</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showRootEditModal} onOpenChange={setShowRootEditModal}>
+        <DialogContent className="bg-white">
+          <DialogHeader>
+            <DialogTitle>Edit Root Topic</DialogTitle>
+            <DialogDescription>
+              Update the title and content of the root topic.
+            </DialogDescription>
+          </DialogHeader>
+          <Input
+            value={rootTitle}
+            onChange={(e) => setRootTitle(e.target.value)}
+            placeholder="Root Title"
+            className="mb-4"
+          />
+          <Textarea
+            value={rootContent}
+            onChange={(e) => setRootContent(e.target.value)}
+            placeholder="Root Content"
+            rows={4}
+          />
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowRootEditModal(false)}
             >
-              Edit Root Topic
-            </h2>
-            <input
-              type="text"
-              value={rootTitle}
-              onChange={(e) => setRootTitle(e.target.value)}
-              className={`w-full p-2 mb-4 rounded ${
-                isDarkMode ? "bg-gray-700 text-white" : ""
-              }`}
-              placeholder="Root Title"
-            />
-            <textarea
-              value={rootContent}
-              onChange={(e) => setRootContent(e.target.value)}
-              className={`w-full p-2 mb-4 rounded ${
-                isDarkMode ? "bg-gray-700 text-white" : ""
-              }`}
-              placeholder="Root Content"
-              rows={4}
-            />
-            <div className="flex justify-end">
-              <button
-                onClick={() => setShowRootEditModal(false)}
-                className={`mr-2 px-4 py-2 rounded ${
-                  isDarkMode ? "bg-gray-600 text-white" : "bg-gray-200"
-                }`}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSaveRoot}
-                className={`px-4 py-2 rounded ${
-                  isDarkMode
-                    ? "bg-blue-600 text-white"
-                    : "bg-blue-500 text-white"
-                }`}
-              >
-                Save
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+              Cancel
+            </Button>
+            <Button onClick={handleSaveRoot}>Save</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={showResetConfirmation}
+        onOpenChange={setShowResetConfirmation}
+      >
+        <DialogContent className="bg-white">
+          <DialogHeader>
+            <DialogTitle>Confirm Reset</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to reset all topics? This action cannot be
+              undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowResetConfirmation(false)}
+            >
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={confirmResetTopics}>
+              Reset
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
