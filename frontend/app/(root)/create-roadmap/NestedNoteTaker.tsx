@@ -79,6 +79,7 @@ const NestedNoteTaker: React.FC = () => {
   }, [dispatch]);
 
   const currentTopicsState = useSelector((state: RootState) => state.topics);
+  console.log("Current topic state : ", currentTopicsState);
 
   function transformTopics(topics: any) {
     const root = topics.root;

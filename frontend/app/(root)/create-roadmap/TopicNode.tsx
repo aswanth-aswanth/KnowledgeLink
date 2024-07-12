@@ -86,7 +86,7 @@ const TopicNode: React.FC<TopicNodeProps> = ({ id }) => {
     if (contentRef.current && contentRef.current.innerHTML !== topic.content) {
       contentRef.current.innerHTML = topic.content;
     }
-  }, [topic.content]);
+  }, [topic.content, topic.isExpanded]);
 
   const applyStyle = useCallback(
     (style: string, styleClass: string) => {

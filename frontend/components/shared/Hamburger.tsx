@@ -9,7 +9,6 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import {
-  HiOutlineMenuAlt2,
   HiHome,
   HiUsers,
   HiFolder,
@@ -20,6 +19,7 @@ import {
   HiMap,
   HiStar,
 } from "react-icons/hi";
+import { Menu } from "lucide-react";
 import { useDarkMode } from "@/hooks/useDarkMode";
 
 const SHEET_SIDES = ["left"] as const;
@@ -46,7 +46,7 @@ export function Hamburger() {
       {SHEET_SIDES.map((side) => (
         <Sheet key={side}>
           <SheetTrigger asChild>
-            <HiOutlineMenuAlt2 className="text-3xl m-2 cursor-pointer hover:text-blue-500 transition-colors duration-200" />
+            <Menu className="text-3xl m-2 cursor-pointer hover:text-blue-500 transition-colors duration-200" />
           </SheetTrigger>
           <SheetContent
             side={side}
