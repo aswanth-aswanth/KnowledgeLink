@@ -2,7 +2,7 @@ import { Document } from 'mongoose';
 
 interface IContribution extends Document {
   roadmapId: string;
-  contributorEmail: string;
+  contributorId: string;
   contributedDocumentIds: string[],
   contributions: object[],
   createdAt: Date;

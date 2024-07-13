@@ -30,7 +30,7 @@ export default class ContributionRepository {
 
     public async create(contribution: IContribution): Promise<string> {
         try {
-            const canContribute = await this.checkUserContributionPermission(contribution.roadmapId, contribution.contributorEmail);
+            const canContribute = await this.checkUserContributionPermission(contribution.roadmapId, contribution.contributorId);
 
             if (!canContribute) {
                 throw new Error('User is not allowed to contribute to this roadmap');
