@@ -53,8 +53,8 @@ class Consumer {
     }
 
     private async getSubscribedRoadmaps(msg: amqp.Message, channel: amqp.Channel, userRepository: UserRepository) {
-        const { email } = JSON.parse(msg.content.toString());
-        const subscribed = await userRepository.getSubscribedRoadmaps(email);
+        const { userId } = JSON.parse(msg.content.toString());
+        const subscribed = await userRepository.getSubscribedRoadmaps(userId);
 
         const response = JSON.stringify({ subscribed });
         channel.sendToQueue(msg.properties.replyTo, Buffer.from(response), {

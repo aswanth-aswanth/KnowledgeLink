@@ -74,9 +74,9 @@ export default class UserRepository {
         }
     }
 
-    public async getSubscribedRoadmaps(email: string): Promise<string[]> {
+    public async getSubscribedRoadmaps(userId: string): Promise<string[]> {
         try {
-            const user = await User.findOne({ email });
+            const user = await User.findOne({ _id: userId });
             if (!user || !user.subscribed) {
                 return [];
             }
