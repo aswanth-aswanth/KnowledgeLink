@@ -74,9 +74,9 @@ export default class RoadmapRepository {
         }
     }
 
-    public async findRoadmapsByAdmin(email: string): Promise<IRoadmap[]> {
+    public async findRoadmapsByAdmin(userId: string): Promise<IRoadmap[]> {
         try {
-            return await Roadmap.find({ creatorEmail: email })
+            return await Roadmap.find({ creatorId: userId })
                 .select('_id title description type')
                 .exec();
         } catch (error) {
