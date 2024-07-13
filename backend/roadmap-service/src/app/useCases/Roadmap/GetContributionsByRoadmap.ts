@@ -14,13 +14,13 @@ export default class GetContributionsByRoadmap {
         this.roadmapRepository = roadmapRepository;
     }
 
-    public async execute(roadmapId: string, email: string): Promise<IContribution[]> {
+    public async execute(roadmapId: string, userId: string): Promise<IContribution[]> {
         const roadmap = await this.roadmapRepository.findRoadmapById(roadmapId);
         if (!roadmap) {
             throw new Error('Roadmap not found');
         }
 
-        if (roadmap.creatorEmail !== email) {
+        if (roadmap.creatorId !== userId) {
             throw new Error('Unauthorized access');
         }
         return this.contributionRepository.getContributionsByRoadmapId(roadmapId);

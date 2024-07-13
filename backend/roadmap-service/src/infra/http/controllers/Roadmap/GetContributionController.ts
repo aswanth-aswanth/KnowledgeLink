@@ -6,7 +6,7 @@ import RoadmapRepository from "../../../../app/repositories/RoadmapRepository";
 export default class GetContributionController {
     public async handle(req: any, res: Response) {
         const { id } = req.params;
-        const email = req.user.email;
+        const userId = req.user.userId;
 
         const getContributions = new GetContributionsByRoadmap(
             new ContributionRepository(),
@@ -14,7 +14,7 @@ export default class GetContributionController {
         );
 
         try {
-            const contributions = await getContributions.execute(id, email);
+            const contributions = await getContributions.execute(id, userId);
             return res.json(contributions);
         } catch (err) {
             if (err instanceof Error) {
