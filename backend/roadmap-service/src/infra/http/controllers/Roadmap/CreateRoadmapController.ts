@@ -9,7 +9,7 @@ export default class CreateRoadmapController {
         const { editorData, rectanglesData, connectionsData } = req.body;
         const roadmapData = {
             ...editorData,
-            creatorEmail: req.user.email,
+            creatorId: req.user.userId,
         };
         const roadmap = new CreateRoadmap(
             new RoadmapRepository()

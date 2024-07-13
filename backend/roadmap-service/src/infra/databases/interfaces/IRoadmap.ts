@@ -6,7 +6,7 @@ export interface ITopic extends Document {
     name: string;
     content: string;
     uniqueId?: string;
-    contributorEmail: string;
+    contributorId: string;
     tags: string[];
     children: ITopic[];
 }
@@ -19,7 +19,7 @@ export interface IRoadmap extends Document {
     type: 'expert_collaboration' | 'public_voting' | 'moderator_submission';
     tags: string[];
     members: string[];
-    creatorEmail: string;
+    creatorId: string;
     topics: ITopic;
     createdAt: Date;
     updatedAt: Date;

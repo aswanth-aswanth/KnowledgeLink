@@ -6,21 +6,21 @@ const TopicSchema: Schema<ITopic> = new Schema({
     name: { type: String, required: true },
     uniqueId: { type: String },
     content: { type: String },
-    contributorEmail: { type: String, default: "" },
+    contributorId: { type: String, default: "" },
     tags: { type: [String], default: [] },
     children: [{
         _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
         name: { type: String, required: true },
         uniqueId: { type: String },
         content: { type: String },
-        contributorEmail: { type: String, default: "" },
+        contributorId: { type: String, default: "" },
         tags: { type: [String], default: [] },
         children: [{
             _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
             name: { type: String, required: true },
             content: { type: String },
             uniqueId: { type: String },
-            contributorEmail: { type: String, default: "" },
+            contributorId: { type: String, default: "" },
             tags: { type: [String], default: [] },
             children: [{ type: Schema.Types.ObjectId, ref: 'Topic' }]
         }]
@@ -39,14 +39,14 @@ const RoadmapSchema: Schema<IRoadmap> = new Schema({
     tags: { type: [String], default: [] },
     uniqueId: { type: String },
     members: { type: [String], default: [] },
-    creatorEmail: { type: String, required: true },
+    creatorId: { type: String, required: true },
     topics: {
         type: new Schema({
             _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
             name: { type: String, required: true },
             content: { type: String },
             uniqueId: { type: String },
-            contributorEmail: { type: String, default: "" },
+            contributorId: { type: String, default: "" },
             tags: { type: [String], default: [] },
             children: [TopicSchema]
         }),

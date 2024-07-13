@@ -15,7 +15,7 @@ class GoogleAuthController {
         if (user) {
             const token = jwt.sign(
                 {
-                    userId: user.id,
+                    userId: user._id,
                     username: user.username,
                     email: user.email,
                     image: user.image

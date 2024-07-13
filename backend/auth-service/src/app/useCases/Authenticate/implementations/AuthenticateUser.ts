@@ -29,6 +29,6 @@ export default class AuthenticateUser {
             throw new Error("Invalid credentials");
         }
 
-        return this.tokenManager.generateToken({ userId: user.id, username: user.username, email: user.email, image: user.image });
+        return this.tokenManager.generateToken({ userId: user._id, username: user.username, email: user.email, image: user.image });
     }
 }

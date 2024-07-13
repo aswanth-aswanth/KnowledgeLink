@@ -1,9 +1,10 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IUser extends Document {
+  _id: string;
   username: string;
   email: string;
-  password?: string; 
+  password?: string;
   favourites: string[];
   subscribed: string[];
   image: string;
