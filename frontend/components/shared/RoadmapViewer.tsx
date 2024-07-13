@@ -53,89 +53,69 @@ const Topic: React.FC<TopicProps> = ({
   };
   console.log("EditedContent : ", editedContent);
   return (
-    <div className="topic-node mb-3">
-      <div className="flex items-center group">
-        <button
-          onClick={toggleExpand}
-          className={`p-2 rounded-md ${
-            isDarkMode
-              ? "text-gray-500 hover:bg-gray-800"
-              : "text-gray-400 hover:bg-gray-100"
-          } focus:outline-none`}
-        >
-          {isExpanded ? (
-            <ChevronDown
-              size={16}
-              className={isDarkMode ? "text-gray-300" : "text-black"}
-            />
-          ) : (
-            <ChevronRight
-              size={16}
-              className={isDarkMode ? "text-gray-300" : "text-black"}
-            />
-          )}
-        </button>
-        <span
-          className={`flex-grow px-2 py-1 rounded-md font-bold text-lg ${
-            isDarkMode ? "text-gray-300" : "text-gray-600"
-          }`}
-        >
-          {topic.name}
-        </span>
-        <span
-          className={`text-xs ${
-            isDarkMode ? "text-gray-500" : "text-gray-400"
-          } mr-2`}
-        >
-          {level}
-        </span>
-      </div>
-      {isExpanded && (
-        <div className="ml-6 mt-2">
-          {isEditMode && !isEditing ? (
-            <Button onClick={handleEditClick} size="sm" className="mb-2">
-              <Edit className="mr-2 h-4 w-4" /> Edit Content
-            </Button>
-          ) : isEditMode && isEditing ? (
-            <Button onClick={handleSaveClick} size="sm" className="mb-2">
-              <Save className="mr-2 h-4 w-4" /> Save Content
-            </Button>
-          ) : null}
-          {isEditing ? (
-            <Textarea
-              value={editedContent}
-              onChange={(e) => setEditedContent(e.target.value)}
-              className={` min-h-32 leading-8 p-2 mb-2 rounded-md transition-all duration-200 ${
-                isDarkMode
-                  ? "bg-gray-800 text-gray-300"
-                  : "bg-gray-50 text-gray-600"
-              }`}
-            />
-          ) : (
-            <div
-              className={`h-min p-2 mb-2 rounded-md transition-all duration-200 prose font-medium prose-sm text-base tracking-wider ${
-                isDarkMode
-                  ? "bg-transparent text-gray-300"
-                  : "bg-gray-50 text-gray-600"
-              } leading-9 max-w-none`}
-              dangerouslySetInnerHTML={{ __html: topic.content }}
-            />
-          )}
-          {topic.children.map((child, index) => (
-            <Topic
-              key={child.uniqueId}
-              topic={child}
-              level={`${level}-${index + 1}`}
-              expandedTopics={expandedTopics}
-              setExpandedTopics={setExpandedTopics}
-              isEditMode={isEditMode}
-              onContentChange={onContentChange}
-            />
-          ))}
-        </div>
-      )}
+    <div className="topic-node mb-4">
+    <div className="flex items-center group  backdrop-blur-md rounded-lg p-2 transition-all duration-200 hover:bg-white/15">
+      <button
+        onClick={toggleExpand}
+        className="p-1 rounded-md text-gray-400 hover:text-gray-200 focus:outline-none transition-colors duration-200"
+      >
+        {isExpanded ? (
+          <ChevronDown size={16} />
+        ) : (
+          <ChevronRight size={16} />
+        )}
+      </button>
+      <span className="flex-grow px-2 py-1 font-medium text-base text-gray-200">
+        {topic.name}
+      </span>
+      <span className="text-xs text-gray-400 mr-2">{level}</span>
     </div>
-  );
+    {isExpanded && (
+      <div className="ml-6 mt-2">
+        {isEditMode && (
+          <Button
+            onClick={isEditing ? handleSaveClick : handleEditClick}
+            size="sm"
+            className="mb-2 bg-white/10 hover:bg-white/20 text-gray-200 backdrop-blur-md transition-all duration-200"
+          >
+            {isEditing ? (
+              <>
+                <Save className="mr-2 h-4 w-4" /> Save
+              </>
+            ) : (
+              <>
+                <Edit className="mr-2 h-4 w-4" /> Edit
+              </>
+            )}
+          </Button>
+        )}
+        {isEditing ? (
+          <Textarea
+            value={editedContent}
+            onChange={(e) => setEditedContent(e.target.value)}
+            className="min-h-32 leading-7 p-2 mb-2 rounded-md transition-all duration-200 bg-white/5 text-gray-200 backdrop-blur-md focus:bg-white/10 focus:outline-none focus:ring-1 focus:ring-white/20"
+          />
+        ) : (
+          <div
+            className="prose prose-invert font-normal  text-lg tracking-wide  text-gray-200 leading-10  max-w-none backdrop-blur-md rounded-md p-3 mb-2"
+            dangerouslySetInnerHTML={{ __html: topic.content }}
+          />
+        )}
+        {topic.children.map((child, index) => (
+          <Topic
+            key={child.uniqueId}
+            topic={child}
+            level={`${level}.${index + 1}`}
+            expandedTopics={expandedTopics}
+            setExpandedTopics={setExpandedTopics}
+            isEditMode={isEditMode}
+            onContentChange={onContentChange}
+          />
+        ))}
+      </div>
+    )}
+  </div>
+);
 };
 
 interface RoadmapViewerProps {
@@ -153,37 +133,28 @@ const RoadmapViewer: React.FC<RoadmapViewerProps> = ({
   isEditMode,
   onContentChange,
 }) => {
-  const { isDarkMode } = useDarkMode();
   const [expandedTopics, setExpandedTopics] = useState<string[]>([]);
 
   return (
-    <div
-      className={`nested-note-taker rounded-lg ${
-        isDarkMode ? "bg-gray-900 shadow-lg" : "bg-white shadow-sm"
-      } p-4 sm:p-6`}
-    >
-      <h1
-        className={`text-2xl font-bold mb-4 ${
-          isDarkMode ? "text-white" : "text-black"
-        }`}
-      >
-        {transformedTopics.title}
-      </h1>
-      <p className={`mb-6 ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}>
-        {transformedTopics.description}
-      </p>
-      {transformedTopics.topics.children.map((child, index) => (
-        <Topic
-          key={child.uniqueId}
-          topic={child}
-          level={`${index + 1}`}
-          expandedTopics={expandedTopics}
-          setExpandedTopics={setExpandedTopics}
-          isEditMode={isEditMode}
-          onContentChange={onContentChange}
-        />
-      ))}
-    </div>
+    <div className="nested-note-taker rounded-xl p-6 sm:p-8 border border-white/10 prose prose-invert font-normal text-sm tracking-wide bg-white/5 text-gray-200">
+    <h1 className="text-2xl font-semibold mb-4 text-gray-100">
+      {transformedTopics.title}
+    </h1>
+    <p className="mb-6 text-gray-300 text-base">
+      {transformedTopics.description}
+    </p>
+    {transformedTopics.topics.children.map((child, index) => (
+      <Topic
+        key={child.uniqueId}
+        topic={child}
+        level={`${index + 1}`}
+        expandedTopics={expandedTopics}
+        setExpandedTopics={setExpandedTopics}
+        isEditMode={isEditMode}
+        onContentChange={onContentChange}
+      />
+    ))}
+  </div>
   );
 };
 
