@@ -5,14 +5,14 @@ import RoadmapRepository from "../../../../app/repositories/RoadmapRepository";
 export default class MergeContributionController {
     public async handle(req: any, res: Response): Promise<Response> {
         const roadmapId = req.params.id;
-        const { contributorEmail, contributedDocument } = req.body;
-        const email = req.user.email;
+        const { contributorId, contributedDocument } = req.body;
+        const userId = req.user.userId;
 
         try {
             const mergeContribution = new MergeContribution(
                 new RoadmapRepository()
             );
-            await mergeContribution.mergeContribution(email, roadmapId, contributorEmail, contributedDocument);
+            await mergeContribution.mergeContribution(userId, roadmapId, contributorId, contributedDocument);
             return res.json({ message: "Contribution merged successfully" });
         } catch (err) {
             if (err instanceof Error) {

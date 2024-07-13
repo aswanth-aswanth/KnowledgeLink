@@ -8,27 +8,27 @@ export default class MergeContribution {
         this.roadmapRepository = roadmapRepository;
     }
 
-    public async mergeContribution(userEmail: string, roadmapId: string, contributorEmail: string, contribution: { id: string, data: { content: string, tags?: string[] } }): Promise<void> {
+    public async mergeContribution(userId: string, roadmapId: string, contributorId: string, contribution: { id: string, data: { content: string, tags?: string[] } }): Promise<void> {
         const { id, data } = contribution;
         console.log("roadmapId useCase : ", roadmapId);
-        console.log("userEmail useCase : ", userEmail);
-        console.log("contributorEmail useCase : ", contributorEmail);
+        console.log("userEmail useCase : ", userId);
+        console.log("contributorEmail useCase : ", contributorId);
         console.log("Merge contribution useCase : ", contribution);
 
         const roadmap = await this.roadmapRepository.findRoadmapById(roadmapId);
-        if (roadmap?.creatorEmail !== userEmail) {
+        if (roadmap?.creatorId !== userId) {
             throw new Error('Only the roadmap creator can merge contributions');
         }
         if (!roadmap) {
             throw new Error('Roadmap not found');
         }
 
-        function updateTopic(topic: any, docId: string, newContent: string, contributorEmail: string, tags?: string[]): boolean {
+        function updateTopic(topic: any, docId: string, newContent: string, contributorId: string, tags?: string[]): boolean {
             console.log(`Checking topic with uniqueId: ${topic.uniqueId}`);
             if (topic.uniqueId === docId) {
                 console.log(`Found matching topic. Updating content.`);
                 topic.content = newContent;
-                topic.contributorEmail = contributorEmail;
+                topic.contributorId = contributorId;
                 if (tags) {
                     topic.tags = tags;
                 }
@@ -38,7 +38,7 @@ export default class MergeContribution {
             if (topic.children && topic.children.length > 0) {
                 for (let i = 0; i < topic.children.length; i++) {
                     const child = topic.children[i];
-                    if (updateTopic(child, docId, newContent, contributorEmail, tags)) {
+                    if (updateTopic(child, docId, newContent, contributorId, tags)) {
                         found = true;
                         break;
                     }
@@ -47,7 +47,7 @@ export default class MergeContribution {
             return found;
         }
 
-        const docUpdated = updateTopic(roadmap.topics, id, data.content, contributorEmail, data.tags);
+        const docUpdated = updateTopic(roadmap.topics, id, data.content, contributorId, data.tags);
         if (!docUpdated) {
             throw new Error('Document to be updated not found');
         }
@@ -58,7 +58,7 @@ export default class MergeContribution {
         const updatedContribution = await Contribution.findOneAndUpdate(
             {
                 roadmapId: roadmapId,
-                contributorEmail: contributorEmail,
+                contributorId: contributorId,
                 'contributions.id': id
             },
             { $set: { isMerged: true } },
