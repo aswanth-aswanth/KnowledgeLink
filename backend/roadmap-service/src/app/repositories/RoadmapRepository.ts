@@ -105,11 +105,11 @@ export default class RoadmapRepository {
         }
     }
 
-    public async getRoadmapsByMember(email: string): Promise<any[]> {
+    public async getRoadmapsByMember(userId: string): Promise<any[]> {
         try {
             const roadmaps = await Roadmap.find({
                 type: { $in: ['expert_collaboration', 'moderator_submission'] },
-                members: email
+                members: userId
             }).select('_id title description type members');
             return roadmaps;
         } catch (error) {

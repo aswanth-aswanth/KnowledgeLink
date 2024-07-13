@@ -10,9 +10,9 @@ export default class GetRoadmapsByMember {
         this.roadmapRepository = roadmapRepository;
     }
 
-    public async execute(email: string): Promise<any> {
+    public async execute(userId: string): Promise<any> {
         try {
-            const roadmaps = await this.roadmapRepository.getRoadmapsByMember(email);
+            const roadmaps = await this.roadmapRepository.getRoadmapsByMember(userId);
             if (roadmaps.length === 0) {
                 return [];
             }
