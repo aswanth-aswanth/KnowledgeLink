@@ -7,9 +7,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import apiClient from "@/api/apiClient";
-import { useDarkMode } from "@/hooks/useDarkMode";
 import { Notification } from "@/types/notificationTypes";
+import { getNotifications } from "@/api/notificationApi";
+import { useDarkMode } from "@/hooks/useDarkMode";
 
 export default function NotificationPopover() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -23,12 +23,9 @@ export default function NotificationPopover() {
 
   const fetchNotifications = async () => {
     try {
-      const response = await apiClient<{ notifications: Notification[] }>(
-        "/notification"
-      );
-      console.log("Notifications : ", response.data);
-      const sortedNotifications = response.data?.notifications?.sort(
-        (a, b) =>
+      const response = await getNotifications();
+      const sortedNotifications = response?.notifications?.sort(
+        (a: any, b: any) =>
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );
       setNotifications(sortedNotifications);
@@ -36,33 +33,6 @@ export default function NotificationPopover() {
       console.error("Error fetching notifications:", error);
     }
   };
-
-  const markAsRead = async (notificationIds: string[]) => {
-    try {
-      console.count("MarkAsRead ");
-      await apiClient.patch("/notification/mark-read", { notificationIds });
-      setNotifications((prevNotifications) =>
-        prevNotifications.map((notification) =>
-          notificationIds.includes(notification._id)
-            ? { ...notification, read: true }
-            : notification
-        )
-      );
-    } catch (error) {
-      console.error("Error marking notifications as read:", error);
-    }
-  };
-
-  useEffect(() => {
-    if (open && notifications?.length > 0) {
-      const unreadNotifications = notifications
-        ?.filter((n) => !n.read)
-        .map((n) => n._id);
-      if (unreadNotifications?.length > 0) {
-        markAsRead(unreadNotifications);
-      }
-    }
-  }, [open, notifications]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
