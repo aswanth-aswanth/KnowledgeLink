@@ -125,7 +125,7 @@ export default class UserRepository {
         }
     }
 
-    public async getUser(email: string, loggedInUserEmail: string | null): Promise<IUser | object | null> {
+    public async getUser(email: string, loggedInUserId: string | null): Promise<IUser | object | null> {
         try {
             const user = await User.findOne({ email }).select('_id username email image following followers').exec();
 
@@ -135,8 +135,8 @@ export default class UserRepository {
 
             let isFollowing = false;
 
-            if (loggedInUserEmail && user.followers) {
-                isFollowing = user.followers.includes(loggedInUserEmail);
+            if (loggedInUserId && user.followers) {
+                isFollowing = user.followers.includes(loggedInUserId);
             }
 
             return { ...user.toObject(), isFollowing };

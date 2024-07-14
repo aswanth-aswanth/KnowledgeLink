@@ -8,7 +8,7 @@ export default class GetSingleUser {
         this.userRepository = userRepository;
     }
 
-    public async execute(email: string, loggedInUserEmail: string | null): Promise<IUser | object | null> {
-        return await this.userRepository.getUser(email, loggedInUserEmail);
+    public async execute(email: string, loggedInUserId: string | null): Promise<IUser | object | null> {
+        return await this.userRepository.getUser(email, loggedInUserId);
     }
 }
