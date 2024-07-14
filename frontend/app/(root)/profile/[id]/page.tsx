@@ -1,37 +1,60 @@
 "use client";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { AiOutlinePlus } from "react-icons/ai";
 import { FaUserCircle } from "react-icons/fa";
 import { Separator } from "@/components/ui/separator";
 import { useDarkMode } from "@/hooks/useDarkMode";
 import { usePathname } from "next/navigation";
 import toast from "react-hot-toast";
-import apiClient from "@/api/apiClient";
 import { PostFeed } from "./PostFeed";
+import { getUserProfile, followUser } from "@/api/userApi";
+import { getUserPosts } from "@/api/postApi";
+import { User } from "@/types/userTypes";
+import { Post } from "@/types/postTypes";
 
 export default function Profile() {
   const { isDarkMode } = useDarkMode();
   const pathname = usePathname();
-  const [user, setUser] = useState({});
-  const [posts, setPosts] = useState([]);
-  const [selectedTab, setSelectedTab] = useState("Profile");
+  const [user, setUser] = useState<User>({});
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [selectedTab, setSelectedTab] = useState<
+    "Profile" | "Posts" | "Groups"
+  >("Profile");
 
-  const getUser = async () => {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userId = pathname.split("/")[2];
+        const profile = await getUserProfile(userId);
+        setUser(profile);
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+      }
+    };
+
+    fetchData();
+  }, [pathname]);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      if (selectedTab === "Posts") {
+        try {
+          const userId = pathname.split("/")[2];
+          const userPosts = await getUserPosts(userId);
+          setPosts(userPosts.data);
+        } catch (error) {
+          console.log("Error fetching user posts:", error);
+        }
+      }
+    };
+
+    fetchPosts();
+  }, [selectedTab, pathname]);
+
+  const handleFollowUser = async () => {
     try {
       const userId = pathname.split("/")[2];
-      const profile = await apiClient(`/profile/user/${userId}`);
-      console.log("user Profile : ", profile);
-      setUser(profile.data);
-    } catch (error) {
-      console.log("Error : ", error);
-    }
-  };
-
-  const followUser = async () => {
-    try {
-      const userId = pathname.split("/")[2];
-      const res = await apiClient.patch(`/profile/user/${userId}/follow`);
+      const res = await followUser(userId);
       toast(res.data.message, {
         icon: "👏",
         style: {
@@ -40,28 +63,12 @@ export default function Profile() {
           color: "#fff",
         },
       });
-      getUser();
+      const profile = await getUserProfile(userId);
+      setUser(profile);
     } catch (error) {
-      console.log("Error : ", error);
+      console.log("Error following user:", error);
     }
   };
-
-  const getPosts = async () => {
-    try {
-      const userId = pathname.split("/")[2];
-      const userPosts = await apiClient(`/posts/user/${userId}`);
-      setPosts(userPosts.data);
-    } catch (error) {
-      console.log("Error : ", error);
-    }
-  };
-
-  useEffect(() => {
-    getUser();
-    if (selectedTab === "Posts") {
-      getPosts();
-    }
-  }, [selectedTab]);
 
   return (
     <div
@@ -69,9 +76,7 @@ export default function Profile() {
         isDarkMode ? "bg-gray-900 text-white" : "bg-white text-gray-900"
       }`}
     >
-      <div
-        className={`h-52 ${isDarkMode ? "bg-gray-700" : "bg-gray-500"}`}
-      ></div>
+      <div className={`h-52 ${isDarkMode ? "bg-gray-700" : "bg-gray-500"}`} />
       <div
         className={`rounded-full absolute top-[90px] left-0 right-0 mx-auto w-56 h-56 ${
           isDarkMode ? "bg-gray-600" : "bg-gray-300"
@@ -122,9 +127,7 @@ export default function Profile() {
           </div>
           <div className="h-16 flex items-center mt-8 px-4">
             <button
-              onClick={() => {
-                followUser();
-              }}
+              onClick={handleFollowUser}
               className="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
             >
               {user?.isFollowing ? "Unfollow" : "Follow"}
@@ -158,7 +161,6 @@ export default function Profile() {
           Groups
         </h3>
       </div>
-      {/* Conditional rendering based on selected tab */}
       {selectedTab === "Profile" && (
         <div>
           <h3 className="font-bold my-4 text-xl mt-14">About</h3>
@@ -176,8 +178,7 @@ export default function Profile() {
       {selectedTab === "Posts" && (
         <div>
           <h3 className="font-bold my-4 text-xl mt-14">Posts</h3>
-          <PostFeed posts={posts} />{" "}
-          {/* Render PostFeed with the fetched posts */}
+          <PostFeed posts={posts} />
         </div>
       )}
       {selectedTab === "Groups" && <div>{/* Groups content */}</div>}
