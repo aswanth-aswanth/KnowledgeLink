@@ -125,21 +125,32 @@ export default class UserRepository {
         }
     }
 
-    public async getUser(email: string, loggedInUserId: string | null): Promise<IUser | object | null> {
+    public async getUser(email: string, loggedInUserId: string | null): Promise<object | null> {
         try {
             const user = await User.findOne({ email }).select('_id username email image following followers').exec();
-
+    
             if (!user) {
                 throw new Error('User not found');
             }
-
+    
             let isFollowing = false;
-
+    
             if (loggedInUserId && user.followers) {
                 isFollowing = user.followers.includes(loggedInUserId);
             }
-
-            return { ...user.toObject(), isFollowing };
+    
+            const followingCount = user.following ? user.following.length : 0;
+            const followersCount = user.followers ? user.followers.length : 0;
+    
+            return { 
+                _id: user._id, 
+                username: user.username, 
+                email: user.email, 
+                image: user.image, 
+                followingCount, 
+                followersCount, 
+                isFollowing 
+            };
         } catch (error) {
             if (error instanceof Error) {
                 console.error(`Error fetching user: ${error.message}`);
@@ -150,6 +161,7 @@ export default class UserRepository {
             }
         }
     }
+    
 
     public async toggleFollowUser(followerUserId: string, followeeUserId: string): Promise<object> {
         try {
