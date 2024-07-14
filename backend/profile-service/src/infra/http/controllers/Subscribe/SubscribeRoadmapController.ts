@@ -5,7 +5,7 @@ import UserRepository from '../../../../app/repositories/UserRepository';
 export default class SubscribeRoadmapController {
     public async handle(req: any, res: Response): Promise<Response> {
         const { roadmapId } = req.body;
-        const email = req.user.email;
+        const userId = req.user.userId;
         console.log("RoadmapId : ", roadmapId);
         const subscribeToRoadmap = new SubscribeToRoadmap(
             new UserRepository()
@@ -13,7 +13,7 @@ export default class SubscribeRoadmapController {
 
         try {
 
-            const user = await subscribeToRoadmap.execute(email, roadmapId);
+            const user = await subscribeToRoadmap.execute(userId, roadmapId);
             if (!user) {
                 return res.status(404).json({ error: "User not found" });
             }

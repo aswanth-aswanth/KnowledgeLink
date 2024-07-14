@@ -44,9 +44,9 @@ export default class UserRepository {
         }
     }
 
-    public async subscribe(email: string, roadmapId: string): Promise<IUser | null> {
+    public async subscribe(userId: string, roadmapId: string): Promise<IUser | null> {
         try {
-            const user = await User.findOne({ email });
+            const user = await User.findById(userId);
             console.log("user subscribe : ", user);
             if (!user) {
                 return null;
