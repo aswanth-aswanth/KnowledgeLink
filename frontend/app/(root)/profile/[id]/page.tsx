@@ -19,8 +19,8 @@ export default function Profile() {
 
   const getUser = async () => {
     try {
-      const email = pathname.split("/")[2];
-      const profile = await apiClient(`/profile/user/${email}`);
+      const userId = pathname.split("/")[2];
+      const profile = await apiClient(`/profile/user/${userId}`);
       console.log("user Profile : ", profile);
       setUser(profile.data);
     } catch (error) {
@@ -30,8 +30,8 @@ export default function Profile() {
 
   const followUser = async () => {
     try {
-      const email = pathname.split("/")[2];
-      const res = await apiClient.patch(`/profile/user/${email}/follow`);
+      const userId = pathname.split("/")[2];
+      const res = await apiClient.patch(`/profile/user/${userId}/follow`);
       toast(res.data.message, {
         icon: "👏",
         style: {
@@ -48,8 +48,8 @@ export default function Profile() {
 
   const getPosts = async () => {
     try {
-      const email = pathname.split("/")[2];
-      const userPosts = await apiClient(`/posts/user/${email}`);
+      const userId = pathname.split("/")[2];
+      const userPosts = await apiClient(`/posts/user/${userId}`);
       setPosts(userPosts.data);
     } catch (error) {
       console.log("Error : ", error);
@@ -101,7 +101,7 @@ export default function Profile() {
         </p>
         <div className="flex items-center text-center">
           <div className="flex justify-center flex-col relative h-16 mt-8 px-4">
-            <p className="font-bold">{user?.following?.length}</p>
+            <p className="font-bold">{user?.followersCount}</p>
             <p>Followers</p>
             <Separator
               orientation="vertical"
@@ -111,7 +111,7 @@ export default function Profile() {
             />
           </div>
           <div className="flex justify-center flex-col relative h-16 mt-8 px-4">
-            <p className="font-bold">{user?.followers?.length}</p>
+            <p className="font-bold">{user?.followingCount}</p>
             <p>Followings</p>
             <Separator
               orientation="vertical"
