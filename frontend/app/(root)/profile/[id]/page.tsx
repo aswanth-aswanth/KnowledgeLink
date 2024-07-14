@@ -35,22 +35,6 @@ export default function Profile() {
     fetchData();
   }, [pathname]);
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      if (selectedTab === "Posts") {
-        try {
-          const userId = pathname.split("/")[2];
-          const userPosts = await getUserPosts(userId);
-          setPosts(userPosts.data);
-        } catch (error) {
-          console.log("Error fetching user posts:", error);
-        }
-      }
-    };
-
-    fetchPosts();
-  }, [selectedTab, pathname]);
-
   const handleFollowUser = async () => {
     try {
       const userId = pathname.split("/")[2];
@@ -178,7 +162,7 @@ export default function Profile() {
       {selectedTab === "Posts" && (
         <div>
           <h3 className="font-bold my-4 text-xl mt-14">Posts</h3>
-          <PostFeed posts={posts} />
+          <PostFeed />
         </div>
       )}
       {selectedTab === "Groups" && <div>{/* Groups content */}</div>}
