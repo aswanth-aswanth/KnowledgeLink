@@ -1,3 +1,20 @@
 node_modules
 dist
 .env
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Build output
+dist/
+
+# IDE / Editor directories
+.idea/
+.vscode/
+*.swp
+*.swo
