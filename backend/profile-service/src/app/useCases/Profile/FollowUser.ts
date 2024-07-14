@@ -8,7 +8,7 @@ export default class FollowUser {
         this.userRepository = userRepository;
     }
 
-    public async execute(followerEmail: string, followeeEmail: string): Promise<object> {
-        return await this.userRepository.toggleFollowUser(followerEmail, followeeEmail);
+    public async execute(followerUserId: string, followeeUserId: string): Promise<object> {
+        return await this.userRepository.toggleFollowUser(followerUserId, followeeUserId);
     }
 }

@@ -151,28 +151,28 @@ export default class UserRepository {
         }
     }
 
-    public async toggleFollowUser(followerEmail: string, followeeEmail: string): Promise<object> {
+    public async toggleFollowUser(followerUserId: string, followeeUserId: string): Promise<object> {
         try {
-            const follower = await User.findOne({ email: followerEmail });
-            const followee = await User.findOne({ email: followeeEmail });
+            const follower = await User.findById(followerUserId);
+            const followee = await User.findById(followeeUserId);
 
             if (!follower || !followee) {
                 throw new Error('User not found');
             }
 
-            const isFollowing = follower.following?.includes(followee.email);
+            const isFollowing = follower.following?.includes(followee._id);
 
             if (isFollowing) {
                 // Unfollow
-                follower.following = follower.following?.filter(email => email !== followee.email);
-                followee.followers = followee.followers?.filter(email => email !== follower.email);
+                follower.following = follower.following?.filter(id => id !== followee._id);
+                followee.followers = followee.followers?.filter(id => id !== follower._id);
                 await follower.save();
                 await followee.save();
                 return { message: 'User unfollowed successfully', action: 'unfollow' };
             } else {
                 // Follow
-                follower.following?.push(followee.email);
-                followee.followers?.push(follower.email);
+                follower.following?.push(followee._id);
+                followee.followers?.push(follower._id);
                 await follower.save();
                 await followee.save();
                 return { message: 'User followed successfully', action: 'follow' };

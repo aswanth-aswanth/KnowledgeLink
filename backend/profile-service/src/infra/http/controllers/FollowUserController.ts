@@ -7,15 +7,15 @@ export default class FollowUserController {
         const followUser = new FollowUser(
             new UserRepository()
         );
-        const followerEmail = req.user.email;
-        const followeeEmail = req.params.email;
+        const followerUserId = req.user.userId;
+        const followeeUserId = req.params.id;
 
         try {
-            if (followerEmail === followeeEmail) {
+            if (followerUserId === followeeUserId) {
                 return res.status(400).json({ error: "You cannot follow yourself" });
             }
 
-            const result = await followUser.execute(followerEmail, followeeEmail);
+            const result = await followUser.execute(followerUserId, followeeUserId);
             return res.status(200).json(result);
         } catch (err) {
             if (err instanceof Error) {

@@ -19,6 +19,6 @@ profileRouter.post("/subscribe", authMiddleware, subscribeController.handle);
 profileRouter.get("/users", getUsersController.handle);
 profileRouter.get("/search", getSearchUsersController.handle);
 profileRouter.get("/user/:id", nonAuthMiddleware, getSingleUserController.handle);
-profileRouter.patch("/user/:email/follow", authMiddleware, followUserController.handle);
+profileRouter.patch("/user/:id/follow", authMiddleware, followUserController.handle);
 
 export default profileRouter;
