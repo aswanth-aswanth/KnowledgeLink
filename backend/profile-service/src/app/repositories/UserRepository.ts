@@ -173,11 +173,14 @@ export default class UserRepository {
             }
 
             const isFollowing = follower.following?.includes(followee._id);
+            console.log("isFollowing : ", isFollowing);
 
             if (isFollowing) {
-                // Unfollow
+
                 follower.following = follower.following?.filter(id => id !== followee._id);
+                console.log('follower.following : ', follower.following);
                 followee.followers = followee.followers?.filter(id => id !== follower._id);
+                console.log('followee.following : ', followee.following);
                 await follower.save();
                 await followee.save();
                 return { message: 'User unfollowed successfully', action: 'unfollow' };
@@ -215,6 +218,21 @@ export default class UserRepository {
                 .exec();
 
             return users.map(user => user.toObject());
+        } catch (error) {
+            if (error instanceof Error) {
+                console.error(`Error searching users: ${error.message}`);
+                throw new Error('Failed to search users');
+            } else {
+                console.error('Unknown error searching users');
+                throw new Error('Unknown error');
+            }
+        }
+    }
+
+    public async save(user: IUser): Promise<IUser> {
+        try {
+            return user.save();
+
         } catch (error) {
             if (error instanceof Error) {
                 console.error(`Error searching users: ${error.message}`);

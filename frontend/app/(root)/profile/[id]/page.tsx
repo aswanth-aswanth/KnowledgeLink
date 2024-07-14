@@ -39,16 +39,11 @@ export default function Profile() {
     try {
       const userId = pathname.split("/")[2];
       const res = await followUser(userId);
-      toast(res.data.message, {
-        icon: "👏",
-        style: {
-          borderRadius: "10px",
-          background: "#333",
-          color: "#fff",
-        },
-      });
-      const profile = await getUserProfile(userId);
-      setUser(profile);
+
+      setUser((prevUser) => ({
+        ...prevUser,
+        isFollowing: !prevUser.isFollowing,
+      }));
     } catch (error) {
       console.log("Error following user:", error);
     }

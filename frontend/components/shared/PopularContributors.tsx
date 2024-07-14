@@ -35,7 +35,7 @@ export default function PopularContributors() {
           className="flex flex-col items-center text-center w-max"
         >
           <div
-            onClick={() => router.push(`/profile/${contributor.email}`)}
+            onClick={() => router.push(`/profile/${contributor._id}`)}
             className="h-10 w-10 sm:h-20 sm:w-20 rounded-full flex justify-center items-center border-4 border-gray-300"
           >
             <Avatar className="h-16 w-16 cursor-pointer">
