@@ -26,3 +26,25 @@ export interface TopicsState {
     rootId: string;
     editorData?: any | null;
 }
+
+
+
+export interface Message {
+    id: string;
+    text: string;
+    sender: User;
+    timestamp: string;
+    isOwn: boolean;
+  }
+  
+  export interface User {
+    id: string;
+    name: string;
+    avatar: string;
+    status?: string;
+  }
+  
+  export interface Channel {
+    id: string;
+    name: string;
+  }
