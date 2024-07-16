@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { users, channels } from "@/data/sampleData";
+import { channels } from "@/data/sampleData";
 import apiClient from "@/api/apiClient";
 import { Search, MessageCircleMore } from "lucide-react";
 
@@ -12,11 +12,20 @@ interface User {
   image: string;
 }
 
+interface Chat {
+  userId: string;
+  chatId: string;
+  lastMessage: string;
+  updatedAt: string;
+  username: string; // Added for displaying user names
+}
+
 export default function Sidebar({ isDarkMode }: { isDarkMode: boolean }) {
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
   const [searchResults, setSearchResults] = useState<User[]>([]);
+  const [userChats, setUserChats] = useState<Chat[]>([]);
 
   const handleSearch = async () => {
     if (debouncedSearchTerm) {
@@ -48,10 +57,45 @@ export default function Sidebar({ isDarkMode }: { isDarkMode: boolean }) {
     }
   };
 
-  // Use effect to trigger search when debounced search term changes
+  const fetchUserChats = async () => {
+    try {
+      const response = await apiClient.get("/chat/user/chats");
+      const { data } = await response;
+      console.log("data : ",data);
+
+      // Temporarily replace userId with random names
+      const chatsWithUsernames = data.map((chat: Chat) => ({
+        ...chat,
+        username: getRandomName(),
+      }));
+
+      setUserChats(chatsWithUsernames);
+    } catch (error) {
+      console.error("Error fetching user chats:", error);
+    }
+  };
+
+  const getRandomName = () => {
+    const names = [
+      "Alice",
+      "Bob",
+      "Charlie",
+      "David",
+      "Emma",
+      "Frank",
+      "Grace",
+      "Henry",
+    ];
+    return names[Math.floor(Math.random() * names.length)];
+  };
+
   useEffect(() => {
     handleSearch();
   }, [debouncedSearchTerm]);
+
+  useEffect(() => {
+    fetchUserChats();
+  }, []);
 
   return (
     <div
@@ -124,17 +168,24 @@ export default function Sidebar({ isDarkMode }: { isDarkMode: boolean }) {
                   isDarkMode ? "text-gray-400" : "text-gray-500"
                 } mb-2`}
               >
-                FAVOURITES
+                CHATS
               </h3>
               <ul className="space-y-4">
-                {users.map((user) => (
-                  <li key={user.id} className="flex items-center space-x-3">
+                {userChats.map((chat) => (
+                  <li key={chat.chatId} className="flex items-center space-x-3">
                     <img
-                      src={user.avatar}
-                      alt={user.name}
+                      src="pngwing.com.png"
+                      alt={chat.username}
                       className="w-8 h-8 rounded-full"
                     />
-                    <span>{user.name}</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">
+                        {chat.username}
+                      </p>
+                      <p className="text-xs text-gray-500 truncate">
+                        {chat.lastMessage || "No messages yet"}
+                      </p>
+                    </div>
                   </li>
                 ))}
               </ul>
