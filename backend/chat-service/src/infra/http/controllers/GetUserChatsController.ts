@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import ChatRepository from '../../../app/repositories/ChatRepository';
 import GetUserChats from '../../../app/useCases/GetUserChats';
 type UserChatInfo = {
-    userId: string;
+    username: string;
     chatId: string;
     lastMessage: string;
     updatedAt: Date;

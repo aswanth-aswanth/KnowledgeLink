@@ -3,12 +3,20 @@ import { Message } from '../../domain/entities/Message';
 import ChatModel, { IChatDocument } from '../../infra/databases/mongoose/models/Chat';
 import mongoose from 'mongoose';
 import MessageModel, { IMessageDocument } from '../../infra/databases/mongoose/models/Message';
- type UserChatInfo = {
-  userId: string;
+import { IUser } from '../../infra/databases/mongoose/models/User';
+//  type UserChatInfo = {
+//   userId: string;
+//   chatId: string;
+//   lastMessage: string;
+//   updatedAt: Date;
+// };
+
+interface UserChatInfo {
+  username: string;
   chatId: string;
   lastMessage: string;
   updatedAt: Date;
-};
+}
 
 export default class ChatRepository {
   public async createIndividualChat(currentUserId: string, participantId: string): Promise<Chat> {
@@ -105,19 +113,27 @@ export default class ChatRepository {
   public async getUserChats(userId: string): Promise<UserChatInfo[]> {
     try {
       const chats = await ChatModel.find({ participants: userId })
+        .populate('participants', 'username')
         .populate('messages')
         .sort({ updatedAt: -1 });
 
       const uniqueUsersMap = new Map<string, UserChatInfo>();
 
       chats.forEach(chat => {
-        const otherUserId = chat.participants.find(id => id.toString() !== userId.toString());
+        const otherParticipant = chat.participants.find((participant: IUser | mongoose.Types.ObjectId) => {
+          if (participant instanceof mongoose.Types.ObjectId) {
+            return participant.toString() !== userId.toString();
+          } else if (participant && participant._id) {
+            return participant._id.toString() !== userId.toString();
+          }
+          return false;
+        }) as IUser | undefined;
 
-        if (otherUserId) {
-          if (!uniqueUsersMap.has(otherUserId.toString())) {
+        if (otherParticipant && 'username' in otherParticipant && otherParticipant._id) {
+          if (!uniqueUsersMap.has(otherParticipant._id.toString())) {
             const lastMessage = chat.messages.length > 0 ? chat.messages[chat.messages.length - 1].content : '';
-            uniqueUsersMap.set(otherUserId.toString(), {
-              userId: otherUserId.toString(),
+            uniqueUsersMap.set(otherParticipant._id.toString(), {
+              username: otherParticipant.username,
               chatId: chat._id.toString(),
               lastMessage,
               updatedAt: chat.updatedAt
@@ -137,6 +153,7 @@ export default class ChatRepository {
       }
     }
   }
+
 
   public async createGroupChat(name: string, participantIds: string[]): Promise<Chat> {
     try {

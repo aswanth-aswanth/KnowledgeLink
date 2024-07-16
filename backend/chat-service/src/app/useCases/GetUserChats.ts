@@ -1,7 +1,7 @@
 import ChatRepository from '../repositories/ChatRepository';
 // import { UserChatInfo } from '../types/UserChatInfo'; // Adjust the import path as necessary
 type UserChatInfo = {
-    userId: string;
+    username: string;
     chatId: string;
     lastMessage: string;
     updatedAt: Date;
