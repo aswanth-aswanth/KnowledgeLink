@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
 import { users, channels } from "@/data/sampleData";
 import apiClient from "@/api/apiClient";
+import { Search, MessageCircleMore } from "lucide-react";
 
 interface User {
   _id: string;
@@ -32,6 +32,19 @@ export default function Sidebar({ isDarkMode }: { isDarkMode: boolean }) {
       }
     } else {
       setSearchResults([]);
+    }
+  };
+
+  const handleStartConversation = async (participantId: string) => {
+    try {
+      const response = await apiClient.post(
+        "http://localhost:4000/chat/individual",
+        { participantId }
+      );
+      const { data } = await response;
+      console.log("Response : ", data);
+    } catch (error) {
+      console.error("Error starting conversation:", error);
     }
   };
 
@@ -79,13 +92,26 @@ export default function Sidebar({ isDarkMode }: { isDarkMode: boolean }) {
             </h3>
             <ul className="space-y-2">
               {searchResults.map((user) => (
-                <li key={user._id} className="flex items-center space-x-3">
-                  <img
-                    src={user.image||'pngwing.com.png'}
-                    alt={user.username}
-                    className="w-8 h-8 rounded-full"
-                  />
-                  <span>{user.username}</span>
+                <li
+                  key={user._id}
+                  className="flex items-center space-x-3 justify-between"
+                >
+                  <div className="flex items-center space-x-3">
+                    <img
+                      src={user.image || "pngwing.com.png"}
+                      alt={user.username}
+                      className="w-8 h-8 rounded-full"
+                    />
+                    <span>{user.username}</span>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleStartConversation(user._id)}
+                    title="Start conversation"
+                  >
+                    <MessageCircleMore className="h-4 w-4" />
+                  </Button>
                 </li>
               ))}
             </ul>
