@@ -8,10 +8,16 @@ export default class SocketService {
   }
 
   public static emitToUser(userId: string, event: string, data: any) {
+    if (!SocketService.socketIOService) {
+      throw new Error('SocketService is not initialized');
+    }
     SocketService.socketIOService.emitToUser(userId, event, data);
   }
 
   public static emitToChat(chatId: string, event: string, data: any) {
+    if (!SocketService.socketIOService) {
+      throw new Error('SocketService is not initialized');
+    }
     SocketService.socketIOService.emitToChat(chatId, event, data);
   }
 }

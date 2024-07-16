@@ -1,7 +1,5 @@
-// src/infra/http/controllers/GetChatByIdController.ts
-
 import { Request, Response } from 'express';
-import GetChatById from '../../../app/useCases/GetChatById.ts';
+import GetChatById from '../../../app/useCases/GetChatById';
 import ChatRepository from '../../../app/repositories/ChatRepository';
 
 export default class GetChatByIdController {

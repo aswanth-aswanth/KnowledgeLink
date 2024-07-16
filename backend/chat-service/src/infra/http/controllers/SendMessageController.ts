@@ -6,7 +6,7 @@ export default class SendMessageController {
     public async handle(req: Request, res: Response): Promise<Response> {
         try {
             const { chatId, content } = req.body;
-            const senderId = (req as any).user.id;
+            const senderId = (req as any).user.userId;
 
             const sendMessage = new SendMessage(new ChatRepository());
             const message = await sendMessage.execute(chatId, senderId, content);

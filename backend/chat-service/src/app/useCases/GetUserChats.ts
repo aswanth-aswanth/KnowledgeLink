@@ -1,5 +1,11 @@
 import ChatRepository from '../repositories/ChatRepository';
-import { Chat } from '../../domain/entities/Chat';
+// import { UserChatInfo } from '../types/UserChatInfo'; // Adjust the import path as necessary
+type UserChatInfo = {
+    userId: string;
+    chatId: string;
+    lastMessage: string;
+    updatedAt: Date;
+};
 
 export default class GetUserChats {
     private chatRepository: ChatRepository;
@@ -8,7 +14,7 @@ export default class GetUserChats {
         this.chatRepository = chatRepository;
     }
 
-    public async execute(userId: string): Promise<Chat[]> {
+    public async execute(userId: string): Promise<UserChatInfo[]> {
         return await this.chatRepository.getUserChats(userId);
     }
 }

@@ -1,26 +1,24 @@
 import { Request, Response } from 'express';
-import GetUserChats from '../../../app/useCases/GetUserChats.ts';
 import ChatRepository from '../../../app/repositories/ChatRepository';
-
+import GetUserChats from '../../../app/useCases/GetUserChats';
+type UserChatInfo = {
+    userId: string;
+    chatId: string;
+    lastMessage: string;
+    updatedAt: Date;
+};
 export default class GetUserChatsController {
     public async handle(req: Request, res: Response): Promise<Response> {
         try {
             const currentUserId = (req as any).user.userId;
 
             const getUserChats = new GetUserChats(new ChatRepository());
-            const chats = await getUserChats.execute(currentUserId);
+            const userChats: UserChatInfo[] = await getUserChats.execute(currentUserId);
 
-            return res.status(200).json(chats.map(chat => ({
-                id: chat.id,
-                participants: chat.participants,
-                type: chat.type,
-                lastMessage: chat.messages[chat.messages.length - 1],
-                createdAt: chat.createdAt,
-                updatedAt: chat.updatedAt
-            })));
+            return res.status(200).json(userChats);
         } catch (err) {
             if (err instanceof Error) {
-                console.error(`Error getting user chats: ${err.message}`);
+                console.error(`Error fetching user chats: ${err.message}`);
                 return res.status(400).json({ error: err.message });
             }
             return res.status(500).json({ error: "Unknown error" });

@@ -1,7 +1,7 @@
 // src/infra/http/controllers/CreateGroupChatController.ts
 
 import { Request, Response } from 'express';
-import CreateGroupChat from '../../../app/useCases/CreateGroupChat.ts';
+import CreateGroupChat from '../../../app/useCases/CreateGroupChat';
 import ChatRepository from '../../../app/repositories/ChatRepository';
 
 export default class CreateGroupChatController {

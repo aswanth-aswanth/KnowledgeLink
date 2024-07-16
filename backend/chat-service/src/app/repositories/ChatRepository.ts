@@ -3,6 +3,12 @@ import { Message } from '../../domain/entities/Message';
 import ChatModel, { IChatDocument } from '../../infra/databases/mongoose/models/Chat';
 import mongoose from 'mongoose';
 import MessageModel, { IMessageDocument } from '../../infra/databases/mongoose/models/Message';
+ type UserChatInfo = {
+  userId: string;
+  chatId: string;
+  lastMessage: string;
+  updatedAt: Date;
+};
 
 export default class ChatRepository {
   public async createIndividualChat(currentUserId: string, participantId: string): Promise<Chat> {
@@ -72,7 +78,7 @@ export default class ChatRepository {
       )),
       doc.createdAt,
       doc.updatedAt,
-      doc.name 
+      doc.name
     );
   }
 
@@ -96,13 +102,31 @@ export default class ChatRepository {
     }
   }
 
-  public async getUserChats(userId: string): Promise<Chat[]> {
+  public async getUserChats(userId: string): Promise<UserChatInfo[]> {
     try {
       const chats = await ChatModel.find({ participants: userId })
         .populate('messages')
         .sort({ updatedAt: -1 });
 
-      return chats.map(chat => this.documentToEntity(chat));
+      const uniqueUsersMap = new Map<string, UserChatInfo>();
+
+      chats.forEach(chat => {
+        const otherUserId = chat.participants.find(id => id.toString() !== userId.toString());
+
+        if (otherUserId) {
+          if (!uniqueUsersMap.has(otherUserId.toString())) {
+            const lastMessage = chat.messages.length > 0 ? chat.messages[chat.messages.length - 1].content : '';
+            uniqueUsersMap.set(otherUserId.toString(), {
+              userId: otherUserId.toString(),
+              chatId: chat._id.toString(),
+              lastMessage,
+              updatedAt: chat.updatedAt
+            });
+          }
+        }
+      });
+
+      return Array.from(uniqueUsersMap.values()).sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
     } catch (error) {
       if (error instanceof Error) {
         console.error(`Error getting user chats: ${error.message}`);
@@ -166,5 +190,55 @@ export default class ChatRepository {
       doc.content,
       doc.createdAt
     );
+  }
+
+  public async addUserToChat(chatId: string, userId: string): Promise<Chat> {
+    const chat = await ChatModel.findByIdAndUpdate(
+      chatId,
+      { $addToSet: { participants: userId } },
+      { new: true }
+    ).populate('messages');
+
+    if (!chat) {
+      throw new Error('Chat not found');
+    }
+
+    return this.documentToEntity(chat);
+  }
+
+  public async removeUserFromChat(chatId: string, userId: string): Promise<Chat> {
+    const chat = await ChatModel.findByIdAndUpdate(
+      chatId,
+      { $pull: { participants: userId } },
+      { new: true }
+    ).populate('messages');
+
+    if (!chat) {
+      throw new Error('Chat not found');
+    }
+
+    return this.documentToEntity(chat);
+  }
+
+  public async updateChat(chatId: string, updateData: { name?: string }): Promise<Chat> {
+    const chat = await ChatModel.findByIdAndUpdate(
+      chatId,
+      { $set: updateData },
+      { new: true }
+    ).populate('messages');
+
+    if (!chat) {
+      throw new Error('Chat not found');
+    }
+
+    return this.documentToEntity(chat);
+  }
+
+  public async deleteChat(chatId: string): Promise<void> {
+    const result = await ChatModel.findByIdAndDelete(chatId);
+
+    if (!result) {
+      throw new Error('Chat not found');
+    }
   }
 }

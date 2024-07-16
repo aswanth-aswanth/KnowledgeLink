@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import GetChatMessages from '../../../app/useCases/GetChatMessages.ts';
+import GetChatMessages from '../../../app/useCases/GetChatMessages';
 import ChatRepository from '../../../app/repositories/ChatRepository';
 
 export default class GetChatMessagesController {
