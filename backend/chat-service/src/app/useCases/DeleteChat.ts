@@ -3,14 +3,16 @@ import SocketService from '../../infra/services/SocketService';
 
 export default class DeleteChat {
   private chatRepository: ChatRepository;
+  private socketService: SocketService;
 
-  constructor(chatRepository: ChatRepository) {
+  constructor(chatRepository: ChatRepository, socketService: SocketService) {
     this.chatRepository = chatRepository;
+    this.socketService = socketService;
   }
 
   public async execute(chatId: string, currentUserId: string): Promise<void> {
     const chat = await this.chatRepository.getChatById(chatId);
-    
+
     if (!chat) {
       throw new Error('Chat not found');
     }
@@ -24,10 +26,10 @@ export default class DeleteChat {
     }
 
     await this.chatRepository.deleteChat(chatId);
-    
+
     // Notify all participants about the chat deletion
     chat.participants.forEach(userId => {
-      SocketService.emitToUser(userId, 'chat_deleted', { chatId });
+      this.socketService.emitToUser(userId, 'chat_deleted', { chatId });
     });
   }
 }

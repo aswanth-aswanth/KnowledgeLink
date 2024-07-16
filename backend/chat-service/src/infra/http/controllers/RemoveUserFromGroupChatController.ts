@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import RemoveUserFromGroupChat from '../../../app/useCases/RemoveUserFromGroupChat';
 import ChatRepository from '../../../app/repositories/ChatRepository';
+import SocketService from '../../../infra/services/SocketService';
 
 export default class RemoveUserFromGroupChatController {
     public async handle(req: Request, res: Response): Promise<Response> {
@@ -9,9 +10,11 @@ export default class RemoveUserFromGroupChatController {
             const { userId } = req.body;
             const currentUserId = (req as any).user.userId;
 
-            const removeUserFromGroupChat = new RemoveUserFromGroupChat(new ChatRepository());
-            const chat = await removeUserFromGroupChat.execute(chatId, userId, currentUserId);
+            const chatRepository = new ChatRepository();
+            const socketService = SocketService.getInstance();
+            const removeUserFromGroupChat = new RemoveUserFromGroupChat(chatRepository, socketService);
 
+            const chat = await removeUserFromGroupChat.execute(chatId, userId, currentUserId);
             return res.status(200).json(chat);
         } catch (err) {
             if (err instanceof Error) {

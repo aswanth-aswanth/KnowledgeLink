@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import UpdateChat from '../../../app/useCases/UpdateChat';
 import ChatRepository from '../../../app/repositories/ChatRepository';
+import SocketService from '../../../infra/services/SocketService';
 
 export default class UpdateChatController {
     public async handle(req: Request, res: Response): Promise<Response> {
@@ -9,7 +10,9 @@ export default class UpdateChatController {
             const { name } = req.body;
             const currentUserId = (req as any).user.userId;
 
-            const updateChat = new UpdateChat(new ChatRepository());
+            const chatRepository = new ChatRepository();
+            const socketService = SocketService.getInstance();
+            const updateChat = new UpdateChat(chatRepository, socketService);
             const chat = await updateChat.execute(chatId, { name }, currentUserId);
 
             return res.status(200).json(chat);

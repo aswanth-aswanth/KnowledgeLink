@@ -23,8 +23,7 @@ export default class SendMessage {
     const message = new Message('', chatId, userId, content, new Date());
     const savedMessage = await this.chatRepository.addMessage(chatId, message);
 
-    // Emit the new message to all participants
-    SocketService.emitToChat(chatId, 'new_message', savedMessage);
+    SocketService.getInstance().emitToChat(chatId, 'new_message', savedMessage);
 
     return savedMessage;
   }

@@ -6,9 +6,16 @@ import ChatRepository from '../../app/repositories/ChatRepository';
 
 export default class SocketIOService {
   private io: Server;
+  private userSockets: Map<string, string> = new Map();
 
   constructor(httpServer: HttpServer) {
-    this.io = new Server(httpServer);
+    this.io = new Server(httpServer, {
+      cors: {
+        origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+        methods: ['GET', 'POST'],
+        credentials: true,
+      },
+    });
     this.setupMiddleware();
     this.setupEventHandlers();
   }
@@ -16,22 +23,11 @@ export default class SocketIOService {
   private setupMiddleware() {
     this.io.use(socketAuthMiddleware);
   }
-  /*  private setupMiddleware() {
-     this.io.use(async (socket, next) => {
-       try {
-         const token = socket.handshake.auth.token;
-         const user = await authMiddleware(token);
-         socket.data.user = user;
-         next();
-       } catch (err) {
-         next(new Error('Authentication error'));
-       }
-     });
-   } */
 
   private setupEventHandlers() {
     this.io.on('connection', (socket) => {
       console.log('User connected:', socket.data.user.id);
+      this.userSockets.set(socket.data.user.id, socket.id);
 
       socket.on('join_chat', (chatId) => {
         socket.join(chatId);
@@ -60,12 +56,18 @@ export default class SocketIOService {
 
       socket.on('disconnect', () => {
         console.log('User disconnected:', socket.data.user.id);
+        this.userSockets.delete(socket.data.user.id);
       });
     });
   }
 
-  public emitToUser(userId: string, event: string, data: any) {
-    this.io.to(userId).emit(event, data);
+  public emitToUser(userId: string, event: string, data: any): void {
+    const socketId = this.userSockets.get(userId);
+    if (socketId) {
+      this.io.to(socketId).emit(event, data);
+    } else {
+      console.log(`User ${userId} is not connected`);
+    }
   }
 
   public emitToChat(chatId: string, event: string, data: any) {

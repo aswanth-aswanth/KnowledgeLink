@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import DeleteChat from '../../../app/useCases/DeleteChat';
 import ChatRepository from '../../../app/repositories/ChatRepository';
+import SocketService from '../../../infra/services/SocketService';
 
 export default class DeleteChatController {
     public async handle(req: Request, res: Response): Promise<Response> {
@@ -8,7 +9,9 @@ export default class DeleteChatController {
             const { chatId } = req.params;
             const currentUserId = (req as any).user.userId;
 
-            const deleteChat = new DeleteChat(new ChatRepository());
+            const chatRepository = new ChatRepository();
+            const socketService = SocketService.getInstance();
+            const deleteChat = new DeleteChat(chatRepository, socketService);
             await deleteChat.execute(chatId, currentUserId);
 
             return res.status(204).send();

@@ -8,9 +8,11 @@ interface UpdateChatData {
 
 export default class UpdateChat {
   private chatRepository: ChatRepository;
+  private socketService: SocketService;
 
-  constructor(chatRepository: ChatRepository) {
+  constructor(chatRepository: ChatRepository, socketService: SocketService) {
     this.chatRepository = chatRepository;
+    this.socketService = socketService;
   }
 
   public async execute(chatId: string, updateData: UpdateChatData, currentUserId: string): Promise<Chat> {
@@ -32,7 +34,7 @@ export default class UpdateChat {
     
     // Notify all participants about the chat update
     updatedChat.participants.forEach(userId => {
-      SocketService.emitToUser(userId, 'chat_updated', updatedChat);
+      this.socketService.emitToUser(userId, 'chat_updated', updatedChat);
     });
 
     return updatedChat;

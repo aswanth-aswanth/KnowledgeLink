@@ -81,7 +81,7 @@ export default function Sidebar({ isDarkMode }: { isDarkMode: boolean }) {
               {searchResults.map((user) => (
                 <li key={user._id} className="flex items-center space-x-3">
                   <img
-                    src={user.image}
+                    src={user.image||'pngwing.com.png'}
                     alt={user.username}
                     className="w-8 h-8 rounded-full"
                   />
@@ -100,7 +100,7 @@ export default function Sidebar({ isDarkMode }: { isDarkMode: boolean }) {
               >
                 FAVOURITES
               </h3>
-              <ul className="space-y-2">
+              <ul className="space-y-4">
                 {users.map((user) => (
                   <li key={user.id} className="flex items-center space-x-3">
                     <img
