@@ -1,4 +1,5 @@
 import amqp from 'amqplib';
+import Consumer from './Consumer';
 
 class RabbitMQConnection {
     private static instance: RabbitMQConnection;
@@ -20,6 +21,7 @@ class RabbitMQConnection {
         try {
             this.connection = await amqp.connect('amqp://localhost');
             this.channel = await this.connection.createChannel();
+            Consumer.consume('user.registration');
             console.log('RabbitMQ connected successfully (chat-service)');
         } catch (error) {
             console.error('Failed to connect to RabbitMQ (chat-service):', error);
