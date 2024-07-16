@@ -6,7 +6,7 @@ const app: Express = express();
 
 // CORS configuration
 const corsOptions = {
-  origin: 'http://localhost:3000', // Your frontend URL
+  origin: 'http://localhost:3000',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: '*',
   credentials: true,
@@ -20,6 +20,7 @@ const services: { [key: string]: string } = {
   profile: 'http://localhost:5002',
   post: 'http://localhost:5003',
   notification: 'http://localhost:5004',
+  chat: 'http://localhost:5005',
 };
 
 const authProxy: RequestHandler = createProxyMiddleware({
@@ -47,11 +48,17 @@ const notificationProxy: RequestHandler = createProxyMiddleware({
   changeOrigin: true,
 });
 
+const chatProxy: RequestHandler = createProxyMiddleware({
+  target: services.chat,
+  changeOrigin: true,
+});
+
 app.use('/auth', authProxy);
 app.use('/profile', profileProxy);
 app.use('/roadmap', roadmapProxy);
 app.use('/post', postProxy);
 app.use('/notification', notificationProxy);
+app.use('/chat', chatProxy);
 
 const PORT: number = 4000;
 app.listen(PORT, () => {
