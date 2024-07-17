@@ -30,7 +30,7 @@ const navItems = [
   { name: "Home", icon: HiHome, href: "/" },
   { name: "Following", icon: HiUsers, href: "/following" },
   { name: "Repository", icon: HiFolder, href: "/repository" },
-  { name: "Chat & Call", icon: HiChat, href: "/chat-call" },
+  { name: "Chat & Call", icon: HiChat, href: "/chat" },
   { name: "Notifications", icon: HiBell, href: "/notifications" },
   { name: "Meeting", icon: HiVideoCamera, href: "/meeting" },
   { name: "Profile", icon: HiUser, href: "/profile" },

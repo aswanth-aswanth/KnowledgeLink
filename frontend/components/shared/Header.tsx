@@ -39,7 +39,7 @@ export default function Header() {
         <Hamburger />
       </div>
 
-      <div className="flex-grow mx-2 sm:mx-4">
+      <div className="flex-grow mx-2 sm:mx-4 max-[420px]:max-w-[110px] ">
         <div className="relative">
           <input
             type="text"

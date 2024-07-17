@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { channels } from "@/data/sampleData";
 import apiClient from "@/api/apiClient";
 import { Search, MessageCircleMore } from "lucide-react";
 
@@ -17,10 +16,16 @@ interface Chat {
   chatId: string;
   lastMessage: string;
   updatedAt: string;
-  username: string; // Added for displaying user names
+  username: string;
+  image: string;
 }
 
-export default function Sidebar({ isDarkMode }: { isDarkMode: boolean }) {
+interface SidebarProps {
+  isDarkMode: boolean;
+  onChatSelect: (chatId: string) => void;
+}
+
+export default function Sidebar({ isDarkMode, onChatSelect }: SidebarProps) {
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
@@ -52,6 +57,7 @@ export default function Sidebar({ isDarkMode }: { isDarkMode: boolean }) {
       );
       const { data } = await response;
       console.log("Response : ", data);
+      fetchUserChats();
     } catch (error) {
       console.error("Error starting conversation:", error);
     }
@@ -61,32 +67,11 @@ export default function Sidebar({ isDarkMode }: { isDarkMode: boolean }) {
     try {
       const response = await apiClient.get("/chat/user/chats");
       const { data } = await response;
-      console.log("data : ",data);
-
-      // Temporarily replace userId with random names
-      const chatsWithUsernames = data.map((chat: Chat) => ({
-        ...chat,
-        username: getRandomName(),
-      }));
-
-      setUserChats(chatsWithUsernames);
+      console.log("data : ", data);
+      setUserChats(data);
     } catch (error) {
       console.error("Error fetching user chats:", error);
     }
-  };
-
-  const getRandomName = () => {
-    const names = [
-      "Alice",
-      "Bob",
-      "Charlie",
-      "David",
-      "Emma",
-      "Frank",
-      "Grace",
-      "Henry",
-    ];
-    return names[Math.floor(Math.random() * names.length)];
   };
 
   useEffect(() => {
@@ -152,7 +137,6 @@ export default function Sidebar({ isDarkMode }: { isDarkMode: boolean }) {
                     variant="ghost"
                     size="icon"
                     onClick={() => handleStartConversation(user._id)}
-                    title="Start conversation"
                   >
                     <MessageCircleMore className="h-4 w-4" />
                   </Button>
@@ -160,55 +144,41 @@ export default function Sidebar({ isDarkMode }: { isDarkMode: boolean }) {
               ))}
             </ul>
           </div>
-        ) : (
-          <>
-            <div className="mb-6">
-              <h3
-                className={`text-sm font-medium ${
-                  isDarkMode ? "text-gray-400" : "text-gray-500"
-                } mb-2`}
+        ) : null}
+
+        <div>
+          <h3
+            className={`text-sm font-medium ${
+              isDarkMode ? "text-gray-400" : "text-gray-500"
+            } mb-2`}
+          >
+            YOUR CHATS
+          </h3>
+          <ul className="space-y-2">
+            {userChats.map((chat) => (
+              <li
+                key={chat.chatId}
+                className="flex items-center space-x-3 cursor-pointer"
+                onClick={() => onChatSelect(chat.chatId)}
               >
-                CHATS
-              </h3>
-              <ul className="space-y-4">
-                {userChats.map((chat) => (
-                  <li key={chat.chatId} className="flex items-center space-x-3">
-                    <img
-                      src="pngwing.com.png"
-                      alt={chat.username}
-                      className="w-8 h-8 rounded-full"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium truncate">
-                        {chat.username}
-                      </p>
-                      <p className="text-xs text-gray-500 truncate">
-                        {chat.lastMessage || "No messages yet"}
-                      </p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h3
-                className={`text-sm font-medium ${
-                  isDarkMode ? "text-gray-400" : "text-gray-500"
-                } mb-2`}
-              >
-                CHANNELS
-              </h3>
-              <ul className="space-y-2">
-                {channels.map((channel) => (
-                  <li key={channel.id} className="flex items-center space-x-3">
-                    <span>#</span>
-                    <span>{channel.name}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </>
-        )}
+                <img
+                  src={chat.image || "pngwing.com.png"}
+                  alt={chat.username}
+                  className="w-8 h-8 rounded-full"
+                />
+                <div className="flex flex-col flex-grow">
+                  <span>{chat.username}</span>
+                  <span className="text-xs truncate">
+                    {chat.lastMessage || "No messages yet"}
+                  </span>
+                </div>
+                <span className="text-xs whitespace-nowrap">
+                  {new Date(chat.updatedAt).toLocaleDateString()}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );
