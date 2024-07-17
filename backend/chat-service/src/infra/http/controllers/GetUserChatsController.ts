@@ -6,6 +6,7 @@ type UserChatInfo = {
     chatId: string;
     lastMessage: string;
     updatedAt: Date;
+    image:string;
 };
 export default class GetUserChatsController {
     public async handle(req: Request, res: Response): Promise<Response> {

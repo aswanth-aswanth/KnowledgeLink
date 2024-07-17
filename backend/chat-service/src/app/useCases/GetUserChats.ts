@@ -5,6 +5,7 @@ type UserChatInfo = {
     chatId: string;
     lastMessage: string;
     updatedAt: Date;
+    image:string;
 };
 
 export default class GetUserChats {

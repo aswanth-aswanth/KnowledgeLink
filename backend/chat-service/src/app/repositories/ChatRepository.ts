@@ -4,18 +4,13 @@ import ChatModel, { IChatDocument } from '../../infra/databases/mongoose/models/
 import mongoose from 'mongoose';
 import MessageModel, { IMessageDocument } from '../../infra/databases/mongoose/models/Message';
 import { IUser } from '../../infra/databases/mongoose/models/User';
-//  type UserChatInfo = {
-//   userId: string;
-//   chatId: string;
-//   lastMessage: string;
-//   updatedAt: Date;
-// };
 
 interface UserChatInfo {
   username: string;
   chatId: string;
   lastMessage: string;
   updatedAt: Date;
+  image: string;
 }
 
 export default class ChatRepository {
@@ -113,7 +108,7 @@ export default class ChatRepository {
   public async getUserChats(userId: string): Promise<UserChatInfo[]> {
     try {
       const chats = await ChatModel.find({ participants: userId })
-        .populate('participants', 'username')
+        .populate('participants', 'username image')
         .populate('messages')
         .sort({ updatedAt: -1 });
 
@@ -134,6 +129,7 @@ export default class ChatRepository {
             const lastMessage = chat.messages.length > 0 ? chat.messages[chat.messages.length - 1].content : '';
             uniqueUsersMap.set(otherParticipant._id.toString(), {
               username: otherParticipant.username,
+              image: otherParticipant.image,
               chatId: chat._id.toString(),
               lastMessage,
               updatedAt: chat.updatedAt
