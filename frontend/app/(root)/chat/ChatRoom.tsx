@@ -1,10 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import ChatWindow from "./ChatWindow";
 import ProfileSection from "./ProfileSection";
 import { useDarkMode } from "@/hooks/useDarkMode";
-import { useSocket } from "@/hooks/useSocket";
 import { Socket } from "socket.io-client";
+import apiClient from "@/api/apiClient";
+
+interface Chat {
+  userId: string;
+  chatId: string;
+  lastMessage: string;
+  updatedAt: string;
+  username: string;
+  image: string;
+}
 
 interface ChatRoomProps {
   socket: Socket | null;
@@ -21,11 +30,29 @@ export default function ChatRoom({
 }: ChatRoomProps) {
   const { isDarkMode } = useDarkMode();
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
+  const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+  const [userChats, setUserChats] = useState<Chat[]>([]);
 
   const handleChatSelect = (chatId: string) => {
     setSelectedChatId(chatId);
     joinChatRoom(chatId);
+    setIsSidebarVisible(false);
   };
+
+  const fetchUserChats = async () => {
+    try {
+      const response = await apiClient.get("/chat/user/chats");
+      const { data } = await response;
+      console.log("data : ", data);
+      setUserChats(data);
+    } catch (error) {
+      console.error("Error fetching user chats:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserChats();
+  }, []);
 
   return (
     <div
@@ -37,6 +64,10 @@ export default function ChatRoom({
         socket={socket}
         isDarkMode={isDarkMode}
         onChatSelect={handleChatSelect}
+        isVisible={isSidebarVisible}
+        onClose={() => setIsSidebarVisible(false)}
+        userChats={userChats}
+        setUserChats={setUserChats}
       />
       <div className="flex-1 flex flex-col">
         <ChatWindow
@@ -46,6 +77,8 @@ export default function ChatRoom({
           sendMessage={sendMessage}
           joinChatRoom={joinChatRoom}
           token={token}
+          onOpenSidebar={() => setIsSidebarVisible(true)}
+          userChats={userChats}
         />
       </div>
       <ProfileSection isDarkMode={isDarkMode} />

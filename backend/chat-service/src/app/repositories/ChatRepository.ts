@@ -7,6 +7,7 @@ import { IUser } from '../../infra/databases/mongoose/models/User';
 
 interface UserChatInfo {
   username: string;
+  userId: string;
   chatId: string;
   lastMessage: string;
   updatedAt: Date;
@@ -108,7 +109,7 @@ export default class ChatRepository {
   public async getUserChats(userId: string): Promise<UserChatInfo[]> {
     try {
       const chats = await ChatModel.find({ participants: userId })
-        .populate('participants', 'username image')
+        .populate('participants', 'username image _id')
         .populate('messages')
         .sort({ updatedAt: -1 });
 
@@ -131,6 +132,7 @@ export default class ChatRepository {
               username: otherParticipant.username,
               image: otherParticipant.image,
               chatId: chat._id.toString(),
+              userId: otherParticipant._id,
               lastMessage,
               updatedAt: chat.updatedAt
             });

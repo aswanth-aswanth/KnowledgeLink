@@ -3,10 +3,11 @@ import ChatRepository from '../../../app/repositories/ChatRepository';
 import GetUserChats from '../../../app/useCases/GetUserChats';
 type UserChatInfo = {
     username: string;
+    userId: string;
     chatId: string;
     lastMessage: string;
     updatedAt: Date;
-    image:string;
+    image: string;
 };
 export default class GetUserChatsController {
     public async handle(req: Request, res: Response): Promise<Response> {
