@@ -8,7 +8,7 @@ export default class GetChatMessages {
     this.chatRepository = chatRepository;
   }
 
-  public async execute(chatId: string, userId: string): Promise<Message[]> {
+  public async execute(chatId: string, userId: string): Promise<(Message & { isOwn: boolean })[]> {
     const chat = await this.chatRepository.getChatById(chatId);
 
     if (!chat) {

@@ -19,3 +19,7 @@ export class Message {
     );
   }
 }
+
+export interface MessageWithIsOwn extends Message {
+  isOwn: boolean;
+}

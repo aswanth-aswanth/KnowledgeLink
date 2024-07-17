@@ -4,6 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import apiClient from "@/api/apiClient";
 import { Search, MessageCircleMore } from "lucide-react";
+import { Socket } from "socket.io-client";
+import { Message } from "@/types";
 
 interface User {
   _id: string;
@@ -23,9 +25,14 @@ interface Chat {
 interface SidebarProps {
   isDarkMode: boolean;
   onChatSelect: (chatId: string) => void;
+  socket: Socket | null;
 }
 
-export default function Sidebar({ isDarkMode, onChatSelect }: SidebarProps) {
+export default function Sidebar({
+  isDarkMode,
+  onChatSelect,
+  socket,
+}: SidebarProps) {
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
@@ -81,6 +88,30 @@ export default function Sidebar({ isDarkMode, onChatSelect }: SidebarProps) {
   useEffect(() => {
     fetchUserChats();
   }, []);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("new_message", (message: Message) => {
+        setUserChats((prevChats) =>
+          prevChats.map((chat) =>
+            chat.chatId === message.chatId
+              ? {
+                  ...chat,
+                  lastMessage: message.content,
+                  updatedAt: message.createdAt,
+                }
+              : chat
+          )
+        );
+      });
+    }
+
+    return () => {
+      if (socket) {
+        socket.off("new_message");
+      }
+    };
+  }, [socket]);
 
   return (
     <div
@@ -154,7 +185,7 @@ export default function Sidebar({ isDarkMode, onChatSelect }: SidebarProps) {
           >
             YOUR CHATS
           </h3>
-          <ul className="space-y-2">
+          <ul className="space-y-4">
             {userChats.map((chat) => (
               <li
                 key={chat.chatId}
@@ -167,14 +198,16 @@ export default function Sidebar({ isDarkMode, onChatSelect }: SidebarProps) {
                   className="w-8 h-8 rounded-full"
                 />
                 <div className="flex flex-col flex-grow">
-                  <span>{chat.username}</span>
-                  <span className="text-xs truncate">
+                  <div className="flex items-center justify-between">
+                    <span>{chat.username}</span>
+                    <span className="text-xs whitespace-nowrap">
+                      {new Date(chat.updatedAt).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <span className="text-xs w-[170px] truncate">
                     {chat.lastMessage || "No messages yet"}
                   </span>
                 </div>
-                <span className="text-xs whitespace-nowrap">
-                  {new Date(chat.updatedAt).toLocaleDateString()}
-                </span>
               </li>
             ))}
           </ul>

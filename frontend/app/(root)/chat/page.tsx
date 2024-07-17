@@ -1,12 +1,17 @@
 "use client";
-import { useEffect } from "react";
-import { store } from "@/store";
 import ChatRoom from "./ChatRoom";
-import io from "socket.io-client";
 import { useSocket } from "@/hooks/useSocket";
 
 export default function ChatPage() {
-  const token = localStorage.getItem("token") || "my token"; // Get this from your authentication system
-  const socket = useSocket(token);
-  return <ChatRoom />;
+  const token = localStorage.getItem("token") || "";
+  const { socket, sendMessage, joinChatRoom } = useSocket(token);
+
+  return (
+    <ChatRoom
+      socket={socket}
+      sendMessage={sendMessage}
+      joinChatRoom={joinChatRoom}
+      token={token}
+    />
+  );
 }

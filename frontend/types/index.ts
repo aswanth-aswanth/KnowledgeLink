@@ -30,7 +30,7 @@ export interface TopicsState {
 
 
 export interface Message {
-  id: string;
+  chatId: string;
   content: string;
   sender: User;
   createdAt: string;

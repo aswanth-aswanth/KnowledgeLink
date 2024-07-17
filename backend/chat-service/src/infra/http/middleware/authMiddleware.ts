@@ -5,7 +5,6 @@ const tokenManager = new TokenManager();
 
 const authMiddleware = (req: any, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
-
     if (!authHeader) {
         return res.status(401).json({ message: 'No token provided' });
     }
