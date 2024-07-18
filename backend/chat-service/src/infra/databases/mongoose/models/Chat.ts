@@ -8,10 +8,14 @@ export interface IChatDocument extends Document {
   messages: IMessageDocument[];
   createdAt: Date;
   updatedAt: Date;
-  name:string;
+  name?: string;
 }
 
 const ChatSchema = new Schema<IChatDocument>({
+  name: {
+    type: String,
+    trim: true
+  },
   participants: [{
     type: Schema.Types.ObjectId,
     ref: 'User',

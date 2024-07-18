@@ -12,6 +12,7 @@ export default class CreateGroupChat {
   }
 
   public async execute(name: string, participantIds: string[]): Promise<Chat> {
+    
     if (participantIds.length < 3) {
       throw new Error('A group chat must have at least 3 participants');
     }

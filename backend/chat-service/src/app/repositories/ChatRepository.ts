@@ -14,6 +14,13 @@ interface UserChatInfo {
   image: string;
 }
 
+interface GroupChatInfo {
+  chatId: string;
+  name: string;
+  lastMessage: string;
+  updatedAt: Date;
+}
+
 export default class ChatRepository {
   public async createIndividualChat(currentUserId: string, participantId: string): Promise<Chat> {
     try {
@@ -147,6 +154,35 @@ export default class ChatRepository {
         throw new Error('Failed to get user chats');
       } else {
         console.error('Unknown error getting user chats');
+        throw new Error('Unknown error');
+      }
+    }
+  }
+
+  public async getUserGroupChats(userId: string): Promise<GroupChatInfo[]> {
+    try {
+      const groupChats = await ChatModel.find({
+        participants: userId,
+        type: 'group'
+      })
+        .sort({ updatedAt: -1 })
+        .populate({
+          path: 'messages',
+          options: { sort: { createdAt: -1 }, limit: 1 }
+        });
+
+      return groupChats.map(chat => ({
+        chatId: chat._id.toString(),
+        name: chat.name || 'Unnamed Group',
+        lastMessage: chat.messages.length > 0 ? chat.messages[0].content : '',
+        updatedAt: chat.updatedAt
+      }));
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Error getting user group chats: ${error.message}`);
+        throw new Error('Failed to get user group chats');
+      } else {
+        console.error('Unknown error getting user group chats');
         throw new Error('Unknown error');
       }
     }
