@@ -51,7 +51,7 @@ export default function Sidebar({
     if (debouncedSearchTerm) {
       try {
         const response = await apiClient(
-          `http://localhost:4000/profile/search?name=${debouncedSearchTerm}`
+          `/profile/search?name=${debouncedSearchTerm}`
         );
         const { data } = await response;
         console.log("Search results : ", data);
@@ -67,7 +67,7 @@ export default function Sidebar({
   const handleStartConversation = async (participantId: string) => {
     try {
       const response = await apiClient.post(
-        "http://localhost:4000/chat/individual",
+        "/chat/individual",
         { participantId }
       );
       const { data } = await response;

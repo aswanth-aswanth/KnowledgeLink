@@ -42,7 +42,7 @@ const UserSearch: React.FC<UserSearchProps> = ({ onAddMembers }) => {
     setError(null);
     try {
       const response = await fetch(
-        `http://localhost:4000/profile/search?name=${encodeURIComponent(term)}`
+        `/profile/search?name=${encodeURIComponent(term)}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch users");
