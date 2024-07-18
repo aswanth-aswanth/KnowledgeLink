@@ -1,9 +1,17 @@
-import { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useDebounce } from "use-debounce";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 import apiClient from "@/api/apiClient";
-import { Search, MessageCircleMore, X } from "lucide-react";
+import { Search, MessageCircleMore, X, Users } from "lucide-react";
 import { Socket } from "socket.io-client";
 import { Message } from "@/types";
 
@@ -20,6 +28,13 @@ interface Chat {
   updatedAt: string;
   username: string;
   image: string;
+}
+
+interface GroupChat {
+  chatId: string;
+  name: string;
+  lastMessage: string;
+  updatedAt: string;
 }
 
 interface SidebarProps {
@@ -46,30 +61,43 @@ export default function Sidebar({
   const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const searchRef = useRef<HTMLDivElement>(null);
+  const [isCreateGroupModalOpen, setIsCreateGroupModalOpen] = useState(false);
+  const [groupName, setGroupName] = useState("");
+  const [selectedParticipants, setSelectedParticipants] = useState<string[]>(
+    []
+  );
+  const [modalSearchTerm, setModalSearchTerm] = useState("");
+  const [debouncedModalSearchTerm] = useDebounce(modalSearchTerm, 300);
+  const [modalSearchResults, setModalSearchResults] = useState<User[]>([]);
+  const [groupChats, setGroupChats] = useState<GroupChat[]>([]);
 
-  const handleSearch = async () => {
-    if (debouncedSearchTerm) {
+  const handleSearch = async (term: string, forModal: boolean) => {
+    if (term) {
       try {
-        const response = await apiClient(
-          `/profile/search?name=${debouncedSearchTerm}`
-        );
+        const response = await apiClient(`/profile/search?name=${term}`);
         const { data } = await response;
-        console.log("Search results : ", data);
-        setSearchResults(data);
+        if (forModal) {
+          setModalSearchResults(data);
+        } else {
+          setSearchResults(data);
+        }
       } catch (error) {
         console.error("Error fetching search results:", error);
       }
     } else {
-      setSearchResults([]);
+      if (forModal) {
+        setModalSearchResults([]);
+      } else {
+        setSearchResults([]);
+      }
     }
   };
 
   const handleStartConversation = async (participantId: string) => {
     try {
-      const response = await apiClient.post(
-        "/chat/individual",
-        { participantId }
-      );
+      const response = await apiClient.post("/chat/individual", {
+        participantId,
+      });
       const { data } = await response;
       console.log("Response : ", data);
     } catch (error) {
@@ -77,9 +105,44 @@ export default function Sidebar({
     }
   };
 
+  const handleCreateGroup = async () => {
+    try {
+      console.log("handleCreateGroup name : ", groupName);
+      const response = await apiClient.post("/chat/group", {
+        name: groupName,
+        participantIds: selectedParticipants,
+      });
+      const { data } = response;
+      console.log("Group created:", data);
+      setIsCreateGroupModalOpen(false);
+      setGroupName("");
+      setSelectedParticipants([]);
+      // Optionally, update the userChats state to include the new group
+    } catch (error) {
+      console.error("Error creating group:", error);
+    }
+  };
+
+  const toggleParticipant = (userId: string) => {
+    setSelectedParticipants((prev) =>
+      prev.includes(userId)
+        ? prev.filter((id) => id !== userId)
+        : [...prev, userId]
+    );
+  };
+  const fetchGroupChats = async () => {
+    try {
+      const response = await apiClient.get("/chat/user/group-chats");
+      console.log("response : group : ", response);
+      setGroupChats(response.data);
+    } catch (error) {
+      console.error("Error fetching group chats:", error);
+    }
+  };
+
   useEffect(() => {
-    handleSearch();
-  }, [debouncedSearchTerm]);
+    fetchGroupChats();
+  }, []);
 
   useEffect(() => {
     if (socket) {
@@ -120,6 +183,14 @@ export default function Sidebar({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    handleSearch(debouncedSearchTerm, false);
+  }, [debouncedSearchTerm]);
+
+  useEffect(() => {
+    handleSearch(debouncedModalSearchTerm, true);
+  }, [debouncedModalSearchTerm]);
 
   return (
     <div
@@ -231,6 +302,148 @@ export default function Sidebar({
           ))}
         </ul>
       </div>
+      <div>
+        <h3
+          className={`text-sm font-medium mt-10 ${
+            isDarkMode ? "text-gray-400" : "text-gray-500"
+          } mb-2`}
+        >
+          YOUR GROUP CHATS
+        </h3>
+        <ul className="space-y-4">
+          {groupChats.map((chat) => (
+            <li
+              key={chat.chatId}
+              className="flex items-center space-x-3 cursor-pointer"
+              onClick={() => onChatSelect(chat.chatId)}
+            >
+              <Users className="w-8 h-8" />
+              <div className="flex flex-col flex-grow">
+                <div className="flex items-center justify-between">
+                  <span>{chat.name}</span>
+                  <span className="text-xs whitespace-nowrap">
+                    {new Date(chat.updatedAt).toLocaleDateString()}
+                  </span>
+                </div>
+                <span className="text-xs w-[170px] truncate">
+                  {chat.lastMessage || "No messages yet"}
+                </span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="mt-4 mb-4">
+        <Button
+          onClick={() => setIsCreateGroupModalOpen(true)}
+          className={`w-full ${
+            isDarkMode
+              ? "bg-gray-700 hover:bg-gray-600"
+              : "bg-gray-100 hover:bg-gray-200"
+          }`}
+          variant="outline"
+        >
+          <Users className="mr-2 h-4 w-4" /> Create Group
+        </Button>
+      </div>
+
+      <Dialog
+        open={isCreateGroupModalOpen}
+        onOpenChange={setIsCreateGroupModalOpen}
+      >
+        <DialogContent
+          className={`sm:max-w-[425px] ${
+            isDarkMode ? "bg-gray-800 text-white" : "bg-white"
+          }`}
+        >
+          <DialogHeader>
+            <DialogTitle className={isDarkMode ? "text-white" : "text-black"}>
+              Create Group
+            </DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label
+                htmlFor="group-name"
+                className={`text-right ${
+                  isDarkMode ? "text-gray-300" : "text-gray-700"
+                }`}
+              >
+                Name
+              </Label>
+              <Input
+                id="group-name"
+                value={groupName}
+                onChange={(e) => setGroupName(e.target.value)}
+                className={`col-span-3 ${
+                  isDarkMode ? "bg-gray-700 text-white" : "bg-white"
+                }`}
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label
+                htmlFor="participants"
+                className={`text-right ${
+                  isDarkMode ? "text-gray-300" : "text-gray-700"
+                }`}
+              >
+                Participants
+              </Label>
+              <div className="col-span-3">
+                <Input
+                  id="participants"
+                  placeholder="Search users..."
+                  value={modalSearchTerm}
+                  onChange={(e) => setModalSearchTerm(e.target.value)}
+                  className={isDarkMode ? "bg-gray-700 text-white" : "bg-white"}
+                />
+                <div
+                  className={`mt-2 max-h-40 overflow-y-auto ${
+                    isDarkMode ? "text-gray-200" : "text-gray-800"
+                  }`}
+                >
+                  {modalSearchResults.map((user) => (
+                    <div
+                      key={user._id}
+                      className="flex items-center space-x-2 mb-2"
+                    >
+                      <input
+                        type="checkbox"
+                        id={`user-${user._id}`}
+                        checked={selectedParticipants.includes(user._id)}
+                        onChange={() => toggleParticipant(user._id)}
+                        className={isDarkMode ? "bg-gray-600" : "bg-white"}
+                      />
+                      <img
+                        src={user.image || "pngwing.com.png"}
+                        alt={user.username}
+                        className="w-8 h-8 rounded-full"
+                      />
+                      <label htmlFor={`user-${user._id}`}>
+                        {user.username}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              type="submit"
+              onClick={handleCreateGroup}
+              className={
+                isDarkMode
+                  ? "bg-blue-600 hover:bg-blue-700"
+                  : "bg-blue-500 hover:bg-blue-600"
+              }
+            >
+              Create Group
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
