@@ -162,6 +162,35 @@ export default class UserRepository {
         }
     }
 
+    public async updateProfile(userId: string, data: { name?: string; bio?: string; image?: string; }): Promise<IUser | null> {
+        try {
+            const user = await User.findById(userId);
+            if (!user) {
+                return null;
+            }
+
+            if (data.name) {
+                user.username = data.name;
+            }
+            if (data.bio) {
+                user.bio = data.bio;
+            }
+            if (data.image) {
+                user.image = data.image;
+            }
+
+            await user.save();
+            return user;
+        } catch (error) {
+            if (error instanceof Error) {
+                console.error(`Error updating user profile: ${error.message}`);
+                throw new Error('Failed to update user profile');
+            } else {
+                console.error('Unknown error updating user profile');
+                throw new Error('Unknown error');
+            }
+        }
+    }
 
     public async toggleFollowUser(followerUserId: string, followeeUserId: string): Promise<object> {
         try {

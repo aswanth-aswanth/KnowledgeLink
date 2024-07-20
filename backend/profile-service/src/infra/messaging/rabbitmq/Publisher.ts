@@ -15,7 +15,7 @@ class Publisher {
     async publish(queue: string, message: string) {
         try {
             const channel = RabbitMQConnection.getChannel();
-
+            
             if (!channel) {
                 throw new Error('Channel is not available');
             }
