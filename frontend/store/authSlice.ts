@@ -1,14 +1,16 @@
 // store/authSlice.ts
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { jwtDecode } from 'jwt-decode';
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import {jwtDecode} from 'jwt-decode';
 import { RootState } from './index';
 import { isTokenExpired } from '@/utils/auth';
+import apiClient from '@/api/apiClient';
 
 interface User {
   id: string;
   name: string;
   email: string;
-  imageUrl?: string; 
+  imageUrl?: string;
+  bio?: string; 
 }
 
 interface AuthState {
@@ -22,6 +24,21 @@ const initialState: AuthState = {
   user: null,
   token: null,
 };
+
+export const updateUserProfile = createAsyncThunk(
+  'auth/updateUserProfile',
+  async (formData: FormData, { rejectWithValue }) => {
+    try {
+      const response = await apiClient.patch('/profile/user', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      console.log("response update : ",response.data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 
 const authSlice = createSlice({
   name: 'auth',
@@ -63,6 +80,14 @@ const authSlice = createSlice({
         state.token = null;
       }
     },
+    updateUser: (state, action: PayloadAction<User>) => {
+      state.user = action.payload;
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(updateUserProfile.fulfilled, (state, action) => {
+      state.user = action.payload;
+    });
   },
 });
 
