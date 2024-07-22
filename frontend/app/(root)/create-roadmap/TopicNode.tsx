@@ -99,7 +99,25 @@ const TopicNode: React.FC<TopicNodeProps> = ({ id }) => {
   const handleContentChange = useCallback(() => {
     if (contentRef.current) {
       const newContent = contentRef.current.innerHTML;
-      dispatch(updateTopic({ id, updates: { content: newContent } }));
+
+      // Replace Blob URLs with data URLs
+      const updatedContent = newContent.replace(
+        /(src=")blob:[^"]+/g,
+        (match, prefix) => {
+          const element = contentRef.current?.querySelector(
+            `[src="${match.slice(5)}"]`
+          );
+          if (
+            element instanceof HTMLImageElement ||
+            element instanceof HTMLVideoElement
+          ) {
+            return `${prefix}${element.src}`;
+          }
+          return match;
+        }
+      );
+
+      dispatch(updateTopic({ id, updates: { content: updatedContent } }));
     }
   }, [dispatch, id]);
 
@@ -174,59 +192,63 @@ const TopicNode: React.FC<TopicNodeProps> = ({ id }) => {
 
   const insertMedia = useCallback(
     (file: File | null) => {
-      if (contentRef.current) {
-        const mediaContainer = document.createElement("div");
-        mediaContainer.className = `media-container w-full ${LAYOUT_OPTIONS[0].class} mx-auto my-4 relative`;
-  
-        if (file) {
+      if (contentRef.current && file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const dataUrl = e.target?.result as string;
+
+          const mediaContainer = document.createElement("div");
+          mediaContainer.className = `media-container w-full ${LAYOUT_OPTIONS[0].class} mx-auto my-4 relative`;
+
           const mediaElement = file.type.startsWith("image/")
             ? document.createElement("img")
             : document.createElement("video");
-  
-          mediaElement.src = URL.createObjectURL(file);
+
+          mediaElement.src = dataUrl;
           mediaElement.className = "w-full h-auto";
           if (mediaElement instanceof HTMLVideoElement) {
             mediaElement.controls = true;
           }
-  
+
           mediaContainer.appendChild(mediaElement);
-        }
-  
-        // Add layout and delete buttons
-        const buttonsContainer = document.createElement("div");
-        buttonsContainer.className = "absolute top-2 right-2 flex space-x-2";
-  
-        const layoutButton = document.createElement("button");
-        layoutButton.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>`;
-        layoutButton.className = "p-1 bg-white rounded-full shadow-md";
-        layoutButton.onclick = (e) => {
-          e.stopPropagation();
-          cycleLayout(mediaContainer);
-        };
-  
-        const deleteButton = document.createElement("button");
-        deleteButton.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>`;
-        deleteButton.className = "p-1 bg-white rounded-full shadow-md";
-        deleteButton.onclick = (e) => {
-          e.stopPropagation();
-          mediaContainer.remove();
+
+          // Add layout and delete buttons
+          const buttonsContainer = document.createElement("div");
+          buttonsContainer.className = "absolute top-2 right-2 flex space-x-2";
+
+          const layoutButton = document.createElement("button");
+          layoutButton.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>`;
+          layoutButton.className = "p-1 bg-white rounded-full shadow-md";
+          layoutButton.onclick = (e) => {
+            e.stopPropagation();
+            cycleLayout(mediaContainer);
+          };
+
+          const deleteButton = document.createElement("button");
+          deleteButton.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>`;
+          deleteButton.className = "p-1 bg-white rounded-full shadow-md";
+          deleteButton.onclick = (e) => {
+            e.stopPropagation();
+            mediaContainer.remove();
+            handleContentChange();
+          };
+
+          buttonsContainer.appendChild(layoutButton);
+          buttonsContainer.appendChild(deleteButton);
+          mediaContainer.appendChild(buttonsContainer);
+
+          const selection = window.getSelection();
+          if (selection && selection.rangeCount > 0) {
+            const range = selection.getRangeAt(0);
+            range.insertNode(mediaContainer);
+            range.collapse(false);
+          } else {
+            contentRef.current.appendChild(mediaContainer);
+          }
+
           handleContentChange();
         };
-  
-        buttonsContainer.appendChild(layoutButton);
-        buttonsContainer.appendChild(deleteButton);
-        mediaContainer.appendChild(buttonsContainer);
-  
-        const selection = window.getSelection();
-        if (selection && selection.rangeCount > 0) {
-          const range = selection.getRangeAt(0);
-          range.insertNode(mediaContainer);
-          range.collapse(false);
-        } else {
-          contentRef.current.appendChild(mediaContainer);
-        }
-  
-        handleContentChange();
+        reader.readAsDataURL(file);
       }
     },
     [handleContentChange]
@@ -256,6 +278,7 @@ const TopicNode: React.FC<TopicNodeProps> = ({ id }) => {
     const nextIndex = (currentIndex + 1) % LAYOUT_OPTIONS.length;
     container.classList.remove(LAYOUT_OPTIONS[currentIndex].class);
     container.classList.add(LAYOUT_OPTIONS[nextIndex].class);
+    handleContentChange(); // Add this line to save the changes
   };
 
   return (

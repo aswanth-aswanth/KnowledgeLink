@@ -1,10 +1,28 @@
 // store/index.ts
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
+import createIndexedDBStorage from 'redux-persist-indexeddb-storage';
 import topicsReducer from './topicsSlice';
 import authReducer from './authSlice';
 import darkmodeReducer from './darkmodeSlice';
+
+const createNoopStorage = () => {
+  return {
+    getItem(_key: any) {
+      return Promise.resolve(null);
+    },
+    setItem(_key: any, value: any) {
+      return Promise.resolve(value);
+    },
+    removeItem(_key: any) {
+      return Promise.resolve();
+    },
+  };
+};
+
+const storage = typeof window !== 'undefined'
+  ? createIndexedDBStorage('roadmap')
+  : createNoopStorage();
 
 const persistConfig = {
   key: 'root',
