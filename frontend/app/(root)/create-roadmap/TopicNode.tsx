@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useCallback, useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/store";
@@ -9,7 +7,17 @@ import {
   addTopic,
   toggleExpand,
 } from "@/store/topicsSlice";
-import { ChevronDown, ChevronRight, Plus, Trash } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronRight,
+  Plus,
+  Trash,
+  Image,
+  Video,
+  Layout,
+  X,
+} from "lucide-react";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,6 +35,18 @@ const TEXT_STYLES = [
   { name: "Numbered List", style: "ol", class: "list-decimal list-inside" },
 ];
 
+const MEDIA_OPTIONS = [
+  { name: "Image", icon: Image },
+  { name: "Video", icon: Video },
+];
+
+const LAYOUT_OPTIONS = [
+  { name: "Full Width", class: "w-full" },
+  { name: "Large", class: "max-w-lg" },
+  { name: "Medium", class: "max-w-md" },
+  { name: "Small", class: "max-w-sm" },
+];
+
 interface TopicNodeProps {
   id: string;
 }
@@ -36,6 +56,7 @@ const TopicNode: React.FC<TopicNodeProps> = ({ id }) => {
   const topic = useSelector((state: RootState) => state.topics.topics[id]);
   const [showStyleMenu, setShowStyleMenu] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { isDarkMode } = useDarkMode();
 
   if (!topic) {
@@ -93,6 +114,19 @@ const TopicNode: React.FC<TopicNodeProps> = ({ id }) => {
       const selection = window.getSelection();
       if (selection && selection.rangeCount > 0 && contentRef.current) {
         const range = selection.getRangeAt(0);
+        const parentElement = range.commonAncestorContainer.parentElement;
+
+        const unwrapContent = (element: HTMLElement) => {
+          const parent = element.parentNode;
+          while (element.firstChild) {
+            parent?.insertBefore(element.firstChild, element);
+          }
+          parent?.removeChild(element);
+        };
+
+        if (parentElement && parentElement !== contentRef.current) {
+          unwrapContent(parentElement);
+        }
 
         if (style === "ul" || style === "ol") {
           const listElement = document.createElement(style);
@@ -119,7 +153,8 @@ const TopicNode: React.FC<TopicNodeProps> = ({ id }) => {
           newNode.className = styleClass;
 
           if (range.toString().length > 0) {
-            range.surroundContents(newNode);
+            newNode.appendChild(range.extractContents());
+            range.insertNode(newNode);
           } else {
             newNode.appendChild(document.createTextNode("\u200B"));
             range.insertNode(newNode);
@@ -137,6 +172,73 @@ const TopicNode: React.FC<TopicNodeProps> = ({ id }) => {
     [handleContentChange]
   );
 
+  const insertMedia = useCallback(
+    (file: File | null) => {
+      if (contentRef.current) {
+        const mediaContainer = document.createElement("div");
+        mediaContainer.className = `media-container w-full ${LAYOUT_OPTIONS[0].class} mx-auto my-4 relative`;
+  
+        if (file) {
+          const mediaElement = file.type.startsWith("image/")
+            ? document.createElement("img")
+            : document.createElement("video");
+  
+          mediaElement.src = URL.createObjectURL(file);
+          mediaElement.className = "w-full h-auto";
+          if (mediaElement instanceof HTMLVideoElement) {
+            mediaElement.controls = true;
+          }
+  
+          mediaContainer.appendChild(mediaElement);
+        }
+  
+        // Add layout and delete buttons
+        const buttonsContainer = document.createElement("div");
+        buttonsContainer.className = "absolute top-2 right-2 flex space-x-2";
+  
+        const layoutButton = document.createElement("button");
+        layoutButton.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>`;
+        layoutButton.className = "p-1 bg-white rounded-full shadow-md";
+        layoutButton.onclick = (e) => {
+          e.stopPropagation();
+          cycleLayout(mediaContainer);
+        };
+  
+        const deleteButton = document.createElement("button");
+        deleteButton.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>`;
+        deleteButton.className = "p-1 bg-white rounded-full shadow-md";
+        deleteButton.onclick = (e) => {
+          e.stopPropagation();
+          mediaContainer.remove();
+          handleContentChange();
+        };
+  
+        buttonsContainer.appendChild(layoutButton);
+        buttonsContainer.appendChild(deleteButton);
+        mediaContainer.appendChild(buttonsContainer);
+  
+        const selection = window.getSelection();
+        if (selection && selection.rangeCount > 0) {
+          const range = selection.getRangeAt(0);
+          range.insertNode(mediaContainer);
+          range.collapse(false);
+        } else {
+          contentRef.current.appendChild(mediaContainer);
+        }
+  
+        handleContentChange();
+      }
+    },
+    [handleContentChange]
+  );
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] || null;
+    if (file) {
+      insertMedia(file);
+    }
+  };
+
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLDivElement>) => {
       if (e.key === "/" && !showStyleMenu) {
@@ -147,12 +249,21 @@ const TopicNode: React.FC<TopicNodeProps> = ({ id }) => {
     [showStyleMenu]
   );
 
+  const cycleLayout = (container: HTMLElement) => {
+    const currentIndex = LAYOUT_OPTIONS.findIndex((option) =>
+      container.classList.contains(option.class)
+    );
+    const nextIndex = (currentIndex + 1) % LAYOUT_OPTIONS.length;
+    container.classList.remove(LAYOUT_OPTIONS[currentIndex].class);
+    container.classList.add(LAYOUT_OPTIONS[nextIndex].class);
+  };
+
   return (
     <div className="topic-node mb-3">
       <div className="flex items-center group">
         <button
           onClick={handleToggleExpand}
-          className={`p-2 rounded-md  ${
+          className={`p-2 rounded-md ${
             isDarkMode
               ? "text-gray-500 hover:bg-gray-800"
               : "text-gray-400 hover:bg-gray-100"
@@ -161,12 +272,12 @@ const TopicNode: React.FC<TopicNodeProps> = ({ id }) => {
           {topic.isExpanded ? (
             <ChevronDown
               size={16}
-              className={` ${isDarkMode ? "text-gray-300" : "text-black"}`}
+              className={`${isDarkMode ? "text-gray-300" : "text-black"}`}
             />
           ) : (
             <ChevronRight
               size={16}
-              className={` ${isDarkMode ? "text-gray-300" : "text-black"}`}
+              className={`${isDarkMode ? "text-gray-300" : "text-black"}`}
             />
           )}
         </button>
@@ -174,7 +285,7 @@ const TopicNode: React.FC<TopicNodeProps> = ({ id }) => {
           type="text"
           value={topic.name}
           onChange={handleNameChange}
-          className={`flex-grow bg-transparent px-2 py-1 focus:outline-none  rounded-md font-bold text-lg  ${
+          className={`flex-grow bg-transparent px-2 py-1 focus:outline-none rounded-md font-bold text-lg ${
             isDarkMode
               ? "focus:bg-gray-800 text-gray-300"
               : "focus:bg-gray-50 text-gray-600"
@@ -182,7 +293,7 @@ const TopicNode: React.FC<TopicNodeProps> = ({ id }) => {
           placeholder="Untitled"
         />
         <span
-          className={`text-xs  ${
+          className={`text-xs ${
             isDarkMode ? "text-gray-500" : "text-gray-400"
           } mr-2`}
         >
@@ -190,7 +301,7 @@ const TopicNode: React.FC<TopicNodeProps> = ({ id }) => {
         </span>
         <button
           onClick={handleAddSubtopic}
-          className={`p-1 rounded-md  focus:outline-none  group-hover:opacity-100 ${
+          className={`p-1 rounded-md focus:outline-none group-hover:opacity-100 ${
             isDarkMode
               ? "text-gray-500 bg-gray-800 hover:bg-gray-700"
               : "text-gray-400 bg-gray-100 hover:bg-gray-200"
@@ -200,7 +311,7 @@ const TopicNode: React.FC<TopicNodeProps> = ({ id }) => {
         </button>
         <button
           onClick={handleDelete}
-          className={`p-1 rounded-md  focus:outline-none  group-hover:opacity-100 ${
+          className={`p-1 rounded-md focus:outline-none group-hover:opacity-100 ${
             isDarkMode
               ? "text-gray-500 bg-gray-800 hover:bg-gray-700"
               : "text-gray-400 bg-gray-100 hover:bg-gray-200"
@@ -216,7 +327,7 @@ const TopicNode: React.FC<TopicNodeProps> = ({ id }) => {
             contentEditable
             onInput={handleContentChange}
             onKeyDown={handleKeyDown}
-            className={`h-min p-2 mb-2   rounded-md focus:outline-none transition-all duration-200 prose font-medium  prose-sm text-base tracking-wider ${
+            className={`h-min p-2 mb-2 rounded-md focus:outline-none transition-all duration-200 prose font-medium prose-sm text-base tracking-wider ${
               isDarkMode
                 ? "bg-gray-800 text-gray-300"
                 : "bg-gray-50 text-gray-600"
@@ -225,7 +336,7 @@ const TopicNode: React.FC<TopicNodeProps> = ({ id }) => {
           <DropdownMenu open={showStyleMenu} onOpenChange={setShowStyleMenu}>
             <DropdownMenuTrigger asChild>
               <button
-                className={`text-sm  focus:outline-none ${
+                className={`text-sm focus:outline-none ${
                   isDarkMode
                     ? "hover:text-gray-200 text-gray-400"
                     : "text-gray-500 hover:text-gray-700"
@@ -235,7 +346,7 @@ const TopicNode: React.FC<TopicNodeProps> = ({ id }) => {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
-              className={`w-56  shadow-lg rounded-md border  ${
+              className={`w-56 shadow-lg rounded-md border ${
                 isDarkMode
                   ? "bg-gray-800 border-gray-700"
                   : "bg-white border-gray-200"
@@ -245,7 +356,7 @@ const TopicNode: React.FC<TopicNodeProps> = ({ id }) => {
                 <DropdownMenuItem
                   key={style.style}
                   onClick={() => applyStyle(style.style, style.class)}
-                  className={`cursor-pointer  px-4 py-2 text-sm ${
+                  className={`cursor-pointer px-4 py-2 text-sm ${
                     isDarkMode
                       ? "hover:bg-gray-700 text-gray-300"
                       : "hover:bg-gray-100"
@@ -254,8 +365,33 @@ const TopicNode: React.FC<TopicNodeProps> = ({ id }) => {
                   <span className={`mr-2 ${style.class}`}>{style.name}</span>
                 </DropdownMenuItem>
               ))}
+              {MEDIA_OPTIONS.map((option) => (
+                <DropdownMenuItem
+                  key={option.name}
+                  onClick={() => {
+                    if (fileInputRef.current) {
+                      fileInputRef.current.click();
+                    }
+                    setShowStyleMenu(false);
+                  }}
+                  className={`cursor-pointer px-4 py-2 text-sm ${
+                    isDarkMode
+                      ? "hover:bg-gray-700 text-gray-300"
+                      : "hover:bg-gray-100"
+                  }`}
+                >
+                  <option.icon className="mr-2 h-4 w-4 inline-block" />
+                  <span>{option.name}</span>
+                </DropdownMenuItem>
+              ))}
             </DropdownMenuContent>
           </DropdownMenu>
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileUpload}
+            className="hidden"
+          />
           {topic.children.map((childId) => (
             <TopicNode key={childId} id={childId} />
           ))}
