@@ -1,11 +1,11 @@
 // store/authSlice.ts
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import {jwtDecode} from 'jwt-decode';
-import { RootState } from './index';
+import { jwtDecode } from 'jwt-decode';
 import { isTokenExpired } from '@/utils/auth';
 import apiClient from '@/api/apiClient';
 
-interface User {
+// Define types
+export interface User {
   id: string;
   name: string;
   email: string;
@@ -19,12 +19,14 @@ interface AuthState {
   token: string | null;
 }
 
+// Initial state
 const initialState: AuthState = {
   isAuthenticated: false,
   user: null,
   token: null,
 };
 
+// Async thunk
 export const updateUserProfile = createAsyncThunk(
   'auth/updateUserProfile',
   async (formData: FormData, { rejectWithValue }) => {
@@ -32,7 +34,6 @@ export const updateUserProfile = createAsyncThunk(
       const response = await apiClient.patch('/profile/user', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      console.log("response update : ",response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -40,6 +41,7 @@ export const updateUserProfile = createAsyncThunk(
   }
 );
 
+// Slice
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -53,31 +55,35 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.user = null;
       state.token = null;
-      localStorage.removeItem('token');
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('token');
+      }
     },
     checkTokenExpiration: (state) => {
-      const storedToken = localStorage.getItem('token');
-      if (storedToken) {
-        if (isTokenExpired(storedToken)) {
-          localStorage.removeItem('token');
+      if (typeof window !== 'undefined') {
+        const storedToken = localStorage.getItem('token');
+        if (storedToken) {
+          if (isTokenExpired(storedToken)) {
+            localStorage.removeItem('token');
+            state.isAuthenticated = false;
+            state.user = null;
+            state.token = null;
+          } else {
+            const decoded = jwtDecode<{ id: string; username: string; email: string; image?: string }>(storedToken);
+            state.isAuthenticated = true;
+            state.user = {
+              id: decoded.id,
+              name: decoded.username,
+              email: decoded.email,
+              imageUrl: decoded.image,
+            };
+            state.token = storedToken;
+          }
+        } else {
           state.isAuthenticated = false;
           state.user = null;
           state.token = null;
-        } else {
-          const decoded = jwtDecode<{ id: string; username: string; email: string; image?: string }>(storedToken);
-          state.isAuthenticated = true;
-          state.user = {
-            id: decoded.id,
-            name: decoded.username,
-            email: decoded.email,
-            imageUrl: decoded.image,
-          };
-          state.token = storedToken;
         }
-      } else {
-        state.isAuthenticated = false;
-        state.user = null;
-        state.token = null;
       }
     },
     updateUser: (state, action: PayloadAction<User>) => {
@@ -91,8 +97,9 @@ const authSlice = createSlice({
   },
 });
 
-export const { setAuthState, clearAuthState, checkTokenExpiration } = authSlice.actions;
+// Export actions and reducer
+export const { setAuthState, clearAuthState, checkTokenExpiration, updateUser } = authSlice.actions;
+export const authReducer = authSlice.reducer;
 
-export const selectAuthState = (state: RootState) => state.auth;
-
-export default authSlice.reducer;
+// Selector
+export const selectAuthState = (state: { auth: AuthState }) => state.auth;

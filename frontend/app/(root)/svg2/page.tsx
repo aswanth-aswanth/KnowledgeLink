@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import ClientOnly from "@/contexts/ClientOnly";
 import { EditorProvider } from "@/contexts/EditorContext";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
@@ -29,7 +30,9 @@ export default function Home() {
   return (
     <EditorProvider>
       <main className="min-h-screen bg-gray-100">
-        <EditorPage />
+        <ClientOnly>
+          <EditorPage />
+        </ClientOnly>
       </main>
     </EditorProvider>
   );

@@ -8,7 +8,9 @@ import { checkTokenExpiration } from "@/store/authSlice";
 import { store } from "@/store";
 import { useDarkMode } from "@/hooks/useDarkMode";
 import { useNotifications } from "@/hooks/useNotifications";
-import { selectAuthState } from "@/store/authSlice";
+// import { selectAuthState } from "@/store/authSlice";
+import { selectAuthState } from "@/store/selectors";
+
 import { useSelector } from "react-redux";
 import { Provider } from "react-redux";
 

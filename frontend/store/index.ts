@@ -1,24 +1,18 @@
 // store/index.ts
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
-import { persistStore, persistReducer } from 'redux-persist';
+import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 import createIndexedDBStorage from 'redux-persist-indexeddb-storage';
-import topicsReducer from './topicsSlice';
-import authReducer from './authSlice';
-import darkmodeReducer from './darkmodeSlice';
 
-const createNoopStorage = () => {
-  return {
-    getItem(_key: any) {
-      return Promise.resolve(null);
-    },
-    setItem(_key: any, value: any) {
-      return Promise.resolve(value);
-    },
-    removeItem(_key: any) {
-      return Promise.resolve();
-    },
-  };
-};
+import topicsReducer from './topicsSlice';
+import darkmodeReducer from './darkmodeSlice';
+// Import authReducer separately
+import { authReducer } from './authSlice';
+
+const createNoopStorage = () => ({
+  getItem: () => Promise.resolve(null),
+  setItem: (_key: any, value: any) => Promise.resolve(value),
+  removeItem: () => Promise.resolve(),
+});
 
 const storage = typeof window !== 'undefined'
   ? createIndexedDBStorage('roadmap')
@@ -42,7 +36,9 @@ export const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: false,
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
     }),
 });
 
