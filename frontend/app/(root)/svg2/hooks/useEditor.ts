@@ -1,21 +1,28 @@
-import { useState, useCallback, useRef } from 'react';
-import { Rect, ConnectionType } from '@/types/EditorTypes';
+import { useCallback, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '@/store';
+import {
+  setRectangles,
+  setConnections,
+  setSelectedRect,
+  setCurrentLineStyle,
+  setIsConnectingMode,
+  setIsMultiSelectMode,
+  setCirclesVisible,
+  setScale,
+  updateRectPosition,
+  updateRectSize,
+  deleteRect,
+  addConnection,
+} from '@/store/editorSlice';
 
 export const useEditor = () => {
-  const [rectangles, setRectangles] = useState<Rect[]>([]);
-  const [connections, setConnections] = useState<ConnectionType[]>([]);
-  const [selectedRect, setSelectedRect] = useState<string | null>(null);
-  const [currentLineStyle, setCurrentLineStyle] = useState<"straight" | "curved">("straight");
-  const [isConnecting, setIsConnecting] = useState(false);
-  const [connectionStart, setConnectionStart] = useState<string | null>(null);
-  const [isConnectingMode, setIsConnectingMode] = useState(false);
+  const dispatch = useDispatch();
+  const editorState = useSelector((state: RootState) => state.editor);
+
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
-  const [svgHeight, setSvgHeight] = useState(600);
-  const [selectedRects, setSelectedRects] = useState<string[]>([]);
-  const [isMultiSelectMode, setIsMultiSelectMode] = useState(false);
-  const [circlesVisible, setCirclesVisible] = useState(true);
-  const [scale, setScale] = useState(1);
+  const [connectionStart, setConnectionStart] = useState<string | null>(null);
 
   const handleMouseDown = useCallback((e: React.MouseEvent<SVGSVGElement>) => {
     if (e.button === 0) {
@@ -30,19 +37,19 @@ export const useEditor = () => {
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent<SVGSVGElement>) => {
-      if (isDragging && (selectedRect || selectedRects.length > 0)) {
+      if (isDragging && (editorState.selectedRect || editorState.selectedRects?.length > 0)) {
         const svgRect = e.currentTarget.getBoundingClientRect();
         const dx = e.clientX - svgRect.left - dragStart.x;
         const dy = e.clientY - svgRect.top - dragStart.y;
 
-        setRectangles((prevRects) =>
-          prevRects.map((rect) =>
-            (isMultiSelectMode && selectedRects.includes(rect.id)) ||
-              (!isMultiSelectMode && rect.id === selectedRect)
-              ? { ...rect, x: rect.x + dx, y: rect.y + dy }
-              : rect
-          )
-        );
+        editorState.rectangles.forEach((rect) => {
+          if (
+            (editorState.isMultiSelectMode && editorState.selectedRects?.includes(rect.id)) ||
+            (!editorState.isMultiSelectMode && rect.id === editorState.selectedRect)
+          ) {
+            dispatch(updateRectPosition({ id: rect.id, x: rect.x + dx, y: rect.y + dy }));
+          }
+        });
 
         setDragStart({
           x: e.clientX - svgRect.left,
@@ -50,7 +57,7 @@ export const useEditor = () => {
         });
       }
     },
-    [isDragging, selectedRect, selectedRects, isMultiSelectMode, dragStart]
+    [isDragging, editorState.selectedRect, editorState.selectedRects, editorState.isMultiSelectMode, editorState.rectangles, dispatch, dragStart]
   );
 
   const handleMouseUp = () => setIsDragging(false);
@@ -59,170 +66,82 @@ export const useEditor = () => {
     (e: KeyboardEvent) => {
       if (e.ctrlKey && e.key === "a") {
         e.preventDefault();
-        if (selectedRects.length === rectangles.length) {
-          setSelectedRects([]);
+        if (editorState.selectedRects?.length === editorState.rectangles.length) {
+          dispatch(setSelectedRect(null));
         } else {
-          setSelectedRects(rectangles.map((rect) => rect.id));
+          dispatch(setSelectedRect(editorState.rectangles.map((rect) => rect.id)));
         }
       }
     },
-    [rectangles, selectedRects]
+    [editorState.rectangles, editorState.selectedRects, dispatch]
   );
 
-  const handleCreateConnection = () => {
-    if (connectionStart && selectedRect && connectionStart !== selectedRect) {
-      const newConnection: ConnectionType = {
+  const handleCreateConnection = useCallback(() => {
+    if (connectionStart && editorState.selectedRect && connectionStart !== editorState.selectedRect) {
+      const newConnection = {
         from: connectionStart,
-        to: selectedRect,
-        style: currentLineStyle,
+        to: editorState.selectedRect,
+        style: editorState.currentLineStyle,
       };
-      setConnections([...connections, newConnection]);
-      setIsConnecting(false);
+      dispatch(addConnection(newConnection));
       setConnectionStart(null);
-      setSelectedRect(null);
+      dispatch(setSelectedRect(null));
     }
-  };
+  }, [connectionStart, editorState.selectedRect, editorState.currentLineStyle, dispatch]);
 
-  const handleSelectLineStyle = (style: "straight" | "curved") =>
-    setCurrentLineStyle(style);
-
-  const handleChangeConnectionStyle = (
-    index: number,
-    style: "straight" | "curved"
-  ) => {
-    setConnections(
-      connections.map((conn, i) => (i === index ? { ...conn, style } : conn))
-    );
-  };
-
-  const updateSvgHeight = useCallback(() => {
-    const maxY = Math.max(...rectangles.map((rect) => rect.y + rect.height));
-    const newHeight = Math.max(600, maxY + 100);
-    setSvgHeight(newHeight);
-  }, [rectangles]);
-
-  const handleUpdateRectPosition = useCallback(
-    (id: string, newX: number, newY: number) => {
-      setRectangles((rects) =>
-        rects.map((rect) =>
-          rect.id === id ? { ...rect, x: newX, y: newY } : rect
-        )
-      );
-      updateSvgHeight();
-    },
-    [updateSvgHeight]
-  );
-
-  const handleUpdateRectSize = useCallback(
-    (id: string, newWidth: number, newHeight: number) => {
-      setRectangles((rects) =>
-        rects.map((rect) =>
-          rect.id === id
-            ? { ...rect, width: newWidth, height: newHeight }
-            : rect
-        )
-      );
-      updateSvgHeight();
-    },
-    [updateSvgHeight]
-  );
-
-  const handleDeleteRect = (id: string) => {
-    setRectangles((rects) => rects.filter((rect) => rect.id !== id));
-    setConnections((conns) =>
-      conns.filter((conn) => conn.from !== id && conn.to !== id)
-    );
-    if (selectedRect === id) setSelectedRect(null);
-  };
-
-  const handleStartConnecting = () => {
-    setIsConnectingMode(prev => !prev);
-    setSelectedRect(null);
+  const handleStartConnecting = useCallback(() => {
+    dispatch(setIsConnectingMode(!editorState.isConnectingMode));
+    dispatch(setSelectedRect(null));
     setConnectionStart(null);
-  };
+  }, [editorState.isConnectingMode, dispatch]);
 
-  const handleRectInteraction = (id: string, event: React.MouseEvent) => {
-    if (isConnectingMode) {
+  const handleRectInteraction = useCallback((id: string, event: React.MouseEvent) => {
+    if (editorState.isConnectingMode) {
       if (!connectionStart) {
         setConnectionStart(id);
       } else if (connectionStart !== id) {
-        const newConnection: ConnectionType = {
+        const newConnection = {
           from: connectionStart,
           to: id,
-          style: currentLineStyle,
+          style: editorState.currentLineStyle,
         };
-        setConnections(prev => [...prev, newConnection]);
+        dispatch(addConnection(newConnection));
         setConnectionStart(null);
       }
-    } else if (isMultiSelectMode) {
-      if (selectedRect === null) {
-        setSelectedRect(id);
-      } else if (selectedRect !== id) {
-        const newConnection: ConnectionType = {
-          from: selectedRect,
-          to: id,
-          style: currentLineStyle,
-        };
-        setConnections((prev) => [...prev, newConnection]);
-        setSelectedRect(null);
-      } else {
-        setSelectedRect(null);
-      }
+    } else if (editorState.isMultiSelectMode) {
+      dispatch(setSelectedRect(
+        editorState.selectedRects?.includes(id)
+          ? editorState.selectedRects.filter((rectId) => rectId !== id)
+          : [...(editorState.selectedRects || []), id]
+      ));
     } else {
-      setSelectedRect(prev => prev === id ? null : id);
+      dispatch(setSelectedRect(editorState.selectedRect === id ? null : id));
     }
-  };
+  }, [editorState.isConnectingMode, editorState.isMultiSelectMode, editorState.selectedRect, editorState.selectedRects, editorState.currentLineStyle, connectionStart, dispatch]);
 
-  const handleScaleUp = () => {
-    setScale((prevScale) => Math.min(prevScale + 0.1, 2));
-  };
+  const handleScaleUp = useCallback(() => {
+    dispatch(setScale(Math.min(editorState.scale + 0.1, 2)));
+  }, [editorState.scale, dispatch]);
 
-  const handleScaleDown = () => {
-    setScale((prevScale) => Math.max(prevScale - 0.1, 0.5));
-  };
+  const handleScaleDown = useCallback(() => {
+    dispatch(setScale(Math.max(editorState.scale - 0.1, 0.5)));
+  }, [editorState.scale, dispatch]);
+
+  const updateSvgHeight = useCallback(() => {
+    const maxY = Math.max(...editorState.rectangles.map((rect) => rect.y + rect.height));
+    return Math.max(600, maxY + 100);
+  }, [editorState.rectangles]);
 
   return {
-    rectangles,
-    setRectangles,
-    connections,
-    setConnections,
-    selectedRect,
-    setSelectedRect,
-    currentLineStyle,
-    setCurrentLineStyle,
-    isConnecting,
-    setIsConnecting,
-    connectionStart,
-    setConnectionStart,
-    isDragging,
-    setIsDragging,
-    isConnectingMode,
-    handleStartConnecting,
-    handleRectInteraction,
-    dragStart,
-    setDragStart,
-    svgHeight,
-    setSvgHeight,
-    selectedRects,
-    setSelectedRects,
-    isMultiSelectMode,
-    setIsMultiSelectMode,
-    circlesVisible,
-    setCirclesVisible,
-    scale,
-    setScale,
     handleMouseDown,
     handleMouseMove,
     handleMouseUp,
     handleKeyDown,
     handleCreateConnection,
-    handleSelectLineStyle,
-    handleChangeConnectionStyle,
-    updateSvgHeight,
-    handleUpdateRectPosition,
-    handleUpdateRectSize,
-    handleDeleteRect,
+    handleStartConnecting,
+    handleRectInteraction,
     handleScaleUp,
     handleScaleDown,
+    updateSvgHeight,
   };
 };

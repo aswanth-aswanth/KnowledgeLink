@@ -5,6 +5,7 @@ import createIndexedDBStorage from 'redux-persist-indexeddb-storage';
 import topicsReducer from './topicsSlice';
 import authReducer from './authSlice';
 import darkmodeReducer from './darkmodeSlice';
+import editorReducer from './editorSlice';
 
 const createNoopStorage = () => {
   return {
@@ -34,7 +35,9 @@ const rootReducer = combineReducers({
   topics: topicsReducer,
   auth: authReducer,
   darkmode: darkmodeReducer,
+  editor: editorReducer,
 });
+
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 

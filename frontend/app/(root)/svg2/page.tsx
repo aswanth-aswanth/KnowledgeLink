@@ -27,10 +27,10 @@ const EditorPage: React.FC = () => {
 
 export default function Home() {
   return (
-    <EditorProvider>
+    // <EditorProvider>
       <main className="min-h-screen bg-gray-100">
         <EditorPage />
       </main>
-    </EditorProvider>
+    // </EditorProvider>
   );
 }

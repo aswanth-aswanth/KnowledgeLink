@@ -10,7 +10,6 @@ import { useDarkMode } from "@/hooks/useDarkMode";
 import { useNotifications } from "@/hooks/useNotifications";
 import { selectAuthState } from "@/store/authSlice";
 import { useSelector } from "react-redux";
-import { Provider } from "react-redux";
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   React.useEffect(() => {
@@ -25,6 +24,15 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
 };
 
 const LayoutContent = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <>
+      <Header />
+      <ContentWithHooks>{children}</ContentWithHooks>
+    </>
+  );
+};
+
+const ContentWithHooks = ({ children }: { children: React.ReactNode }) => {
   const { isDarkMode } = useDarkMode();
   const { isAuthenticated, user } = useSelector(selectAuthState);
   const userEmail = user?.email;
@@ -35,20 +43,15 @@ const LayoutContent = ({ children }: { children: React.ReactNode }) => {
   );
 
   return (
-    <>
-      <Provider store={store}>
-        <Header />
-        <main
-          className={`${
-            isDarkMode && "bg-gray-900"
-          } min-h-[91vh]  overflow-hidden`}
-        >
-          <div className="max-w-[1224px] px-0 sm:px-4 md:px-0 mx-auto">
-            {children}
-          </div>
-        </main>
-      </Provider>
-    </>
+    <main
+      className={`${
+        isDarkMode && "bg-gray-900"
+      } min-h-[91vh] overflow-hidden`}
+    >
+      <div className="max-w-[1224px] px-0 sm:px-4 md:px-0 mx-auto">
+        {children}
+      </div>
+    </main>
   );
 };
 

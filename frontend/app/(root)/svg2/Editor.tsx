@@ -1,75 +1,59 @@
-"use client";
 import React, { useRef, useEffect } from "react";
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from "@/store";
 import { useEditor } from "./hooks/useEditor";
 import { createRectanglesFromData } from "./utils/editorHelpers";
 import { handleCopySVG } from "./utils/svgHelpers";
 import Rectangle from "./components/Rectangle";
 import Connection from "./components/Connection";
 import Toolbar from "./components/Toolbar";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store";
 import apiClient from "@/api/apiClient";
 import toast from "react-hot-toast";
+import {
+  setRectangles,
+  setConnections,
+  setSelectedRect,
+  setCurrentLineStyle,
+  setIsConnectingMode,
+  setIsMultiSelectMode,
+  setCirclesVisible,
+  setScale,
+  updateRectPosition,
+  updateRectSize,
+  deleteRect,
+  addConnection,
+  deleteConnection,
+  updateConnectionStyle,
+} from '@/store/editorSlice';
 
 const Editor: React.FC = () => {
+  const dispatch = useDispatch();
+  const editorState = useSelector((state: RootState) => state.editor);
+  const editorData = useSelector((state: RootState) => state.topics.editorData);
+  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+
   const {
-    rectangles,
-    setRectangles,
-    connections,
-    setConnections,
-    selectedRect,
-    setSelectedRect,
-    currentLineStyle,
-    isConnectingMode,
-    setCurrentLineStyle,
-    isConnecting,
-    setIsConnecting,
-    connectionStart,
-    setConnectionStart,
-    isDragging,
-    setIsDragging,
-    dragStart,
-    setDragStart,
-    svgHeight,
-    setSvgHeight,
-    selectedRects,
-    setSelectedRects,
-    isMultiSelectMode,
-    setIsMultiSelectMode,
-    circlesVisible,
-    setCirclesVisible,
-    scale,
-    setScale,
     handleMouseDown,
     handleMouseMove,
     handleMouseUp,
     handleKeyDown,
     handleCreateConnection,
-    handleSelectLineStyle,
-    handleChangeConnectionStyle,
-    updateSvgHeight,
-    handleUpdateRectPosition,
-    handleUpdateRectSize,
-    handleDeleteRect,
     handleStartConnecting,
     handleRectInteraction,
     handleScaleUp,
     handleScaleDown,
+    updateSvgHeight,
   } = useEditor();
 
   const svgRef = useRef<SVGSVGElement>(null);
-  const editorData = useSelector((state: RootState) => state.topics.editorData);
-  const isAuthenticated = useSelector(
-    (state: RootState) => state.auth.isAuthenticated
-  );
 
   useEffect(() => {
-    if (editorData && rectangles.length === 0) {
+    if (editorData && editorState.rectangles.length === 0) {
       const initialRectangles = createRectanglesFromData(editorData.topics);
-      setRectangles(initialRectangles);
+      dispatch(setRectangles(initialRectangles));
     }
     updateSvgHeight();
-  }, [editorData, rectangles.length, setRectangles, updateSvgHeight]);
+  }, [editorData, editorState.rectangles.length, dispatch, updateSvgHeight]);
 
   useEffect(() => {
     window.addEventListener("keydown", handleKeyDown);
@@ -92,11 +76,11 @@ const Editor: React.FC = () => {
           },
           rectanglesData: {
             roadmapUniqueId: editorData.uniqueId,
-            rectangles: rectangles,
+            rectangles: editorState.rectangles,
           },
           connectionsData: {
             roadmapUniqueId: editorData.uniqueId,
-            connections: connections,
+            connections: editorState.connections,
           },
         });
 
@@ -134,13 +118,13 @@ const Editor: React.FC = () => {
     <div className="relative">
       <Toolbar
         onToggleConnecting={handleStartConnecting}
-        isConnectingMode={isConnectingMode}
-        onSelectLineStyle={handleSelectLineStyle}
-        selectedLineStyle={currentLineStyle}
-        isMultiSelectMode={isMultiSelectMode}
-        onToggleMultiSelect={() => setIsMultiSelectMode((prev) => !prev)}
-        circlesVisible={circlesVisible}
-        onToggleCircleVisibility={() => setCirclesVisible((prev) => !prev)}
+        isConnectingMode={editorState.isConnectingMode}
+        onSelectLineStyle={(style) => dispatch(setCurrentLineStyle(style))}
+        selectedLineStyle={editorState.currentLineStyle}
+        isMultiSelectMode={editorState.isMultiSelectMode}
+        onToggleMultiSelect={() => dispatch(setIsMultiSelectMode(!editorState.isMultiSelectMode))}
+        circlesVisible={editorState.circlesVisible}
+        onToggleCircleVisibility={() => dispatch(setCirclesVisible(!editorState.circlesVisible))}
         onCopySVG={() => handleCopySVG(svgRef)}
         onScaleUp={handleScaleUp}
         onScaleDown={handleScaleDown}
@@ -148,44 +132,42 @@ const Editor: React.FC = () => {
       <svg
         ref={svgRef}
         width="100%"
-        height={svgHeight}
+        height={updateSvgHeight()}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseDown={handleMouseDown}
         className="p-4"
-        style={{ transform: `scale(${scale})`, transformOrigin: "top" }}
+        style={{ transform: `scale(${editorState.scale})`, transformOrigin: "top" }}
       >
-        {connections.map((conn, index) => (
+        {editorState.connections.map((conn, index) => (
           <Connection
             key={index}
             connection={conn}
-            rectangles={rectangles}
-            onDelete={() =>
-              setConnections(connections.filter((_, i) => i !== index))
-            }
-            onChangeStyle={(style) => handleChangeConnectionStyle(index, style)}
-            circlesVisible={circlesVisible}
+            rectangles={editorState.rectangles}
+            onDelete={() => dispatch(deleteConnection(index))}
+            onChangeStyle={(style) => dispatch(updateConnectionStyle({ index, style }))}
+            circlesVisible={editorState.circlesVisible}
           />
         ))}
 
-        {rectangles.map((rect) => (
+        {editorState.rectangles.map((rect) => (
           <Rectangle
             key={rect.id}
             rect={rect}
             isSelected={
-              isMultiSelectMode
-                ? selectedRects.includes(rect.id)
-                : rect.id === selectedRect
+              editorState.isMultiSelectMode
+                ? editorState.selectedRect?.includes(rect.id)
+                : rect.id === editorState.selectedRect
             }
             onSelect={(e) => handleRectInteraction(rect.id, e)}
             onUpdatePosition={(newX, newY) =>
-              handleUpdateRectPosition(rect.id, newX, newY)
+              dispatch(updateRectPosition({ id: rect.id, x: newX, y: newY }))
             }
             onUpdateSize={(newWidth, newHeight) =>
-              handleUpdateRectSize(rect.id, newWidth, newHeight)
+              dispatch(updateRectSize({ id: rect.id, width: newWidth, height: newHeight }))
             }
-            onDelete={() => handleDeleteRect(rect.id)}
-            circlesVisible={circlesVisible}
+            onDelete={() => dispatch(deleteRect(rect.id))}
+            circlesVisible={editorState.circlesVisible}
           />
         ))}
       </svg>

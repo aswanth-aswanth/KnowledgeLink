@@ -1,9 +1,9 @@
 // store/authSlice.ts
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import {jwtDecode} from 'jwt-decode';
-import { RootState } from './index';
 import { isTokenExpired } from '@/utils/auth';
 import apiClient from '@/api/apiClient';
+
 
 interface User {
   id: string;
