@@ -303,7 +303,9 @@ const Editor: React.FC = () => {
   const handleSubmitRoadmap = async () => {
     if (isAuthenticated) {
       try {
-        const response = await apiClient.post("/roadmap", {
+        const formData = new FormData();
+
+        const jsonData = JSON.stringify({
           editorData: {
             title: editorData.title,
             description: editorData.description,
@@ -319,6 +321,25 @@ const Editor: React.FC = () => {
           connectionsData: {
             roadmapUniqueId: editorData.uniqueId,
             connections: connections,
+          },
+        });
+
+        formData.append("data", jsonData);
+
+        // Append media files
+        editorData.mediaFiles.forEach((mediaFile, index) => {
+          if (mediaFile.file instanceof File) {
+            formData.append(
+              `file${index}`,
+              mediaFile.file,
+              mediaFile.file.name
+            );
+          }
+        });
+
+        const response = await apiClient.post("/roadmap", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
           },
         });
 

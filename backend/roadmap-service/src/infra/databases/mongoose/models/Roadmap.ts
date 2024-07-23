@@ -52,6 +52,11 @@ const RoadmapSchema: Schema<IRoadmap> = new Schema({
         }),
         required: true
     },
+    media: [{
+        type: { type: String },
+        url: { type: String },
+        topicId: { type: String, required: false }
+    }],
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }
 });

@@ -1,11 +1,37 @@
 import Roadmap from "../../infra/databases/mongoose/models/Roadmap";
+import { File as FormidableFile } from 'formidable';
 import RectanglesData from "../../infra/databases/mongoose/models/Rectangles";
 import ConnectionsData from "../../infra/databases/mongoose/models/Connections";
-import { IRoadmap, IRectanglesData, IConnectionsData } from "../../infra/databases/interfaces/IRoadmap";
+import { IRoadmap, IRectanglesData, ITopic, IMedia, IConnectionsData } from "../../infra/databases/interfaces/IRoadmap";
+import S3Service from '../../infra/services/S3Service';
 
 export default class RoadmapRepository {
-    public async create(roadmap: IRoadmap, rectanglesData: IRectanglesData, connectionsData: IConnectionsData): Promise<IRoadmap> {
+    private s3Service: S3Service;
+
+    constructor() {
+        this.s3Service = new S3Service();
+    }
+
+    public async create(
+        roadmap: IRoadmap,
+        rectanglesData: IRectanglesData,
+        connectionsData: IConnectionsData,
+        files: FormidableFile[]
+    ): Promise<IRoadmap> {
         try {
+            const uploadPromises = files.map(file => {
+                const folder = file.mimetype?.startsWith('image') ? 'images' : 'videos';
+                return this.s3Service.uploadFile(file, folder);
+            });
+
+            const uploadedUrls = await Promise.all(uploadPromises);
+
+            // Update the content of the roadmap with the S3 URLs and collect media info
+            const mediaInfo = this.updateContentWithS3Urls(roadmap.topics, uploadedUrls, files);
+
+            // Add media information to the roadmap
+            roadmap.media = mediaInfo;
+
             const newRoadmap = new Roadmap(roadmap);
             const savedRoadmap = await newRoadmap.save();
 
@@ -26,6 +52,38 @@ export default class RoadmapRepository {
             }
         }
     }
+
+    private updateContentWithS3Urls(topics: ITopic, uploadedUrls: string[], files: FormidableFile[]): IMedia[] {
+        const mediaInfo: IMedia[] = [];
+    
+        const replaceUrlsAndCollectMedia = (topic: ITopic) => {
+            if (topic.content) {
+                uploadedUrls.forEach((url, index) => {
+                    const placeholder = `{{MEDIA_${topic.uniqueId}_${index}}}`;
+                    if (topic.content.includes(placeholder)) {
+                        topic.content = topic.content.replace(placeholder, url);
+                        if (topic.uniqueId) {  // Check if uniqueId exists
+                            mediaInfo.push({
+                                type: files[index].mimetype || 'unknown',
+                                url: url,
+                                topicId: topic.uniqueId
+                            });
+                        }
+                    }
+                });
+            }
+    
+            if (topic.children) {
+                topic.children.forEach(replaceUrlsAndCollectMedia);
+            }
+        };
+    
+        replaceUrlsAndCollectMedia(topics);
+    
+        return mediaInfo;
+    }
+
+
 
     public async findRoadmapById(roadmapId: string): Promise<IRoadmap | null> {
         try {

@@ -11,7 +11,6 @@ import GetAllRoadmapMembersController from "../../../infra/http/controllers/Road
 import GetRoadmapsByMemberController from "../../../infra/http/controllers/Roadmap/GetRoadmapsByMemberController";
 import GetDiagramController from "../../../infra/http/controllers/Roadmap/GetDiagramController";
 import authMiddleware from '../../../infra/http/middleware/authMiddleware';
-import { report } from "process";
 
 const roadmapRouter = Router();
 const createRoadmapController = new CreateRoadmapController();

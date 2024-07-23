@@ -84,13 +84,20 @@ const NestedNoteTaker: React.FC = () => {
   function transformTopics(topics: any) {
     const root = topics.root;
     const newRootId = uuid().slice(0, 13);
+    const mediaFiles: { file: File; placeholder: string; topicId: string }[] =
+      [];
 
     function populateChildren(node: any) {
       const { isExpanded, ...cleanedNode } = node;
+      const topicId = uuid().slice(0, 13);
+
+      // Process content to extract media files and replace with placeholders
+      const processedContent = processContent(cleanedNode.content, topicId);
+
       return {
-        uniqueId: uuid().slice(0, 13),
+        uniqueId: topicId,
         name: cleanedNode.name,
-        content: cleanedNode.content,
+        content: processedContent,
         tags: [],
         children: node.children.map((childId: string) => {
           const childNode = topics[childId];
@@ -99,10 +106,57 @@ const NestedNoteTaker: React.FC = () => {
       };
     }
 
+    function processContent(content: string, topicId: string): string {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(content, "text/html");
+
+      doc.querySelectorAll(".media-container").forEach((container, index) => {
+        const mediaElement = container.querySelector("img, video");
+        if (
+          mediaElement instanceof HTMLImageElement ||
+          mediaElement instanceof HTMLVideoElement
+        ) {
+          const dataUrl = mediaElement.src;
+          if (dataUrl.startsWith("data:")) {
+            const file = dataURLtoFile(dataUrl, `media_${topicId}_${index}`);
+            const placeholder = `{{MEDIA_${topicId}_${index}}}`;
+            mediaFiles.push({ file, placeholder, topicId });
+
+            // Create a new element without the buttons
+            const newContainer = doc.createElement("div");
+            newContainer.className = container.className;
+            newContainer.appendChild(mediaElement.cloneNode(true));
+
+            // Replace the original container with the new one
+            container.parentNode?.replaceChild(newContainer, container);
+
+            // Update the src attribute of the media element to use the placeholder
+            newContainer
+              .querySelector("img, video")
+              ?.setAttribute("src", placeholder);
+          }
+        }
+      });
+
+      return doc.body.innerHTML;
+    }
+
+    function dataURLtoFile(dataurl: string, filename: string): File {
+      const arr = dataurl.split(",");
+      const mime = arr[0].match(/:(.*?);/)![1];
+      const bstr = atob(arr[1]);
+      let n = bstr.length;
+      const u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      return new File([u8arr], filename, { type: mime });
+    }
+
     const transformedRoot = populateChildren(root);
 
     return {
-      uniqueId: uuid().slice(0, 13),
+      uniqueId: newRootId,
       title: transformedRoot.name,
       description: transformedRoot.content,
       type: roadmapType,
@@ -113,6 +167,7 @@ const NestedNoteTaker: React.FC = () => {
       createdAt: "",
       updatedAt: "",
       id: newRootId,
+      mediaFiles: mediaFiles,
     };
   }
 

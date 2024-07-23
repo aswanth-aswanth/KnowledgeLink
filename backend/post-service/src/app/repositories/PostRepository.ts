@@ -49,6 +49,7 @@ export default class PostRepository {
             }
         }
     }
+
     public async toggleLike(postId: string, email: string): Promise<{ post: IPost, liked: boolean }> {
         try {
             const post = await Post.findById(postId);

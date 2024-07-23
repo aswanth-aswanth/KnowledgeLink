@@ -11,6 +11,12 @@ export interface ITopic extends Document {
     children: ITopic[];
 }
 
+interface media {
+    type: string,
+    url: string,
+    topicId: string
+}
+
 export interface IRoadmap extends Document {
     _id: Types.ObjectId;
     title: string;
@@ -23,6 +29,13 @@ export interface IRoadmap extends Document {
     topics: ITopic;
     createdAt: Date;
     updatedAt: Date;
+    media: IMedia[];
+}
+
+export interface IMedia {
+    type: string;
+    url: string;
+    topicId: string;
 }
 
 
