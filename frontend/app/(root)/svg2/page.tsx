@@ -1,12 +1,12 @@
 "use client";
 
-import ClientOnly from "@/contexts/ClientOnly";
-import Editor from "@/app/(root)/svg2/Editor";
+import React from "react";
 import { EditorProvider } from "@/contexts/EditorContext";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Editor from "./Editor";
 
 const EditorPage: React.FC = () => {
   const editorData = useSelector((state: RootState) => state.topics.editorData);
@@ -29,9 +29,7 @@ export default function Home() {
   return (
     <EditorProvider>
       <main className="min-h-screen bg-gray-100">
-        <ClientOnly>
-          <EditorPage />
-        </ClientOnly>
+        <EditorPage />
       </main>
     </EditorProvider>
   );
