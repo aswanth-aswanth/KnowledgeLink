@@ -40,23 +40,10 @@ const TabNavigation: React.FC = () => {
           tabFor="explore"
         />
         {/* <WelcomeComponent /> */}
-        <p className="text-gray-500 font-medium text-lg mt-6 mb-8">
-          Recommended for you
-        </p>
-        <div className="flex justify-center mx-auto w-[86%]">
-          <CarousalSize />
-        </div>
-        <p className="text-gray-500 font-medium text-lg mt-6 mb-8">
-          Popular writers
-        </p>
+
+        <CarousalSize />
         <PopularContributors />
-        <p className="text-gray-500 font-medium text-lg mt-6 mb-8">
-          Trending articles
-        </p>
         <TrendingArticles />
-        <p className="text-gray-500 font-bold text-center text-4xl mt-6 mb-8">
-          Roadmaps
-        </p>
         <Roadmaps />
       </div>
     </Provider>

@@ -44,49 +44,54 @@ const trendingArticles = [
 export default function TrendingArticles() {
   const { isDarkMode } = useDarkMode();
   return (
-    <div className="max-w-6xl mx-auto p-0 sm:p-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {trendingArticles.map((article, index) => (
-          <div
-            key={index}
-            className="bg-white rounded-lg shadow-md p-6 flex flex-col justify-between hover:shadow-lg transition-shadow duration-300 transform hover:-translate-y-2"
+    <>
+      <p className="text-gray-500 font-medium text-lg mt-6 mb-8">
+        Trending articles
+      </p>
+      <div className="max-w-6xl mx-auto p-0 sm:p-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {trendingArticles.map((article, index) => (
+            <div
+              key={index}
+              className="bg-white rounded-lg shadow-md p-6 flex flex-col justify-between hover:shadow-lg transition-shadow duration-300 transform hover:-translate-y-2"
+            >
+              <div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  {article.title}
+                </h3>
+                {article.hashtags && (
+                  <div className="mb-2 flex flex-wrap">
+                    {article.hashtags.map((hashtag, idx) => (
+                      <span
+                        key={idx}
+                        className="text-xs font-medium text-blue-600 mr-2"
+                      >
+                        {hashtag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                <h4 className="text-lg font-medium text-gray-800 mb-1">
+                  {article.question}
+                </h4>
+                <p className="text-gray-700 mb-4">{article.answer}</p>
+              </div>
+              <div className="flex items-center justify-between text-sm text-gray-600 mt-4 pt-4 border-t">
+                <span>{article.author}</span>
+                <span>{article.date}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="flex justify-center mt-16">
+          <Button
+            variant="outline"
+            className={`${isDarkMode ? "text-white" : "text-gray-800"}`}
           >
-            <div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                {article.title}
-              </h3>
-              {article.hashtags && (
-                <div className="mb-2 flex flex-wrap">
-                  {article.hashtags.map((hashtag, idx) => (
-                    <span
-                      key={idx}
-                      className="text-xs font-medium text-blue-600 mr-2"
-                    >
-                      {hashtag}
-                    </span>
-                  ))}
-                </div>
-              )}
-              <h4 className="text-lg font-medium text-gray-800 mb-1">
-                {article.question}
-              </h4>
-              <p className="text-gray-700 mb-4">{article.answer}</p>
-            </div>
-            <div className="flex items-center justify-between text-sm text-gray-600 mt-4 pt-4 border-t">
-              <span>{article.author}</span>
-              <span>{article.date}</span>
-            </div>
-          </div>
-        ))}
+            Load more
+          </Button>
+        </div>
       </div>
-      <div className="flex justify-center mt-16">
-        <Button
-          variant="outline"
-          className={`${isDarkMode ? "text-white" : "text-gray-800"}`}
-        >
-          Load more
-        </Button>
-      </div>
-    </div>
+    </>
   );
 }

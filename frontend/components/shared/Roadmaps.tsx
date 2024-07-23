@@ -48,6 +48,9 @@ export default function Roadmaps() {
 
   return (
     <>
+      <p className="text-gray-500 font-bold text-center text-4xl mt-6 mb-8">
+        Roadmaps
+      </p>
       <div className="flex justify-around">
         <Tabs
           tabs={tabs}

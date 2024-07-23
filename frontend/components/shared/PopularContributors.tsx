@@ -23,39 +23,45 @@ export default function PopularContributors() {
   }, []);
 
   return (
-    <div
-      className={`flex gap-8 sm:gap-12 md:gap-28 max-w-[1224px] overflow-x-auto py-8 ${
-        isDarkMode ? "bg-gray-900 text-white" : "bg-white text-gray-900"
-      }`}
-      style={{ overflowX: "auto", scrollbarWidth: "none" }}
-    >
-      {contributors.map((contributor, index) => (
-        <div
-          key={index}
-          className="flex flex-col items-center text-center w-max"
-        >
+    <>
+      <p className="text-gray-500 font-medium text-lg mt-6 mb-8">
+        Popular writers
+      </p>
+      <div
+        className={`flex gap-8 sm:gap-12 md:gap-28 max-w-[1224px] overflow-x-auto py-8 ${
+          isDarkMode ? "bg-gray-900 text-white" : "bg-white text-gray-900"
+        }`}
+        style={{ overflowX: "auto", scrollbarWidth: "none" }}
+      >
+        {contributors.map((contributor, index) => (
           <div
-            onClick={() => router.push(`/profile/${contributor._id}`)}
-            className="h-10 w-10 sm:h-20 sm:w-20 rounded-full flex justify-center items-center border-4 border-gray-300"
+            key={index}
+            className="flex flex-col items-center text-center w-max"
           >
-            <Avatar className="h-16 w-16 cursor-pointer">
-              <AvatarImage
-                src={
-                  contributor.image || `https://github.com/shadcn.png?${index}`
-                }
-                alt={contributor.username}
-              />
-              <AvatarFallback>{contributor.username}</AvatarFallback>
-            </Avatar>
+            <div
+              onClick={() => router.push(`/profile/${contributor._id}`)}
+              className="h-10 w-10 sm:h-20 sm:w-20 rounded-full flex justify-center items-center border-4 border-gray-300"
+            >
+              <Avatar className="h-16 w-16 cursor-pointer">
+                <AvatarImage
+                  src={
+                    contributor.image ||
+                    `https://github.com/shadcn.png?${index}`
+                  }
+                  alt={contributor.username}
+                />
+                <AvatarFallback>{contributor.username}</AvatarFallback>
+              </Avatar>
+            </div>
+            <div className="mt-2">
+              <h3 className="text-xs xs:text-sm sm:text-base font-semibold text-nowrap mt-2">
+                {contributor.username}
+              </h3>
+              <p className="text-xs text-gray-500 mt-2">{contributor.email}</p>
+            </div>
           </div>
-          <div className="mt-2">
-            <h3 className="text-xs xs:text-sm sm:text-base font-semibold text-nowrap mt-2">
-              {contributor.username}
-            </h3>
-            <p className="text-xs text-gray-500 mt-2">{contributor.email}</p>
-          </div>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
+    </>
   );
 }
