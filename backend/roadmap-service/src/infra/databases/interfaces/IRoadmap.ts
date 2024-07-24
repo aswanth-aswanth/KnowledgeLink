@@ -9,6 +9,7 @@ export interface ITopic extends Document {
     contributorId: string;
     tags: string[];
     children: ITopic[];
+    likes?: string[];
 }
 
 interface media {
