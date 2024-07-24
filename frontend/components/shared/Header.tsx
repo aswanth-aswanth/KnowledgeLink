@@ -55,19 +55,19 @@ export default function Header() {
     >
       <div className="flex items-center">
         <Hamburger />
-      </div>
-      <div className="flex-grow mx-2 sm:mx-4 max-[420px]:max-w-[110px]">
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="Search..."
-            className={`w-full py-2 pl-10 pr-4 max-w-full rounded-xl focus:outline-none focus:ring-2 focus:shadow-outline ${
-              isDarkMode
-                ? "text-gray-200 bg-gray-700 focus:bg-gray-600 focus:ring-blue-400"
-                : "text-gray-700 bg-gray-100 focus:bg-gray-200"
-            }`}
-          />
-          <FiSearch className="absolute top-3 left-3 text-gray-400" />
+        <div className="flex-grow mx-2 sm:mx-4 ">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search..."
+              className={`w-full py-2 pl-10 pr-4 max-w-full rounded-xl focus:outline-none focus:ring-2 focus:shadow-outline ${
+                isDarkMode
+                  ? "text-gray-200 bg-gray-700 focus:bg-gray-600 focus:ring-blue-400"
+                  : "text-gray-700 bg-gray-100 focus:bg-gray-200"
+              }`}
+            />
+            <FiSearch className="absolute top-3 left-3 text-gray-400" />
+          </div>
         </div>
       </div>
       <div className="flex items-center space-x-2 sm:space-x-4 mr-2 sm:mr-10">

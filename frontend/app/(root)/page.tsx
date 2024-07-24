@@ -7,8 +7,6 @@ import TrendingArticles from "@/components/shared/TrendingArticles";
 import Tabs from "@/components/shared/Tabs";
 import { Tab } from "@/types";
 import Roadmaps from "@/components/shared/Roadmaps";
-import { Provider } from "react-redux";
-import { store } from "@/store";
 
 const TabNavigation: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>("Explore");
@@ -29,7 +27,7 @@ const TabNavigation: React.FC = () => {
   ];
 
   return (
-    <div className="-mt-2 pt-6 pb-16 md:pb-8">
+    <div className="-mt-2 pt-6 pb-20 md:pb-8">
       <Tabs
         tabs={tabs}
         activeTab={activeTab}
@@ -38,8 +36,6 @@ const TabNavigation: React.FC = () => {
         }}
         tabFor="explore"
       />
-      {/* <WelcomeComponent /> */}
-
       <CarousalSize />
       <PopularContributors />
       <TrendingArticles />
