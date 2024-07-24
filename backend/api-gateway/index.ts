@@ -1,12 +1,14 @@
 import express, { Express, Request, Response } from 'express';
 import { createProxyMiddleware, Options, RequestHandler } from 'http-proxy-middleware';
 import cors from 'cors';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 const app: Express = express();
 
 // CORS configuration
 const corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: `${process.env.BASE_URL}:3000`,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: '*',
   credentials: true,
@@ -15,12 +17,12 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 const services: { [key: string]: string } = {
-  auth: 'http://localhost:5000',
-  roadmap: 'http://localhost:5001',
-  profile: 'http://localhost:5002',
-  post: 'http://localhost:5003',
-  notification: 'http://localhost:5004',
-  chat: 'http://localhost:5005',
+  auth: `${process.env.BASE_URL}:5000`,
+  roadmap: `${process.env.BASE_URL}:5001`,
+  profile: `${process.env.BASE_URL}:5002`,
+  post: `${process.env.BASE_URL}:5003`,
+  notification: `${process.env.BASE_URL}:5004`,
+  chat: `${process.env.BASE_URL}:5005`,
 };
 
 const authProxy: RequestHandler = createProxyMiddleware({
@@ -62,5 +64,5 @@ app.use('/chat', chatProxy);
 
 const PORT: number = 4000;
 app.listen(PORT, () => {
-  console.log(`API Gateway is running on http://localhost:${PORT}`);
+  console.log(`API Gateway is running on ${process.env.BASE_URL}:${PORT}`);
 });
