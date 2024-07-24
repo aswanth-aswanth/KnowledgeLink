@@ -213,7 +213,7 @@ const NestedNoteTaker: React.FC = () => {
           >
             <Edit className="mr-2 h-4 w-4" /> Edit Root
           </Button>
-          <Button onClick={handleResetTopics} variant="destructive">
+          <Button onClick={handleResetTopics} variant="outline" className="dark:text-white">
             <Trash className="mr-2 h-4 w-4" /> Reset
           </Button>
         </div>

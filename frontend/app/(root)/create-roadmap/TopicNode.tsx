@@ -14,8 +14,6 @@ import {
   Trash,
   Image,
   Video,
-  Layout,
-  X,
 } from "lucide-react";
 
 import {

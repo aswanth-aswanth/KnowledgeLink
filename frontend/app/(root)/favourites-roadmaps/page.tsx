@@ -58,7 +58,7 @@ export default function page() {
           isDarkMode ? "text-white" : "text-gray-800"
         }`}
       >
-        User Created Roadmaps
+        Created Roadmaps
       </h1>
       <div className="flex gap-4 px-2 md:px-4 flex-wrap justify-center">
         {adminRoadmaps.length > 0 ? (
@@ -125,7 +125,7 @@ export default function page() {
           isDarkMode ? "text-white" : "text-gray-800"
         }`}
       >
-        User Subscribed Roadmaps
+        Subscribed Roadmaps
       </h1>
       <div className="grid grid-cols-12 mt-14 gap-4 md:px-4">
         {subscribedRoadmaps.length > 0 ? (
@@ -160,7 +160,7 @@ export default function page() {
           isDarkMode ? "text-white" : "text-gray-800"
         }`}
       >
-        Users favourites
+        Favourites
       </h1>
       <p
         className={`text-center pb-10 ${
@@ -175,7 +175,7 @@ export default function page() {
           isDarkMode ? "text-white" : "text-gray-800"
         }`}
       >
-        User membered roadmaps
+        Membered roadmaps
       </h1>
       <div className="flex gap-4 px-2 md:px-4 flex-wrap justify-center">
         {userMemberedRoadmaps.length > 0 ? (
