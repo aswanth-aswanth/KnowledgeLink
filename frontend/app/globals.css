@@ -46,11 +46,7 @@
 
 body {
   font-family: var(--font-poppins);
-}
-
-.filter-grey {
-  filter: brightness(0) saturate(100%) invert(47%) sepia(0%) saturate(217%)
-    hue-rotate(32deg) brightness(98%) contrast(92%);
+  height: 100vh;
 }
 
 /* ========================================== TAILWIND STYLES */
@@ -174,74 +170,4 @@ body {
   .p-medium-12 {
     @apply text-[12px] font-medium leading-[20px];
   }
-
-  /* SHADCN OVERRIDES */
-  .select-field {
-    @apply w-full bg-grey-50 h-[54px] placeholder:text-grey-500 rounded-full p-regular-16 px-5 py-3 border-none focus-visible:ring-transparent focus:ring-transparent !important;
-  }
-
-  .input-field {
-    @apply bg-grey-50 h-[54px] focus-visible:ring-offset-0 placeholder:text-grey-500 rounded-full p-regular-16 px-4 py-3 border-none focus-visible:ring-transparent !important;
-  }
-
-  .textarea {
-    @apply bg-grey-50 flex flex-1 placeholder:text-grey-500 p-regular-16 px-5 py-3 border-none focus-visible:ring-transparent !important;
-  }
-
-  .button {
-    @apply rounded-full h-[54px] p-regular-16;
-  }
-
-  .select-item {
-    @apply py-3 cursor-pointer  focus:bg-primary-50;
-  }
-
-  .toggle-switch {
-    @apply bg-gray-300 !important;
-  }
-}
-
-/* ========================================== CLERK STYLES */
-.cl-logoImage {
-  height: 38px;
-}
-
-.cl-userButtonBox {
-  flex-direction: row-reverse;
-}
-
-.cl-userButtonOuterIdentifier {
-  font-size: 16px;
-}
-
-.cl-userButtonPopoverCard {
-  right: 4px !important;
-}
-
-.cl-formButtonPrimary:hover,
-.cl-formButtonPrimary:focus,
-.cl-formButtonPrimary:active {
-  background-color: #705cf7;
-}
-
-/* ========================================== REACT-DATEPICKER STYLES */
-.datePicker {
-  width: 100%;
-}
-
-.react-datepicker__input-container input {
-  background-color: transparent;
-  width: 100%;
-  outline: none;
-  margin-left: 16px;
-}
-
-.react-datepicker__day--selected {
-  background-color: #624cf5 !important;
-  color: #ffffff !important;
-  border-radius: 4px;
-}
-
-.react-datepicker__time-list-item--selected {
-  background-color: #624cf5 !important;
 }

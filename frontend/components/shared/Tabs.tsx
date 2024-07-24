@@ -9,7 +9,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs, activeTab, onTabClick, tabFor }) => {
   return (
     <div
       className={`
-      flex gap-8 left-0 right-0
+      flex  left-0 right-0
       ${
         tabFor === "explore"
           ? `fixed bottom-0 ${
@@ -22,7 +22,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs, activeTab, onTabClick, tabFor }) => {
         <button
           key={tab.name}
           onClick={() => onTabClick(tab.name)}
-          className={`relative flex flex-col sm:flex-row items-center space-x-2 px-2 py-4 md:py-2 rounded-md transition-all duration-300 ease-in-out
+          className={`relative flex flex-col sm:flex-row items-center space-x-2 px-1 py-3 md:py-2 rounded-md transition-all duration-300 ease-in-out
             ${
               activeTab === tab.name
                 ? isDarkMode

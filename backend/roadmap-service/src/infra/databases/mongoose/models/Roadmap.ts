@@ -8,7 +8,7 @@ const TopicSchema: Schema<ITopic> = new Schema({
     content: { type: String },
     contributorId: { type: String, default: "" },
     tags: { type: [String], default: [] },
-    likes: { type: [String], default: [] }, 
+    likes: { type: [String], default: [] },
     children: [{
         _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
         name: { type: String, required: true },
@@ -16,7 +16,7 @@ const TopicSchema: Schema<ITopic> = new Schema({
         content: { type: String },
         contributorId: { type: String, default: "" },
         tags: { type: [String], default: [] },
-        likes: { type: [String], default: [] }, 
+        likes: { type: [String], default: [] },
         children: [{
             _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
             name: { type: String, required: true },
@@ -24,7 +24,7 @@ const TopicSchema: Schema<ITopic> = new Schema({
             uniqueId: { type: String },
             contributorId: { type: String, default: "" },
             tags: { type: [String], default: [] },
-            likes: { type: [String], default: [] }, 
+            likes: { type: [String], default: [] },
             children: [{ type: Schema.Types.ObjectId, ref: 'Topic' }]
         }]
     }]
@@ -51,7 +51,7 @@ const RoadmapSchema: Schema<IRoadmap> = new Schema({
             uniqueId: { type: String },
             contributorId: { type: String, default: "" },
             tags: { type: [String], default: [] },
-            likes: { type: [String], default: [] }, 
+            likes: { type: [String], default: [] },
             children: [TopicSchema]
         }),
         required: true
