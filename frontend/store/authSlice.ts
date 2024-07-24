@@ -1,4 +1,3 @@
-// store/authSlice.ts
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { jwtDecode } from 'jwt-decode';
 import { isTokenExpired } from '@/utils/auth';
@@ -10,7 +9,7 @@ export interface User {
   name: string;
   email: string;
   imageUrl?: string;
-  bio?: string; 
+  bio?: string;
 }
 
 interface AuthState {

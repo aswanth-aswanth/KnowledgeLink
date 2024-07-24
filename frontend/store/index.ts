@@ -1,7 +1,7 @@
 // store/index.ts
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
-import createIndexedDBStorage from 'redux-persist-indexeddb-storage';
+import localForage from 'localforage';
 
 import topicsReducer from './topicsSlice';
 import darkmodeReducer from './darkmodeSlice';
@@ -15,7 +15,7 @@ const createNoopStorage = () => ({
 });
 
 const storage = typeof window !== 'undefined'
-  ? createIndexedDBStorage('roadmap')
+  ? localForage
   : createNoopStorage();
 
 const persistConfig = {

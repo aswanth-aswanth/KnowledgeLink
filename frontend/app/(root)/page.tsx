@@ -29,24 +29,22 @@ const TabNavigation: React.FC = () => {
   ];
 
   return (
-    <Provider store={store}>
-      <div className="-mt-2 pt-6 pb-8">
-        <Tabs
-          tabs={tabs}
-          activeTab={activeTab}
-          onTabClick={(value) => {
-            if (value === "Following") router.push("/following");
-          }}
-          tabFor="explore"
-        />
-        {/* <WelcomeComponent /> */}
+    <div className="-mt-2 pt-6 pb-8">
+      <Tabs
+        tabs={tabs}
+        activeTab={activeTab}
+        onTabClick={(value) => {
+          if (value === "Following") router.push("/following");
+        }}
+        tabFor="explore"
+      />
+      {/* <WelcomeComponent /> */}
 
-        <CarousalSize />
-        <PopularContributors />
-        <TrendingArticles />
-        <Roadmaps />
-      </div>
-    </Provider>
+      <CarousalSize />
+      <PopularContributors />
+      <TrendingArticles />
+      <Roadmaps />
+    </div>
   );
 };
 

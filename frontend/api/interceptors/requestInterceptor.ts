@@ -1,9 +1,7 @@
 import { AxiosRequestConfig } from 'axios';
-import { store } from '@/store';
 
 const requestInterceptor = (config: AxiosRequestConfig) => {
-  const state = store.getState();
-  const token = state.auth.token;
+  const token = localStorage.getItem('token');;
 
   if (token) {
     config.headers = config.headers || {};

@@ -1,4 +1,3 @@
-// layout.tsx
 "use client";
 
 import React from "react";
@@ -8,11 +7,8 @@ import { checkTokenExpiration } from "@/store/authSlice";
 import { store } from "@/store";
 import { useDarkMode } from "@/hooks/useDarkMode";
 import { useNotifications } from "@/hooks/useNotifications";
-// import { selectAuthState } from "@/store/authSlice";
-import { selectAuthState } from "@/store/selectors";
-
+import { selectAuthState } from "@/store/authSlice";
 import { useSelector } from "react-redux";
-import { Provider } from "react-redux";
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   React.useEffect(() => {
@@ -38,18 +34,16 @@ const LayoutContent = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <>
-      <Provider store={store}>
-        <Header />
-        <main
-          className={`${
-            isDarkMode && "bg-gray-900"
-          } min-h-[91vh]  overflow-hidden`}
-        >
-          <div className="max-w-[1224px] px-0 sm:px-4 md:px-0 mx-auto">
-            {children}
-          </div>
-        </main>
-      </Provider>
+      <Header />
+      <main
+        className={`${
+          isDarkMode && "bg-gray-900"
+        } min-h-[91vh]  overflow-hidden`}
+      >
+        <div className="max-w-[1224px] px-0 sm:px-4 md:px-0 mx-auto">
+          {children}
+        </div>
+      </main>
     </>
   );
 };
