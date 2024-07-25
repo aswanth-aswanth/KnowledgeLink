@@ -16,10 +16,12 @@
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20.14.2",
     "amqplib": "^0.10.4",
+    "compromise": "^14.13.0",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.4.1",
+    "natural": "^7.1.0",
     "uuid": "^10.0.0"
   },
   "devDependencies": {

@@ -1,27 +1,15 @@
 import Roadmap from "../../infra/databases/mongoose/models/Roadmap";
-import RectanglesData from "../../infra/databases/mongoose/models/Rectangles";
-import ConnectionsData from "../../infra/databases/mongoose/models/Connections";
 import { IRoadmap, IRectanglesData, ITopic, IMedia, IConnectionsData } from "../../infra/databases/interfaces/IRoadmap";
 
 export default class RoadmapRepository {
 
-
-
     public async create(
         roadmap: IRoadmap,
-        rectanglesData: IRectanglesData,
-        connectionsData: IConnectionsData,
     ): Promise<IRoadmap> {
         try {
 
             const newRoadmap = new Roadmap(roadmap);
             const savedRoadmap = await newRoadmap.save();
-
-            const newRectanglesData = new RectanglesData(rectanglesData);
-            await newRectanglesData.save();
-
-            const newConnectionsData = new ConnectionsData(connectionsData);
-            await newConnectionsData.save();
 
             return savedRoadmap;
         } catch (error) {

@@ -1,4 +1,5 @@
 import amqp from 'amqplib';
+import Consumer from '../../../infra/messaging/rabbitmq/Consumer';
 
 class RabbitMQConnection {
     private static instance: RabbitMQConnection;
@@ -20,9 +21,10 @@ class RabbitMQConnection {
         try {
             this.connection = await amqp.connect('amqp://localhost');
             this.channel = await this.connection.createChannel();
-            console.log('RabbitMQ connected successfully (roadmap-service)');
+            console.log('RabbitMQ connected successfully (recommendation-service)');
+            Consumer.consumeRoadmapQueue();
         } catch (error) {
-            console.error('Failed to connect to RabbitMQ (roadmap-service):', error);
+            console.error('Failed to connect to RabbitMQ (recommendation-service):', error);
         }
     }
 
