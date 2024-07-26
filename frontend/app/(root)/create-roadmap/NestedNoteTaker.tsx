@@ -186,7 +186,7 @@ const NestedNoteTaker: React.FC = () => {
       transformedTopics.members = selectedMembers.map((member) => member.email);
       transformedTopics.type = selectedRoadmapType;
       dispatch(setEditorData(transformedTopics));
-      router.push("/svg2");
+      router.push("/create-diagram");
     },
     [currentTopicsState.topics, dispatch, router]
   );
