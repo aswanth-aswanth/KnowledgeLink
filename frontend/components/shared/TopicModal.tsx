@@ -10,7 +10,7 @@ interface TopicModalProps {
 
 const TopicModal: React.FC<TopicModalProps> = ({ topic, onClose }) => {
   const { isDarkMode } = useDarkMode();
-  const [isFullscreen, setIsFullscreen] = useState(true);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -34,7 +34,7 @@ const TopicModal: React.FC<TopicModalProps> = ({ topic, onClose }) => {
   };
 
   const renderTopic = (t: any) => (
-    <div className="mb-8 lg:max-w-[68vw] scroll-smooth mx-auto">
+    <div className="mb-8  lg:max-w-[68vw] scroll-smooth mx-auto">
       <h3
         className={`text-2xl font-bold mb-4 ${
           isDarkMode ? "text-gray-200" : "text-gray-800"
@@ -130,7 +130,7 @@ const TopicModal: React.FC<TopicModalProps> = ({ topic, onClose }) => {
           </div>
         </div>
         <div
-          className={`p-8 overflow-y-auto ${
+          className={`p-8 overflow-y-auto scrollbar-hide ${
             isFullscreen ? "h-[calc(100vh-80px)]" : "max-h-[calc(90vh-80px)]"
           }`}
         >
