@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { X, Minimize2, Maximize2 } from "lucide-react";
 import { useDarkMode } from "@/hooks/useDarkMode";
+import DOMPurify from "dompurify";
 
 interface TopicModalProps {
   topic: any;
@@ -33,8 +34,17 @@ const TopicModal: React.FC<TopicModalProps> = ({ topic, onClose }) => {
     setIsFullscreen(!isFullscreen);
   };
 
+  const createMarkup = (html: string) => {
+    return {
+      __html: DOMPurify.sanitize(html, {
+        ADD_TAGS: ["video"],
+        ADD_ATTR: ["controls", "src"],
+      }),
+    };
+  };
+
   const renderTopic = (t: any) => (
-    <div className="mb-8  lg:max-w-[68vw] scroll-smooth mx-auto">
+    <div className="mb-8 lg:max-w-[68vw] scroll-smooth mx-auto">
       <h3
         className={`text-2xl font-bold mb-4 ${
           isDarkMode ? "text-gray-200" : "text-gray-800"
@@ -42,13 +52,12 @@ const TopicModal: React.FC<TopicModalProps> = ({ topic, onClose }) => {
       >
         {t.name}
       </h3>
-      <p
+      <div
         className={`mb-6 text-lg leading-relaxed ${
           isDarkMode ? "text-gray-300" : "text-gray-600"
         }`}
-      >
-        {t.content}
-      </p>
+        dangerouslySetInnerHTML={createMarkup(t.content)}
+      />
       {t.children && t.children.length > 0 && (
         <div className="ml-6 mt-4">
           <div
