@@ -62,6 +62,10 @@ export default function RoadmapPage() {
     }
   }, [params.id]);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const handleContentChange = (uniqueId: string, newContent: string) => {
     setContributions((prev) => ({
       ...prev,
@@ -117,11 +121,15 @@ export default function RoadmapPage() {
   if (!roadmapData) {
     return <div>Loading...</div>;
   }
-  console.log("roadmapData unique : ", roadmapData);
+
   return (
     <div>
       {rectangles.length > 0 && (
-        <ViewDiagram rectangles={rectangles} connections={connections} roadmapData={roadmapData}/>
+        <ViewDiagram
+          rectangles={rectangles}
+          connections={connections}
+          roadmapData={roadmapData}
+        />
       )}
       <div className="flex justify-between items-center ">
         <div></div>

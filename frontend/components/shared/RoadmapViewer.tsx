@@ -36,10 +36,12 @@ const Topic: React.FC<TopicProps> = ({
   }, [topic.content]);
 
   const toggleExpand = () => {
-    if (isExpanded) {
-      setExpandedTopics(expandedTopics.filter((id) => id !== topic.uniqueId));
-    } else {
-      setExpandedTopics([...expandedTopics, topic.uniqueId]);
+    if (level.split('-').length > 1) {
+      if (isExpanded) {
+        setExpandedTopics(expandedTopics.filter((id) => id !== topic.uniqueId));
+      } else {
+        setExpandedTopics([...expandedTopics, topic.uniqueId]);
+      }
     }
   };
 
@@ -51,7 +53,7 @@ const Topic: React.FC<TopicProps> = ({
     onContentChange(topic.uniqueId, editedContent);
     setIsEditing(false);
   };
-  console.log("EditedContent : ", editedContent);
+
   return (
     <div className="topic-node mb-3">
       <div className="flex items-center group">
@@ -105,7 +107,7 @@ const Topic: React.FC<TopicProps> = ({
             <Textarea
               value={editedContent}
               onChange={(e) => setEditedContent(e.target.value)}
-              className={` min-h-32 leading-8 p-2 mb-2 rounded-md transition-all duration-200 ${
+              className={`min-h-32 leading-8 p-2 mb-2 rounded-md transition-all duration-200 ${
                 isDarkMode
                   ? "bg-gray-800 text-gray-300"
                   : "bg-gray-50 text-gray-600"
@@ -154,7 +156,9 @@ const RoadmapViewer: React.FC<RoadmapViewerProps> = ({
   onContentChange,
 }) => {
   const { isDarkMode } = useDarkMode();
-  const [expandedTopics, setExpandedTopics] = useState<string[]>([]);
+  const [expandedTopics, setExpandedTopics] = useState<string[]>(() => 
+    transformedTopics.topics.children.map(child => child.uniqueId)
+  );
 
   return (
     <div
