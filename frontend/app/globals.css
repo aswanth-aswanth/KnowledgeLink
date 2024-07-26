@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  padding: 0;
+  margin: 0;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-poppins);
+  height: 100vh;
+}
+
 .topic-node [contenteditable] {
   outline: none;
 }
@@ -38,16 +49,25 @@
   scrollbar-width: none;
 }
 
-* {
-  padding: 0;
-  margin: 0;
-  scroll-behavior: smooth;
+.article-content img {
+  max-width: 100%;
+  height: auto;
 }
 
-body {
-  font-family: var(--font-poppins);
-  height: 100vh;
+.article-content .media-container {
+  position: relative;
 }
+
+.article-content .media-container button {
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.article-content .media-container button:hover {
+  opacity: 1;
+}
+
+
 
 /* ========================================== TAILWIND STYLES */
 @layer utilities {
