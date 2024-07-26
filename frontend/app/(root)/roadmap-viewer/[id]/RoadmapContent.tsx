@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { useToast } from "@/components/ui/use-toast";
 import ViewDiagram from "@/components/shared/ViewDiagram";
+import { Skeleton } from "@/components/ui/skeleton";
 
 async function getRoadmapData(id: string) {
   try {
@@ -49,6 +50,7 @@ export default function RoadmapContent() {
   const [contributions, setContributions] = useState({});
   const [rectangles, setRectangles] = useState([]);
   const [connections, setConnections] = useState([]);
+  const [isDiagramLoading, setIsDiagramLoading] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -106,6 +108,7 @@ export default function RoadmapContent() {
   };
 
   const getDiagramData = async (roadmapData: any) => {
+    setIsDiagramLoading(true);
     try {
       if (roadmapData.uniqueId) {
         const res = await apiClient(`/roadmap/diagram/${roadmapData.uniqueId}`);
@@ -115,6 +118,8 @@ export default function RoadmapContent() {
       }
     } catch (error) {
       console.log("Error : ", error);
+    } finally {
+      setIsDiagramLoading(false);
     }
   };
 
@@ -124,18 +129,16 @@ export default function RoadmapContent() {
 
   return (
     <div>
-      {rectangles.length > 0 && (
+      {isDiagramLoading ? (
+        <Skeleton className="w-full h-screen" />
+      ) : rectangles.length > 0 ? (
         <ViewDiagram
           rectangles={rectangles}
           connections={connections}
           roadmapData={roadmapData}
         />
-      )}
-      <div className="flex justify-between items-center ">
-        <div></div>
-        <h1 className="text-2xl font-bold text-gray-600">
-          {/* Roadmap: {roadmapData.title} */}
-        </h1>
+      ) : null}
+      <div className="flex justify-center items-center ">
         {pathname.split("/")[1] !== "roadmap-viewer" && (
           <div>
             <Button
