@@ -2,6 +2,7 @@ import { Server as SocketIOServer, Socket } from 'socket.io';
 import socketAuthMiddleware from '../http/middleware/socketAuthMiddleware';
 import SendMessage from '../../app/useCases/SendMessage';
 import ChatRepository from '../../app/repositories/ChatRepository';
+import MarkMessageAsRead from '../../app/useCases/MarkMessageAsRead';
 
 class SocketService {
   private static instance: SocketService;
@@ -57,6 +58,19 @@ class SocketService {
           socket.emit('error', { message: 'Failed to send message' });
         }
       });
+
+      socket.on('message_read', async ({ chatId, messageId }: { chatId: string, messageId: string }) => {
+        try {
+          const markMessageAsRead = new MarkMessageAsRead(new ChatRepository());
+          const updatedMessage = await markMessageAsRead.execute(chatId, messageId, socket.data.user.userId);
+
+          // Emit the event to the chat room with both chatId and messageId
+          // this.io.to(chatId).emit('message_read', { chatId, messageId });
+        } catch (error) {
+          console.error('Error updating message read status:', error);
+        }
+      });
+
 
       socket.on('disconnect', () => {
         console.log('User disconnected:', socket.data.user.id);

@@ -1,4 +1,7 @@
-// src/domain/entities/Message.ts
+export interface ReadReceipt {
+  userId: string;
+  readAt: Date;
+}
 
 export class Message {
   constructor(
@@ -6,8 +9,9 @@ export class Message {
     public chatId: string,
     public senderId: string,
     public content: string,
-    public createdAt: Date
-  ) {}
+    public createdAt: Date,
+    public readBy: ReadReceipt[] = []
+  ) { }
 
   static create(chatId: string, senderId: string, content: string): Message {
     return new Message(

@@ -46,8 +46,6 @@ export default class SocketIOService {
 
           const sendMessage = new SendMessage(new ChatRepository());
           const message = await sendMessage.execute(chatId, userId, content);
-
-          this.io.to(chatId).emit('new_message', message);
         } catch (error) {
           console.error('Error sending message:', error);
           socket.emit('error', { message: 'Failed to send message' });

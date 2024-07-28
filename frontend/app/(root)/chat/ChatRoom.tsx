@@ -71,7 +71,6 @@ export default function ChatRoom({
       />
       <div className="flex-1 flex flex-col">
         <ChatWindow
-          isDarkMode={isDarkMode}
           selectedChatId={selectedChatId}
           socket={socket}
           sendMessage={sendMessage}

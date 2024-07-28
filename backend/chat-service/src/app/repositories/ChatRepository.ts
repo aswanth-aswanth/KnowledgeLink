@@ -85,7 +85,11 @@ export default class ChatRepository {
         doc._id.toString(),
         m.senderId.toString(),
         m.content,
-        m.createdAt
+        m.createdAt,
+        m.readBy.map(r => ({
+          userId: r.userId.toString(),
+          readAt: r.readAt
+        }))
       )),
       doc.createdAt,
       doc.updatedAt,
@@ -95,7 +99,7 @@ export default class ChatRepository {
 
   public async getChatById(chatId: string): Promise<Chat | null> {
     try {
-      const chat = await ChatModel.findById(chatId).populate('messages');
+      const chat = await ChatModel.findById(chatId);
 
       if (!chat) {
         return null;
@@ -186,6 +190,70 @@ export default class ChatRepository {
         throw new Error('Unknown error');
       }
     }
+  }
+
+  public async getMessageById(chatId: string, messageId: string): Promise<Message | null> {
+    const chatObjectId = new mongoose.Types.ObjectId(chatId);
+    const messageObjectId = new mongoose.Types.ObjectId(messageId);
+
+    const chatDoc = await ChatModel.findOne({ _id: chatObjectId }).exec();
+
+    if (!chatDoc) return null;
+
+    const messageDoc = chatDoc.messages.find(msg => msg._id.toString() === messageObjectId.toString());
+
+    if (!messageDoc) return null;
+
+    return this.mapMessageDocumentToEntity(messageDoc, chatId);
+  }
+
+  public async updateMessage(chatId: string, message: Message): Promise<Message> {
+    // console.log("updateMessage\n");
+    // console.log("chat Id : ", chatId);
+    // console.log("message : ", message);
+
+    const chatObjectId = new mongoose.Types.ObjectId(chatId);
+    const messageObjectId = new mongoose.Types.ObjectId(message.id);
+
+    const chatDoc = await ChatModel.findOne({ _id: chatObjectId }).exec();
+
+    if (!chatDoc) throw new Error('Chat not found');
+
+    const messageDoc = chatDoc.messages.find(msg => msg._id.toString() === messageObjectId.toString());
+
+    if (!messageDoc) throw new Error('Message not found');
+
+    // Update message fields
+    messageDoc.senderId = new mongoose.Types.ObjectId(message.senderId);
+    messageDoc.content = message.content;
+    messageDoc.createdAt = message.createdAt;
+    messageDoc.readBy = message.readBy.map(readReceipt => ({
+      userId: new mongoose.Types.ObjectId(readReceipt.userId),
+      readAt: readReceipt.readAt
+    }));
+
+    const updatedChatDoc = await chatDoc.save();
+    // console.log("updatedChatDoc : ",updatedChatDoc);
+
+    const updatedMessageDoc = updatedChatDoc.messages.find(msg => msg._id.toString() === messageObjectId.toString());
+
+    if (!updatedMessageDoc) throw new Error('Updated message not found');
+
+    return this.mapMessageDocumentToEntity(updatedMessageDoc, chatId);
+  }
+
+  private mapMessageDocumentToEntity(messageDoc: any, chatId: string): Message {
+    return new Message(
+      messageDoc._id.toString(),
+      chatId, // Use the chatId passed as a parameter
+      messageDoc.senderId.toString(),
+      messageDoc.content,
+      messageDoc.createdAt,
+      Array.isArray(messageDoc.readBy) ? messageDoc.readBy.map((readReceipt: any) => ({
+        userId: readReceipt.userId.toString(),
+        readAt: readReceipt.readAt,
+      })) : []
+    );
   }
 
 

@@ -5,6 +5,8 @@ import { jwtDecode } from "jwt-decode";
 import { Button } from "@/components/ui/button";
 import { Menu, User } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { MdCheck, MdReply } from "react-icons/md";
+import { BiCheckDouble } from "react-icons/bi";
 
 interface Message {
   id: string;
@@ -12,6 +14,7 @@ interface Message {
   senderId: string;
   content: string;
   createdAt: string;
+  readBy: [];
 }
 
 interface Chat {
@@ -24,7 +27,6 @@ interface Chat {
 }
 
 interface ChatWindowProps {
-  isDarkMode: boolean;
   selectedChatId: string | null;
   socket: Socket | null;
   sendMessage: (chatId: string, content: string) => void;
@@ -35,7 +37,6 @@ interface ChatWindowProps {
 }
 
 export default function ChatWindow({
-  isDarkMode,
   selectedChatId,
   socket,
   sendMessage,
@@ -67,7 +68,7 @@ export default function ChatWindow({
 
   useEffect(() => {
     if (selectedChatId && userChats.length > 0) {
-      const user = userChats.find(chat => chat.chatId === selectedChatId);
+      const user = userChats.find((chat) => chat.chatId === selectedChatId);
       setSelectedUser(user || null);
     } else {
       setSelectedUser(null);
@@ -81,6 +82,8 @@ export default function ChatWindow({
           const response = await apiClient.get(
             `/chat/${selectedChatId}/messages`
           );
+          console.log("selected ChatId  : ", selectedChatId);
+          console.log("fetched Messages : ", response.data);
           setMessages(response.data);
           scrollToBottom();
         } catch (error) {
@@ -104,14 +107,40 @@ export default function ChatWindow({
       const newMessageHandler = (message: Message) => {
         if (message.chatId === selectedChatId) {
           setMessages((prevMessages) => [...prevMessages, message]);
-          scrollToBottom();
         }
       };
 
       socket.on("new_message", newMessageHandler);
 
+      const messageReadHandler = ({
+        chatId,
+        messageId,
+        readBy,
+      }: {
+        chatId: string;
+        messageId: string;
+        readBy: [];
+      }) => {
+        /* console.group("messageReadHandler");
+        console.log("messageHandler called chatId : ", chatId);
+        console.log("messageId : ", messageId);
+        console.log("readBy : ", readBy);
+        console.log("chatId === selectedChatId : ", chatId === selectedChatId);
+        console.groupEnd(); */
+        if (chatId === selectedChatId) {
+          setMessages((prevMessages) =>
+            prevMessages.map((msg) =>
+              msg.id === messageId ? { ...msg, readBy: [...readBy] } : msg
+            )
+          );
+        }
+      };
+
+      socket.on("message_read", messageReadHandler);
+
       return () => {
         socket.off("new_message", newMessageHandler);
+        socket.off("message_read", messageReadHandler);
       };
     }
   }, [socket, selectedChatId, scrollToBottom]);
@@ -122,8 +151,6 @@ export default function ChatWindow({
       setNewMessage("");
     }
   };
-
-  
 
   const formatTime = (timestamp: string) => {
     return new Date(timestamp).toLocaleString("en-US", {
@@ -141,14 +168,31 @@ export default function ChatWindow({
     }
   };
 
+  const handleScroll = () => {
+    if (!chatContainerRef.current) return;
+    const container = chatContainerRef.current;
+    const containerBottom = container.scrollTop + container.clientHeight;
+    const containerHeight = container.scrollHeight;
+
+    if (containerBottom >= containerHeight - 100) {
+      messages.forEach((message) => {
+        if (
+          !(message.readBy.length != 0) &&
+          message.senderId !== currentUserId
+        ) {
+          socket?.emit("message_read", {
+            chatId: message.chatId,
+            messageId: message.id,
+          });
+        }
+      });
+    }
+  };
+
   return (
     <>
       <div className="flex-1 flex flex-col h-full">
-        <div
-          className={`${
-            isDarkMode ? "bg-gray-800 text-white" : "bg-white"
-          } p-4 border-b flex items-center`}
-        >
+        <div className="bg-white dark:bg-gray-800 dark:text-white  p-4 border-b flex items-center">
           <Button
             variant="ghost"
             size="icon"
@@ -183,9 +227,8 @@ export default function ChatWindow({
         </div>
         <div
           ref={chatContainerRef}
-          className={`flex-1 overflow-y-auto p-4 space-y-4 ${
-            isDarkMode ? "bg-gray-900" : "bg-gray-100"
-          } scrollbar-hide`}
+          onScroll={handleScroll}
+          className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-100 dark:bg-gray-900 scrollbar-hide"
         >
           {messages.length > 0 ? (
             messages.map((message) => (
@@ -198,77 +241,53 @@ export default function ChatWindow({
                 }`}
               >
                 <div
-                  className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                  className={`max-w-xs lg:max-w-md px-4 py-2 rounded-[6px] ${
                     message.senderId === currentUserId
-                      ? "bg-green-500 text-white"
-                      : isDarkMode
-                      ? "bg-gray-700 text-white"
-                      : "bg-gray-200"
+                      ? "bg-green-500 text-white dark:bg-[#005c4b] dark:text-white"
+                      : "bg-gray-200 dark:bg-gray-700 dark:text-white"
                   }`}
                 >
                   <p>{message.content}</p>
-                  <p
-                    className={`text-xs mt-1 ${
-                      message.senderId === currentUserId
-                        ? "text-white"
-                        : isDarkMode
-                        ? "text-gray-400"
-                        : "text-gray-500"
-                    }`}
-                  >
-                    {formatTime(message.createdAt)}
-                  </p>
+                  <div className="flex items-center justify-between ">
+                    <p
+                      className={`text-[0.6rem] flex items-center gap-1 mt-1 ${
+                        message.senderId === currentUserId
+                          ? "text-white dark:text-gray-400"
+                          : "text-gray-600 dark:text-gray-400"
+                      }`}
+                    >
+                      {formatTime(message.createdAt)}
+                      {message.readBy.length != 0 &&
+                        message.senderId === currentUserId && (
+                          <BiCheckDouble className="text-sm dark:text-blue-400" />
+                        )}
+                    </p>
+                  </div>
                 </div>
               </div>
             ))
           ) : (
-            <p
-              className={`${
-                isDarkMode ? "text-gray-400" : "text-gray-500"
-              } text-center`}
-            >
-              Start a conversation
-            </p>
+            <p className="dark:text-white">No messages yet.</p>
           )}
           <div ref={messagesEndRef} />
         </div>
-        <div
-          className={`${isDarkMode ? "bg-gray-800" : "bg-white"} p-4 border-t`}
-        >
-          <div className="flex items-center space-x-2">
-            <input
-              type="text"
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSend()}
-              className={`flex-1 border rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                isDarkMode ? "bg-gray-700 text-white" : "bg-white"
-              }`}
-              placeholder="Write a reply..."
-              disabled={!selectedChatId}
-            />
-
-            <button
-              onClick={handleSend}
-              className="bg-green-500 text-white rounded-full p-2 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
-              disabled={!selectedChatId}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-                />
-              </svg>
-            </button>
-          </div>
+        <div className="bg-white dark:bg-gray-800 dark:text-white p-4 flex items-center">
+          <input
+            type="text"
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleSend();
+            }}
+            className="flex-1 border rounded-full py-2 px-4 focus:outline-none bg-gray-200 border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600"
+            placeholder="Type a message"
+          />
+          <button
+            onClick={handleSend}
+            className="ml-4 bg-blue-500 text-white px-4 py-2 rounded-full"
+          >
+            Send
+          </button>
         </div>
       </div>
     </>
