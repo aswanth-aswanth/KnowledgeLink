@@ -36,7 +36,6 @@ export default function Header() {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
   const dispatch = useDispatch();
   const router = useRouter();
-  console.log("user : ", user);
   useEffect(() => {
     dispatch(checkTokenExpiration());
   }, [dispatch]);

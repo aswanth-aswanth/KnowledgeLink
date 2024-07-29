@@ -19,7 +19,7 @@ interface ChatRoomProps {
   socket: Socket | null;
   sendMessage: (chatId: string, content: string) => void;
   joinChatRoom: (chatId: string) => void;
-  token: string;
+  token: string | null;
 }
 
 export default function ChatRoom({

@@ -2,6 +2,15 @@ import ChatRepository from '../repositories/ChatRepository';
 import { Message, MessageWithIsOwn } from '../../domain/entities/Message';
 import SocketService from '../../infra/services/SocketService';
 
+interface MessageWithIsOwnAndSenderInfo extends MessageWithIsOwn {
+  senderInfo: {
+    _id: string;
+    username: string;
+    email: string;
+    image: string;
+  };
+}
+
 export default class SendMessage {
   private chatRepository: ChatRepository;
 
@@ -9,7 +18,7 @@ export default class SendMessage {
     this.chatRepository = chatRepository;
   }
 
-  public async execute(chatId: string, userId: string, content: string): Promise<MessageWithIsOwn> {
+  public async execute(chatId: string, userId: string, content: string): Promise<MessageWithIsOwnAndSenderInfo> {
     const chat = await this.chatRepository.getChatById(chatId);
 
     if (!chat) {
@@ -21,22 +30,31 @@ export default class SendMessage {
     }
 
     const message = Message.create(chatId, userId, content);
-    const savedMessage = await this.chatRepository.addMessage(chatId, message);
+    const savedMessageWithSenderInfo = await this.chatRepository.addMessageWithPopulatedSender(chatId, message);
 
     // Create a new object with the isOwn property for each participant
     const messageWithIsOwn = chat.participants.reduce((acc, participantId) => {
       acc[participantId] = {
-        ...savedMessage,
+        ...savedMessageWithSenderInfo,
         isOwn: participantId === userId
       };
       return acc;
-    }, {} as Record<string, MessageWithIsOwn>);
+    }, {} as Record<string, MessageWithIsOwnAndSenderInfo>);
 
     SocketService.getInstance().emitToChat(chatId, 'new_message', messageWithIsOwn);
 
+    chat.participants.forEach(participantId => {
+      console.log("participantId : ", participantId)
+      if (userId != participantId) {
+        SocketService.getInstance().emitToUser(participantId, 'notify', {
+          ...messageWithIsOwn[participantId]
+        });
+      }
+    });
+
     return {
-      ...savedMessage,
-      isOwn: true // The sender always considers the message as their own
+      ...savedMessageWithSenderInfo,
+      isOwn: true
     };
   }
 }

@@ -147,6 +147,7 @@ export default function Sidebar({
   useEffect(() => {
     if (socket) {
       socket.on("new_message", (message: Message) => {
+        console.log("newMessage received in Sidebar.tsx : ", message);
         setUserChats((prevChats) =>
           prevChats.map((chat) =>
             chat.chatId === message.chatId

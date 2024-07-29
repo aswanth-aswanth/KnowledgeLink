@@ -1,5 +1,5 @@
 // utils/auth.ts
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 interface JwtPayload {
     exp: number;
@@ -14,3 +14,10 @@ export const isTokenExpired = (token: string): boolean => {
         return true;
     }
 };
+
+export const decodedToken = (): Object => {
+    const token: string = localStorage.getItem('token') || "";
+    const decoded = jwtDecode(token);
+    return decoded;
+
+}

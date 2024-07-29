@@ -6,6 +6,7 @@ import apiClient from '@/api/apiClient';
 // Define types
 export interface User {
   id: string;
+  userId?: string;
   name: string;
   email: string;
   imageUrl?: string;

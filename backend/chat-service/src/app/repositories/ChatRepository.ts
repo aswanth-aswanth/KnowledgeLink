@@ -3,7 +3,7 @@ import { Message } from '../../domain/entities/Message';
 import ChatModel, { IChatDocument } from '../../infra/databases/mongoose/models/Chat';
 import mongoose from 'mongoose';
 import MessageModel, { IMessageDocument } from '../../infra/databases/mongoose/models/Message';
-import { IUser } from '../../infra/databases/mongoose/models/User';
+import UserModel, { IUser } from '../../infra/databases/mongoose/models/User';
 
 interface UserChatInfo {
   username: string;
@@ -301,15 +301,58 @@ export default class ChatRepository {
     return this.messageDocumentToEntity(newMessage, chatId);
   }
 
+  public async addMessageWithPopulatedSender(chatId: string, message: Message): Promise<any> {
+    const chat = await ChatModel.findById(chatId);
+    if (!chat) {
+      throw new Error('Chat not found');
+    }
+
+    const newMessage = new MessageModel({
+      senderId: new mongoose.Types.ObjectId(message.senderId),
+      content: message.content,
+      createdAt: message.createdAt
+    });
+
+    chat.messages.push(newMessage);
+    await chat.save();
+
+    const populatedSender = await UserModel.findById(message.senderId).lean();
+
+    if (!populatedSender) {
+      throw new Error('Sender not found');
+    }
+
+    const messageWithSenderInfo = {
+      ...this.messageDocumentToEntity(newMessage, chatId),
+      senderInfo: {
+        _id: populatedSender._id.toString(),
+        username: populatedSender.username,
+        image: populatedSender.image
+      }
+    };
+
+    return messageWithSenderInfo;
+  }
+
   private messageDocumentToEntity(doc: IMessageDocument, chatId: string): Message {
     return new Message(
       doc._id.toString(),
       chatId,
       doc.senderId.toString(),
       doc.content,
-      doc.createdAt
+      doc.createdAt,
     );
   }
+
+  // private messageDocumentToEntity(doc: IMessageDocument, chatId: string): Message {
+  //   return new Message(
+  //     doc._id.toString(),
+  //     chatId,
+  //     doc.senderId.toString(),
+  //     doc.content,
+  //     doc.createdAt
+  //   );
+  // }
 
   public async addUserToChat(chatId: string, userId: string): Promise<Chat> {
     const chat = await ChatModel.findByIdAndUpdate(

@@ -3,7 +3,7 @@ import apiClient from "@/api/apiClient";
 import { Socket } from "socket.io-client";
 import { jwtDecode } from "jwt-decode";
 import { Button } from "@/components/ui/button";
-import { Menu, User } from "lucide-react";
+import { CloudLightning, Menu, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { MdCheck, MdReply } from "react-icons/md";
 import { BiCheckDouble } from "react-icons/bi";
@@ -83,7 +83,7 @@ export default function ChatWindow({
             `/chat/${selectedChatId}/messages`
           );
           console.log("selected ChatId  : ", selectedChatId);
-          console.log("fetched Messages : ", response.data);
+          // console.count(`fetched Messages :  ${response.data}`);
           setMessages(response.data);
           scrollToBottom();
         } catch (error) {
@@ -96,15 +96,18 @@ export default function ChatWindow({
     } else {
       setMessages([]);
     }
-  }, [selectedChatId, joinChatRoom, scrollToBottom]);
+  }, [socket, selectedChatId, joinChatRoom, scrollToBottom]);
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, scrollToBottom]);
+  }, [scrollToBottom]);
 
   useEffect(() => {
     if (socket) {
       const newMessageHandler = (message: Message) => {
+        console.count("newMessageHandler called ");
+        console.log(`message :  ${message}`);
+
         if (message.chatId === selectedChatId) {
           setMessages((prevMessages) => [...prevMessages, message]);
         }
@@ -177,7 +180,7 @@ export default function ChatWindow({
     if (containerBottom >= containerHeight - 100) {
       messages.forEach((message) => {
         if (
-          !(message.readBy.length != 0) &&
+          !(message?.readBy?.length != 0) &&
           message.senderId !== currentUserId
         ) {
           socket?.emit("message_read", {
@@ -188,6 +191,8 @@ export default function ChatWindow({
       });
     }
   };
+
+  // console.count(`message state :  ${messages}`);
 
   return (
     <>
@@ -207,7 +212,7 @@ export default function ChatWindow({
               onClick={openProfile}
             >
               <img
-                src={selectedUser.image || "/default-avatar.png"}
+                src={selectedUser.image || "/defaultUserImage.png"}
                 alt={selectedUser.username}
                 className="w-8 h-8 rounded-full mr-2"
               />
@@ -257,7 +262,7 @@ export default function ChatWindow({
                       }`}
                     >
                       {formatTime(message.createdAt)}
-                      {message.readBy.length != 0 &&
+                      {message?.readBy?.length != 0 &&
                         message.senderId === currentUserId && (
                           <BiCheckDouble className="text-sm dark:text-blue-400" />
                         )}
