@@ -55,8 +55,6 @@ export const initializeSocket =
 
     newSocket.on("notify", (msg) => {
       console.log("New Message socketSlice : ", msg);
-      console.log("New Message socketSlicemessage : ", msg.message);
-
       toast.custom(
         (t) => (
           <div

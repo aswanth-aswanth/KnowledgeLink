@@ -15,8 +15,12 @@ interface Message {
   content: string;
   createdAt: string;
   readBy: [];
+  isOwn?: Boolean;
 }
 
+interface EncapsulatedMessage {
+  [key: string]: Message;
+}
 interface Chat {
   userId: string;
   chatId: string;
@@ -96,21 +100,29 @@ export default function ChatWindow({
     } else {
       setMessages([]);
     }
-  }, [socket, selectedChatId, joinChatRoom, scrollToBottom]);
+  }, [selectedChatId, joinChatRoom, scrollToBottom]);
 
   useEffect(() => {
     scrollToBottom();
-  }, [scrollToBottom]);
+  }, [messages, scrollToBottom]);
 
   useEffect(() => {
     if (socket) {
-      const newMessageHandler = (message: Message) => {
+      const newMessageHandler = (encapsulatedMessage: EncapsulatedMessage) => {
         console.count("newMessageHandler called ");
-        console.log(`message :  ${message}`);
+        console.log("already messages : ", messages);
+        console.log(`newMessage :  ${encapsulatedMessage}`);
 
-        if (message.chatId === selectedChatId) {
-          setMessages((prevMessages) => [...prevMessages, message]);
-        }
+        Object.keys(encapsulatedMessage).forEach((key) => {
+          const message = encapsulatedMessage[key];
+          console.log("msg : iterate : ", key);
+          console.log("message[msg] : ", message);
+          if (message.isOwn) {
+            if (message.chatId === selectedChatId) {
+              setMessages((prevMessages) => [...prevMessages, message]);
+            }
+          }
+        });
       };
 
       socket.on("new_message", newMessageHandler);
@@ -175,6 +187,7 @@ export default function ChatWindow({
     if (!chatContainerRef.current) return;
     const container = chatContainerRef.current;
     const containerBottom = container.scrollTop + container.clientHeight;
+
     const containerHeight = container.scrollHeight;
 
     if (containerBottom >= containerHeight - 100) {

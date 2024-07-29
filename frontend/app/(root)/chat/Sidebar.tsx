@@ -36,6 +36,9 @@ interface GroupChat {
   lastMessage: string;
   updatedAt: string;
 }
+interface EncapsulatedMessage {
+  [key: string]: Message;
+}
 
 interface SidebarProps {
   isDarkMode: boolean;
@@ -146,19 +149,22 @@ export default function Sidebar({
 
   useEffect(() => {
     if (socket) {
-      socket.on("new_message", (message: Message) => {
-        console.log("newMessage received in Sidebar.tsx : ", message);
-        setUserChats((prevChats) =>
-          prevChats.map((chat) =>
-            chat.chatId === message.chatId
-              ? {
-                  ...chat,
-                  lastMessage: message.content,
-                  updatedAt: message.createdAt,
-                }
-              : chat
-          )
-        );
+      socket.on("new_message", (encapsulatedMessage: EncapsulatedMessage) => {
+        Object.keys(encapsulatedMessage).forEach((key) => {
+          const message = encapsulatedMessage[key];
+          console.log("newMessage received in Sidebar.tsx : ", message);
+          setUserChats((prevChats) =>
+            prevChats.map((chat) =>
+              chat.chatId === message.chatId
+                ? {
+                    ...chat,
+                    lastMessage: message.content,
+                    updatedAt: message.createdAt,
+                  }
+                : chat
+            )
+          );
+        });
       });
     }
 
