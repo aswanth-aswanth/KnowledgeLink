@@ -36,7 +36,9 @@ const Rectangle: React.FC<RectangleProps> = ({
         height={rect.height}
         fill="white"
         stroke={isSelected ? "blue" : "black"}
-        strokeWidth="1"
+        strokeWidth="0.4"
+        rx="2"
+        ry="2"
         onClick={onSelect}
         style={{ cursor: "pointer" }}
       />

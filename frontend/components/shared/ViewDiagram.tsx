@@ -126,7 +126,7 @@ const ViewDiagram: React.FC<ViewDiagramProps> = ({
           viewBox={`0 0 ${svgWidth} ${svgHeight}`}
           preserveAspectRatio="xMidYMid meet"
           style={{
-            maxWidth: "100%",
+            maxWidth: "90%",
             maxHeight: "100%",
             width: "100%",
             height: "auto",
