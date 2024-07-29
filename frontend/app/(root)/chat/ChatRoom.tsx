@@ -80,7 +80,7 @@ export default function ChatRoom({
           userChats={userChats}
         />
       </div>
-      <ProfileSection isDarkMode={isDarkMode} />
+      {/* <ProfileSection isDarkMode={isDarkMode} /> */}
     </div>
   );
 }

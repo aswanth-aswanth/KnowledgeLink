@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Loader2 } from "lucide-react";
 import { FaUserCircle } from "react-icons/fa";
+import apiClient from "@/api/apiClient";
 
 interface User {
   _id: string;
@@ -41,13 +42,11 @@ const UserSearch: React.FC<UserSearchProps> = ({ onAddMembers }) => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch(
+      const response = await apiClient(
         `/profile/search?name=${encodeURIComponent(term)}`
       );
-      if (!response.ok) {
-        throw new Error("Failed to fetch users");
-      }
-      const data = await response.json();
+      const {data} = response;
+      console.log("response : ", data);
       setSearchResults(data);
     } catch (err) {
       setError("An error occurred while fetching users");

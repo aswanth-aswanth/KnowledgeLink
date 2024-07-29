@@ -8,7 +8,7 @@ const Home: React.FC = () => {
   return (
     <ReduxProvider>
       <EditorProvider>
-        <Container maxWidth="md">
+        <Container maxWidth="md min-h-[91.9vh]">
           <NestedNodeTaker />
         </Container>
       </EditorProvider>
