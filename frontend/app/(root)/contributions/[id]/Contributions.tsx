@@ -77,9 +77,7 @@ export default function ContributionsPage() {
                 <CardHeader>
                   <CardTitle className="flex items-center">
                     <Avatar className="mr-2">
-                      <AvatarFallback>
-                        {contribution.contributorEmail[0].toUpperCase()}
-                      </AvatarFallback>
+                      <AvatarFallback></AvatarFallback>
                     </Avatar>
                     {contribution.contributorEmail}
                   </CardTitle>

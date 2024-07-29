@@ -14,7 +14,7 @@ interface Contribution {
   _id: string;
   roadmapId: string;
   contributedDocumentIds: string[];
-  contributorEmail: string;
+  contributorId: string;
   contributions: {
     id: string;
     content: {
@@ -60,6 +60,7 @@ async function mergeContribution(roadmapId: string, mergeData: any) {
   console.groupEnd();
 
   const res = await apiClient.patch(`/roadmap/${roadmapId}/merge`, mergeData);
+  console.log("response of merge : ",res);
   return res.data;
 }
 
@@ -71,7 +72,7 @@ const TopicWithContributions: React.FC<{
   topic: Topic;
   contributions: Contribution[];
   level: string;
-  onMerge: (topicId: string, contributorEmail: string, content: string) => void;
+  onMerge: (topicId: string, contributorId: string, content: string) => void;
 }> = ({ topic, contributions, level, onMerge }) => {
   const { isDarkMode } = useDarkMode();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -153,7 +154,7 @@ const TopicWithContributions: React.FC<{
             >
               <CardHeader>
                 <CardTitle className="text-sm">
-                  Contribution by {contribution.contributorEmail}
+                  Contribution by {contribution.contributorId}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -166,7 +167,7 @@ const TopicWithContributions: React.FC<{
                         onClick={() =>
                           onMerge(
                             topic.uniqueId,
-                            contribution.contributorEmail,
+                            contribution.contributorId,
                             cont.content.data
                           )
                         }
@@ -218,12 +219,12 @@ export default function RoadmapViewerWithContributions() {
 
   const handleMerge = async (
     topicId: string,
-    contributorEmail: string,
+    contributorId: string,
     content: string
   ) => {
     try {
       const mergeData = {
-        contributorEmail,
+        contributorId,
         contributedDocument: {
           id: topicId,
           data: {

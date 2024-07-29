@@ -1,5 +1,5 @@
 import RoadmapRepository from "../../repositories/RoadmapRepository";
-import Contribution from "../../../infra/databases/mongoose/models/Contribution"; // Make sure to import the Contribution model
+import Contribution from "../../../infra/databases/mongoose/models/Contribution";
 
 export default class MergeContribution {
     private roadmapRepository: RoadmapRepository;
@@ -54,19 +54,39 @@ export default class MergeContribution {
 
         await roadmap.save();
 
-        // After successfully merging, update the Contribution document
-        const updatedContribution = await Contribution.findOneAndUpdate(
-            {
-                roadmapId: roadmapId,
-                contributorId: contributorId,
-                'contributions.id': id
-            },
-            { $set: { isMerged: true } },
-            { new: true }
-        );
+        // Find all contributions for this roadmap and contributorId
+        const contributions = await Contribution.find({
+            roadmapId: roadmapId,
+            contributorId: contributorId,
+            'contributions.id': id
+        });
 
-        if (!updatedContribution) {
-            console.warn('Contribution document not found or not updated');
+        for (const contribution of contributions) {
+            const updatedContribution = await Contribution.findOneAndUpdate(
+                {
+                    _id: contribution._id,
+                    'contributions.id': id
+                },
+                {
+                    $set: {
+                        'contributions.$.isMerged': true
+                    }
+                },
+                { new: true }
+            );
+
+            if (updatedContribution) {
+                // Check if all contributions in this document are merged
+                const allMerged = updatedContribution.contributions.every(cont => cont.isMerged);
+
+                if (allMerged) {
+                    // If all contributions are merged, set isFullyMerged to true
+                    await Contribution.findByIdAndUpdate(
+                        updatedContribution._id,
+                        { $set: { isFullyMerged: true } }
+                    );
+                }
+            }
         }
     }
 }

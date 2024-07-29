@@ -13,7 +13,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { useToast } from "@/components/ui/use-toast";
+import toast from "react-hot-toast";
 
 async function getRoadmapData(id: string) {
   try {
@@ -33,6 +33,7 @@ async function submitContribution(roadmapId: string, contributionData: any) {
       contributionData
     );
     console.log("Res submit Controller : ", res.data);
+
     return res.data;
   } catch (error) {
     console.log("Error submitting contribution: ", error);
@@ -48,7 +49,6 @@ export default function RoadmapPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [contributions, setContributions] = useState({});
   const { isDarkMode } = useDarkMode();
-  const { toast } = useToast();
 
   useEffect(() => {
     if (params.id) {
@@ -84,16 +84,11 @@ export default function RoadmapPage() {
       setIsDialogOpen(false);
       setContributions({});
       setIsEditMode(false);
-      toast({
-        title: "Contribution submitted",
-        description: "Your contribution has been successfully submitted.",
+      toast("Your contribution has been successfully submitted.", {
+        icon: "👏",
       });
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to submit contribution. Please try again.",
-        variant: "destructive",
-      });
+      toast.error("Failed to submit contribution. Please try again.");
     }
   };
 
@@ -113,7 +108,9 @@ export default function RoadmapPage() {
             <Button
               onClick={() => setIsEditMode(!isEditMode)}
               variant="outline"
-              className={`mr-2 md:mr-16 lg:mr-32 ${isDarkMode&&'text-white '}`}
+              className={`mr-2 md:mr-16 lg:mr-32 ${
+                isDarkMode && "text-white "
+              }`}
             >
               {isEditMode ? "View Mode" : "Edit Mode"}
             </Button>

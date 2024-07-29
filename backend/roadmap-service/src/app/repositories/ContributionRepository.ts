@@ -14,7 +14,7 @@ export default class ContributionRepository {
             if (roadmap.type === 'public_voting') {
                 return true; // Public collaboration, allow contribution
             } else {
-                // Check if user is a member of the roadmap
+                // Check if user is a member of the roadmap 
                 return roadmap.members.includes(userEmail);
             }
         } catch (error) {
@@ -36,6 +36,11 @@ export default class ContributionRepository {
                 throw new Error('User is not allowed to contribute to this roadmap');
             }
 
+            contribution.contributions = contribution.contributions.map(cont => ({
+                ...cont,
+                isMerged: false
+            }));
+
             const newContribution = new Contribution(contribution);
             await newContribution.save();
             return "Successfully contributed";
@@ -50,10 +55,22 @@ export default class ContributionRepository {
         }
     }
 
-    public async getContributionsByRoadmapId(roadmapId: string): Promise<IContribution[]> {
+    public async getContributionsByRoadmapId(roadmapId: string): Promise<IContribution[] | any> {
         try {
-            const data = await Contribution.find({ roadmapId, isMerged: false }).exec();
-            return data;
+            // Find contributions that are not fully merged
+            const data = await Contribution.find({ roadmapId, isFullyMerged: false }).exec();
+
+            // Filter out merged documents from each contribution
+            const filteredData = data.map(contribution => {
+                const contributionObj = contribution.toObject();
+                return {
+                    ...contributionObj,
+                    contributions: contributionObj.contributions.filter(doc => !doc.isMerged)
+                };
+            });
+
+            // Remove contributions that have no unmerged documents left
+            return filteredData.filter(contribution => contribution.contributions.length > 0);
         } catch (error) {
             if (error instanceof Error) {
                 console.error(`Error fetching contributions for roadmapId ${roadmapId}: ${error.message}`);

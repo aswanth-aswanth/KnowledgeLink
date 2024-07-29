@@ -10,11 +10,8 @@ export default function RoadmapPage() {
   }
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-4 pt-10"></div>
-      <div className="max-w-[900px] mx-auto">
+      <div className="max-w-[900px] min-h-[91.9vh] mx-auto">
         <RoadmapViewerWithContributions />
       </div>
-    </div>
   );
 }

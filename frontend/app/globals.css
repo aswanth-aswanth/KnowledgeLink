@@ -7,7 +7,9 @@
   margin: 0;
   scroll-behavior: smooth;
 }
-
+html {
+  height: 100vh;
+}
 body {
   font-family: var(--font-poppins);
   height: 100vh;
@@ -66,8 +68,6 @@ body {
 .article-content .media-container button:hover {
   opacity: 1;
 }
-
-
 
 /* ========================================== TAILWIND STYLES */
 @layer utilities {

@@ -3,11 +3,15 @@ import { Document } from 'mongoose';
 interface IContribution extends Document {
   roadmapId: string;
   contributorId: string;
-  contributedDocumentIds: string[],
-  contributions: object[],
+  contributedDocumentIds: string[];
+  contributions: {
+    id: string;
+    content: object;
+    isMerged: boolean;
+  }[];
   createdAt: Date;
   updatedAt: Date;
-  isMerged: Boolean;
+  isFullyMerged: boolean;
 }
 
 export { IContribution };
