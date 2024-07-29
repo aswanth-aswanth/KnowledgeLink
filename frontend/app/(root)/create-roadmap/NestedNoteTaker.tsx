@@ -183,7 +183,8 @@ const NestedNoteTaker: React.FC = () => {
         setShowEmptyRootWarning(true);
         return;
       }
-      transformedTopics.members = selectedMembers.map((member) => member.email);
+      console.log("handleContinue : ",selectedMembers);
+      transformedTopics.members = selectedMembers.map((member) => member._id);
       transformedTopics.type = selectedRoadmapType;
       dispatch(setEditorData(transformedTopics));
       router.push("/create-diagram");
@@ -213,7 +214,11 @@ const NestedNoteTaker: React.FC = () => {
           >
             <Edit className="mr-2 h-4 w-4" /> Edit Root
           </Button>
-          <Button onClick={handleResetTopics} variant="outline" className="dark:text-white">
+          <Button
+            onClick={handleResetTopics}
+            variant="outline"
+            className="dark:text-white"
+          >
             <Trash className="mr-2 h-4 w-4" /> Reset
           </Button>
         </div>
