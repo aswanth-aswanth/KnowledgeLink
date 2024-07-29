@@ -6,8 +6,8 @@ export default class ContributeToRoadmapController {
     public async handle(req: any, res: Response) {
         const contributionData = {
             roadmapId: req.params.id,
-            contributorId: req.user.userId,
-            ...req.body
+            ...req.body,
+            contributorId: req.user.userId
         };
         const contributions = new ContributeRoadmap(
             new ContributionRepository()
