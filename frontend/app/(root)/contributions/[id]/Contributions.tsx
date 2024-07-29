@@ -21,10 +21,10 @@ interface Contribution {
   }[];
 }
 
-async function getContributions(roadmapId: string): Promise<Contribution[]> {
+async function fetchContributions(roadmapId: string): Promise<Contribution[]> {
   try {
-    const res = await apiClient.get(`/roadmap/${roadmapId}/contributions`);
-    return res.data;
+    const response = await apiClient.get(`/roadmap/${roadmapId}/contributions`);
+    return response.data;
   } catch (error) {
     console.error("Error fetching contributions:", error);
     throw error;
@@ -32,73 +32,85 @@ async function getContributions(roadmapId: string): Promise<Contribution[]> {
 }
 
 export default function ContributionsPage() {
-  const params = useParams();
+  const { id: roadmapId } = useParams();
   const [contributions, setContributions] = useState<Contribution[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { isDarkMode } = useDarkMode();
 
   useEffect(() => {
-    if (params.id) {
-      setIsLoading(true);
-      getContributions(params.id as string)
-        .then((data) => {
-          console.log("Data : ", data);
-          setContributions(data);
-          setIsLoading(false);
-        })
-        .catch((err) => {
-          setError("Failed to fetch contributions. Please try again later.");
-          setIsLoading(false);
-        });
+    async function loadContributions() {
+      if (!roadmapId) return;
+
+      try {
+        setIsLoading(true);
+        const data = await fetchContributions(roadmapId as string);
+        setContributions(data);
+      } catch (err) {
+        setError("Failed to fetch contributions. Please try again later.");
+      } finally {
+        setIsLoading(false);
+      }
     }
-  }, [params.id]);
 
-  if (isLoading) {
-    return <div className="text-center p-4">Loading contributions...</div>;
-  }
+    loadContributions();
+  }, [roadmapId]);
 
-  if (error) {
-    return <div className="text-center p-4 text-red-500">{error}</div>;
-  }
+  if (isLoading) return <LoadingMessage />;
+  if (error) return <ErrorMessage message={error} />;
+  if (contributions.length === 0)
+    return <NoContributionsMessage isDarkMode={isDarkMode} />;
 
   return (
-    <>
-      {contributions.length != 0 ? (
-        <div className="container mx-auto p-4">
-          <h1
-            className={`text-2xl font-bold mb-4 ${isDarkMode && "text-white"} `}
-          >
-            Contributions for Roadmap
-          </h1>
-          <ScrollArea className="h-max rounded-md border p-4">
-            {contributions.map((contribution) => (
-              <Card key={contribution._id} className="mb-4">
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <Avatar className="mr-2">
-                      <AvatarFallback></AvatarFallback>
-                    </Avatar>
-                    {contribution.contributorEmail}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {contribution.contributions.map((item) => (
-                    <div key={item.id} className="mb-2">
-                      <p className="text-sm text-gray-500">ID: {item.id}</p>
-                      <p className="mt-1">{item.content.data}</p>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-            ))}
-          </ScrollArea>
-        </div>
-      ) : (
-        <div className={`pb-10 ${isDarkMode ? "text-white" : "text-gray-800"}`}>
-          No contributions
-        </div>
-      )}
-    </>
+    <div className="container mx-auto p-4">
+      <h1
+        className={`text-2xl font-bold mb-4 ${isDarkMode ? "text-white" : ""}`}
+      >
+        Contributions for Roadmap
+      </h1>
+      <ScrollArea className="h-max rounded-md border p-4">
+        {contributions.map((contribution) => (
+          <ContributionCard
+            key={contribution._id}
+            contribution={contribution}
+          />
+        ))}
+      </ScrollArea>
+    </div>
   );
 }
+
+const LoadingMessage = () => (
+  <div className="text-center p-4">Loading contributions...</div>
+);
+
+const ErrorMessage = ({ message }: { message: string }) => (
+  <div className="text-center p-4 text-red-500">{message}</div>
+);
+
+const NoContributionsMessage = ({ isDarkMode }: { isDarkMode: boolean }) => (
+  <div className={`pb-10 ${isDarkMode ? "text-white" : "text-gray-800"}`}>
+    No contributions
+  </div>
+);
+
+const ContributionCard = ({ contribution }: { contribution: Contribution }) => (
+  <Card className="mb-4">
+    <CardHeader>
+      <CardTitle className="flex items-center">
+        <Avatar className="mr-2">
+          <AvatarFallback />
+        </Avatar>
+        {contribution.contributorEmail}
+      </CardTitle>
+    </CardHeader>
+    <CardContent>
+      {contribution.contributions.map((item) => (
+        <div key={item.id} className="mb-2">
+          <p className="text-sm text-gray-500">ID: {item.id}</p>
+          <p className="mt-1">{item.content.data}</p>
+        </div>
+      ))}
+    </CardContent>
+  </Card>
+);
