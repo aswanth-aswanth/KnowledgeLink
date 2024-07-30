@@ -30,7 +30,7 @@ const Following: React.FC = () => {
 
   return (
     <Provider store={store}>
-      <div className="-mt-2 pt-6 pb-8">
+      <div className="-mt-14 md:-mt-2 pt-6 pb-8">
         <Tabs
           tabs={tabs}
           activeTab={activeTab}
@@ -40,7 +40,7 @@ const Following: React.FC = () => {
           tabFor="explore"
         />
       </div>
-      <div className="flex flex-col mb-6 items-center font-semibold gap-4 text-gray-700 mt-4">
+      <div className="flex flex-col mb-6 items-center font-semibold gap-4  text-xs text-gray-700 dark:text-white mt-4">
         <CreatePostButton onClick={() => setIsModalOpen(true)} />
         <p>Create a post</p>
         <CreatePostModal

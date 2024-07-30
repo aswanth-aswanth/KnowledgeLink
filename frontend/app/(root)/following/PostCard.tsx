@@ -21,7 +21,7 @@ interface Post {
   };
   audios?: string[];
   createdAt: Date;
-  creatorName: string;
+  creatorName?: string;
   creatorEmail: string;
   likes: string[];
   isLiked: boolean;
@@ -75,25 +75,33 @@ export function PostCard({ post, onLike, onShare, onSave }: PostCardProps) {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-md overflow-hidden mb-6">
-      <div className="p-4">
+    <div className="bg-white dark:bg-gray-800 sm:rounded-2xl shadow-md overflow-hidden mb-6">
+      <div className="p-1 py-3 sm:p-4">
         <div className="flex items-center mb-4">
           <img
             src={`https://ui-avatars.com/api/?name=${post.creatorName}&background=random`}
             alt={post.creatorName}
-            className="w-12 h-12 rounded-full mr-4"
+            className="w-6 h-6 sm:w-10 sm:h-10 rounded-full mr-2 sm:mr-4"
           />
           <div>
-            <h3 className="font-bold text-lg">{post.creatorName}</h3>
-            <p className="text-gray-600 text-sm">{post.creatorEmail}</p>
+            <h3 className="font-bold text-lg dark:text-white">
+              {post.creatorName}
+            </h3>
+            <p className="text-gray-600 dark:text-gray-300 text-sm">
+              {post.creatorEmail}
+            </p>
           </div>
         </div>
 
         {/* Title */}
-        <h2 className="text-2xl font-bold mb-4">{post.title}</h2>
+        <h2 className="sm:text-2xl font-bold mb-4 dark:text-white">
+          {post.title}
+        </h2>
 
         {/* Content */}
-        <p className="text-gray-800 mb-4">{post.description}</p>
+        <p className="text-sm sm:text-base text-gray-800 dark:text-gray-200 mb-4">
+          {post.description}
+        </p>
 
         {/* Media Gallery */}
         {mediaItems.length > 0 && (
@@ -103,16 +111,18 @@ export function PostCard({ post, onLike, onShare, onSave }: PostCardProps) {
         )}
 
         {/* Footer */}
-        <div className="flex justify-between items-center text-gray-600 text-sm mb-4">
+        <div className="flex justify-between items-center text-gray-600 dark:text-gray-400 text-xs sm:text-sm mb-4">
           <span>{new Date(post.createdAt).toLocaleString()}</span>
         </div>
 
         {/* Action Buttons */}
-        <div className="flex justify-start gap-4 mb-4">
+        <div className="flex text-xs sm:text-base justify-start gap-4 mb-4">
           <button
             onClick={() => onLike(post._id)}
             className={`flex items-center ${
-              post.isLiked ? "text-red-500" : "text-gray-600 hover:text-red-500"
+              post.isLiked
+                ? "text-red-500"
+                : "text-gray-600 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400"
             }`}
           >
             <Heart
@@ -123,21 +133,21 @@ export function PostCard({ post, onLike, onShare, onSave }: PostCardProps) {
           </button>
           <button
             onClick={() => setShowComments(!showComments)}
-            className="flex items-center text-gray-600 hover:text-green-500"
+            className="flex items-center text-gray-600 dark:text-gray-300 hover:text-green-500 dark:hover:text-green-400"
           >
             <MessageSquareMore className="w-5 h-5 mr-1" />
             <span>Comments ({post.comments.length})</span>
           </button>
           <button
             onClick={() => onShare(post._id)}
-            className="flex items-center text-gray-600 hover:text-blue-500"
+            className="flex items-center text-gray-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
           >
             <Share className="w-5 h-5 mr-1" />
             <span>Share</span>
           </button>
           <button
             onClick={() => onSave(post._id)}
-            className="flex items-center text-gray-600 hover:text-green-500"
+            className="flex items-center text-gray-600 dark:text-gray-300 hover:text-green-500 dark:hover:text-green-400"
           >
             <Bookmark className="w-5 h-5 mr-1" />
             <span>Save</span>

@@ -18,7 +18,7 @@ interface Post {
   tags?: string[];
   createdAt: Date;
   updatedAt: Date;
-  creatorEmail: string;
+  creatorEmail?: string;
   likes: string[];
   comments: any[];
   isLiked: boolean;

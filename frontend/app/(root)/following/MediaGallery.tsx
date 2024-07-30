@@ -146,7 +146,7 @@ export function MediaGallery({ mediaItems }: MediaGalleryProps) {
 
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="max-w-[90vw] max-h-[90vh] p-0 bg-black w-full h-full flex items-center justify-center">
-          <div className="relative w-full h-full">
+          <div className="relative w-full h-full flex items-center">
             {renderMediaItem(mediaItems[currentIndex], currentIndex, true)}
             <Button
               variant="outline"
