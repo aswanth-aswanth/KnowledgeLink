@@ -75,6 +75,20 @@ export default class ChatRepository {
   //   }
   // }
 
+  public async deleteMessage(chatId: string, messageId: string): Promise<void> {
+    const chatObjectId = new mongoose.Types.ObjectId(chatId);
+    const messageObjectId = new mongoose.Types.ObjectId(messageId);
+  
+    const result = await ChatModel.updateOne(
+      { _id: chatObjectId },
+      { $pull: { messages: { _id: messageObjectId } } }
+    );
+  
+    if (result.modifiedCount === 0) {
+      throw new Error('Message not found or already deleted');
+    }
+  }
+
   private documentToEntity(doc: IChatDocument): Chat {
     return new Chat(
       doc._id.toString(),

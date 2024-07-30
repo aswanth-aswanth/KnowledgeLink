@@ -11,6 +11,7 @@ import RemoveUserFromGroupChatController from '../../../infra/http/controllers/R
 import UpdateChatController from '../../../infra/http/controllers/UpdateChatController';
 import DeleteChatController from '../../../infra/http/controllers/DeleteChatController';
 import GetUserGroupChatsController from '../../../infra/http/controllers/GetUserGroupChatsController';
+import DeleteMessageController from '../../../infra/http/controllers/DeleteMessageController';
 
 const chatRouter = Router();
 
@@ -25,6 +26,7 @@ const removeUserFromGroupChatController = new RemoveUserFromGroupChatController(
 const updateChatController = new UpdateChatController();
 const deleteChatController = new DeleteChatController();
 const getUserGroupChatsController = new GetUserGroupChatsController();
+const deleteMessageController = new DeleteMessageController();
 
 chatRouter.post("/individual", authMiddleware, createIndividualChatController.handle);
 chatRouter.post("/group", authMiddleware, createGroupChatController.handle);
@@ -37,5 +39,6 @@ chatRouter.post("/:chatId/remove-user", authMiddleware, removeUserFromGroupChatC
 chatRouter.put("/:chatId", authMiddleware, updateChatController.handle);
 chatRouter.delete("/:chatId", authMiddleware, deleteChatController.handle);
 chatRouter.get("/user/group-chats", authMiddleware, getUserGroupChatsController.handle);
+chatRouter.delete("/:chatId/message/:messageId", authMiddleware, deleteMessageController.handle);
 
 export default chatRouter;
