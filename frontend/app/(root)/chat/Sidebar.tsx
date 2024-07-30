@@ -166,15 +166,54 @@ export default function Sidebar({
           );
         });
       });
+
+      socket.on(
+        "delete_message",
+        ({ chatId, messageId }: { chatId: string; messageId: string }) => {
+          setUserChats((prevChats) =>
+            prevChats.map((chat) => {
+              if (chat.chatId === chatId) {
+                // If the deleted message was the last message, we need to fetch the new last message
+                if (chat.lastMessage === messageId) {
+                  // Implement a function to fetch the new last message
+                  fetchNewLastMessage(chatId).then((newLastMessage) => {
+                    setUserChats((prevChats) =>
+                      prevChats.map((c) =>
+                        c.chatId === chatId
+                          ? {
+                              ...c,
+                              lastMessage: newLastMessage.content,
+                              updatedAt: newLastMessage.createdAt,
+                            }
+                          : c
+                      )
+                    );
+                  });
+                }
+              }
+              return chat;
+            })
+          );
+        }
+      );
     }
 
     return () => {
       if (socket) {
         socket.off("new_message");
+        socket.off("delete_message");
       }
     };
   }, [socket, setUserChats]);
-
+  const fetchNewLastMessage = async (chatId: string) => {
+    try {
+      const response = await apiClient.get(`/chat/${chatId}/messages?limit=1`);
+      return response.data[0]; // Assuming the API returns an array with the last message
+    } catch (error) {
+      console.error("Error fetching new last message:", error);
+      return { content: "No messages", createdAt: new Date().toISOString() };
+    }
+  };
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (

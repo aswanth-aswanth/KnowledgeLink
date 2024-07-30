@@ -19,7 +19,7 @@ export default function ChatPage() {
   const joinChatRoom = (chatId: string) => {
     if (socket) {
       console.log(`Joining chat room: ${chatId}`);
-      socket.emit("join_room", chatId);
+      socket.emit("join_room", chatId); 
     } else {
       console.error("Socket is not connected");
     }
