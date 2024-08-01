@@ -6,6 +6,7 @@ import MergeContributionController from "../../../infra/http/controllers/Roadmap
 import GetSingleRoadmapController from "../../../infra/http/controllers/Roadmap/GetSingleRoadmapController";
 import GetAllSubscribedController from "../../../infra/http/controllers/Roadmap/GetAllSubscribedController";
 import GetRoadmapsByTypeController from "../../../infra/http/controllers/Roadmap/GetRoadmapsByTypeController";
+import GetAllRoadmapsController from "../../../infra/http/controllers/Roadmap/GetAllRoadmapsController";
 import GetRoadmapsByAdminController from "../../../infra/http/controllers/Roadmap/GetRoadmapsByAdminController";
 import GetAllRoadmapMembersController from "../../../infra/http/controllers/Roadmap/GetAllRoadmapMembersController";
 import GetRoadmapsByMemberController from "../../../infra/http/controllers/Roadmap/GetRoadmapsByMemberController";
@@ -20,6 +21,7 @@ const mergeContributionController = new MergeContributionController();
 const getSingleRoadmapController = new GetSingleRoadmapController();
 const getAllSubscribedController = new GetAllSubscribedController();
 const getRoadmapsByTypeController = new GetRoadmapsByTypeController();
+const getAllRoadmapsController = new GetAllRoadmapsController();
 const getRoadmapsByAdminController = new GetRoadmapsByAdminController();
 const getAllRoadmapMembersController = new GetAllRoadmapMembersController();
 const getRoadmapsByMemberController = new GetRoadmapsByMemberController();
@@ -31,6 +33,7 @@ roadmapRouter.get("/:id/contributions", authMiddleware, getContributionsControll
 roadmapRouter.patch("/:id/merge", authMiddleware, mergeContributionController.handle);
 roadmapRouter.get("/member", authMiddleware, getRoadmapsByMemberController.handle);
 roadmapRouter.get("/", getRoadmapsByTypeController.handle);
+roadmapRouter.get("/all", getAllRoadmapsController.handle);
 roadmapRouter.get("/admin", authMiddleware, getRoadmapsByAdminController.handle);
 roadmapRouter.get("/subscribed", authMiddleware, getAllSubscribedController.handle);
 roadmapRouter.get("/diagram/:id", getDiagramController.handle);

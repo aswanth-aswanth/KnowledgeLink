@@ -55,7 +55,7 @@ export default class RoadmapRepository {
 
     private updateContentWithS3Urls(topics: ITopic, uploadedUrls: string[], files: FormidableFile[]): IMedia[] {
         const mediaInfo: IMedia[] = [];
-    
+
         const replaceUrlsAndCollectMedia = (topic: ITopic) => {
             if (topic.content) {
                 uploadedUrls.forEach((url, index) => {
@@ -72,14 +72,14 @@ export default class RoadmapRepository {
                     }
                 });
             }
-    
+
             if (topic.children) {
                 topic.children.forEach(replaceUrlsAndCollectMedia);
             }
         };
-    
+
         replaceUrlsAndCollectMedia(topics);
-    
+
         return mediaInfo;
     }
 
@@ -119,6 +119,22 @@ export default class RoadmapRepository {
     public async findRoadmapsByType(type: string): Promise<IRoadmap[]> {
         try {
             return await Roadmap.find({ type: { $in: type } })
+                .select('_id title description type')
+                .exec();
+        } catch (error) {
+            if (error instanceof Error) {
+                console.error(`Error finding roadmaps by type: ${error.message}`);
+                throw new Error('Failed to find roadmaps by type');
+            } else {
+                console.error('Unknown error finding roadmaps by type');
+                throw new Error('Unknown error');
+            }
+        }
+    }
+
+    public async findRoadmaps(): Promise<IRoadmap[]> {
+        try {
+            return await Roadmap.find()
                 .select('_id title description type')
                 .exec();
         } catch (error) {
