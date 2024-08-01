@@ -41,6 +41,34 @@ export default class UserRepository {
         }
     }
 
+    public async getFollowers(userId: string): Promise<{ username: string, image: string, email: string, _id: string }[]> {
+        try {
+            const user = await User.findById(userId).select('followers').exec();
+            if (!user || !user.followers || user.followers.length === 0) {
+                return [];
+            }
+
+            const followers = await User.find({
+                _id: { $in: user.followers }
+            }).select('_id username email image').exec();
+
+            return followers.map(follower => ({
+                _id: follower._id.toString(),
+                username: follower.username || "",
+                email: follower.email || "",
+                image: follower.image || "",
+            }));
+        } catch (error) {
+            if (error instanceof Error) {
+                console.error(`Error getting followers: ${error.message}`);
+                throw new Error('Failed to get followers');
+            } else {
+                console.error('Unknown error getting followers');
+                throw new Error('Unknown error');
+            }
+        }
+    }
+
     public async findByEmail(email: string): Promise<IUser | null> {
         try {
             return await User.findOne({ email });
