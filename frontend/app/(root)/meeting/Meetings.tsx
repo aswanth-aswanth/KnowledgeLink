@@ -1,5 +1,7 @@
-// pages/meetings.tsx
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 import { CreateMeetingForm } from "./CreateMeetingForm";
 import { MeetingList } from "./MeetingList";
 import apiClient from "@/api/apiClient";
@@ -15,10 +17,10 @@ interface Meeting {
 }
 
 export default function MeetingsPage() {
+  const user = useSelector((state: RootState) => state.auth.user);
   const [activeTab, setActiveTab] = useState("all");
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchMeetings();
@@ -30,29 +32,23 @@ export default function MeetingsPage() {
       const response = await apiClient.get("/notification/meeting");
       setMeetings(response.data);
     } catch (err) {
-      setError("Failed to fetch meetings");
       console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
-  const currentUserEmail = "aswanthndl@gmail.com"; // Replace with actual user email or get from context
-
   const filteredMeetings = {
     all: meetings,
-    created: meetings.filter(
-      (meeting) => meeting.createdBy === currentUserEmail
-    ),
+    created: meetings.filter((meeting) => meeting.createdBy === user?.email),
     invited: meetings.filter(
       (meeting) =>
-        meeting.invitedUsers.includes(currentUserEmail) &&
-        meeting.createdBy !== currentUserEmail
+        meeting.invitedUsers.includes(user?.email || "") &&
+        meeting.createdBy !== user?.email
     ),
   };
 
   if (loading) return <div>Loading...</div>;
-  // if (error) return <div>{error}</div>;
 
   return (
     <div className="container mx-auto px-4 py-8 bg-gray-100 dark:bg-gray-900 min-h-screen">
@@ -81,7 +77,7 @@ export default function MeetingsPage() {
         <div className="mt-4 text-xs">
           <MeetingList
             meetings={filteredMeetings[activeTab]}
-            currentUserEmail={currentUserEmail}
+            currentUserEmail={user?.email || ""}
           />
         </div>
       </div>

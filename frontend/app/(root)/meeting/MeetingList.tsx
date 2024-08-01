@@ -36,6 +36,14 @@ export function MeetingList({ meetings, currentUserEmail }: MeetingListProps) {
     router.push(`/meeting/${meetingId}`);
   };
 
+  if (meetings.length === 0) {
+    return (
+      <div className="text-center text-gray-500 dark:text-gray-400">
+        No meetings found.
+      </div>
+    );
+  }
+
   if (selectedMeeting) {
     return <JitsiMeetComponent roomName={selectedMeeting} />;
   }
@@ -70,7 +78,7 @@ export function MeetingList({ meetings, currentUserEmail }: MeetingListProps) {
               {meeting.invitedUsers && meeting.invitedUsers.length > 0 && (
                 <Badge
                   variant="outline"
-                  className="text-xs sm:text-sm px-2 py-1"
+                  className="text-xs sm:text-sm px-2 py-1 dark:text-white"
                 >
                   {meeting.invitedUsers.length} Attendee
                   {meeting.invitedUsers.length !== 1 ? "s" : ""}

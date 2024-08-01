@@ -14,6 +14,9 @@ import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 import { FaUserCircle } from "react-icons/fa";
 import apiClient from "@/api/apiClient";
 
@@ -51,6 +54,8 @@ export function CreateMeetingForm({
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+  const user = useSelector((state: RootState) => state.auth.user);
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
@@ -150,14 +155,25 @@ export function CreateMeetingForm({
     }));
   };
 
+  const handleDialogTriggerClick = () => {
+    if (!user) {
+      router.push("/sign-in");
+    } else {
+      setOpen(true);
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 text-white dark:hover:bg-blue-600">
+        <Button
+          className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 text-white dark:hover:bg-blue-600"
+          onClick={handleDialogTriggerClick}
+        >
           Create Meeting
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[95vw] max-w-[600px] bg-white dark:bg-gray-800 p-4 sm:p-6">
+      <DialogContent className="w-[95vw] max-w-[600px] bg-white dark:bg-gray-800 p-4 sm:p6">
         <DialogHeader>
           <DialogTitle className="text-xl sm:text-2xl text-gray-900 dark:text-gray-100">
             Create New Meeting
