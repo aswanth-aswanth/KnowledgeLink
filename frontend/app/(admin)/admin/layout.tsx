@@ -30,7 +30,7 @@ export default function DashboardLayout({
     <div
       className={cn(
         "flex h-screen",
-        isDarkMode ? "bg-gray-900 text-white" : "bg-white text-gray-900"
+        isDarkMode ? "bg-gray-900 dark text-white" : "bg-white text-gray-900"
       )}
     >
       <div

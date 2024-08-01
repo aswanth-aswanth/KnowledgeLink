@@ -16,6 +16,31 @@ export default class UserRepository {
         }
     }
 
+    public async getPaginatedUsers(page: number, limit: number): Promise<{ users: object[], totalCount: number }> {
+        try {
+            const skip = (page - 1) * limit;
+
+            const [users, totalCount] = await Promise.all([
+                User.find()
+                    .select('_id username email image role status')
+                    .skip(skip)
+                    .limit(limit)
+                    .exec(),
+                User.countDocuments()
+            ]);
+
+            return { users, totalCount };
+        } catch (error) {
+            if (error instanceof Error) {
+                console.error(`Error getting paginated users: ${error.message}`);
+                throw new Error('Failed to get paginated users');
+            } else {
+                console.error('Unknown error getting paginated users');
+                throw new Error('Unknown error');
+            }
+        }
+    }
+
     public async findByEmail(email: string): Promise<IUser | null> {
         try {
             return await User.findOne({ email });

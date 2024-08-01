@@ -8,6 +8,7 @@ import GetSearchUsersController from '../../../infra/http/controllers/GetSearchU
 import UpdateUserProfileController from '../../../infra/http/controllers/UpdateUserProfileController';
 import authMiddleware from '../../../infra/http/middleware/authMiddleware';
 import nonAuthMiddleware from '../../../infra/http/middleware/nonAuthMiddleware';
+import GetPaginatedUsersController from '../../../infra/http/controllers/GetPaginatedUsersController';
 import { uploadSingle } from '../../../infra/http/middleware/imageUpload';
 
 const profileRouter = Router();
@@ -18,9 +19,11 @@ const getSingleUserController = new GetSingleUserController();
 const getSearchUsersController = new GetSearchUsersController();
 const followUserController = new FollowUserController();
 const updateUserProfileController = new UpdateUserProfileController();
+const getPaginatedUsersController = new GetPaginatedUsersController();
 
 profileRouter.post("/subscribe", authMiddleware, subscribeController.handle);
 profileRouter.get("/users", getUsersController.handle);
+profileRouter.get("/users/paginated", getPaginatedUsersController.handle);
 profileRouter.get("/search", getSearchUsersController.handle);
 profileRouter.get("/user/:id", nonAuthMiddleware, getSingleUserController.handle);
 profileRouter.patch("/user/:id/follow", authMiddleware, followUserController.handle);
