@@ -12,6 +12,8 @@ import UpdateChatController from '../../../infra/http/controllers/UpdateChatCont
 import DeleteChatController from '../../../infra/http/controllers/DeleteChatController';
 import GetUserGroupChatsController from '../../../infra/http/controllers/GetUserGroupChatsController';
 import DeleteMessageController from '../../../infra/http/controllers/DeleteMessageController';
+import GetAllGroupChatsController from '../../../infra/http/controllers/GetAllGroupChatsController';
+import GetGroupMembersController from '../../../infra/http/controllers/GetGroupMembersController';
 
 const chatRouter = Router();
 
@@ -27,10 +29,14 @@ const updateChatController = new UpdateChatController();
 const deleteChatController = new DeleteChatController();
 const getUserGroupChatsController = new GetUserGroupChatsController();
 const deleteMessageController = new DeleteMessageController();
+const getAllGroupChatsController = new GetAllGroupChatsController();
+const getGroupMembersController = new GetGroupMembersController();
 
 chatRouter.post("/individual", authMiddleware, createIndividualChatController.handle);
 chatRouter.post("/group", authMiddleware, createGroupChatController.handle);
 chatRouter.get("/user/chats", authMiddleware, getUserChatsController.handle);
+chatRouter.get("/groups", getAllGroupChatsController.handle);
+chatRouter.get("/groups/:chatId/members", authMiddleware, getGroupMembersController.handle);
 chatRouter.get("/:chatId", authMiddleware, getChatByIdController.handle);
 chatRouter.get("/:chatId/messages", authMiddleware, getChatMessagesController.handle);
 chatRouter.post("/message", authMiddleware, sendMessageController.handle);

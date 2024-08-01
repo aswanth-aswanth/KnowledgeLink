@@ -75,18 +75,31 @@ export default class ChatRepository {
   //   }
   // }
 
+  public async getAllGroupChats(): Promise<IChatDocument[]> {
+    return await ChatModel.find({ type: 'group' }).select("name createdAt updatedAt _id").exec();
+  }
+
   public async deleteMessage(chatId: string, messageId: string): Promise<void> {
     const chatObjectId = new mongoose.Types.ObjectId(chatId);
     const messageObjectId = new mongoose.Types.ObjectId(messageId);
-  
+
     const result = await ChatModel.updateOne(
       { _id: chatObjectId },
       { $pull: { messages: { _id: messageObjectId } } }
     );
-  
+
     if (result.modifiedCount === 0) {
       throw new Error('Message not found or already deleted');
     }
+  }
+
+  public async getGroupMembers(chatId: string): Promise<any[]> {
+    const chat = await ChatModel.findById(chatId).populate('participants', 'username email image').exec();
+    if (!chat) {
+      throw new Error('Group chat not found');
+    }
+
+    return chat.participants;
   }
 
   private documentToEntity(doc: IChatDocument): Chat {
