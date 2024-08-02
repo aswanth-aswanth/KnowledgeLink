@@ -3,7 +3,6 @@ import { jwtDecode } from 'jwt-decode';
 import { isTokenExpired } from '@/utils/auth';
 import apiClient from '@/api/apiClient';
 
-// Define types
 export interface User {
   id: string;
   userId?: string;
@@ -11,6 +10,7 @@ export interface User {
   email: string;
   imageUrl?: string;
   bio?: string;
+  role?: string;
 }
 
 interface AuthState {
@@ -69,13 +69,14 @@ const authSlice = createSlice({
             state.user = null;
             state.token = null;
           } else {
-            const decoded = jwtDecode<{ id: string; username: string; email: string; image?: string }>(storedToken);
+            const decoded = jwtDecode<{ id: string; username: string; email: string; image?: string; role?: string }>(storedToken);
             state.isAuthenticated = true;
             state.user = {
               id: decoded.id,
               name: decoded.username,
               email: decoded.email,
               imageUrl: decoded.image,
+              role: decoded.role
             };
             state.token = storedToken;
           }

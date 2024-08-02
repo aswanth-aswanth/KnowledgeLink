@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { useDarkMode } from "@/hooks/useDarkMode";
 import { cn } from "@/lib/utils";
+import AdminAuthWrapper from "../AdminAuthWrapper";
 
 export default function DashboardLayout({
   children,
@@ -27,53 +28,55 @@ export default function DashboardLayout({
   }
 
   return (
-    <div
-      className={cn(
-        "flex h-screen",
-        isDarkMode ? "bg-gray-900 dark text-white" : "bg-white text-gray-900"
-      )}
-    >
+    <AdminAuthWrapper>
       <div
         className={cn(
-          "fixed inset-y-0 left-0 transform",
-          sidebarOpen ? "translate-x-0" : "-translate-x-full",
-          "md:relative md:translate-x-0 transition duration-200 ease-in-out z-30",
-          isDarkMode ? "bg-gray-800" : "bg-gray-100"
+          "flex h-screen",
+          isDarkMode ? "bg-gray-900 dark text-white" : "bg-white text-gray-900"
         )}
       >
-        <Sidebar />
-      </div>
-      <div className="flex flex-col flex-1 overflow-hidden">
-        <TopBar>
-          <Button
-            variant="ghost"
-            size="icon"
-            className={cn(
-              "md:hidden",
-              isDarkMode
-                ? "text-white hover:bg-gray-700"
-                : "text-gray-900 hover:bg-gray-200"
-            )}
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-          >
-            <Menu className="h-5 w-5" />
-          </Button>
-        </TopBar>
-        <main
+        <div
           className={cn(
-            "flex-1 overflow-y-auto p-4",
-            isDarkMode ? "bg-gray-900" : "bg-gray-50"
+            "fixed inset-y-0 left-0 transform",
+            sidebarOpen ? "translate-x-0" : "-translate-x-full",
+            "md:relative md:translate-x-0 transition duration-200 ease-in-out z-30",
+            isDarkMode ? "bg-gray-800" : "bg-gray-100"
           )}
         >
-          {children}
-        </main>
+          <Sidebar />
+        </div>
+        <div className="flex flex-col flex-1 overflow-hidden">
+          <TopBar>
+            <Button
+              variant="ghost"
+              size="icon"
+              className={cn(
+                "md:hidden",
+                isDarkMode
+                  ? "text-white hover:bg-gray-700"
+                  : "text-gray-900 hover:bg-gray-200"
+              )}
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+            >
+              <Menu className="h-5 w-5" />
+            </Button>
+          </TopBar>
+          <main
+            className={cn(
+              "flex-1 overflow-y-auto p-4",
+              isDarkMode ? "bg-gray-900" : "bg-gray-50"
+            )}
+          >
+            {children}
+          </main>
+        </div>
+        {sidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden"
+            onClick={() => setSidebarOpen(false)}
+          ></div>
+        )}
       </div>
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden"
-          onClick={() => setSidebarOpen(false)}
-        ></div>
-      )}
-    </div>
+    </AdminAuthWrapper>
   );
 }
