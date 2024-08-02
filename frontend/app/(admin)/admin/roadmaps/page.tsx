@@ -107,7 +107,7 @@ export default function RoadmapList() {
             {filteredRoadmaps.map((roadmap) => (
               <TableRow key={roadmap._id}>
                 <TableCell
-                  onClick={() => router.push(`/roadmap/${roadmap._id}`)}
+                  onClick={() => router.push(`/admin/roadmaps/${roadmap._id}`)}
                   className="font-medium cursor-pointer"
                 >
                   {roadmap.title}
