@@ -238,9 +238,6 @@ export default class PostRepository {
     public async getUserPosts(userEmail: string, currentUserEmail: string, page: number, limit: number): Promise<any> {
         try {
             const posts = await Post.find({ creatorEmail: userEmail })
-                .sort({ createdAt: -1 })
-                .skip((page - 1) * limit)
-                .limit(limit)
                 .exec();
 
             const postsWithIsLiked = posts.map((post) => ({
@@ -254,4 +251,24 @@ export default class PostRepository {
             throw error;
         }
     }
+    public async getUserPost(postId: string, currentUserEmail: string): Promise<any> {
+        try {
+            const post = await Post.findOne({ _id: postId })
+                .exec();
+            if (post) {
+                const postsWithIsLiked = {
+                    ...post.toObject(),
+                    isLiked: post.likes.includes(currentUserEmail)
+                };
+                return postsWithIsLiked;
+            }
+            else {
+                return "No post found";
+            }
+        } catch (error) {
+            console.error('Error retrieving user posts:', error);
+            throw error;
+        }
+    }
+
 }
