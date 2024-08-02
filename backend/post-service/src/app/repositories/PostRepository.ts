@@ -131,9 +131,9 @@ export default class PostRepository {
             throw error;
         }
     };
-    public async getPosts(currentUserEmail: string, userEmails: string[]): Promise<any> {
+    public async getPosts(currentUserEmail: string, userIds: string[]): Promise<any> {
         try {
-            const posts = await Post.find({ creatorEmail: { $in: userEmails } })
+            const posts = await Post.find({ creatorId: { $in: userIds } })
                 .sort({ createdAt: -1 })
                 .exec();
 

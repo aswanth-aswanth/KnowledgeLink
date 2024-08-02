@@ -81,7 +81,7 @@ export function PostFeed() {
   };
 
   const handleShare = (postId: string) => {
-    // Implement share functionality
+    // This function is now handled within PostCard component
     console.log("Sharing post:", postId);
   };
 
@@ -91,7 +91,7 @@ export function PostFeed() {
   };
 
   return (
-    <div className="space-y-6 flex flex-col  items-center mx-auto ">
+    <div className="space-y-6 flex flex-col items-center mx-auto">
       {posts.map((post) => (
         <PostCard
           key={post._id}

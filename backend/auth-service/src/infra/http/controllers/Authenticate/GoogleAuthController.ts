@@ -18,7 +18,8 @@ class GoogleAuthController {
                     userId: user._id,
                     username: user.username,
                     email: user.email,
-                    image: user.image
+                    image: user.image,
+                    role: "user"
                 },
                 process.env.JWT_SECRET!,
                 { expiresIn: '1h' }

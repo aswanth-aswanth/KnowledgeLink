@@ -6,10 +6,22 @@ import {
   Bookmark,
   Send,
   MessageSquareMore,
+  X,
+  Link as LinkIcon,
 } from "lucide-react";
 import { MediaGallery } from "./MediaGallery";
 import { CommentSection } from "./CommentSection";
 import apiClient from "@/api/apiClient";
+import {
+  WhatsappShareButton,
+  FacebookShareButton,
+  TwitterShareButton,
+  LinkedinShareButton,
+  WhatsappIcon,
+  FacebookIcon,
+  TwitterIcon,
+  LinkedinIcon,
+} from "react-share";
 
 interface Post {
   _id: string;
@@ -24,6 +36,7 @@ interface Post {
   creatorName?: string;
   creatorEmail: string;
   likes: string[];
+  comments: any[];
   isLiked: boolean;
 }
 
@@ -32,11 +45,32 @@ interface PostCardProps {
   onLike: (postId: string) => void;
   onShare: (postId: string) => void;
   onSave: (postId: string) => void;
+  onComment: (postId: string, comment: string) => void;
 }
 
-export function PostCard({ post, onLike, onShare, onSave }: PostCardProps) {
-  const [commentText, setCommentText] = useState("");
+export function PostCard({
+  post,
+  onLike,
+  onShare,
+  onSave,
+  onComment,
+}: PostCardProps) {
   const [showComments, setShowComments] = useState(false);
+  const [showShareOptions, setShowShareOptions] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
+
+  const handleShare = () => {
+    setShowShareOptions(true);
+  };
+
+  const shareUrl = `${window.location.origin}/post/${post._id}`;
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      setLinkCopied(true);
+      setTimeout(() => setLinkCopied(false), 2000);
+    });
+  };
 
   const mediaItems = [
     ...post.content.images.map((image) => ({
@@ -52,27 +86,6 @@ export function PostCard({ post, onLike, onShare, onSave }: PostCardProps) {
       url: audio,
     })) || []),
   ];
-
-  const handleCommentSubmit = () => {
-    if (commentText.trim()) {
-      onComment(post._id, commentText);
-      setCommentText("");
-    }
-  };
-
-  const handleAddReply = (commentId: string, replyText: string) => {
-    // Implement reply functionality here
-    console.log(`Replying to comment ${commentId}: ${replyText}`);
-  };
-
-  const handleAddComment = async (text: string) => {
-    try {
-      await apiClient.post(`/post/comment/${post._id}`, { text });
-      // You might want to update the post's comment count here
-    } catch (error) {
-      console.error("Error adding comment:", error);
-    }
-  };
 
   return (
     <div className="bg-white dark:bg-gray-800 sm:rounded-2xl shadow-md overflow-hidden mb-6">
@@ -139,7 +152,7 @@ export function PostCard({ post, onLike, onShare, onSave }: PostCardProps) {
             <span>Comments ({post.comments.length})</span>
           </button>
           <button
-            onClick={() => onShare(post._id)}
+            onClick={handleShare}
             className="flex items-center text-gray-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
           >
             <Share className="w-5 h-5 mr-1" />
@@ -153,6 +166,52 @@ export function PostCard({ post, onLike, onShare, onSave }: PostCardProps) {
             <span>Save</span>
           </button>
         </div>
+
+        {/* Share Options */}
+        {showShareOptions && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl relative">
+              <button
+                onClick={() => setShowShareOptions(false)}
+                className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+              >
+                <X size={24} />
+              </button>
+              <h3 className="text-lg font-semibold mb-4 dark:text-white">
+                Share this post
+              </h3>
+              <div className="flex space-x-4 mb-4">
+                <WhatsappShareButton url={shareUrl} title={post.title}>
+                  <WhatsappIcon size={40} round />
+                </WhatsappShareButton>
+                <FacebookShareButton url={shareUrl} quote={post.title}>
+                  <FacebookIcon size={40} round />
+                </FacebookShareButton>
+                <TwitterShareButton url={shareUrl} title={post.title}>
+                  <TwitterIcon size={40} round />
+                </TwitterShareButton>
+                <LinkedinShareButton url={shareUrl} title={post.title}>
+                  <LinkedinIcon size={40} round />
+                </LinkedinShareButton>
+                <button
+                  onClick={handleCopyLink}
+                  className="bg-gray-200 dark:bg-gray-700 p-2 rounded-full hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                >
+                  <LinkIcon
+                    size={24}
+                    className="text-gray-600 dark:text-gray-300"
+                  />
+                </button>
+              </div>
+              {linkCopied && (
+                <p className="text-green-500 text-sm">
+                  Link copied to clipboard!
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+
         {showComments && <CommentSection postId={post._id} />}
       </div>
     </div>
