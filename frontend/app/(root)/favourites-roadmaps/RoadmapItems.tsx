@@ -40,10 +40,12 @@ const RoadmapItems: React.FC<CardProps> = ({
   return (
     <div
       onClick={() => router.push(`/roadmap-viewer/${id}`)}
-      className="p-4 bg-white w-full rounded-xl shadow-md border cursor-pointer"
+      className="p-4 flex flex-col justify-between bg-white min-h-[200px] w-full rounded-xl shadow-md border cursor-pointer"
     >
-      <h3 className="text-xl font-bold mb-2">{title}</h3>
-      <p className="text-sm text-gray-600 mb-4">{description}</p>
+      <div>
+        <h3 className="text-xl font-bold mb-2">{title}</h3>
+        <p className="text-sm text-gray-600 mb-4">{description}</p>
+      </div>
       <div className="flex items-center justify-between text-gray-500">
         <div className="flex items-center">
           <FiHeart className="mr-1" />

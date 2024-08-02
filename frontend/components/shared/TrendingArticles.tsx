@@ -62,7 +62,7 @@ const TrendingArticles = () => {
         {articles.map((article, index) => (
           <Card
             key={index}
-            className={`flex flex-col ${
+            className={`flex min-h-[305px] flex-col ${
               isDarkMode ? "bg-gray-800 text-white" : "bg-white"
             } hover:shadow-lg transition-shadow duration-300 cursor-pointer`}
           >
