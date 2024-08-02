@@ -9,6 +9,7 @@ export interface IUser extends Document {
   subscribed: string[];
   image: string;
   isPassportVerified: boolean;
+  role?: string;
 }
 
 const UserSchema: Schema = new Schema({

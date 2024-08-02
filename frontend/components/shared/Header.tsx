@@ -97,7 +97,7 @@ export default function Header() {
                 />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent
+            <DropdownMenuContent 
               className={`w-56 ${
                 isDarkMode
                   ? "bg-gray-800 border-gray-700 text-white"

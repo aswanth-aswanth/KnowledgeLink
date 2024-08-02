@@ -29,7 +29,6 @@ type SheetSide = (typeof SHEET_SIDES)[number];
 const navItems = [
   { name: "Home", icon: HiHome, href: "/" },
   { name: "Following", icon: HiUsers, href: "/following" },
-  { name: "Repository", icon: HiFolder, href: "/repository" },
   { name: "Chat & Call", icon: HiChat, href: "/chat" },
   { name: "Notifications", icon: HiBell, href: "/notifications" },
   { name: "Meeting", icon: HiVideoCamera, href: "/meeting" },
@@ -77,12 +76,12 @@ export function Hamburger() {
                   >
                     <item.icon
                       className={`mr-4 h-6 w-6 text-gray-500 group-hover:text-blue-800 ${
-                        isDarkMode && "text-gray-400 group-hover:text-blue-400"
+                        isDarkMode && "text-gray-400 group-hover:text-white"
                       } transition-colors duration-200`}
                     />
                     <span
                       className={`text-gray-500  group-hover:text-blue-800 ${
-                        isDarkMode && "text-gray-300 group-hover:text-blue-400"
+                        isDarkMode && "text-gray-300 group-hover:text-white"
                       } font-medium transition-colors duration-200`}
                     >
                       {item.name}

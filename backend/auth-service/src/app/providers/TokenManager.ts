@@ -5,6 +5,7 @@ interface TokenPayload {
     username: string;
     email: string;
     image: string;
+    role?: string;
 }
 
 export default class TokenManager {

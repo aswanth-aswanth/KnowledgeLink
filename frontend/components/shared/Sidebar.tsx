@@ -15,29 +15,16 @@ import { useDarkMode } from "@/hooks/useDarkMode";
 
 const navItems = [
   {
-    title: "Dashboard",
-    icon: LayoutDashboard,
-    href: "/dashboard",
-  },
-  {
     title: "Users",
     icon: Users,
     href: "/admin/users",
-    subItems: [
-      { title: "View All Users", href: "/admin/users/userlist" },
-      { title: "Block User", href: "/dashboard/users/block" },
-      { title: "User Analytics", href: "/dashboard/users/analytics" },
-    ],
+    subItems: [{ title: "View All Users", href: "/admin/users/userlist" }],
   },
   {
     title: "Roadmaps",
     icon: Users,
     href: "/admin/roadmaps",
-    subItems: [
-      { title: "View All Roadmaps", href: "/admin/roadmaps/roadmaplist" },
-      { title: "Block User", href: "/dashboard/users/block" },
-      { title: "User Analytics", href: "/dashboard/users/analytics" },
-    ],
+    subItems: [{ title: "View All Roadmaps", href: "/admin/roadmaps" }],
   },
   {
     title: "Meetings",
@@ -45,19 +32,7 @@ const navItems = [
     href: "/admin/meetings",
     subItems: [
       { title: "View All Meetings", href: "/admin/meetings/meetinglist" },
-      { title: "Block User", href: "/dashboard/users/block" },
-      { title: "User Analytics", href: "/dashboard/users/analytics" },
     ],
-  },
-  {
-    title: "Analytics",
-    icon: BarChart,
-    href: "/dashboard/analytics",
-  },
-  {
-    title: "Settings",
-    icon: Settings,
-    href: "/dashboard/settings",
   },
 ];
 
@@ -110,7 +85,8 @@ export function Sidebar() {
                       variant="ghost"
                       className={cn(
                         "w-full justify-start text-left font-normal",
-                        pathname === subItem.href && "bg-accent text-black"
+                        pathname === subItem.href &&
+                          "bg-accent dark:text-blue-300"
                       )}
                     >
                       {subItem.title}

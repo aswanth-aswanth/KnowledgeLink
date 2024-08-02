@@ -22,7 +22,10 @@ const authMiddleware = (req: any, res: Response, next: NextFunction) => {
         const decoded = tokenManager.verifyToken(token);
         console.log("Decoded token : ", decoded);
         req.user = decoded;
-        next();
+        if (req.user.role == "user")
+            next();
+        else
+            return res.status(404).json({ message: "You're not authorised for this operation" })
     } catch (error) {
         return res.status(401).json({ message: 'Invalid token' });
     }

@@ -2,7 +2,7 @@ import UserRepository from '../../../repositories/UserRepository';
 import PasswordHasher from '../../../providers/PasswordHasher';
 import TokenManager from '../../../providers/TokenManager';
 
-export default class AuthenticateUser {
+export default class AuthenticateAdmin {
     private userRepository: UserRepository;
     private passwordHasher: PasswordHasher;
     private tokenManager: TokenManager;
@@ -18,17 +18,14 @@ export default class AuthenticateUser {
 
         if (!user) {
             throw new Error('Invalid credentials');
-        }
-
-        if (!user.password) {
+        } if (!user.password) {
             throw new Error('Password not set. Please log in using Google.');
         }
-
         const isPasswordValid = await this.passwordHasher.compare(password, user.password);
         if (!isPasswordValid) {
             throw new Error("Invalid credentials");
         }
 
-        return this.tokenManager.generateToken({ userId: user._id, username: user.username, email: user.email, image: user.image, role: "user" });
+        return this.tokenManager.generateToken({ userId: user._id, username: user.username, email: user.email, image: user.image, role: "admin" });
     }
 }

@@ -1,7 +1,7 @@
 export type Tab = {
   name: string;
   icon: string;
-  dbName: string;
+  dbName?: string;
 }
 export type TabsProps = {
   tabs: Tab[];

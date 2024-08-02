@@ -1,15 +1,16 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
-import { selectAuthState, checkTokenExpiration } from "@/store/authSlice";
-import SignIn from "@/app/(admin)/admin/sign-in/SignIn";
+import { checkTokenExpiration } from "@/store/authSlice";
+import { selectAuthState } from "@/store/selectors";
+import SignIn from "@/components/shared/SignIn";
 
 const AdminAuthWrapper = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
   const { isAuthenticated, user } = useSelector(selectAuthState);
   const dispatch = useDispatch();
-  const router = useRouter();
+  console.log("isAuthenticated : ", isAuthenticated);
+  console.log("user : ", user);
 
   useEffect(() => {
     dispatch(checkTokenExpiration());
