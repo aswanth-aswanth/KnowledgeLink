@@ -1,12 +1,12 @@
 export type Tab = {
   name: string;
   icon: string;
-  dbName?: string;
+  dbName: string;
 }
 export type TabsProps = {
   tabs: Tab[];
   activeTab: string;
-  onTabClick: (tabName: string) => void;
+  onTabClick: (tabName: string,dbName:string) => void;
   tabFor: string;
 }
 // src/types/index.ts
