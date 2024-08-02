@@ -5,14 +5,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useDarkMode } from "@/hooks/useDarkMode";
 import apiClient from "@/api/apiClient";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 export default function AdminUserProfile() {
   const dispatch = useDispatch();
   const { isDarkMode } = useDarkMode();
   const params = useParams();
-  console.log("params : ", params);
-
+  const router = useRouter(); // Use the router hook for navigation
   const userId: string = params.userId;
 
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -26,13 +25,16 @@ export default function AdminUserProfile() {
   const fetchUserDetails = async () => {
     try {
       const response = await apiClient(`/profile/user/${userId}`);
-      console.log("fetchUser details : ", response.data);
       setUser(response.data);
     } catch (error) {
       console.error("Failed to fetch user details", error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleNavigation = (type) => {
+    router.push(`/admin/users/${type}/${userId}`);
   };
 
   if (loading) {
@@ -42,21 +44,6 @@ export default function AdminUserProfile() {
       </div>
     );
   }
-
-  /* if (!isAuthenticated) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
-        <Card className="w-11/12 max-w-md p-8 bg-white shadow-lg rounded-lg">
-          <h1 className="text-2xl font-bold mb-6 text-center">
-            Admin Access Required
-          </h1>
-          <p className="mb-6 text-center">
-            Please log in as an admin to view user profiles.
-          </p>
-        </Card>
-      </div>
-    );
-  } */
 
   if (!user) {
     return (
@@ -74,16 +61,16 @@ export default function AdminUserProfile() {
   }
 
   return (
-    <div className="flex min-h-[91.9vh] items-center justify-center  dark:bg-gray-800 p-6">
+    <div className="flex min-h-[91.9vh] items-center justify-center dark:bg-gray-800 p-6">
       <Card className="w-full max-w-lg shadow-lg bg-white dark:bg-gray-800 overflow-hidden rounded-lg">
         <CardHeader className="p-4 bg-gray-300">
           <CardTitle className="text-xl font-bold text-center text-gray-800">
             User Profile
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-6 py-10 my-3 ">
-          <div className="flex flex-col  items-center mb-6">
-            <Avatar className="w-24 h-24  border-2 border-gray-300 shadow-md">
+        <CardContent className="p-6 py-10 my-3">
+          <div className="flex flex-col items-center mb-6">
+            <Avatar className="w-24 h-24 border-2 border-gray-300 shadow-md">
               <AvatarImage src={user?.image} />
               <AvatarFallback className="text-xl bg-gray-400 text-gray-700">
                 {user?.username.charAt(0)}
@@ -114,13 +101,29 @@ export default function AdminUserProfile() {
               </p>
             </div>
 
-            <div>
+            {/* <div>
               <h3 className="text-md font-semibold text-gray-800 dark:text-white">
                 Joined On
               </h3>
               <p className="mt-1 text-gray-600 dark:text-white">
                 {new Date(user?.createdAt).toLocaleDateString()}
               </p>
+            </div> */}
+
+            {/* Followers and Following Buttons */}
+            <div className="flex space-x-6">
+              <button
+                onClick={() => handleNavigation("followers")}
+                className="text-md font-semibold text-blue-600 dark:text-blue-400"
+              >
+                Followers: {user?.followersCount}
+              </button>
+              <button
+                onClick={() => handleNavigation("followings")}
+                className="text-md font-semibold text-blue-600 dark:text-blue-400"
+              >
+                Following: {user?.followingCount}
+              </button>
             </div>
           </div>
         </CardContent>
