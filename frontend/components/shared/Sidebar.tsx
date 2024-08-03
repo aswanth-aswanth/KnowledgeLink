@@ -26,14 +26,6 @@ const navItems = [
     href: "/admin/roadmaps",
     subItems: [{ title: "View All Roadmaps", href: "/admin/roadmaps" }],
   },
-  {
-    title: "Meetings",
-    icon: Users,
-    href: "/admin/meetings",
-    subItems: [
-      { title: "View All Meetings", href: "/admin/meetings/meetinglist" },
-    ],
-  },
 ];
 
 export function Sidebar() {

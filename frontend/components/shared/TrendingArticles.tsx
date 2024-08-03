@@ -75,7 +75,7 @@ const TrendingArticles = () => {
                 {article.name}
               </h3>
             </CardHeader>
-            <CardContent className="flex-grow overflow-auto max-h-[180px]">
+            <CardContent className="flex-grow overflow-auto p-3 max-h-[180px]">
               <h4
                 className={`text-lg font-medium ${
                   isDarkMode ? "text-gray-200" : "text-gray-800"

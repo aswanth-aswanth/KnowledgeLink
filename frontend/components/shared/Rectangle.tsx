@@ -47,7 +47,7 @@ const Rectangle: React.FC<RectangleProps> = ({
         y={rect.y + rect.height / 2}
         textAnchor="middle"
         dominantBaseline="middle"
-        fontSize="10"
+        fontSize="12"
         onClick={onSelect}
         style={{ cursor: "pointer" }}
       >

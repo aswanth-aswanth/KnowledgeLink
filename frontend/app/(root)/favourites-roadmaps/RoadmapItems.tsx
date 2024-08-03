@@ -46,11 +46,11 @@ const RoadmapItems: React.FC<CardProps> = ({
         <h3 className="text-xl font-bold mb-2">{title}</h3>
         <p className="text-sm text-gray-600 mb-4">{description}</p>
       </div>
-      <div className="flex items-center justify-between text-gray-500">
-        <div className="flex items-center">
+      <div className="flex items-center justify-end text-gray-500">
+        {/* <div className="flex items-center">
           <FiHeart className="mr-1" />
           <span>{likes} Likes</span>
-        </div>
+        </div> */}
         {pathname !== "/favourites-roadmaps" && (
           <button
             onClick={(e) => subscribe(e, id)}

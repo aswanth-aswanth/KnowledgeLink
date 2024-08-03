@@ -46,7 +46,7 @@ export default function Header() {
 
   return (
     <header
-      className={`flex items-center justify-between p-2 relative z-10 max-w-[100vw] overflow-hidden shadow-md ${
+      className={`flex items-center justify-between p-2 relative z-50 max-w-[100vw] overflow-hidden shadow-md ${
         isDarkMode
           ? "bg-gradient-to-r from-gray-900 to-gray-800 shadow-lg text-white"
           : "bg-white"

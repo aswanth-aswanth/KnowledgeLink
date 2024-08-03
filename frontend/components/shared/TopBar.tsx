@@ -1,10 +1,18 @@
-import { Bell, Moon, Sun, User } from "lucide-react";
+import { Moon, Sun, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useDarkMode } from "@/hooks/useDarkMode";
+import { useDispatch } from "react-redux";
+import { clearAuthState } from "@/store/authSlice";
 
 export function TopBar({ children }: { children?: React.ReactNode }) {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
   console.log("isDarkMode : ", isDarkMode);
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(clearAuthState());
+  };
+
   return (
     <header className="h-16 flex items-center justify-between px-4 border-b bg-background">
       <div className="flex items-center">
@@ -19,8 +27,8 @@ export function TopBar({ children }: { children?: React.ReactNode }) {
             <Moon className="h-5 w-5" />
           )}
         </Button>
-        <Button variant="ghost" size="icon">
-          <User className="h-5 w-5" />
+        <Button onClick={handleLogout} variant="ghost" size="icon">
+          <LogOut className="h-5 w-5" />
         </Button>
       </div>
     </header>

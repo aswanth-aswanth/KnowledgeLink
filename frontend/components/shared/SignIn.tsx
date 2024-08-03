@@ -1,11 +1,14 @@
 "use client";
 import apiClient from "@/api/apiClient";
+import { checkTokenExpiration } from "@/store/authSlice";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -19,7 +22,8 @@ export default function SignIn() {
       console.log("response : ", response.data);
       const { token } = response.data;
       localStorage.setItem("token", token);
-      router.push("/admin");
+      dispatch(checkTokenExpiration());
+      router.replace("/admin/users/userlist");
     } catch (error) {
       console.error("Login failed:", error);
       // Handle error (show message to user)
