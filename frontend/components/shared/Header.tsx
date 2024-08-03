@@ -97,7 +97,7 @@ export default function Header() {
                 />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent 
+            <DropdownMenuContent
               className={`w-56 ${
                 isDarkMode
                   ? "bg-gray-800 border-gray-700 text-white"
@@ -179,7 +179,7 @@ export default function Header() {
           </DropdownMenu>
         ) : (
           <div
-            className="hover:bg-gray-100 p-2 cursor-pointer rounded-full"
+            className="hover:bg-gray-200 dark:hover:bg-gray-600 p-2 cursor-pointer rounded-full"
             onClick={() => router.push("/sign-in")}
           >
             <FiUser className="text-2xl rounded-full" />

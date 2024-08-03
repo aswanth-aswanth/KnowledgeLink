@@ -40,13 +40,13 @@ const LayoutContent = ({ children }: { children: React.ReactNode }) => {
   );
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div
+      className={`${
+        isDarkMode ? "bg-gray-900 dark" : ""
+      } flex flex-col min-h-screen`}
+    >
       <Header />
-      <main
-        className={`${
-          isDarkMode ? "bg-gray-900 dark" : ""
-        } flex-grow overflow-y-auto px-3 sm:px-4 md:px-5`}
-      >
+      <main className={` flex-grow overflow-y-auto px-3 sm:px-4 md:px-5`}>
         <div className="max-w-[1224px] px-0 sm:px-4 md:px-0 mx-auto h-full">
           {children}
         </div>

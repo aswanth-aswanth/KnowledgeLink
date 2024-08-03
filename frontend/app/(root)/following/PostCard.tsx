@@ -158,13 +158,13 @@ export function PostCard({
             <Share className="w-5 h-5 mr-1" />
             <span>Share</span>
           </button>
-          <button
+      {/*     <button
             onClick={() => onSave(post._id)}
             className="flex items-center text-gray-600 dark:text-gray-300 hover:text-green-500 dark:hover:text-green-400"
           >
             <Bookmark className="w-5 h-5 mr-1" />
             <span>Save</span>
-          </button>
+          </button> */}
         </div>
 
         {/* Share Options */}

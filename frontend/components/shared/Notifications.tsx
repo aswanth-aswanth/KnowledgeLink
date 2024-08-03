@@ -7,17 +7,24 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Notification } from "@/types/notificationTypes";
-import { getNotifications } from "@/api/notificationApi";
+import { Notification } from "@/types/NotificationTypes";
+import {
+  getNotifications,
+  getNotificationCount,
+  markNotificationsAsRead,
+} from "@/api/notificationApi";
 import { useDarkMode } from "@/hooks/useDarkMode";
 
 export default function NotificationPopover() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [open, setOpen] = useState(false);
-  const [displayCount, setDisplayCount] = useState(5);
+  const [displayCount, setDisplayCount] = useState(0);
+  const [totalMessages, setTotalMessages] = useState(5);
+  const [newlyDisplayedIds, setNewlyDisplayedIds] = useState<string[]>([]);
   const { isDarkMode } = useDarkMode();
 
   useEffect(() => {
+    fetchNotificationCount();
     open && fetchNotifications();
   }, [open]);
 
@@ -29,13 +36,63 @@ export default function NotificationPopover() {
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );
       setNotifications(sortedNotifications);
+
+      // Identify newly displayed unread notifications
+      const newIds = sortedNotifications
+        .filter((notification: Notification) => !notification.read)
+        .map((notification: Notification) => notification._id);
+      setNewlyDisplayedIds(newIds);
     } catch (error) {
       console.error("Error fetching notifications:", error);
     }
   };
 
+  const fetchNotificationCount = async () => {
+    try {
+      const response = await getNotificationCount();
+      console.log("response count: ", response);
+      setDisplayCount(response.unReadCount);
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+    }
+  };
+
+  const sendMarkAsRead = async () => {
+    if (newlyDisplayedIds.length === 0) return;
+
+    try {
+      // Assuming you have an API function to mark notifications as read
+      await markNotificationsAsRead(newlyDisplayedIds);
+
+      // Update local state
+      setNotifications((prevNotifications) =>
+        prevNotifications.map((notification) =>
+          newlyDisplayedIds.includes(notification._id)
+            ? { ...notification, read: true }
+            : notification
+        )
+      );
+
+      // Clear the newly displayed IDs
+      setNewlyDisplayedIds([]);
+
+      // Update the notification count
+      fetchNotificationCount();
+    } catch (error) {
+      console.log("Error marking notifications as read:", error);
+    }
+  };
+
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover
+      open={open}
+      onOpenChange={(isOpen) => {
+        setOpen(isOpen);
+        if (!isOpen) {
+          sendMarkAsRead();
+        }
+      }}
+    >
       <PopoverTrigger asChild>
         <Button
           variant="outline"
@@ -50,11 +107,13 @@ export default function NotificationPopover() {
               isDarkMode ? "text-gray-200" : "text-gray-600"
             }`}
           />
-          {notifications?.filter((n) => !n.read)?.length > 0 && (
+          {/* {nottionifications?.filter((n) => !n.read)?.length > 0 && ( */}
+          {displayCount != 0 && (
             <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-              {notifications?.filter((n) => !n.read)?.length}
+              {displayCount}
             </span>
           )}
+          {/* )} */}
         </Button>
       </PopoverTrigger>
       <PopoverContent
@@ -78,7 +137,7 @@ export default function NotificationPopover() {
         <ScrollArea className="h-[400px] w-full rounded-md">
           {notifications?.length > 0 ? (
             <>
-              {notifications?.slice(0, displayCount).map((notification) => (
+              {notifications?.slice(0, totalMessages).map((notification) => (
                 <div
                   key={notification?._id}
                   className={`p-4 border-b ${
@@ -144,11 +203,11 @@ export default function NotificationPopover() {
                   </div>
                 </div>
               ))}
-              {displayCount < notifications.length && (
+              {totalMessages < notifications.length && (
                 <div className="p-4 text-center">
                   <Button
                     onClick={() =>
-                      setDisplayCount((prevCount) => prevCount + 5)
+                      setTotalMessages((prevCount) => prevCount + 5)
                     }
                     className={`${
                       isDarkMode
