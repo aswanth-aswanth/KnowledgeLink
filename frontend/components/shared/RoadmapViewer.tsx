@@ -36,7 +36,7 @@ const Topic: React.FC<TopicProps> = ({
   }, [topic.content]);
 
   const toggleExpand = () => {
-    if (level.split('-').length > 1) {
+    if (level.split("-").length > 1) {
       if (isExpanded) {
         setExpandedTopics(expandedTopics.filter((id) => id !== topic.uniqueId));
       } else {
@@ -78,7 +78,7 @@ const Topic: React.FC<TopicProps> = ({
           )}
         </button>
         <span
-          className={`flex-grow px-2 py-1 rounded-md font-bold text-lg ${
+          className={`flex-grow px-2 py-1 rounded-md font-bold sm:text-lg ${
             isDarkMode ? "text-gray-300" : "text-gray-600"
           }`}
         >
@@ -93,7 +93,7 @@ const Topic: React.FC<TopicProps> = ({
         </span>
       </div>
       {isExpanded && (
-        <div className="ml-6 mt-2">
+        <div className="ml-2 sm:ml-6 mt-2">
           {isEditMode && !isEditing ? (
             <Button onClick={handleEditClick} size="sm" className="mb-2">
               <Edit className="mr-2 h-4 w-4" /> Edit Content
@@ -107,7 +107,7 @@ const Topic: React.FC<TopicProps> = ({
             <Textarea
               value={editedContent}
               onChange={(e) => setEditedContent(e.target.value)}
-              className={`min-h-32 leading-8 p-2 mb-2 rounded-md transition-all duration-200 ${
+              className={`min-h-32 sm:leading-8 p-2 mb-2 rounded-md transition-all duration-200 ${
                 isDarkMode
                   ? "bg-gray-800 text-gray-300"
                   : "bg-gray-50 text-gray-600"
@@ -115,11 +115,11 @@ const Topic: React.FC<TopicProps> = ({
             />
           ) : (
             <div
-              className={`h-min p-2 mb-2 rounded-md transition-all duration-200 prose font-medium prose-sm text-base tracking-wider ${
+              className={`h-min p-2 mb-2 indent-4 rounded-md transition-all duration-200 prose font-medium prose-sm tracking-wider  text-base max-[320px]:text-sm max-[320px]:leading-9 ${
                 isDarkMode
                   ? "bg-transparent text-gray-300"
                   : "bg-gray-50 text-gray-600"
-              } leading-9 max-w-none`}
+              } leading-9 `}
               dangerouslySetInnerHTML={{ __html: topic.content }}
             />
           )}
@@ -156,15 +156,15 @@ const RoadmapViewer: React.FC<RoadmapViewerProps> = ({
   onContentChange,
 }) => {
   const { isDarkMode } = useDarkMode();
-  const [expandedTopics, setExpandedTopics] = useState<string[]>(() => 
-    transformedTopics.topics.children.map(child => child.uniqueId)
+  const [expandedTopics, setExpandedTopics] = useState<string[]>(() =>
+    transformedTopics.topics.children.map((child) => child.uniqueId)
   );
 
   return (
     <div
       className={`nested-note-taker rounded-lg ${
         isDarkMode ? "bg-gray-900 shadow-lg" : "bg-white shadow-sm"
-      } p-4 sm:p-6`}
+      } p-0 sm:p-6`}
     >
       <h1
         className={`text-2xl font-bold mb-4 ${
