@@ -183,7 +183,7 @@ const NestedNoteTaker: React.FC = () => {
         setShowEmptyRootWarning(true);
         return;
       }
-      console.log("handleContinue : ",selectedMembers);
+      console.log("handleContinue : ", selectedMembers);
       transformedTopics.members = selectedMembers.map((member) => member._id);
       transformedTopics.type = selectedRoadmapType;
       dispatch(setEditorData(transformedTopics));
@@ -194,124 +194,126 @@ const NestedNoteTaker: React.FC = () => {
 
   return (
     <>
-      <div
-        className={`nested-note-taker rounded-lg ${
-          isDarkMode ? "bg-gray-900 shadow-lg" : "bg-white shadow-sm"
-        } p-6`}
-      >
-        <div className="flex justify-between items-center mb-4">
-          <Button
-            onClick={handleAddRootTopic}
-            variant="outline"
-            className={`${isDarkMode && "text-white"}`}
-          >
-            <Plus className="mr-2 h-4 w-4" /> Add Root Topic
-          </Button>
-          <Button
-            onClick={handleEditRoot}
-            variant="outline"
-            className={`${isDarkMode && "text-white"}`}
-          >
-            <Edit className="mr-2 h-4 w-4" /> Edit Root
-          </Button>
-          <Button
-            onClick={handleResetTopics}
-            variant="outline"
-            className="dark:text-white"
-          >
-            <Trash className="mr-2 h-4 w-4" /> Reset
-          </Button>
+      <div className="max-w-6xl mx-auto sm:px-6 lg:px-8">
+        <div
+          className={`nested-note-taker rounded-lg ${
+            isDarkMode ? "bg-gray-900 shadow-lg" : "bg-white shadow-sm"
+          } pt-6 sm:p-6`}
+        >
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 space-y-2 sm:space-y-0 sm:space-x-2">
+            <Button
+              onClick={handleAddRootTopic}
+              variant="outline"
+              className={`w-full sm:w-auto ${isDarkMode && "text-white"}`}
+            >
+              <Plus className="mr-2 h-4 w-4" /> Add Root Topic
+            </Button>
+            <Button
+              onClick={handleEditRoot}
+              variant="outline"
+              className={`w-full sm:w-auto ${isDarkMode && "text-white"}`}
+            >
+              <Edit className="mr-2 h-4 w-4" /> Edit Root
+            </Button>
+            <Button
+              onClick={handleResetTopics}
+              variant="outline"
+              className="w-full sm:w-auto dark:text-white"
+            >
+              <Trash className="mr-2 h-4 w-4" /> Reset
+            </Button>
+          </div>
+          {rootTopic.children.map((childId) => (
+            <TopicNode key={childId} id={childId} />
+          ))}
         </div>
-        {rootTopic.children.map((childId) => (
-          <TopicNode key={childId} id={childId} />
-        ))}
-      </div>
-      <div className="flex justify-end py-8">
-        <ChooseRoadmapType
-          onContinue={handleContinue}
-          roadmapType={roadmapType}
-          setRoadmapType={setRoadmapType}
-        />
-      </div>
-
-      <Dialog
-        open={showEmptyRootWarning}
-        onOpenChange={setShowEmptyRootWarning}
-      >
-        <DialogContent className="bg-white">
-          <DialogHeader>
-            <DialogTitle>
-              <AlertCircle className="h-6 w-6 text-yellow-500 inline mr-2" />
-              Empty Root Topic
-            </DialogTitle>
-            <DialogDescription>
-              The root title and content cannot be empty. Please add a title and
-              content to the root topic before submitting the roadmap.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button onClick={() => setShowEmptyRootWarning(false)}>OK</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={showRootEditModal} onOpenChange={setShowRootEditModal}>
-        <DialogContent className="bg-white">
-          <DialogHeader>
-            <DialogTitle>Edit Root Topic</DialogTitle>
-            <DialogDescription>
-              Update the title and content of the root topic.
-            </DialogDescription>
-          </DialogHeader>
-          <Input
-            value={rootTitle}
-            onChange={(e) => setRootTitle(e.target.value)}
-            placeholder="Root Title"
-            className="mb-4"
+        <div className="flex justify-end py-8">
+          <ChooseRoadmapType
+            onContinue={handleContinue}
+            roadmapType={roadmapType}
+            setRoadmapType={setRoadmapType}
           />
-          <Textarea
-            value={rootContent}
-            onChange={(e) => setRootContent(e.target.value)}
-            placeholder="Root Content"
-            rows={4}
-          />
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setShowRootEditModal(false)}
-            >
-              Cancel
-            </Button>
-            <Button onClick={handleSaveRoot}>Save</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        </div>
 
-      <Dialog
-        open={showResetConfirmation}
-        onOpenChange={setShowResetConfirmation}
-      >
-        <DialogContent className="bg-white">
-          <DialogHeader>
-            <DialogTitle>Confirm Reset</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to reset all topics? This action cannot be
-              undone.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setShowResetConfirmation(false)}
-            >
-              Cancel
-            </Button>
-            <Button variant="destructive" onClick={confirmResetTopics}>
-              Reset
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        <Dialog
+          open={showEmptyRootWarning}
+          onOpenChange={setShowEmptyRootWarning}
+        >
+          <DialogContent className="bg-white">
+            <DialogHeader>
+              <DialogTitle>
+                <AlertCircle className="h-6 w-6 text-yellow-500 inline mr-2" />
+                Empty Root Topic
+              </DialogTitle>
+              <DialogDescription>
+                The root title and content cannot be empty. Please add a title
+                and content to the root topic before submitting the roadmap.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button onClick={() => setShowEmptyRootWarning(false)}>OK</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={showRootEditModal} onOpenChange={setShowRootEditModal}>
+          <DialogContent className="bg-white">
+            <DialogHeader>
+              <DialogTitle>Edit Root Topic</DialogTitle>
+              <DialogDescription>
+                Update the title and content of the root topic.
+              </DialogDescription>
+            </DialogHeader>
+            <Input
+              value={rootTitle}
+              onChange={(e) => setRootTitle(e.target.value)}
+              placeholder="Root Title"
+              className="mb-4"
+            />
+            <Textarea
+              value={rootContent}
+              onChange={(e) => setRootContent(e.target.value)}
+              placeholder="Root Content"
+              rows={4}
+            />
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setShowRootEditModal(false)}
+              >
+                Cancel
+              </Button>
+              <Button onClick={handleSaveRoot}>Save</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog
+          open={showResetConfirmation}
+          onOpenChange={setShowResetConfirmation}
+        >
+          <DialogContent className="bg-white">
+            <DialogHeader>
+              <DialogTitle>Confirm Reset</DialogTitle>
+              <DialogDescription>
+                Are you sure you want to reset all topics? This action cannot be
+                undone.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setShowResetConfirmation(false)}
+              >
+                Cancel
+              </Button>
+              <Button variant="destructive" onClick={confirmResetTopics}>
+                Reset
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
     </>
   );
 };

@@ -281,65 +281,71 @@ const TopicNode: React.FC<TopicNodeProps> = ({ id }) => {
 
   return (
     <div className="topic-node mb-3">
-      <div className="flex items-center group">
-        <button
-          onClick={handleToggleExpand}
-          className={`p-2 rounded-md ${
-            isDarkMode
-              ? "text-gray-500 hover:bg-gray-800"
-              : "text-gray-400 hover:bg-gray-100"
-          } focus:outline-none`}
-        >
-          {topic.isExpanded ? (
-            <ChevronDown
-              size={16}
-              className={`${isDarkMode ? "text-gray-300" : "text-black"}`}
-            />
-          ) : (
-            <ChevronRight
-              size={16}
-              className={`${isDarkMode ? "text-gray-300" : "text-black"}`}
-            />
-          )}
-        </button>
-        <input
-          type="text"
-          value={topic.name}
-          onChange={handleNameChange}
-          className={`flex-grow bg-transparent px-2 py-1 focus:outline-none rounded-md font-bold text-lg ${
-            isDarkMode
-              ? "focus:bg-gray-800 text-gray-300"
-              : "focus:bg-gray-50 text-gray-600"
-          } transition-colors duration-200`}
-          placeholder="Untitled"
-        />
-        <span
-          className={`text-xs ${
-            isDarkMode ? "text-gray-500" : "text-gray-400"
-          } mr-2`}
-        >
-          {topic.no}
-        </span>
-        <button
-          onClick={handleAddSubtopic}
-          className={`p-1 rounded-md focus:outline-none group-hover:opacity-100 ${
-            isDarkMode
-              ? "text-gray-500 bg-gray-800 hover:bg-gray-700"
-              : "text-gray-400 bg-gray-100 hover:bg-gray-200"
-          } transition-opacity duration-200 mr-1`}
-        >
-          <Plus size={16} />
-        </button>
-        <button
-          onClick={handleDelete}
-          className={`p-1 rounded-md focus:outline-none group-hover:opacity-100 ${
-            isDarkMode
-              ? "text-gray-500 bg-gray-800 hover:bg-gray-700"
-              : "text-gray-400 bg-gray-100 hover:bg-gray-200"
-          } transition-opacity duration-200`}
-        >
-          <Trash size={16} />
-        </button>
+      <div className="flex items-center justify-between group w-full overflow-x-auto">
+        <div className="flex items-center min-w-0 flex-shrink-1">
+          <button
+            onClick={handleToggleExpand}
+            className={`p-1 sm:p-2 rounded-md flex-shrink-0 ${
+              isDarkMode
+                ? "text-gray-500 hover:bg-gray-800"
+                : "text-gray-400 hover:bg-gray-100"
+            } focus:outline-none`}
+          >
+            {topic.isExpanded ? (
+              <ChevronDown
+                size={14}
+                className={`${isDarkMode ? "text-gray-300" : "text-black"}`}
+              />
+            ) : (
+              <ChevronRight
+                size={14}
+                className={`${isDarkMode ? "text-gray-300" : "text-black"}`}
+              />
+            )}
+          </button>
+          <input
+            type="text"
+            value={topic.name}
+            onChange={handleNameChange}
+            className={`min-w-56 flex-shrink bg-transparent px-1 sm:px-2 py-1 focus:outline-none rounded-md font-bold text-sm sm:text-lg truncate ${
+              isDarkMode
+                ? "focus:bg-gray-800 text-gray-300"
+                : "focus:bg-gray-50 text-gray-600"
+            } transition-colors duration-200`}
+            placeholder="Untitled"
+          />
+        </div>
+        <div className="flex items-center flex-shrink-0 ml-1">
+          <span
+            className={`text-xs ${
+              isDarkMode ? "text-gray-500" : "text-gray-400"
+            } mr-1 hidden sm:inline`}
+          >
+            {topic.no}
+          </span>
+          <button
+            onClick={handleAddSubtopic}
+            className={`p-1 rounded-md focus:outline-none ${
+              isDarkMode
+                ? "text-gray-500 bg-gray-800 hover:bg-gray-700"
+                : "text-gray-400 bg-gray-100 hover:bg-gray-200"
+            } transition-opacity duration-200`}
+            title="Add subtopic"
+          >
+            <Plus size={14} />
+          </button>
+          <button
+            onClick={handleDelete}
+            className={`p-1 rounded-md focus:outline-none ml-1 ${
+              isDarkMode
+                ? "text-gray-500 bg-gray-800 hover:bg-gray-700"
+                : "text-gray-400 bg-gray-100 hover:bg-gray-200"
+            } transition-opacity duration-200`}
+            title="Delete topic"
+          >
+            <Trash size={14} />
+          </button>
+        </div>
       </div>
       {topic.isExpanded && (
         <div className="ml-6 mt-2">
