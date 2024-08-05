@@ -1,7 +1,7 @@
 import { SocialButton } from "@/types/auth";
 
 const handleGoogleAuth = () => {
-  const authServiceUrl = process.env.NEXT_PUBLIC_AUTH_SERVICE_URL;
+  const authServiceUrl: string = `${process.env.NEXT_PUBLIC_BASE_URL}/auth`;
   window.location.href = `${authServiceUrl}/google`;
 };
 
