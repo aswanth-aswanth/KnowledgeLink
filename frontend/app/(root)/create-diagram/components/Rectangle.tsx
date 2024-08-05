@@ -1,21 +1,5 @@
 import React from "react";
-
-interface RectangleProps {
-  rect: {
-    id: string;
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    name: string;
-  };
-  isSelected: boolean;
-  onSelect: (e: React.MouseEvent) => void;
-  onUpdatePosition: (x: number, y: number) => void;
-  onUpdateSize: (width: number, height: number) => void;
-  onDelete: () => void;
-  circlesVisible: boolean;
-}
+import { RectangleProps } from "@/types/roadmap";
 
 const Rectangle: React.FC<RectangleProps> = ({
   rect,

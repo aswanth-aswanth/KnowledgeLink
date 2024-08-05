@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Sidebar } from "@/components/shared/Sidebar";
-import { TopBar } from "@/components/shared/TopBar";
+import { Sidebar } from "@/components/layouts/Sidebar";
+import { TopBar } from "@/components/layouts/TopBar";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { useDarkMode } from "@/hooks/useDarkMode";

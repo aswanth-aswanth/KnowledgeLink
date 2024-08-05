@@ -2,7 +2,7 @@
 "use client";
 
 import React from "react";
-import Header from "@/components/shared/Header";
+import Header from "@/components/layouts/Header";
 import { ReduxProvider } from "@/lib/redux-provider";
 import { checkTokenExpiration } from "@/store/authSlice";
 import { store } from "@/store";

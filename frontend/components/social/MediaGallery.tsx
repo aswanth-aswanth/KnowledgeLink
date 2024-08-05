@@ -1,4 +1,3 @@
-// components/MediaGallery.tsx
 import { useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Button } from "@/components/ui/button";

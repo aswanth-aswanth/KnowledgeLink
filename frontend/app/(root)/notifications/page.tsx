@@ -3,14 +3,7 @@
 import { useEffect, useState } from "react";
 import { useDarkMode } from "@/hooks/useDarkMode";
 import { getNotifications } from "@/api/notificationApi";
-
-interface Notification {
-  type: "comment" | "like";
-  content: string;
-  createdAt: string;
-  read: boolean;
-  _id: string;
-}
+import { Notification } from "@/types/notifications";
 
 const NotificationsPage: React.FC = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);

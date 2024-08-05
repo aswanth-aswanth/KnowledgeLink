@@ -13,16 +13,11 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import RadioGroupForm from "../../../components/shared/RadioGroupForm";
+import RadioGroupForm from "../../../components/forms/RadioGroupForm";
 import { useDarkMode } from "@/hooks/useDarkMode";
 import { RootState } from "@/store";
 import UserSearch from "../../../components/shared/UserSearch";
-
-interface ChooseRoadmapTypeProps {
-  onContinue: (roadmapType: string, members: any[]) => void;
-  roadmapType: string;
-  setRoadmapType: (type: string) => void;
-}
+import { ChooseRoadmapTypeProps } from "@/types/roadmap";
 
 export default function ChooseRoadmapType({
   onContinue,

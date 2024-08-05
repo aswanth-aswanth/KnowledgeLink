@@ -6,7 +6,7 @@ import PopularContributors from "@/components/shared/PopularContributors";
 import TrendingArticles from "@/components/shared/TrendingArticles";
 import Tabs from "@/components/shared/Tabs";
 import { Tab } from "@/types";
-import Roadmaps from "@/components/shared/Roadmaps";
+import Roadmaps from "@/components/roadmap/Roadmaps";
 
 const TabNavigation: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>("Explore");

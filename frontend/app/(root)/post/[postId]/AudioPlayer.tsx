@@ -1,9 +1,5 @@
-// components/AudioPlayer.tsx
 import React, { useRef, useState } from "react";
-
-interface AudioPlayerProps {
-  url: string;
-}
+import { AudioPlayerProps } from "@/types/posts";
 
 export function AudioPlayer({ url }: AudioPlayerProps) {
   const audioRef = useRef<HTMLAudioElement>(null);

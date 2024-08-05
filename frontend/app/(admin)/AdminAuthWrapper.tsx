@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { checkTokenExpiration } from "@/store/authSlice";
 import { selectAuthState } from "@/store/selectors";
-import SignIn from "@/components/shared/SignIn";
+import SignIn from "@/components/auth/SignIn";
 
 const AdminAuthWrapper = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);

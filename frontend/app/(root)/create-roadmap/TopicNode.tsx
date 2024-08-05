@@ -23,6 +23,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useDarkMode } from "@/hooks/useDarkMode";
+import { TopicNodeProps } from "@/types/roadmap";
 
 const TEXT_STYLES = [
   { name: "Paragraph", style: "p", class: "text-base" },
@@ -44,10 +45,6 @@ const LAYOUT_OPTIONS = [
   { name: "Medium", class: "max-w-md" },
   { name: "Small", class: "max-w-sm" },
 ];
-
-interface TopicNodeProps {
-  id: string;
-}
 
 const TopicNode: React.FC<TopicNodeProps> = ({ id }) => {
   const dispatch = useDispatch<AppDispatch>();

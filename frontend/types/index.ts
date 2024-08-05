@@ -6,7 +6,7 @@ export type Tab = {
 export type TabsProps = {
   tabs: Tab[];
   activeTab: string;
-  onTabClick: (tabName: string,dbName:string) => void;
+  onTabClick: (tabName: string, dbName: string) => void;
   tabFor: string;
 }
 // src/types/index.ts

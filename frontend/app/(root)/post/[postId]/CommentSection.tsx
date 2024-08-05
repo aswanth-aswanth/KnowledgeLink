@@ -5,19 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { MessageCircle, Send, ChevronDown, ChevronUp } from "lucide-react";
 import apiClient from "@/api/apiClient";
-
-interface Comment {
-  _id: string;
-  text: string;
-  author: string;
-  createdAt: string;
-  replyCount: number;
-  replies?: Comment[];
-}
-
-interface CommentSectionProps {
-  postId: string;
-}
+import { Comment, CommentSectionProps } from "@/types/posts/Comment";
 
 export function CommentSection({ postId }: CommentSectionProps) {
   const [comments, setComments] = useState<Comment[]>([]);

@@ -1,4 +1,3 @@
-// components/Rectangle.tsx
 import React from "react";
 
 interface RectangleProps {

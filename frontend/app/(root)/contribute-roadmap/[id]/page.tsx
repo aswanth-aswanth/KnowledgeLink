@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useParams, usePathname } from "next/navigation";
-import RoadmapViewer from "@/components/shared/RoadmapViewer";
+import RoadmapViewer from "@/components/roadmap/RoadmapViewer";
 import apiClient from "@/api/apiClient";
 import { Button } from "@/components/ui/button";
 import { useDarkMode } from "@/hooks/useDarkMode";

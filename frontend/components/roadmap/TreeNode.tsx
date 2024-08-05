@@ -1,4 +1,3 @@
-// components/TreeNode.tsx
 import React from "react";
 import { CalculatedTreeNode } from "../../types/TreeTypes";
 

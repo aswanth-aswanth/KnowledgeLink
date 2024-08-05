@@ -1,18 +1,10 @@
-// components/MediaGallery.tsx
 import { useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { AudioPlayer } from "./AudioPlayer";
-
-interface MediaItem {
-  type: "image" | "video" | "audio";
-  url: string;
-}
-
-interface MediaGalleryProps {
-  mediaItems: MediaItem[];
-}
+import { MediaItem } from "@/types/posts";
+import { MediaGalleryProps } from "@/types/posts";
 
 export function MediaGallery({ mediaItems }: MediaGalleryProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);

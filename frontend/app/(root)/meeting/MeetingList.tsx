@@ -1,4 +1,3 @@
-// components/MeetingList.tsx
 import { useState } from "react";
 import {
   Card,
@@ -12,21 +11,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import JitsiMeetComponent from "./[roomName]/JitsiMeetComponent";
 import { useRouter } from "next/navigation";
-
-type Meeting = {
-  _id: string;
-  meetingId: string;
-  title: string;
-  description?: string;
-  scheduledTime: string;
-  createdBy: string;
-  invitedUsers: string[];
-};
-
-type MeetingListProps = {
-  meetings: Meeting[];
-  currentUserEmail: string;
-};
+import { Meeting } from "@/types/meetings";
+import { MeetingListProps } from "@/types/meetings";
 
 export function MeetingList({ meetings, currentUserEmail }: MeetingListProps) {
   const [selectedMeeting, setSelectedMeeting] = useState<string | null>(null);

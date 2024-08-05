@@ -1,16 +1,8 @@
-// components/shared/RoadmapItems.tsx
 import React from "react";
-import { FiHeart } from "react-icons/fi";
 import { useRouter, usePathname } from "next/navigation";
 import apiClient from "@/api/apiClient";
 import toast from "react-hot-toast";
-
-export type CardProps = {
-  title: string;
-  description: string;
-  likes: number;
-  id: string;
-};
+import { CardProps } from "@/types/roadmap";
 
 const RoadmapItems: React.FC<CardProps> = ({
   title,

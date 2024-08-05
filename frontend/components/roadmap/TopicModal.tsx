@@ -1,4 +1,3 @@
-// components/TopicModal.tsx
 import React, { useState, useEffect, useRef } from "react";
 import { X, Minimize2, Maximize2 } from "lucide-react";
 import { useDarkMode } from "@/hooks/useDarkMode";

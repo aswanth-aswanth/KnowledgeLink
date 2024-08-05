@@ -11,7 +11,6 @@ import {
 } from "lucide-react";
 import { MediaGallery } from "./MediaGallery";
 import { CommentSection } from "./CommentSection";
-import apiClient from "@/api/apiClient";
 import {
   WhatsappShareButton,
   FacebookShareButton,
@@ -22,31 +21,8 @@ import {
   TwitterIcon,
   LinkedinIcon,
 } from "react-share";
-
-interface Post {
-  _id: string;
-  title: string;
-  description: string;
-  content: {
-    videos: { type: string; url: string; duration: number }[];
-    images: { url: string }[];
-  };
-  audios?: string[];
-  createdAt: Date;
-  creatorName?: string;
-  creatorEmail: string;
-  likes: string[];
-  comments: any[];
-  isLiked: boolean;
-}
-
-interface PostCardProps {
-  post: Post;
-  onLike: (postId: string) => void;
-  onShare: (postId: string) => void;
-  onSave: (postId: string) => void;
-  onComment: (postId: string, comment: string) => void;
-}
+import { Post } from "@/types/posts";
+import { PostCardProps } from "@/types/posts";
 
 export function PostCard({
   post,

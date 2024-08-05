@@ -1,22 +1,5 @@
 import React from "react";
-
-interface ConnectionProps {
-  connection: {
-    from: string;
-    to: string;
-    style: "straight" | "curved";
-  };
-  circlesVisible: boolean;
-  rectangles: {
-    id: string;
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  }[];
-  onDelete: () => void;
-  onChangeStyle: (style: "straight" | "curved") => void;
-}
+import { ConnectionProps } from "@/types/roadmap";
 
 const Connection: React.FC<ConnectionProps> = ({
   connection,

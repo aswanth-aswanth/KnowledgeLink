@@ -6,19 +6,7 @@ import apiClient from "@/api/apiClient";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-
-interface Contribution {
-  _id: string;
-  roadmapId: string;
-  contributedDocumentIds: string[];
-  contributorEmail: string;
-  contributions: {
-    id: string;
-    content: {
-      data: string;
-    };
-  }[];
-}
+import { Contribution } from "@/types/roadmap";
 
 async function fetchContributions(roadmapId: string): Promise<Contribution[]> {
   try {
@@ -96,8 +84,7 @@ const ContributionCard = ({ contribution }: { contribution: Contribution }) => (
     <CardHeader>
       <CardTitle className="flex items-center text-gray-800 dark:text-white">
         <Avatar className="mr-2 bg-gray-200 dark:bg-gray-700">
-          <AvatarFallback className="text-gray-600 dark:text-gray-300">
-          </AvatarFallback>
+          <AvatarFallback className="text-gray-600 dark:text-gray-300"></AvatarFallback>
         </Avatar>
       </CardTitle>
     </CardHeader>

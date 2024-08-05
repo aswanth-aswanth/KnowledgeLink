@@ -1,4 +1,3 @@
-// components/AudioPlayer.tsx
 import React, { useRef, useState } from "react";
 
 interface AudioPlayerProps {

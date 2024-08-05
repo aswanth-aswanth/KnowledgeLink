@@ -6,8 +6,8 @@ import { Tab } from "@/types";
 import { Provider } from "react-redux";
 import { store } from "@/store";
 import { CreatePostButton } from "./CreatePostButton";
-import { CreatePostModal } from "./CreatePostModal";
-import { PostFeed } from "./PostFeed";
+import { CreatePostModal } from "../../../components/forms/CreatePostModal";
+import { PostFeed } from "../../../components/social/PostFeed";
 
 const Following: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>("Following");

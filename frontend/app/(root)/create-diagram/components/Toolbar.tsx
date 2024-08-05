@@ -1,19 +1,6 @@
 import React from "react";
 import { FaEyeSlash, FaEye, FaSearchPlus, FaSearchMinus } from "react-icons/fa";
-
-interface ToolbarProps {
-  onSelectLineStyle: (style: "straight" | "curved") => void;
-  selectedLineStyle: "straight" | "curved";
-  isMultiSelectMode: boolean;
-  onToggleMultiSelect: () => void;
-  circlesVisible: boolean;
-  onToggleCircleVisibility: () => void;
-  onCopySVG: () => void;
-  onScaleUp: () => void;
-  onScaleDown: () => void;
-  onToggleConnecting: () => void;
-  isConnectingMode: boolean;
-}
+import { ToolbarProps } from "@/types/roadmap";
 
 const Toolbar: React.FC<ToolbarProps> = ({
   onSelectLineStyle,

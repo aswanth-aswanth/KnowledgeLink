@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
-import Rectangle from "./Rectangle";
-import Connection from "./Connection";
+import Rectangle from "../roadmap/Rectangle";
+import Connection from "../roadmap/Connection";
 import { FaSearchPlus, FaSearchMinus } from "react-icons/fa";
-import TopicModal from "./TopicModal";
+import TopicModal from "../roadmap/TopicModal";
 
 interface ViewDiagramProps {
   rectangles: {

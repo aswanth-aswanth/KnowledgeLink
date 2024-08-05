@@ -1,4 +1,3 @@
-// components/CreatePostButton.tsx
 import { Button } from "@/components/ui/button";
 import { FiPlusSquare } from "react-icons/fi";
 

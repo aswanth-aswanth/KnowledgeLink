@@ -1,20 +1,10 @@
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
-import { CreateMeetingForm } from "./CreateMeetingForm";
+import { CreateMeetingForm } from "../../../components/forms/CreateMeetingForm";
 import { MeetingList } from "./MeetingList";
 import apiClient from "@/api/apiClient";
-
-interface Meeting {
-  _id: string;
-  meetingId: string;
-  title: string;
-  description: string;
-  scheduledTime: string;
-  createdBy: string;
-  invitedUsers: string[];
-}
+import { Meeting } from "@/types/meetings";
 
 export default function MeetingsPage() {
   const user = useSelector((state: RootState) => state.auth.user);

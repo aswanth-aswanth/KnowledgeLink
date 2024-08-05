@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import Header from "@/components/shared/Header";
+import Header from "@/components/layouts/Header";
 import { ReduxProvider } from "@/lib/redux-provider";
 import { checkTokenExpiration, selectAuthState } from "@/store/authSlice";
 import { store } from "@/store";

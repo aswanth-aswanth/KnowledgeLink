@@ -8,15 +8,10 @@ import {
   FiSettings,
 } from "react-icons/fi";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  // selectAuthState,
-  clearAuthState,
-  checkTokenExpiration,
-} from "@/store/authSlice";
-// import { selectAuthState } from "@/store/authSlice";
+import { clearAuthState, checkTokenExpiration } from "@/store/authSlice";
 import { selectAuthState } from "@/store/selectors";
 import { Hamburger } from "./Hamburger";
-import Notifications from "./Notifications";
+import Notifications from "@/components/shared/Notifications";
 import Image from "next/image";
 import defaultUserImage from "@/public/defaultUserImage.png";
 import { useRouter } from "next/navigation";
