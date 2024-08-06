@@ -1,11 +1,9 @@
-// store/index.ts
 import { configureStore, combineReducers, Action, ThunkAction } from '@reduxjs/toolkit';
 import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 import localForage from 'localforage';
 
 import topicsReducer from './topicsSlice';
 import darkmodeReducer from './darkmodeSlice';
-// Import authReducer separately
 import { authReducer } from './authSlice';
 import socketReducer from './socketSlice';
 
@@ -39,7 +37,8 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER, 'socket/setSocket'],
+        ignoredPaths: ['socket.socket'],
       },
     }),
 });
