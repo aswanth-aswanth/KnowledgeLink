@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
+import { usePathname } from "next/navigation";
 import Header from "@/components/layouts/Header";
 import { ReduxProvider } from "@/lib/redux-provider";
 import { checkTokenExpiration, selectAuthState } from "@/store/authSlice";
@@ -27,6 +28,7 @@ const LayoutContent = ({ children }: { children: React.ReactNode }) => {
   const { user, token, isAuthenticated } = useSelector(selectAuthState);
   const dispatch = useDispatch();
   const userEmail = user?.email;
+  const pathname = usePathname();
 
   useEffect(() => {
     if (isAuthenticated && token) {
@@ -39,15 +41,27 @@ const LayoutContent = ({ children }: { children: React.ReactNode }) => {
     userEmail
   );
 
+  const isChatPage = pathname === "/chat";
+
   return (
     <div
       className={`${
         isDarkMode ? "bg-gray-900 dark" : ""
       } flex flex-col min-h-screen`}
     >
-      <Header />
-      <main className={` flex-grow overflow-y-auto px-3 sm:px-4 md:px-5`}>
-        <div className="max-w-[1224px] px-0 sm:px-4 md:px-0 mx-auto h-full">
+      <div className={`${isChatPage && "hidden md:block"}`}>
+        <Header />
+      </div>
+      <main
+        className={`flex-grow overflow-y-auto sm:px-4 md:px-5 ${
+          !isChatPage ? "px-3" : ""
+        }`}
+      >
+        <div
+          className={`${
+            !isChatPage ? "max-w-[1224px] px-0 sm:px-4 md:px-0 mx-auto" : ""
+          } h-full`}
+        >
           {children}
         </div>
       </main>

@@ -304,7 +304,7 @@ const TopicNode: React.FC<TopicNodeProps> = ({ id }) => {
             type="text"
             value={topic.name}
             onChange={handleNameChange}
-            className={`min-w-56 flex-shrink bg-transparent px-1 sm:px-2 py-1 focus:outline-none rounded-md font-bold text-sm sm:text-lg truncate ${
+            className={`min-w-96 flex-shrink bg-transparent px-1 sm:px-2 py-1 focus:outline-none rounded-md font-bold text-sm sm:text-lg truncate ${
               isDarkMode
                 ? "focus:bg-gray-800 text-gray-300"
                 : "focus:bg-gray-50 text-gray-600"

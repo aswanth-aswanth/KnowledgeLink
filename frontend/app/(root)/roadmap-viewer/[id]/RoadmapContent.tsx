@@ -154,7 +154,7 @@ export default function RoadmapContent() {
           </div>
         )}
       </div>
-      <div className="max-w-[900px] mx-auto">
+      <div className="max-w-[990px] mx-auto">
         <RoadmapViewer
           transformedTopics={roadmapData}
           isEditMode={isEditMode}

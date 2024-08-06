@@ -87,6 +87,12 @@ export const useSidebarLogic = (
     }
   }, []);
 
+  const clearSearch = useCallback(() => {
+    setSearchTerm("");
+    setSearchResults([]);
+    setIsSearchExpanded(false);
+  }, []);
+
   useEffect(() => {
     if (socket) {
       const newMessageHandler = (encapsulatedMessage: EncapsulatedMessage) => {
@@ -181,5 +187,6 @@ export const useSidebarLogic = (
     handleCreateGroup,
     toggleParticipant,
     fetchGroupChat,
+    clearSearch
   };
 };

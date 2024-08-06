@@ -46,7 +46,7 @@ export const MessageList: React.FC<MessageListProps> = ({
             onMouseLeave={() => setHoveredMessageId(null)}
           >
             <div
-              className={`max-w-xs mr-2 lg:max-w-md px-4 py-2 rounded-[6px] relative ${
+              className={`max-w-xs sm:mr-2 lg:max-w-md px-4 py-2 rounded-[6px] relative ${
                 message.senderId === currentUserId
                   ? "bg-green-500 text-white dark:bg-[#005c4b] dark:text-white"
                   : "bg-gray-200 dark:bg-gray-700 dark:text-white"

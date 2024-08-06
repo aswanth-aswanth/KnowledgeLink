@@ -16,7 +16,8 @@ import { useSidebarLogic } from "@/hooks/useSidebarLogic";
 import { CreateGroupModal } from "@/components/chat/CreateGroupModal";
 import { SearchResults } from "@/components/chat/SearchResults";
 import { GroupChatList } from "@/components/chat/GroupChatList";
-import { UserChatList } from "@/components/chat/UserChatlist";
+import { UserChatList } from "@/components/chat/UserChatList";
+import { Hamburger } from "../layouts/Hamburger";
 
 export default function Sidebar({
   isDarkMode,
@@ -84,40 +85,45 @@ export default function Sidebar({
 
   return (
     <div
-      className={`w-64 ${
+      className={`w-64 md:pt-4 ${
         isDarkMode ? "bg-gray-800 text-white" : "bg-white"
       } border-r md:block overflow-y-auto fixed inset-y-0 left-0 z-20 transform ${
         isVisible ? "translate-x-0" : "-translate-x-full"
       } px-2 transition-transform duration-200 ease-in-out md:relative md:translate-x-0`}
     >
       <div className="mt-2" ref={searchRef}>
-        <div className="flex items-center mb-4">
-          <h2 className="text-lg font-semibold flex-grow">Chat Room</h2>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onClose}
-            className="md:hidden"
-          >
-            <X className="h-4 w-4" />
-          </Button>
-          {isSearchExpanded ? (
-            <Input
-              type="text"
-              placeholder="Search users..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full"
-            />
-          ) : (
+        <div className="relative flex items-center mb-4">
+          <div className="block md:hidden">
+            <Hamburger />
+          </div>
+          {/* <h2 className="text-lg font-semibold flex-grow">Chat Room</h2> */}
+          <div className={`${!isSearchExpanded && "absolute right-0"} flex`}>
+            {isSearchExpanded ? (
+              <Input
+                type="text"
+                placeholder="Search users..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full bg-slate-800 rounded-xl"
+              />
+            ) : (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsSearchExpanded(true)}
+              >
+                <Search className="h-4 w-4" />
+              </Button>
+            )}
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => setIsSearchExpanded(true)}
+              onClick={onClose}
+              className="md:hidden"
             >
-              <Search className="h-4 w-4" />
+              <X className="h-4 w-4" />
             </Button>
-          )}
+          </div>
         </div>
       </div>
 

@@ -2,6 +2,22 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
+import { Roboto } from "next/font/google";
+import { Lato } from "next/font/google";
+
+
+const roboto = Roboto({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  variable: "--font-roboto",
+});
+
+
+const lato = Lato({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-lato",
+});
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -9,10 +25,9 @@ const poppins = Poppins({
   variable: "--font-poppins",
 });
 
-export const metadata: Metadata = {
-  title: "KnowledgeLink",
-  description: "Share and learn your knowledge",
-};
+
+
+
 
 export default function RootLayout({
   children,
@@ -20,7 +35,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${lato.variable}`}>
       <body>
         {children}
         <Toaster position="bottom-right" reverseOrder={false} />

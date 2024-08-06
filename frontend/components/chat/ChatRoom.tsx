@@ -28,7 +28,7 @@ export default function ChatRoom({
 
   return (
     <div
-      className={`flex h-screen max-h-[91.8vh] ${
+      className={`flex h-screen md:h-[90.9vh] ${
         isDarkMode ? "bg-gray-900" : "bg-gray-100"
       }`}
     >

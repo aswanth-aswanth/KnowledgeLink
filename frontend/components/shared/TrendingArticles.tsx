@@ -48,7 +48,7 @@ const TrendingArticles = () => {
   return (
     <div
       className={`max-w-6xl mx-auto  sm:p-8 ${
-        isDarkMode ? "bg-gray-900 text-white" : "bg-gray-100"
+        isDarkMode ? "bg-gray-900 text-white" : "md:bg-gray-100"
       }`}
     >
       <h2
@@ -75,7 +75,7 @@ const TrendingArticles = () => {
                 {article.name}
               </h3>
             </CardHeader>
-            <CardContent className="flex-grow overflow-auto p-3 max-h-[180px]">
+            <CardContent className="flex-grow overflow-auto p-3 max-h-[380px]">
               <h4
                 className={`text-lg font-medium ${
                   isDarkMode ? "text-gray-200" : "text-gray-800"

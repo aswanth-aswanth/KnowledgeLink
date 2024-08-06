@@ -55,7 +55,7 @@ const Topic: React.FC<TopicProps> = ({
   };
 
   return (
-    <div className="topic-node mb-3">
+    <div className="topic-node mb-3 ">
       <div className="flex items-center group">
         <button
           onClick={toggleExpand}
@@ -78,7 +78,7 @@ const Topic: React.FC<TopicProps> = ({
           )}
         </button>
         <span
-          className={`flex-grow px-2 py-1 rounded-md font-bold sm:text-lg ${
+          className={`flex-grow px-2 py-1 rounded-md font-bold text-lg sm:text-lg ${
             isDarkMode ? "text-gray-300" : "text-gray-600"
           }`}
         >
@@ -115,11 +115,11 @@ const Topic: React.FC<TopicProps> = ({
             />
           ) : (
             <div
-              className={`h-min p-2 mb-2 indent-4 rounded-md transition-all duration-200 prose font-medium prose-sm tracking-wider  text-base max-[320px]:text-sm max-[320px]:leading-9 ${
+              className={`h-min p-2 mb-2 indent-4 rounded-md transition-all duration-200  font-semibold prose-sm tracking-wider   max-[320px]:text-sm  leading-loose max-[320px]:leading-9 ${
                 isDarkMode
                   ? "bg-transparent text-gray-300"
                   : "bg-gray-50 text-gray-600"
-              } leading-9 `}
+              }  `}
               dangerouslySetInnerHTML={{ __html: topic.content }}
             />
           )}
