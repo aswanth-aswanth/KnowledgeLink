@@ -12,7 +12,7 @@ const TopicSchema: Schema<ITopic> = new Schema({
     children: [{
         _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
         name: { type: String, required: true },
-        uniqueId: { type: String },
+        uniqueId: { type: String }, 
         content: { type: String },
         contributorId: { type: String, default: "" },
         tags: { type: [String], default: [] },
