@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { IAnswer, IFAQ } from "../../interfaces/Faq";
+import { IAnswer, IFAQ } from "../../interfaces/IFaq";
 
 // Answer Schema
 const AnswerSchema: Schema<IAnswer> = new Schema({

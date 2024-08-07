@@ -9,6 +9,14 @@ export interface IAnswer extends Document {
     createdAt: Date;
 }
 
+export interface AddFaqQuestionDTO {
+    roadmapId: Types.ObjectId;
+    topicId: Types.ObjectId;
+    topicUniqueId: string;
+    question: string;
+    contributorId: string;
+}
+
 export interface IFAQ extends Document {
     _id: Types.ObjectId;
     roadmapId: Types.ObjectId;
