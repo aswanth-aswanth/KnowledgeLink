@@ -22,7 +22,7 @@ class GoogleAuthController {
                     role: "user"
                 },
                 process.env.JWT_SECRET!,
-                { expiresIn: '1h' }
+                { expiresIn: '7d' }
             );
             res.redirect(`${process.env.FRONTEND_URL}?token=${token}`);
         } else {

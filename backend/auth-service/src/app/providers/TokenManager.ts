@@ -11,7 +11,7 @@ interface TokenPayload {
 export default class TokenManager {
     public generateToken(payload: TokenPayload): string {
         const token = jwt.sign(payload, process.env.JWT_SECRET!, {
-            expiresIn: '1h'
+            expiresIn: '7d'
         });
         return token;
     }

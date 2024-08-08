@@ -1,5 +1,6 @@
 import express from "express";
 import profileRouter from "../routers/profile";
+import faqRouter from "../routers/faq";
 import { errorHandler } from '../../../infra/http/middleware/errorHandler';
 import logger from '../../../infra/logging/logger';
 
@@ -19,6 +20,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/', profileRouter);
+app.use('/faq', faqRouter);
 
 app.use(errorHandler);
 
