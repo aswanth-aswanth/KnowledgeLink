@@ -3,9 +3,11 @@ import { ChevronDown, ChevronRight, Edit, Save } from "lucide-react";
 import { useDarkMode } from "@/hooks/useDarkMode";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import FAQSection from "@/components/roadmap/FAQSection";
 
 interface TopicProps {
   topic: {
+    _id: string;
     uniqueId: string;
     name: string;
     content: string;
@@ -16,6 +18,7 @@ interface TopicProps {
   setExpandedTopics: React.Dispatch<React.SetStateAction<string[]>>;
   isEditMode: boolean;
   onContentChange: (uniqueId: string, newContent: string) => void;
+  roadmapId: string;
 }
 
 const Topic: React.FC<TopicProps> = ({
@@ -25,6 +28,7 @@ const Topic: React.FC<TopicProps> = ({
   setExpandedTopics,
   isEditMode,
   onContentChange,
+  roadmapId,
 }) => {
   const { isDarkMode } = useDarkMode();
   const isExpanded = expandedTopics.includes(topic.uniqueId);
@@ -123,16 +127,26 @@ const Topic: React.FC<TopicProps> = ({
               dangerouslySetInnerHTML={{ __html: topic.content }}
             />
           )}
-          {topic.children.map((child, index) => (
-            <Topic
-              key={child.uniqueId}
-              topic={child}
-              level={`${level}-${index + 1}`}
-              expandedTopics={expandedTopics}
-              setExpandedTopics={setExpandedTopics}
-              isEditMode={isEditMode}
-              onContentChange={onContentChange}
+          {expandedTopics.includes(topic.uniqueId) && (
+            <FAQSection
+              roadmapId={roadmapId}
+              topicUniqueId={topic.uniqueId}
+              topicId={topic._id} // Add this line
             />
+          )}
+          {topic.children.map((child, index) => (
+            <div key={child.uniqueId}>
+              <Topic
+                key={child.uniqueId}
+                topic={child}
+                level={`${level}-${index + 1}`}
+                expandedTopics={expandedTopics}
+                setExpandedTopics={setExpandedTopics}
+                isEditMode={isEditMode}
+                onContentChange={onContentChange}
+                roadmapId={roadmapId}
+              />
+            </div>
           ))}
         </div>
       )}
@@ -142,18 +156,21 @@ const Topic: React.FC<TopicProps> = ({
 
 interface RoadmapViewerProps {
   transformedTopics: {
+    _id: string;
     title: string;
     description: string;
     topics: TopicProps["topic"];
   };
   isEditMode: boolean;
   onContentChange: (uniqueId: string, newContent: string) => void;
+  roadmapId: string;
 }
 
 const RoadmapViewer: React.FC<RoadmapViewerProps> = ({
   transformedTopics,
   isEditMode,
   onContentChange,
+  roadmapId,
 }) => {
   const { isDarkMode } = useDarkMode();
   const [expandedTopics, setExpandedTopics] = useState<string[]>(() =>
@@ -177,15 +194,18 @@ const RoadmapViewer: React.FC<RoadmapViewerProps> = ({
         {transformedTopics.description}
       </p>
       {transformedTopics.topics.children.map((child, index) => (
-        <Topic
-          key={child.uniqueId}
-          topic={child}
-          level={`${index + 1}`}
-          expandedTopics={expandedTopics}
-          setExpandedTopics={setExpandedTopics}
-          isEditMode={isEditMode}
-          onContentChange={onContentChange}
-        />
+        <div key={child.uniqueId}>
+          <Topic
+            key={child.uniqueId}
+            topic={child}
+            level={`${index + 1}`}
+            expandedTopics={expandedTopics}
+            setExpandedTopics={setExpandedTopics}
+            isEditMode={isEditMode}
+            onContentChange={onContentChange}
+            roadmapId={roadmapId}
+          />
+        </div>
       ))}
     </div>
   );

@@ -57,6 +57,7 @@ export default function RoadmapContent() {
     if (params.id) {
       getRoadmapData(params.id as string)
         .then((data) => {
+          console.log("roadmapDATAAA : ", data);
           setRoadmapData(data);
           return getDiagramData(data);
         })
@@ -159,6 +160,7 @@ export default function RoadmapContent() {
           transformedTopics={roadmapData}
           isEditMode={isEditMode}
           onContentChange={handleContentChange}
+          roadmapId={roadmapData._id}
         />
       </div>
 
