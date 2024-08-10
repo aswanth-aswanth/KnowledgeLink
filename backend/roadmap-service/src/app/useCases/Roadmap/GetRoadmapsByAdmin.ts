@@ -13,6 +13,7 @@ export default class GetRoadmapsByAdmin {
     public async execute(userId: string): Promise<IRoadmap[]> {
         try {
             const roadmaps = await this.roadmapRepository.findRoadmapsByAdmin(userId);
+            console.log("Admin roadmaps : ", roadmaps);
             return roadmaps;
         } catch (error) {
             if (error instanceof Error)

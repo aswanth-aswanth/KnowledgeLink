@@ -3,9 +3,10 @@ import GetRoadmapsByMember from "../../../../app/useCases/Roadmap/GetRoadmapsByM
 import RoadmapRepository from "../../../../app/repositories/RoadmapRepository";
 
 export default class GetRoadmapsByMemberController {
-    public async handle(req: any, res: Response) {
+    public async handle(req: Request, res: Response) {
 
-        const userId = req.user.userId;
+        const userId = (req as any).user.userId;
+        console.log("userId from request : ", userId);
         const getRoadmapsByMember = new GetRoadmapsByMember(
             new RoadmapRepository(),
         );

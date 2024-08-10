@@ -3,9 +3,9 @@ import GetAllSubscribedRoadmaps from "../../../../app/useCases/Roadmap/GetAllSub
 import RoadmapRepository from "../../../../app/repositories/RoadmapRepository";
 
 export default class GetAllSubscribedController {
-    public async handle(req: any, res: Response) {
+    public async handle(req: Request, res: Response) {
 
-        const userId = req.user.userId;
+        const userId = (req as any).user.userId;
 
         const getAllSubscribedRoadmaps = new GetAllSubscribedRoadmaps(
             new RoadmapRepository()

@@ -3,9 +3,9 @@ import GetRoadmapsByAdmin from "../../../../app/useCases/Roadmap/GetRoadmapsByAd
 import RoadmapRepository from "../../../../app/repositories/RoadmapRepository";
 
 export default class GetRoadmapsByAdminController {
-    public async handle(req: any, res: Response) {
+    public async handle(req: Request, res: Response) {
 
-        const userId = req.user.userId;
+        const userId = (req as any).user.userId;
 
         const getRoadmapsByAdmin = new GetRoadmapsByAdmin(
             new RoadmapRepository()
