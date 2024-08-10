@@ -112,8 +112,8 @@ const FAQSection: React.FC<FAQSectionProps> = ({
   };
 
   return (
-    <div className="mt-2 text-sm px-4">
-      <h3 className="font-semibold mb-1">FAQs</h3>
+    <div className="mt-2 text-base dark:text-gray-300 px-4 ">
+      <h3 className="font-semibold mb-1 text-sm">FAQs</h3>
       <div className="space-y-1">
         {faqs.map((faq) => (
           <div
@@ -125,20 +125,20 @@ const FAQSection: React.FC<FAQSectionProps> = ({
               onClick={() => toggleFAQ(faq._id)}
             >
               {expandedFAQs.includes(faq._id) ? (
-                <ChevronDown className="mr-1 h-4 w-4 flex-shrink-0" />
+                <ChevronDown className="mr-1 h-4 w-4 flex-shrink-0 dark:text-white" />
               ) : (
-                <ChevronRight className="mr-1 h-4 w-4 flex-shrink-0" />
+                <ChevronRight className="mr-1 h-4 w-4 flex-shrink-0 dark:text-white" />
               )}
-              <span className="break-words">{faq.question}</span>
+              <span className="break-words ">{faq.question}</span>
             </div>
             {expandedFAQs.includes(faq._id) && (
-              <div className="pl-4 mt-1 text-gray-600 dark:text-gray-300">
+              <div className="pl-4 mt-1 text-gray-600 dark:text-gray-300 ">
                 {faq.answers.map((answer, index) => (
                   <div key={answer._id}>
                     {index > 0 && (
                       <hr className="my-2 border-gray-200 dark:border-gray-700" />
                     )}
-                    <p className="break-words">{answer.content}</p>
+                    <p className="break-words dark:text-gray-300 leading-loose ">{answer.content}</p>
                   </div>
                 ))}
                 <div className="mt-2">

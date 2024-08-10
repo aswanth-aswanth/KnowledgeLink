@@ -75,7 +75,7 @@ const TopicNode: React.FC<TopicNodeProps> = ({ id }) => {
     }
   }, [dispatch, id]);
 
-  const handleAddSubtopic = useCallback(() => {
+  const handleAddSubtopic = useCallback(() => { 
     const newTopic = {
       id: Date.now().toString(),
       name: "New Topic",
@@ -238,7 +238,7 @@ const TopicNode: React.FC<TopicNodeProps> = ({ id }) => {
             range.insertNode(mediaContainer);
             range.collapse(false);
           } else {
-            contentRef.current.appendChild(mediaContainer);
+            contentRef.current?.appendChild(mediaContainer);
           }
 
           handleContentChange();

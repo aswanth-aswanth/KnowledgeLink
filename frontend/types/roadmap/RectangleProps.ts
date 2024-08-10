@@ -8,7 +8,7 @@ export interface RectangleProps {
         name: string;
     };
     isSelected: boolean;
-    onSelect: () => void;
+    onSelect: (e:any) => void;
     onUpdatePosition: (x: number, y: number) => void;
     onUpdateSize: (width: number, height: number) => void;
     onDelete: () => void;
