@@ -25,7 +25,8 @@ passport.use(new GoogleStrategy({
         await publisher.publish('user.registration', JSON.stringify({
           email: user.email,
           username: user.username,
-          image: user.image
+          image: user.image,
+          _id: user._id
         }));
       }
 
