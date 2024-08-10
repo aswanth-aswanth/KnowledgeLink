@@ -1,22 +1,26 @@
-// Roadmaps.tsx
 import React, { useState, useEffect } from "react";
 import { Tab } from "@/types";
 import Tabs from "@/components/shared/Tabs";
 import RoadmapItems from "../../app/(root)/favourites-roadmaps/RoadmapItems";
 import apiClient from "@/api/apiClient";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Roadmaps() {
   const [activeTab, setActiveTab] = useState<string>(
     "Expert Collaboration Roadmap"
   );
   const [roadmapData, setRoadmapData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const getRoadmapByType = async (roadmapType: string) => {
+    setLoading(true);
     try {
       const res = await apiClient.get(`/roadmap?type=${roadmapType}`);
       setRoadmapData(res.data);
     } catch (error) {
       console.log("Error: ", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -46,6 +50,18 @@ export default function Roadmaps() {
     },
   ];
 
+  const SkeletonRoadmapItem = () => (
+    <div className="border rounded-lg p-4 shadow-sm">
+      <Skeleton className="h-6 w-3/4 mb-2" />
+      <Skeleton className="h-4 w-full mb-2" />
+      <Skeleton className="h-4 w-5/6 mb-2" />
+      <div className="flex justify-between items-center mt-4">
+        <Skeleton className="h-4 w-16" />
+        <Skeleton className="h-8 w-24" />
+      </div>
+    </div>
+  );
+
   return (
     <>
       <p className="text-gray-500 font-bold text-center text-4xl mt-6 mb-8">
@@ -60,16 +76,20 @@ export default function Roadmaps() {
         />
       </div>
       <div className="grid grid-cols-1 mt-14 md:grid-cols-3 gap-4">
-        {roadmapData.map((card, index) => (
-          <div key={index}>
-            <RoadmapItems
-              title={card.title}
-              description={card.description}
-              likes={card.likes}
-              id={card._id}
-            />
-          </div>
-        ))}
+        {loading
+          ? Array(6)
+              .fill(0)
+              .map((_, index) => <SkeletonRoadmapItem key={index} />)
+          : roadmapData.map((card, index) => (
+              <div key={index}>
+                <RoadmapItems
+                  title={card.title}
+                  description={card.description}
+                  likes={card.likes}
+                  id={card._id}
+                />
+              </div>
+            ))}
       </div>
     </>
   );

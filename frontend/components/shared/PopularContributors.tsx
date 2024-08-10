@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
 import apiClient from "@/api/apiClient";
 import { useRouter } from "next/navigation";
 import { useDarkMode } from "@/hooks/useDarkMode";
 
 export default function PopularContributors() {
   const [contributors, setContributors] = useState([]);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
   const { isDarkMode } = useDarkMode();
 
@@ -15,12 +17,22 @@ export default function PopularContributors() {
       setContributors(res.data);
     } catch (error) {
       console.log("Error fetching contributors:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     getUsers();
   }, []);
+
+  const ContributorSkeleton = () => (
+    <div className="flex flex-col items-center text-center w-max">
+      <Skeleton className="h-20 w-20 rounded-full" />
+      <Skeleton className="h-4 w-24 mt-2" />
+      <Skeleton className="h-3 w-32 mt-2" />
+    </div>
+  );
 
   return (
     <>
@@ -33,31 +45,39 @@ export default function PopularContributors() {
         }`}
         style={{ overflowX: "auto", scrollbarWidth: "none" }}
       >
-        {contributors.map((contributor, index) => (
-          <div
-            key={index}
-            className="flex flex-col items-center text-center w-max"
-          >
-            <div
-              onClick={() => router.push(`/profile/${contributor._id}`)}
-              className="h-10 w-10 sm:h-20 sm:w-20 rounded-full flex justify-center items-center border-4 border-gray-300"
-            >
-              <Avatar className="h-16 w-16 cursor-pointer">
-                <AvatarImage
-                  src={contributor.image || `/defaultUserImage.png`}
-                  alt={contributor.username}
-                />
-                <AvatarFallback>user</AvatarFallback>
-              </Avatar>
-            </div>
-            <div className="mt-2">
-              <h3 className="text-xs xs:text-sm sm:text-base font-semibold text-nowrap mt-2">
-                {contributor.username}
-              </h3>
-              <p className="text-xs text-gray-500 mt-2">{contributor.email}</p>
-            </div>
-          </div>
-        ))}
+        {loading
+          ? Array(5)
+              .fill(0)
+              .map((_, index) => <ContributorSkeleton key={index} />)
+          : contributors.map((contributor, index) => (
+              <div
+                key={index}
+                className="flex flex-col items-center text-center w-max"
+              >
+                <div
+                  onClick={() => router.push(`/profile/${contributor._id}`)}
+                  className="h-20 w-20 rounded-full flex justify-center items-center border-4 border-gray-300 overflow-hidden"
+                >
+                  <Avatar className="h-full w-full cursor-pointer">
+                    <AvatarImage
+                      src={contributor.image || `/defaultUserImage.png`}
+                      alt={contributor.username}
+                    />
+                    <AvatarFallback>
+                      {contributor.username.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                </div>
+                <div className="mt-2">
+                  <h3 className="text-xs xs:text-sm sm:text-base font-semibold text-nowrap mt-2">
+                    {contributor.username}
+                  </h3>
+                  <p className="text-xs text-gray-500 mt-2">
+                    {contributor.email}
+                  </p>
+                </div>
+              </div>
+            ))}
       </div>
     </>
   );
