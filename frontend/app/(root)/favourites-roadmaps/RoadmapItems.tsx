@@ -3,6 +3,14 @@ import { useRouter, usePathname } from "next/navigation";
 import apiClient from "@/api/apiClient";
 import toast from "react-hot-toast";
 import { CardProps } from "@/types/roadmap";
+import { MoreVertical } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 
 const RoadmapItems: React.FC<CardProps> = ({
   title,
@@ -13,11 +21,7 @@ const RoadmapItems: React.FC<CardProps> = ({
   const router = useRouter();
   const pathname = usePathname();
 
-  const subscribe = async (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    id: string
-  ) => {
-    e.stopPropagation();
+  const subscribe = async () => {
     try {
       console.log("Subscribed to roadmap:", id);
       const res = await apiClient.post("/profile/subscribe", { roadmapId: id });
@@ -32,24 +36,44 @@ const RoadmapItems: React.FC<CardProps> = ({
   return (
     <div
       onClick={() => router.push(`/roadmap-viewer/${id}`)}
-      className="p-4 flex flex-col justify-between bg-white min-h-[200px] w-full rounded-xl shadow-md border cursor-pointer"
+      className="p-4 flex flex-col justify-between bg-white dark:bg-gray-800 min-h-[200px] w-full rounded-xl shadow-md border border-gray-200 dark:border-gray-700 cursor-pointer transition-colors duration-200"
     >
       <div>
-        <h3 className="text-xl font-bold mb-2">{title}</h3>
-        <p className="text-sm text-gray-600 mb-4">{description}</p>
+        <h3 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">
+          {title}
+        </h3>
+        <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
+          {description}
+        </p>
       </div>
-      <div className="flex items-center justify-end text-gray-500">
-        {/* <div className="flex items-center">
-          <FiHeart className="mr-1" />
-          <span>{likes} Likes</span>
-        </div> */}
+      <div className="flex items-center justify-end text-gray-500 dark:text-gray-400">
         {pathname !== "/favourites-roadmaps" && (
-          <button
-            onClick={(e) => subscribe(e, id)}
-            className="ml-4 px-4 py-2 border border-green-500 text-black font-semibold rounded-lg shadow-md hover:bg-green-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75"
-          >
-            Subscribe
-          </button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="h-8 w-8 p-0 hover:bg-gray-100 dark:hover:bg-gray-700"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <span className="sr-only">Open menu</span>
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
+            >
+              <DropdownMenuItem
+                className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  subscribe();
+                }}
+              >
+                Subscribe
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         )}
       </div>
     </div>
