@@ -33,13 +33,14 @@ const Rectangle: React.FC<RectangleProps> = ({
         y={rect.y}
         width={rect.width}
         height={rect.height}
-        fill="white"
+        fill=""
         stroke={isSelected ? "blue" : "black"}
         strokeWidth="0.4"
         rx="2"
         ry="2"
         onClick={onSelect}
         style={{ cursor: "pointer" }}
+        className="fill-slate-50 dark:fill-slate-200"
       />
       <text
         x={rect.x + rect.width / 2}

@@ -44,13 +44,10 @@ export default function PopularContributors() {
             >
               <Avatar className="h-16 w-16 cursor-pointer">
                 <AvatarImage
-                  src={
-                    contributor.image ||
-                    `https://github.com/shadcn.png?${index}`
-                  }
+                  src={contributor.image || `/defaultUserImage.png`}
                   alt={contributor.username}
                 />
-                <AvatarFallback>{contributor.username}</AvatarFallback>
+                <AvatarFallback>user</AvatarFallback>
               </Avatar>
             </div>
             <div className="mt-2">

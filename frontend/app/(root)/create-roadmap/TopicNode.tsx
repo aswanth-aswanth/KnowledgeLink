@@ -41,6 +41,7 @@ const MEDIA_OPTIONS = [
 
 const LAYOUT_OPTIONS = [
   { name: "Full Width", class: "w-full" },
+  { name: "max-w-2xl", class: "max-w-2xl" },
   { name: "Large", class: "max-w-lg" },
   { name: "Medium", class: "max-w-md" },
   { name: "Small", class: "max-w-sm" },
@@ -304,7 +305,7 @@ const TopicNode: React.FC<TopicNodeProps> = ({ id }) => {
             type="text"
             value={topic.name}
             onChange={handleNameChange}
-            className={`min-w-96 flex-shrink bg-transparent px-1 sm:px-2 py-1 focus:outline-none rounded-md font-bold text-sm sm:text-lg truncate ${
+            className={` sm:min-w-96 flex-shrink bg-transparent px-1 sm:px-2 py-1 focus:outline-none rounded-md font-bold text-sm sm:text-lg truncate ${
               isDarkMode
                 ? "focus:bg-gray-800 text-gray-300"
                 : "focus:bg-gray-50 text-gray-600"
@@ -345,7 +346,7 @@ const TopicNode: React.FC<TopicNodeProps> = ({ id }) => {
         </div>
       </div>
       {topic.isExpanded && (
-        <div className="ml-6 mt-2">
+        <div className="ml-2 sm:ml-6 mt-2">
           <div
             ref={contentRef}
             contentEditable
@@ -370,7 +371,7 @@ const TopicNode: React.FC<TopicNodeProps> = ({ id }) => {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
-              className={`w-56 shadow-lg rounded-md border ${
+              className={`w-56 m-3 shadow-lg rounded-md border ${
                 isDarkMode
                   ? "bg-gray-800 border-gray-700"
                   : "bg-white border-gray-200"

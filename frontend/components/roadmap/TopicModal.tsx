@@ -93,11 +93,11 @@ const TopicModal: React.FC<TopicModalProps> = ({ topic, onClose }) => {
           ${
             isFullscreen
               ? "w-full h-full"
-              : "w-11/12 max-w-4xl max-h-[90vh] m-4 rounded-lg shadow-2xl"
+              : "sm:w-11/12 max-w-4xl max-h-[90vh] sm:m-4 rounded-lg shadow-2xl"
           }`}
       >
         <div
-          className={`sticky top-0 flex justify-between items-center p-6 border-b ${
+          className={`sticky top-0 flex justify-between items-center p-4 sm:p-8 border-b ${
             isDarkMode
               ? "border-gray-700 bg-gray-900"
               : "border-gray-200 bg-white"
@@ -138,7 +138,7 @@ const TopicModal: React.FC<TopicModalProps> = ({ topic, onClose }) => {
           </div>
         </div>
         <div
-          className={`p-8 overflow-y-auto scrollbar-hide ${
+          className={`p-4 sm:p-8  overflow-y-auto scrollbar-hide ${
             isFullscreen ? "h-[calc(100vh-80px)]" : "max-h-[calc(90vh-80px)]"
           }`}
         >
