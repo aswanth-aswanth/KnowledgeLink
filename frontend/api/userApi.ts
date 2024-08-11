@@ -19,3 +19,13 @@ export const followUser = async (userId: string) => {
         throw error;
     }
 };
+
+export const getFollowers = async (userId: string) => {
+    const response = await apiClient.get(`/profile/user/${userId}/followers`);
+    return response.data;
+};
+
+export const getFollowings = async (userId: string) => {
+    const response = await apiClient.get(`/profile/user/${userId}/followings`);
+    return response.data;
+};

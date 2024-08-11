@@ -5,7 +5,13 @@ import { FaUserCircle, FaUsers, FaNewspaper } from "react-icons/fa";
 import { useDarkMode } from "@/hooks/useDarkMode";
 import { usePathname } from "next/navigation";
 import { PostFeed } from "./PostFeed";
-import { getUserProfile, followUser } from "@/api/userApi";
+import {
+  getUserProfile,
+  followUser,
+  getFollowers,
+  getFollowings,
+} from "@/api/userApi";
+import FollowList from "./FollowList";
 import { getUserPosts } from "@/api/postApi";
 import { User } from "@/types/userTypes";
 import { Post } from "@/types/postTypes";
@@ -18,6 +24,11 @@ export default function Profile() {
   const [selectedTab, setSelectedTab] = useState<
     "Profile" | "Posts" | "Groups"
   >("Profile");
+  const [showFollowList, setShowFollowList] = useState(false);
+  const [followListType, setFollowListType] = useState<
+    "followers" | "following"
+  >(null);
+  const [followList, setFollowList] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,7 +49,7 @@ export default function Profile() {
       const userId = pathname.split("/")[2];
       const res = await followUser(userId);
 
-      setUser((prevUser:any) => {
+      setUser((prevUser: any) => {
         const newFollowingCount = res.following
           ? prevUser.followersCount + 1
           : prevUser.followersCount - 1;
@@ -54,13 +65,27 @@ export default function Profile() {
     }
   };
 
+  const handleShowFollowList = async (type: "followers" | "following") => {
+    setFollowListType(type);
+    setShowFollowList(true);
+    const userId = pathname.split("/")[2];
+    try {
+      const data =
+        type === "followers"
+          ? await getFollowers(userId)
+          : await getFollowings(userId);
+      setFollowList(data);
+    } catch (error) {
+      console.error(`Error fetching ${type}:`, error);
+    }
+  };
+
   return (
     <div
       className={`min-h-screen ${
         isDarkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"
       }`}
     >
-      {/* <div className={`h-48 sm:h-64 ${isDarkMode ? "bg-gradient-to-r from-purple-900 to-indigo-900" : "bg-gradient-to-r from-blue-400 to-indigo-500"}`} /> */}
       <div
         className={`h-48 sm:h-64 ${
           isDarkMode
@@ -124,7 +149,10 @@ export default function Profile() {
         </div>
 
         <div className="flex justify-center gap-4 mb-8">
-          <div className="text-center">
+          <div
+            className="text-center cursor-pointer"
+            onClick={() => handleShowFollowList("followers")}
+          >
             <p className="text-2xl font-bold">{user?.followersCount}</p>
             <p
               className={`text-sm ${
@@ -134,7 +162,10 @@ export default function Profile() {
               Followers
             </p>
           </div>
-          <div className="text-center">
+          <div
+            className="text-center cursor-pointer"
+            onClick={() => handleShowFollowList("following")}
+          >
             <p className="text-2xl font-bold">{user?.followingCount}</p>
             <p
               className={`text-sm ${
@@ -143,7 +174,7 @@ export default function Profile() {
             >
               Following
             </p>
-          </div>
+          </div> 
           <div className="text-center w-16">
             <p className="text-2xl font-bold">{posts.length}</p>
             <p
@@ -221,6 +252,13 @@ export default function Profile() {
           )}
         </div>
       </div>
+      {showFollowList && (
+        <FollowList
+          users={followList}
+          isDarkMode={isDarkMode}
+          onClose={() => setShowFollowList(false)}
+        />
+      )}
     </div>
   );
 }
