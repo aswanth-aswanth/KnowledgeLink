@@ -131,7 +131,7 @@ export default class PostRepository {
             throw error;
         }
     };
-    public async getPosts(currentUserEmail: string, userIds: string[]): Promise<any> {
+    public async getPosts(currentUserId: string, userIds: string[]): Promise<any> {
         try {
             const posts = await Post.find({ creatorId: { $in: userIds } })
                 .sort({ createdAt: -1 })
@@ -139,7 +139,7 @@ export default class PostRepository {
 
             const postsWithIsLiked = posts.map((post) => ({
                 ...post.toObject(),
-                isLiked: post.likes.includes(currentUserEmail)
+                isLiked: post.likes.includes(currentUserId)
             }));
 
             return postsWithIsLiked;

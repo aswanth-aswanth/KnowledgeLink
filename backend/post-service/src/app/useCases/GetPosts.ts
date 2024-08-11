@@ -8,18 +8,17 @@ export default class GetPosts {
         this.postRepository = postRepository;
     }
 
-    public async execute(currentUserEmail: string): Promise<any> {
+    public async execute(currentUserId: string): Promise<any> {
         try {
-            const message = JSON.stringify({ email: currentUserEmail });
+            const message = JSON.stringify({ userId: currentUserId });
             const response = await Publisher.publishAndWait('profile_queue2', message);
             const { following } = JSON.parse(response);
-            console.log("Following : ", following);
 
             if (!following || following.length === 0) {
                 return [];
             }
 
-            const posts = await this.postRepository.getPosts(currentUserEmail, following);
+            const posts = await this.postRepository.getPosts(currentUserId, following);
             return posts;
         } catch (error) {
             if (error instanceof Error) {

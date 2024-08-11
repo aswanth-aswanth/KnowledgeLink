@@ -85,8 +85,8 @@ class Consumer {
     }
 
     private async getFollowingList(msg: amqp.Message, channel: amqp.Channel, userRepository: UserRepository) {
-        const { email } = JSON.parse(msg.content.toString());
-        const user = await userRepository.findByEmail(email);
+        const { userId } = JSON.parse(msg.content.toString());
+        const user = await userRepository.findById(userId);
         const following = user ? user.following : [];
 
         const response = JSON.stringify({ following });
