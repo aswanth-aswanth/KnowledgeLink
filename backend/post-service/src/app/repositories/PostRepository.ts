@@ -136,18 +136,20 @@ export default class PostRepository {
             const posts = await Post.find({ creatorId: { $in: userIds } })
                 .sort({ createdAt: -1 })
                 .exec();
-
-            const postsWithIsLiked = posts.map((post) => ({
+    
+            const postsWithLikeCount = posts.map((post) => ({
                 ...post.toObject(),
-                isLiked: post.likes.includes(currentUserId)
+                isLiked: post.likes.includes(currentUserId),
+                likeCount: post.likes.length 
             }));
-
-            return postsWithIsLiked;
+    
+            return postsWithLikeCount;
         } catch (error) {
             console.error('Error retrieving posts:', error);
             throw error;
         }
     }
+    
     public async deleteReply(commentId: string, replyId: string, author: string) {
         try {
             const objectId = new mongoose.Types.ObjectId(commentId);
