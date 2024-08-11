@@ -1,0 +1,120 @@
+version: '3'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"  
+      - "15672:15672" 
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - backend_network
+
+  auth:
+    image: aswantht/roadmap-auth-service:latest
+    build: ./auth-service
+    ports:
+      - "5000:5000"
+    depends_on:
+      - rabbitmq
+    environment:
+      - RABBITMQ_URL=amqp://rabbitmq:5672
+    networks:
+      - backend_network
+
+  roadmap:
+    image: aswantht/roadmap-roadmap-service:latest
+    build: ./roadmap-service
+    ports:
+      - "5001:5001"
+    depends_on:
+      - rabbitmq
+    environment:
+      - RABBITMQ_URL=amqp://rabbitmq:5672
+    networks:
+      - backend_network
+
+  profile:
+    image: aswantht/roadmap-profile-service:latest
+    build: ./profile-service
+    ports:
+      - "5002:5002"
+    depends_on:
+      - rabbitmq
+    environment:
+      - RABBITMQ_URL=amqp://rabbitmq:5672
+    networks:
+      - backend_network
+
+  post:
+    image: aswantht/roadmap-post-service:latest
+    build: ./post-service
+    ports:
+      - "5003:5003"
+    depends_on:
+      - rabbitmq
+    environment:
+      - RABBITMQ_URL=amqp://rabbitmq:5672
+    networks:
+      - backend_network
+
+  notification:
+    image: aswantht/roadmap-notification-service:latest
+    build: ./notification-service
+    ports:
+      - "5004:5004"
+    depends_on:
+      - rabbitmq
+    environment:
+      - RABBITMQ_URL=amqp://rabbitmq:5672
+    networks:
+      - backend_network
+
+  chat:
+    image: aswantht/roadmap-chat-service:latest
+    build: ./chat-service
+    ports:
+      - "5005:5005"
+    depends_on:
+      - rabbitmq
+    environment:
+      - RABBITMQ_URL=amqp://rabbitmq:5672
+    networks:
+      - backend_network
+
+  recommendation:
+    image: aswantht/roadmap-recommendation-service:latest
+    build: ./recommendation-service
+    ports:
+      - "5006:5006"
+    depends_on:
+      - rabbitmq
+    environment:
+      - RABBITMQ_URL=amqp://rabbitmq:5672
+    networks:
+      - backend_network
+
+  ingress:
+    image: nginx:alpine
+    ports:
+      - "4000:80"
+    volumes:
+      - ./ingress/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - auth
+      - roadmap
+      - profile
+      - post
+      - notification
+      - chat
+      - recommendation
+    networks:
+      - backend_network
+
+networks:
+  backend_network:
+    driver: bridge
+
+volumes:
+  rabbitmq_data:

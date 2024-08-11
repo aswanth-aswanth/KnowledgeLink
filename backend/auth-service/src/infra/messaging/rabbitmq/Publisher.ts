@@ -16,7 +16,7 @@ class Publisher {
 
     private async connect() {
         try {
-            const connection = await amqp.connect('amqp://localhost');
+            const connection = await amqp.connect(process.env.RABBITMQ_URL || 'amqp://localhost:5672');
             this.channel = await connection.createChannel();
             console.log('RabbitMQ connected successfully (auth-service)');
         } catch (error) {

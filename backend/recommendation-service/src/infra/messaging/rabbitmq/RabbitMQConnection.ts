@@ -19,7 +19,7 @@ class RabbitMQConnection {
 
     private async connect() {
         try {
-            this.connection = await amqp.connect('amqp://localhost');
+            this.connection = await amqp.connect(process.env.RABBITMQ_URL || 'amqp://localhost:5672');
             this.channel = await this.connection.createChannel();
             console.log('RabbitMQ connected successfully (recommendation-service)');
             Consumer.consumeRoadmapQueue();
