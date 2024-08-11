@@ -20,7 +20,6 @@ const authMiddleware = (req: any, res: Response, next: NextFunction) => {
 
     try {
         const decoded = tokenManager.verifyToken(token);
-        console.log("Decoded token : ", decoded);
         req.user = decoded;
         if (req.user.role == "user")
             next();

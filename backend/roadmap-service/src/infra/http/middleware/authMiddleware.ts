@@ -26,7 +26,6 @@ const authMiddleware = (req: any, res: Response, next: NextFunction) => {
             next();
         else
             return res.status(404).json({ message: "You're not authorised for this operation" })
-        next();
     } catch (error) {
         return res.status(401).json({ message: 'Invalid token' });
     }
