@@ -9,15 +9,15 @@ export default class LikePost {
         this.postRepository = postRepository;
     }
 
-    public async execute(postId: string, email: string): Promise<any> {
-        const { post, liked } = await this.postRepository.toggleLike(postId, email);
+    public async execute(postId: string, userId: string, username: string): Promise<any> {
+        const { post, liked } = await this.postRepository.toggleLike(postId, userId);
 
         if (liked) {
             const notificationMessage = JSON.stringify({
                 type: 'like',
                 postId,
-                liker: email,
-                postOwner: post.creatorEmail
+                liker: username,
+                postOwner: "post.creatorEmail"
             });
             await Publisher.publish('notification_exchange', notificationMessage);
         }

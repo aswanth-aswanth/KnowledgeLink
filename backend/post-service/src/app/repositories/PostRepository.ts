@@ -50,18 +50,18 @@ export default class PostRepository {
         }
     }
 
-    public async toggleLike(postId: string, email: string): Promise<{ post: IPost, liked: boolean }> {
+    public async toggleLike(postId: string, userId: string): Promise<{ post: IPost, liked: boolean }> {
         try {
             const post = await Post.findById(postId);
             if (!post) {
                 throw new Error('Post not found');
             }
 
-            const likeIndex = post.likes.indexOf(email);
+            const likeIndex = post.likes.indexOf(userId);
             let liked = false;
             if (likeIndex === -1) {
                 // User hasn't liked the post, so like it
-                post.likes.push(email);
+                post.likes.push(userId);
                 liked = true;
             } else {
                 // User already liked the post, so unlike it
@@ -76,14 +76,14 @@ export default class PostRepository {
         }
     }
 
-    public async commentPost(postId: string, email: string, text: string) {
+    public async commentPost(postId: string, userId: string, text: string) {
         try {
             const post = await Post.findById(postId);
             if (!post) {
                 throw new Error('Post not found');
             }
 
-            const comment = new Comment({ text, author: email, replies: [] });
+            const comment = new Comment({ text, author: userId, replies: [] });
             await comment.save();
 
             post.comments.push(comment._id);

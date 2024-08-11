@@ -5,12 +5,12 @@ import PostRepository from '../../../app/repositories/PostRepository';
 export default class LikePostController {
     public async handle(req: any, res: Response) {
         try {
-            const email = req.user.email;
+            const { userId, username } = req.user.userId;
             const postId = req.params.id;
             const likePost = new LikePost(
                 new PostRepository()
             );
-            const result = await likePost.execute(postId, email);
+            const result = await likePost.execute(postId, userId, username);
             return res.status(201).json({ message: "Success" });
         } catch (err) {
             if (err instanceof Error) {

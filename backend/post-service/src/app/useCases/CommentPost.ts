@@ -8,13 +8,13 @@ export default class CommentPost {
         this.postRepository = postRepository;
     }
 
-    public async execute(postId: string, email: string, text: string): Promise<any> {
-        const result = await this.postRepository.commentPost(postId, email, text);
+    public async execute(postId: string, userId: string, text: string): Promise<any> {
+        const result = await this.postRepository.commentPost(postId, userId, text);
         const notificationMessage = JSON.stringify({
             type: 'comment',
             postId,
-            commenter: email,
-            postOwner: result.creatorEmail
+            commenter: userId,
+            postOwner: result.creatorId
         });
         await Publisher.publish('notification_exchange', notificationMessage);
         return "Commented successfully";

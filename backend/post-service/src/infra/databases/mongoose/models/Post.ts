@@ -22,7 +22,7 @@ export interface IPost extends Document {
     tags?: string[];
     createdAt: Date;
     updatedAt: Date;
-    creatorEmail: string;
+    creatorId: string;
     likes: string[];
     comments: IComment['_id'][];
 }
@@ -76,12 +76,12 @@ const PostSchema = new Schema<IPost>({
     updatedAt: {
         type: Date,
         default: Date.now
-    },
+    }, 
     comments: [{
         type: Schema.Types.ObjectId,
         ref: 'Comment'
     }],
-    creatorEmail: {
+    creatorId: {
         type: String,
         required: true
     },
