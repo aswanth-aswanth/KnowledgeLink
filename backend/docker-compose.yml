@@ -18,8 +18,8 @@ services:
       - "5000:5000"
     depends_on:
       - rabbitmq
-    environment:
-      - RABBITMQ_URL=amqp://rabbitmq:5672
+    env_file:
+      - ./auth-service/.env 
     networks:
       - backend_network
 
@@ -30,8 +30,8 @@ services:
       - "5001:5001"
     depends_on:
       - rabbitmq
-    environment:
-      - RABBITMQ_URL=amqp://rabbitmq:5672
+    env_file:
+      - ./roadmap-service/.env 
     networks:
       - backend_network
 
@@ -42,8 +42,8 @@ services:
       - "5002:5002"
     depends_on:
       - rabbitmq
-    environment:
-      - RABBITMQ_URL=amqp://rabbitmq:5672
+    env_file:
+      - ./profile-service/.env 
     networks:
       - backend_network
 
@@ -54,8 +54,8 @@ services:
       - "5003:5003"
     depends_on:
       - rabbitmq
-    environment:
-      - RABBITMQ_URL=amqp://rabbitmq:5672
+    env_file:
+      - ./post-service/.env 
     networks:
       - backend_network
 
@@ -66,8 +66,8 @@ services:
       - "5004:5004"
     depends_on:
       - rabbitmq
-    environment:
-      - RABBITMQ_URL=amqp://rabbitmq:5672
+    env_file:
+      - ./notification-service/.env 
     networks:
       - backend_network
 
@@ -78,8 +78,8 @@ services:
       - "5005:5005"
     depends_on:
       - rabbitmq
-    environment:
-      - RABBITMQ_URL=amqp://rabbitmq:5672
+    env_file:
+      - ./chat-service/.env 
     networks:
       - backend_network
 
@@ -90,8 +90,8 @@ services:
       - "5006:5006"
     depends_on:
       - rabbitmq
-    environment:
-      - RABBITMQ_URL=amqp://rabbitmq:5672
+    env_file:
+      - ./recommendation-service/.env 
     networks:
       - backend_network
 
