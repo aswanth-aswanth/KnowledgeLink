@@ -80,11 +80,6 @@ export function PostFeed() {
     }
   };
 
-  const handleShare = (postId: string) => {
-    // This function is now handled within PostCard component
-    console.log("Sharing post:", postId);
-  };
-
   const handleSave = (postId: string) => {
     // Implement save functionality
     console.log("Saving post:", postId);
@@ -98,7 +93,6 @@ export function PostFeed() {
           post={post}
           onLike={handleLike}
           onComment={handleComment}
-          onShare={handleShare}
           onSave={handleSave}
         />
       ))}
