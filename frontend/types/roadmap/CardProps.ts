@@ -3,4 +3,5 @@ export type CardProps = {
     description: string;
     likes: number;
     id: string;
+    onUnsubscribe:(roadmapId:string)=>void;
 };

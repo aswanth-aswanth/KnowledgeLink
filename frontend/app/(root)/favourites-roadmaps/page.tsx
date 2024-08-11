@@ -45,6 +45,12 @@ export default function page() {
     }
   };
 
+  const handleUnsubscribe = (roadmapId: string) => {
+    setSubscribedRoadmaps((prev) =>
+      prev.filter((roadmap) => roadmap._id !== roadmapId)
+    );
+  };
+
   useEffect(() => {
     getAdminRoadmaps();
     getUserSubscribedRoadmaps();
@@ -141,6 +147,7 @@ export default function page() {
                 description={card.description}
                 likes={card.likes}
                 id={card._id}
+                onUnsubscribe={handleUnsubscribe}
               />
             </div>
           ))

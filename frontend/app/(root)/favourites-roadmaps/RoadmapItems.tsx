@@ -17,6 +17,7 @@ const RoadmapItems: React.FC<CardProps> = ({
   description,
   likes,
   id,
+  onUnsubscribe,
 }) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -29,6 +30,24 @@ const RoadmapItems: React.FC<CardProps> = ({
       console.log("Response:", res);
     } catch (error) {
       toast.error("Subscription failed");
+      console.log("Error:", error);
+    }
+  };
+
+  const unsubscribe = async () => {
+    try {
+      console.log("Unsubscribed from roadmap:", id);
+      const res = await apiClient.post("/profile/unsubscribe", {
+        roadmapId: id,
+      });
+      toast.success("roadmap unsubscribed");
+      console.log("Response:", res);
+
+      if (onUnsubscribe) {
+        onUnsubscribe(id);
+      }
+    } catch (error) {
+      toast.error("Unsubscription failed");
       console.log("Error:", error);
     }
   };
@@ -47,22 +66,32 @@ const RoadmapItems: React.FC<CardProps> = ({
         </p>
       </div>
       <div className="flex items-center justify-end text-gray-500 dark:text-gray-400">
-        {pathname !== "/favourites-roadmaps" && (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className="h-8 w-8 p-0 hover:bg-gray-100 dark:hover:bg-gray-700"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <span className="sr-only">Open menu</span>
-                <MoreVertical className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="end"
-              className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className="h-8 w-8 p-0 hover:bg-gray-100 dark:hover:bg-gray-700"
+              onClick={(e) => e.stopPropagation()}
             >
+              <span className="sr-only">Open menu</span>
+              <MoreVertical className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            align="end"
+            className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
+          >
+            {pathname === "/favourites-roadmaps" ? (
+              <DropdownMenuItem
+                className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  unsubscribe();
+                }}
+              >
+                Unsubscribe
+              </DropdownMenuItem>
+            ) : (
               <DropdownMenuItem
                 className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
                 onClick={(e) => {
@@ -72,9 +101,9 @@ const RoadmapItems: React.FC<CardProps> = ({
               >
                 Subscribe
               </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )}
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );
