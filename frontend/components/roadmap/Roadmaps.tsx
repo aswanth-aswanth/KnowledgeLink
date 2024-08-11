@@ -51,7 +51,7 @@ export default function Roadmaps() {
   ];
 
   const SkeletonRoadmapItem = () => (
-    <div className="border rounded-lg p-4 shadow-sm">
+    <div className="border rounded-lg p-4 shadow-sm w-full md:w-[calc(33.333%-1rem)] mb-4">
       <Skeleton className="h-6 w-3/4 mb-2" />
       <Skeleton className="h-4 w-full mb-2" />
       <Skeleton className="h-4 w-5/6 mb-2" />
@@ -75,13 +75,13 @@ export default function Roadmaps() {
           tabFor="typesofroadmap"
         />
       </div>
-      <div className="grid grid-cols-1 mt-14 md:grid-cols-3 gap-4">
+      <div className="flex flex-wrap justify-center mt-14 gap-4">
         {loading
           ? Array(6)
               .fill(0)
               .map((_, index) => <SkeletonRoadmapItem key={index} />)
           : roadmapData.map((card, index) => (
-              <div key={index}>
+              <div key={index} className="w-full md:w-[calc(33.333%-1rem)]">
                 <RoadmapItems
                   title={card.title}
                   description={card.description}

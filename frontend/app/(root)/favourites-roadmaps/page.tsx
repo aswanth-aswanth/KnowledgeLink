@@ -58,89 +58,70 @@ export default function page() {
   }, []);
 
   return (
-    <>
-      <h1
-        className={`font-bold text-center text-2xl pt-32 mb-6  ${
-          isDarkMode ? "text-white" : "text-gray-800"
-        }`}
-      >
+    <div className="min-h-screen px-4 py-8 bg-white dark:bg-gray-900 transition-colors duration-200">
+      <h1 className="font-bold text-center text-2xl pt-20 mb-6 text-gray-800 dark:text-white">
         Created Roadmaps
       </h1>
-      <div className="flex gap-4 px-2 md:px-4 flex-wrap justify-center">
+      <div className="flex flex-wrap justify-center gap-6">
         {adminRoadmaps.length > 0 ? (
-          adminRoadmaps.map((roadmapItem: any) => {
-            return (
-              <div className="border justify-center items-center rounded-md p-10 mx-auto max-w-[380px] flex flex-col  bg-white shadow-lg">
-                <h3 className="mb-2 text-gray-800 text-center font-semibold">
-                  Roadmap Name : {roadmapItem.title}
+          adminRoadmaps.map((roadmapItem: any) => (
+            <div key={roadmapItem._id} className="w-full max-w-sm">
+              <div className="p-6 bg-white dark:bg-gray-800  rounded-xl  shadow-lg transition-all duration-200 hover:shadow-xl">
+                <h3 className="mb-2 text-lg font-semibold text-gray-800 dark:text-white">
+                  {roadmapItem.title}
                 </h3>
-                <p>RoadmapType : {roadmapItem.type}</p>
-                <p className="mb-6 mt-2">
-                  RoadmapDescription : {roadmapItem.description}
+                <p className="text-sm text-gray-600 dark:text-gray-300">
+                  {roadmapItem.type}
                 </p>
-                <div className="flex flex-wrap justify-center gap-4">
+                <p className="mt-2 mb-4 text-sm text-gray-700 dark:text-gray-200">
+                  {roadmapItem.description}
+                </p>
+                <div className="flex flex-wrap gap-2">
                   <Button
                     onClick={() =>
                       router.push(`/roadmap-viewer/${roadmapItem._id}`)
                     }
-                    className="bg-lime-600 hover:bg-blue-600  text-xs text-white  px-4 rounded-md shadow-md"
+                    className="bg-lime-600 hover:bg-lime-700 text-white text-xs px-3 py-2 rounded-[4px] transition-colors duration-200"
                   >
                     View Roadmap
                   </Button>
-                  {/* <Button className="bg-blue-500 hover:bg-blue-600  text-xs text-white  px-4 rounded-md shadow-md">
-                    Edit Roadmap
-                  </Button> */}
                   <Button
                     onClick={() =>
                       router.push(`/contributions/${roadmapItem._id}`)
                     }
-                    className="bg-blue-500 hover:bg-blue-600 text-xs text-white  px-4 rounded-md shadow-md"
+                    className="bg-blue-500 hover:bg-blue-600 text-white text-xs px-3 py-2 rounded-[4px] transition-colors duration-200"
                   >
                     Merge Contributions
                   </Button>
                 </div>
               </div>
-            );
-          })
+            </div>
+          ))
         ) : (
-          <p
-            className={`text-center ${
-              isDarkMode ? "text-white" : "text-gray-800"
-            }`}
-          >
+          <p className="text-center text-gray-800 dark:text-white">
             You haven't created any roadmaps yet.
           </p>
         )}
       </div>
       <div
         onClick={() => router.push("/create-roadmap")}
-        className="flex justify-center flex-col items-center mt-10"
+        className="flex justify-center flex-col items-center mt-10 cursor-pointer"
       >
-        <CiSquarePlus className="text-5xl cursor-pointer text-gray-400" />
-        <p
-          className={`text-base font-bold ${
-            isDarkMode ? "text-white" : "text-gray-800"
-          } mt-4`}
-        >
+        <CiSquarePlus className="text-5xl text-gray-400 dark:text-gray-500 transition-colors duration-200" />
+        <p className="text-base font-bold text-gray-800 dark:text-white mt-4">
           Create Roadmap
         </p>
       </div>
-      <Separator className="my-10" />
-      <h1
-        className={`font-bold text-center text-2xl mt-20 mb-6 ${
-          isDarkMode ? "text-white" : "text-gray-800"
-        }`}
-      >
+      <Separator className="my-10 bg-gray-200 dark:bg-gray-700" />
+      <h1 className="font-bold text-center text-2xl mt-20 mb-6 text-gray-800 dark:text-white">
         Subscribed Roadmaps
       </h1>
-      <div className="grid grid-cols-12 mt-14 gap-4 md:px-4">
+      <div className="flex flex-wrap justify-center gap-6">
         {subscribedRoadmaps.length > 0 ? (
-          subscribedRoadmaps.map((card: any, index) => (
+          subscribedRoadmaps.map((card: any) => (
             <div
-              key={index}
-              className="flex w-full
-            col-span-12
-           md:col-span-6"
+              key={card._id}
+              className="w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]"
             >
               <RoadmapItems
                 title={card.title}
@@ -152,56 +133,42 @@ export default function page() {
             </div>
           ))
         ) : (
-          <p
-            className={`col-span-12 text-center ${
-              isDarkMode ? "text-white" : "text-gray-800"
-            }`}
-          >
+          <p className="w-full text-center text-gray-800 dark:text-white">
             You haven't subscribed to any roadmaps yet.
           </p>
         )}
       </div>
-      <Separator className="my-10" />
-      <h1
-        className={`font-bold text-center text-2xl mt-20 pb-6 ${
-          isDarkMode ? "text-white" : "text-gray-800"
-        }`}
-      >
+      <Separator className="my-10 bg-gray-200 dark:bg-gray-700" />
+      <h1 className="font-bold text-center text-2xl mt-20 pb-6 text-gray-800 dark:text-white">
         Favourites
       </h1>
-      <p
-        className={`text-center pb-10 ${
-          isDarkMode ? "text-white" : "text-gray-800"
-        }`}
-      >
+      <p className="text-center pb-10 text-gray-800 dark:text-white">
         Your favorite roadmaps will appear here.
       </p>
-      <Separator className="my-10" />
-      <h1
-        className={`font-bold text-center text-2xl mt-20 pb-6 ${
-          isDarkMode ? "text-white" : "text-gray-800"
-        }`}
-      >
+      <Separator className="my-10 bg-gray-200 dark:bg-gray-700" />
+      <h1 className="font-bold text-center text-2xl mt-20 pb-6 text-gray-800 dark:text-white">
         Membered roadmaps
       </h1>
-      <div className="flex gap-4 px-2 md:px-4 flex-wrap justify-center">
+      <div className="flex flex-wrap justify-center gap-6">
         {userMemberedRoadmaps.length > 0 ? (
-          userMemberedRoadmaps.map((roadmapItem: any) => {
-            return (
-              <div className="border justify-center items-center rounded-md gap-4 px-2 md:px-4 flex-wrap  p-10 mx-auto max-w-[380px] flex flex-col  bg-white shadow-lg">
-                <h3 className="mb-2 text-gray-800 text-center font-semibold">
-                  Roadmap Name : {roadmapItem.title}
+          userMemberedRoadmaps.map((roadmapItem: any) => (
+            <div key={roadmapItem._id} className="w-full max-w-sm">
+              <div className="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg transition-all duration-200 hover:shadow-xl">
+                <h3 className="mb-2 text-lg font-semibold text-gray-800 dark:text-white">
+                  {roadmapItem.title}
                 </h3>
-                <p>RoadmapType : {roadmapItem.type}</p>
-                <p className="mb-6 mt-2">
-                  RoadmapDescription : {roadmapItem.description}
+                <p className="text-sm text-gray-600 dark:text-gray-300">
+                  {roadmapItem.type}
                 </p>
-                <div className="flex flex-wrap justify-center gap-4">
+                <p className="mt-2 mb-4 text-sm text-gray-700 dark:text-gray-200">
+                  {roadmapItem.description}
+                </p>
+                <div className="flex flex-wrap gap-2">
                   <Button
                     onClick={() =>
                       router.push(`/roadmap-viewer/${roadmapItem._id}`)
                     }
-                    className="bg-lime-600 hover:bg-blue-600  text-xs text-white  px-4 rounded-md shadow-md"
+                    className="bg-lime-600 hover:bg-lime-700 text-white text-xs px-3 py-2 rounded-[4px] transition-colors duration-200"
                   >
                     View Roadmap
                   </Button>
@@ -209,24 +176,20 @@ export default function page() {
                     onClick={() =>
                       router.push(`/contribute-roadmap/${roadmapItem._id}`)
                     }
-                    className="bg-blue-500 hover:bg-blue-600  text-xs text-white  px-4 rounded-md shadow-md"
+                    className="bg-blue-500 hover:bg-blue-600 text-white text-xs px-3 rounded-[4px] py-2 transition-colors duration-200"
                   >
                     Contribute
                   </Button>
                 </div>
               </div>
-            );
-          })
+            </div>
+          ))
         ) : (
-          <p
-            className={`text-center ${
-              isDarkMode ? "text-white" : "text-gray-800"
-            }`}
-          >
+          <p className="text-center text-gray-800 dark:text-white">
             You've not been a member of any roadmap yet.
           </p>
         )}
       </div>
-    </>
+    </div>
   );
 }
