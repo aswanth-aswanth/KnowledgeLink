@@ -15,16 +15,13 @@ export default class GetAllSubscribedRoadmaps {
         try {
             const message = JSON.stringify({ userId });
             const response = await Publisher.publishAndWait('profile_queue', message);
-            console.log("response from publisher : ", response);
             const subscribedRoadmapIds = JSON.parse(response).subscribed;
-            console.log("subscribedRoadmapIds : ", subscribedRoadmapIds);
 
             if (!Array.isArray(subscribedRoadmapIds)) {
                 throw new Error('Invalid response format');
             }
 
             const roadmaps = await this.roadmapRepository.findRoadmapsByIds(subscribedRoadmapIds);
-            console.log("roadmaps subscribed : ",roadmaps);
             return roadmaps;
         } catch (error) {
             if (error instanceof Error)

@@ -155,6 +155,38 @@ export default class UserRepository {
         }
     }
 
+    public async unsubscribe(userId: string, roadmapId: string): Promise<IUser | null> {
+        try {
+            const user = await User.findById(userId);
+            console.log("user unsubscribe : ", user);
+            if (!user) {
+                return null;
+            }
+    
+            if (!user.subscribed) {
+                user.subscribed = [];
+            }
+    
+            const index = user.subscribed.indexOf(roadmapId);
+            if (index !== -1) {
+                user.subscribed.splice(index, 1);
+            }
+    
+            await user.save();
+    
+            return user;
+        } catch (error) {
+            if (error instanceof Error) {
+                console.error(`Error unsubscribing user: ${error.message}`);
+                throw new Error('Failed to unsubscribe user');
+            } else {
+                console.error('Unknown error unsubscribing user');
+                throw new Error('Unknown error');
+            }
+        }
+    }
+    
+
     public async getSubscribedRoadmaps(userId: string): Promise<string[]> {
         try {
             const user = await User.findOne({ _id: userId });

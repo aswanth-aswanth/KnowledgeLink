@@ -1,19 +1,18 @@
 import { Request, Response } from 'express';
-import SubscribeToRoadmap from '../../../../app/useCases/Profile/SubscribeToRoadmap';
+import UnSubscribeToRoadmap from '../../../../app/useCases/Profile/UnSubscribeToRoadmap';
 import UserRepository from '../../../../app/repositories/UserRepository';
 
-export default class SubscribeRoadmapController {
+export default class UnSubscribeRoadmapController {
     public async handle(req: any, res: Response): Promise<Response> {
         const { roadmapId } = req.body;
         const userId = req.user.userId;
-        // console.log("RoadmapId : ", roadmapId);
-        const subscribeToRoadmap = new SubscribeToRoadmap(
+        const unSubscribeToRoadmap = new UnSubscribeToRoadmap(
             new UserRepository()
         );
 
         try {
 
-            const user = await subscribeToRoadmap.execute(userId, roadmapId);
+            const user = await unSubscribeToRoadmap.execute(userId, roadmapId);
             if (!user) {
                 return res.status(404).json({ error: "User not found" });
             }
