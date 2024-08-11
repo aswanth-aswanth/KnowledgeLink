@@ -50,7 +50,6 @@ export default function NotificationPopover() {
   const fetchNotificationCount = async () => {
     try {
       const response = await getNotificationCount();
-      console.log("response count: ", response);
       setDisplayCount(response.unReadCount);
     } catch (error) {
       console.error("Error fetching notifications:", error);

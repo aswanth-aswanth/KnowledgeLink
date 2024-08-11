@@ -38,16 +38,22 @@ export default function Profile() {
       const userId = pathname.split("/")[2];
       const res = await followUser(userId);
 
-      setUser((prevUser) => ({
-        ...prevUser,
-        isFollowing: !prevUser.isFollowing,
-      }));
+      setUser((prevUser:any) => {
+        const newFollowingCount = res.following
+          ? prevUser.followersCount + 1
+          : prevUser.followersCount - 1;
+
+        return {
+          ...prevUser,
+          isFollowing: res.following,
+          followersCount: newFollowingCount,
+        };
+      });
     } catch (error) {
       console.log("Error following user:", error);
     }
   };
 
-  console.log("user : ", user);
   return (
     <div
       className={`min-h-screen ${
@@ -55,12 +61,13 @@ export default function Profile() {
       }`}
     >
       {/* <div className={`h-48 sm:h-64 ${isDarkMode ? "bg-gradient-to-r from-purple-900 to-indigo-900" : "bg-gradient-to-r from-blue-400 to-indigo-500"}`} /> */}
-      <div className={`h-48 sm:h-64 ${
-  isDarkMode
-    ? "bg-teal-900"
-    : "bg-gradient-to-r from-blue-400 via-cyan-500 to-teal-500"
-}`} />
-
+      <div
+        className={`h-48 sm:h-64 ${
+          isDarkMode
+            ? "bg-teal-900"
+            : "bg-gradient-to-r from-blue-400 via-cyan-500 to-teal-500"
+        }`}
+      />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative -mt-24 sm:-mt-32 mb-8">
