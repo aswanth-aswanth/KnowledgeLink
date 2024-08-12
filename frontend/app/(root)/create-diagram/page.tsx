@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { EditorProvider } from '@/contexts/EditorContext';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store';
 import { useEffect } from 'react';
@@ -27,10 +26,8 @@ const EditorPage: React.FC = () => {
 
 export default function Home() {
   return (
-    <EditorProvider>
-      <main className="min-h-screen bg-gray-100">
-        <EditorPage />
-      </main>
-    </EditorProvider>
+    <main className="min-h-screen bg-gray-100">
+      <EditorPage />
+    </main>
   );
 }

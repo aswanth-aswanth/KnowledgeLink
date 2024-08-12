@@ -1,20 +1,20 @@
-"use client";
-import React, { useCallback, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { useRouter } from "next/navigation";
-import { Plus, Trash, Edit, AlertCircle } from "lucide-react";
-import { v4 as uuid } from "uuid";
-import { RootState, AppDispatch } from "@/store";
+'use client';
+import React, { useCallback, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useRouter } from 'next/navigation';
+import { Plus, Trash, Edit, AlertCircle } from 'lucide-react';
+import { v4 as uuid } from 'uuid';
+import { RootState, AppDispatch } from '@/store';
 import {
   addTopic,
   resetTopics,
   setEditorData,
   setRootTitleAndContent,
-} from "@/store/topicsSlice";
-import { useDarkMode } from "@/hooks/useDarkMode";
-import ChooseRoadmapType from "./ChooseRoadmapType";
-import TopicNode from "./TopicNode";
-import { Button } from "@/components/ui/button";
+} from '@/store/topicsSlice';
+import { useDarkMode } from '@/hooks/useDarkMode';
+import ChooseRoadmapType from './ChooseRoadmapType';
+import TopicNode from './TopicNode';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -22,10 +22,10 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { toast } from "@/components/ui/use-toast";
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { toast } from '@/components/ui/use-toast';
 
 const NestedNoteTaker: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -33,7 +33,7 @@ const NestedNoteTaker: React.FC = () => {
     (state: RootState) => state.topics.topics[state.topics.rootId]
   );
   const { isDarkMode } = useDarkMode();
-  const [roadmapType, setRoadmapType] = useState("public_voting");
+  const [roadmapType, setRoadmapType] = useState('public_voting');
   const router = useRouter();
 
   const [showRootEditModal, setShowRootEditModal] = useState(false);
@@ -56,8 +56,8 @@ const NestedNoteTaker: React.FC = () => {
   const handleAddRootTopic = useCallback(() => {
     const newTopic = {
       id: uuid().slice(0, 13),
-      name: "New Topic",
-      content: "",
+      name: 'New Topic',
+      content: '',
       no: `${rootTopic.children.length + 1}`,
       children: [],
       isExpanded: false,
@@ -73,13 +73,13 @@ const NestedNoteTaker: React.FC = () => {
     dispatch(resetTopics());
     setShowResetConfirmation(false);
     toast({
-      title: "Topics Reset",
-      description: "All topics have been reset to the initial state.",
+      title: 'Topics Reset',
+      description: 'All topics have been reset to the initial state.',
     });
   }, [dispatch]);
 
   const currentTopicsState = useSelector((state: RootState) => state.topics);
-  console.log("Current topic state : ", currentTopicsState);
+  console.log('Current topic state : ', currentTopicsState);
 
   function transformTopics(topics: any) {
     const root = topics.root;
@@ -108,22 +108,22 @@ const NestedNoteTaker: React.FC = () => {
 
     function processContent(content: string, topicId: string): string {
       const parser = new DOMParser();
-      const doc = parser.parseFromString(content, "text/html");
+      const doc = parser.parseFromString(content, 'text/html');
 
-      doc.querySelectorAll(".media-container").forEach((container, index) => {
-        const mediaElement = container.querySelector("img, video");
+      doc.querySelectorAll('.media-container').forEach((container, index) => {
+        const mediaElement = container.querySelector('img, video');
         if (
           mediaElement instanceof HTMLImageElement ||
           mediaElement instanceof HTMLVideoElement
         ) {
           const dataUrl = mediaElement.src;
-          if (dataUrl.startsWith("data:")) {
+          if (dataUrl.startsWith('data:')) {
             const file = dataURLtoFile(dataUrl, `media_${topicId}_${index}`);
             const placeholder = `{{MEDIA_${topicId}_${index}}}`;
             mediaFiles.push({ file, placeholder, topicId });
 
             // Create a new element without the buttons
-            const newContainer = doc.createElement("div");
+            const newContainer = doc.createElement('div');
             newContainer.className = container.className;
             newContainer.appendChild(mediaElement.cloneNode(true));
 
@@ -132,8 +132,8 @@ const NestedNoteTaker: React.FC = () => {
 
             // Update the src attribute of the media element to use the placeholder
             newContainer
-              .querySelector("img, video")
-              ?.setAttribute("src", placeholder);
+              .querySelector('img, video')
+              ?.setAttribute('src', placeholder);
           }
         }
       });
@@ -142,7 +142,7 @@ const NestedNoteTaker: React.FC = () => {
     }
 
     function dataURLtoFile(dataurl: string, filename: string): File {
-      const arr = dataurl.split(",");
+      const arr = dataurl.split(',');
       const mime = arr[0].match(/:(.*?);/)![1];
       const bstr = atob(arr[1]);
       let n = bstr.length;
@@ -162,10 +162,10 @@ const NestedNoteTaker: React.FC = () => {
       type: roadmapType,
       tags: [],
       members: [],
-      creatorId: "",
+      creatorId: '',
       topics: transformedRoot,
-      createdAt: "",
-      updatedAt: "",
+      createdAt: '',
+      updatedAt: '',
       id: newRootId,
       mediaFiles: mediaFiles,
     };
@@ -174,20 +174,20 @@ const NestedNoteTaker: React.FC = () => {
   const handleContinue = useCallback(
     (selectedRoadmapType: string, selectedMembers: any[]) => {
       const transformedTopics: any = transformTopics(currentTopicsState.topics);
-      console.log("TransformedTopics title : ", transformedTopics.title);
+      console.log('TransformedTopics title : ', transformedTopics.title);
       console.log(
-        "TransformedTopics description : ",
+        'TransformedTopics description : ',
         transformedTopics.description
       );
       if (!transformedTopics.title || !transformedTopics.description) {
         setShowEmptyRootWarning(true);
         return;
       }
-      console.log("handleContinue : ", selectedMembers);
+      console.log('handleContinue : ', selectedMembers);
       transformedTopics.members = selectedMembers.map((member) => member._id);
       transformedTopics.type = selectedRoadmapType;
       dispatch(setEditorData(transformedTopics));
-      router.push("/create-diagram");
+      router.push('/create-diagram');
     },
     [currentTopicsState.topics, dispatch, router]
   );
@@ -197,21 +197,21 @@ const NestedNoteTaker: React.FC = () => {
       <div className="max-w-6xl mx-auto sm:px-6 lg:px-8">
         <div
           className={`nested-note-taker rounded-lg ${
-            isDarkMode ? "bg-gray-900 shadow-lg" : "bg-white shadow-sm"
+            isDarkMode ? 'bg-gray-900 shadow-lg' : 'bg-white shadow-sm'
           } pt-6 sm:p-6`}
         >
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 space-y-2 sm:space-y-0 sm:space-x-2">
             <Button
               onClick={handleAddRootTopic}
               variant="outline"
-              className={`w-full sm:w-auto ${isDarkMode && "text-white"}`}
+              className={`w-full sm:w-auto ${isDarkMode && 'text-white'}`}
             >
               <Plus className="mr-2 h-4 w-4" /> Add Root Topic
             </Button>
             <Button
               onClick={handleEditRoot}
               variant="outline"
-              className={`w-full sm:w-auto ${isDarkMode && "text-white"}`}
+              className={`w-full sm:w-auto ${isDarkMode && 'text-white'}`}
             >
               <Edit className="mr-2 h-4 w-4" /> Edit Root
             </Button>
