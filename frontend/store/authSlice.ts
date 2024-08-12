@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { jwtDecode } from 'jwt-decode';
-import { isTokenExpired } from '@/utils/auth';
+import { isTokenExpired } from '@/lib/auth';
 import apiClient from '@/api/apiClient';
 
 export interface User {
