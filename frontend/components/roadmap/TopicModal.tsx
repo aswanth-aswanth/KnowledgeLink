@@ -1,12 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
-import { X, Minimize2, Maximize2 } from "lucide-react";
-import { useDarkMode } from "@/hooks/useDarkMode";
-import DOMPurify from "dompurify";
-
-interface TopicModalProps {
-  topic: any;
-  onClose: () => void;
-}
+import React, { useState, useEffect, useRef } from 'react';
+import { X, Minimize2, Maximize2 } from 'lucide-react';
+import { useDarkMode } from '@/hooks/useDarkMode';
+import DOMPurify from 'dompurify';
+import { TopicModalProps } from '@/types/roadmap';
 
 const TopicModal: React.FC<TopicModalProps> = ({ topic, onClose }) => {
   const { isDarkMode } = useDarkMode();
@@ -23,9 +19,9 @@ const TopicModal: React.FC<TopicModalProps> = ({ topic, onClose }) => {
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [onClose]);
 
@@ -36,8 +32,8 @@ const TopicModal: React.FC<TopicModalProps> = ({ topic, onClose }) => {
   const createMarkup = (html: string) => {
     return {
       __html: DOMPurify.sanitize(html, {
-        ADD_TAGS: ["video"],
-        ADD_ATTR: ["controls", "src"],
+        ADD_TAGS: ['video'],
+        ADD_ATTR: ['controls', 'src'],
       }),
     };
   };
@@ -46,14 +42,14 @@ const TopicModal: React.FC<TopicModalProps> = ({ topic, onClose }) => {
     <div className="mb-8 lg:max-w-[68vw] scroll-smooth mx-auto">
       <h3
         className={`text-2xl font-bold mb-4 ${
-          isDarkMode ? "text-gray-200" : "text-gray-800"
+          isDarkMode ? 'text-gray-200' : 'text-gray-800'
         }`}
       >
         {t.name}
       </h3>
       <div
         className={`mb-6 text-lg leading-relaxed ${
-          isDarkMode ? "text-gray-300" : "text-gray-600"
+          isDarkMode ? 'text-gray-300' : 'text-gray-600'
         }`}
         dangerouslySetInnerHTML={createMarkup(t.content)}
       />
@@ -62,8 +58,8 @@ const TopicModal: React.FC<TopicModalProps> = ({ topic, onClose }) => {
           <div
             className={`cursor-pointer font-semibold mb-4 text-lg ${
               isDarkMode
-                ? "text-gray-300 hover:text-gray-100"
-                : "text-gray-700 hover:text-gray-900"
+                ? 'text-gray-300 hover:text-gray-100'
+                : 'text-gray-700 hover:text-gray-900'
             }`}
           >
             Subtopics
@@ -83,29 +79,29 @@ const TopicModal: React.FC<TopicModalProps> = ({ topic, onClose }) => {
   return (
     <div
       className={`fixed inset-0 z-50 flex items-center justify-center ${
-        isDarkMode ? "bg-black bg-opacity-75" : "bg-gray-200 bg-opacity-75"
+        isDarkMode ? 'bg-black bg-opacity-75' : 'bg-gray-200 bg-opacity-75'
       }`}
     >
       <div
         ref={modalRef}
         className={`relative overflow-hidden transition-all duration-300 ease-in-out
-          ${isDarkMode ? "bg-gray-900" : "bg-white"}
+          ${isDarkMode ? 'bg-gray-900' : 'bg-white'}
           ${
             isFullscreen
-              ? "w-full h-full"
-              : "sm:w-11/12 max-w-4xl max-h-[90vh] sm:m-4 rounded-lg shadow-2xl"
+              ? 'w-full h-full'
+              : 'sm:w-11/12 max-w-4xl max-h-[90vh] sm:m-4 rounded-lg shadow-2xl'
           }`}
       >
         <div
           className={`sticky top-0 flex justify-between items-center p-4 sm:p-8 border-b ${
             isDarkMode
-              ? "border-gray-700 bg-gray-900"
-              : "border-gray-200 bg-white"
+              ? 'border-gray-700 bg-gray-900'
+              : 'border-gray-200 bg-white'
           }`}
         >
           <h2
             className={`text-3xl font-bold ${
-              isDarkMode ? "text-gray-100" : "text-gray-900"
+              isDarkMode ? 'text-gray-100' : 'text-gray-900'
             }`}
           >
             {topic.name}
@@ -114,32 +110,32 @@ const TopicModal: React.FC<TopicModalProps> = ({ topic, onClose }) => {
             <button
               onClick={toggleFullscreen}
               className={`p-2 rounded-full hover:bg-opacity-20 ${
-                isDarkMode ? "hover:bg-gray-600" : "hover:bg-gray-200"
+                isDarkMode ? 'hover:bg-gray-600' : 'hover:bg-gray-200'
               }`}
             >
               {isFullscreen ? (
                 <Minimize2
-                  className={isDarkMode ? "text-gray-300" : "text-gray-600"}
+                  className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}
                 />
               ) : (
                 <Maximize2
-                  className={isDarkMode ? "text-gray-300" : "text-gray-600"}
+                  className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}
                 />
               )}
             </button>
             <button
               onClick={onClose}
               className={`p-2 rounded-full hover:bg-opacity-20 ${
-                isDarkMode ? "hover:bg-gray-600" : "hover:bg-gray-200"
+                isDarkMode ? 'hover:bg-gray-600' : 'hover:bg-gray-200'
               }`}
             >
-              <X className={isDarkMode ? "text-gray-300" : "text-gray-600"} />
+              <X className={isDarkMode ? 'text-gray-300' : 'text-gray-600'} />
             </button>
           </div>
         </div>
         <div
           className={`p-4 sm:p-8  overflow-y-auto scrollbar-hide ${
-            isFullscreen ? "h-[calc(100vh-80px)]" : "max-h-[calc(90vh-80px)]"
+            isFullscreen ? 'h-[calc(100vh-80px)]' : 'max-h-[calc(90vh-80px)]'
           }`}
         >
           {renderTopic(topic)}

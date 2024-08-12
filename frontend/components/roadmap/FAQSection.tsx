@@ -1,35 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
-import toast from "react-hot-toast";
-import { Button } from "@/components/ui/button";
-import apiClient from "@/api/apiClient";
-import { useDarkMode } from "@/hooks/useDarkMode";
-import { ChevronDown, ChevronRight } from "lucide-react";
-
-interface FAQSectionProps {
-  roadmapId: string;
-  topicUniqueId: string;
-  topicId: string;
-}
-
-interface FAQ {
-  _id: string;
-  roadmapId: string;
-  topicId: string;
-  topicUniqueId: string;
-  question: string;
-  authorId: string;
-  upvotes: string[];
-  createdAt: string;
-  updatedAt: string;
-  answers: {
-    _id: string;
-    content: string;
-    authorId: string;
-    upvotes: string[];
-    createdAt: string;
-    updatedAt: string;
-  }[];
-}
+import React, { useState, useEffect, useRef } from 'react';
+import toast from 'react-hot-toast';
+import apiClient from '@/api/apiClient';
+import { ChevronDown, ChevronRight } from 'lucide-react';
+import { FAQ, FAQSectionProps } from '@/types/roadmap';
 
 const FAQSection: React.FC<FAQSectionProps> = ({
   roadmapId,
@@ -37,10 +10,9 @@ const FAQSection: React.FC<FAQSectionProps> = ({
   topicId,
 }) => {
   const [faqs, setFaqs] = useState<FAQ[]>([]);
-  const [newQuestion, setNewQuestion] = useState("");
+  const [newQuestion, setNewQuestion] = useState('');
   const [expandedFAQs, setExpandedFAQs] = useState<string[]>([]);
   const [newAnswers, setNewAnswers] = useState<{ [key: string]: string }>({});
-  const { isDarkMode } = useDarkMode();
   const answerRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
   useEffect(() => {
@@ -54,8 +26,8 @@ const FAQSection: React.FC<FAQSectionProps> = ({
       );
       setFaqs(response.data);
     } catch (error) {
-      console.error("Error fetching FAQs:", error);
-      toast.error("Failed to fetch FAQs. Please try again.");
+      console.error('Error fetching FAQs:', error);
+      toast.error('Failed to fetch FAQs. Please try again.');
     }
   };
 
@@ -63,18 +35,18 @@ const FAQSection: React.FC<FAQSectionProps> = ({
     if (!newQuestion.trim()) return;
 
     try {
-      await apiClient.post("/profile/faq/question", {
+      await apiClient.post('/profile/faq/question', {
         roadmapId,
         topicUniqueId,
         topicId,
         question: newQuestion,
       });
-      setNewQuestion("");
+      setNewQuestion('');
       fetchFAQs();
-      toast.success("Your question has been successfully submitted.");
+      toast.success('Your question has been successfully submitted.');
     } catch (error) {
-      console.error("Error submitting question:", error);
-      toast.error("Failed to submit your question. Please try again.");
+      console.error('Error submitting question:', error);
+      toast.error('Failed to submit your question. Please try again.');
     }
   };
 
@@ -95,19 +67,19 @@ const FAQSection: React.FC<FAQSectionProps> = ({
     if (!content || !content.trim()) return;
 
     try {
-      await apiClient.post("/profile/faq/answer", {
+      await apiClient.post('/profile/faq/answer', {
         faqId,
         content,
       });
-      setNewAnswers((prev) => ({ ...prev, [faqId]: "" }));
+      setNewAnswers((prev) => ({ ...prev, [faqId]: '' }));
       if (answerRefs.current[faqId]) {
-        answerRefs.current[faqId]!.textContent = "";
+        answerRefs.current[faqId]!.textContent = '';
       }
       fetchFAQs();
-      toast.success("Your answer has been successfully submitted.");
+      toast.success('Your answer has been successfully submitted.');
     } catch (error) {
-      console.error("Error submitting answer:", error);
-      toast.error("Failed to submit your answer. Please try again.");
+      console.error('Error submitting answer:', error);
+      toast.error('Failed to submit your answer. Please try again.');
     }
   };
 
@@ -138,7 +110,9 @@ const FAQSection: React.FC<FAQSectionProps> = ({
                     {index > 0 && (
                       <hr className="my-2 border-gray-200 dark:border-gray-700" />
                     )}
-                    <p className="break-words dark:text-gray-300 leading-loose ">{answer.content}</p>
+                    <p className="break-words dark:text-gray-300 leading-loose ">
+                      {answer.content}
+                    </p>
                   </div>
                 ))}
                 <div className="mt-2">
@@ -150,7 +124,7 @@ const FAQSection: React.FC<FAQSectionProps> = ({
                     onInput={(e) =>
                       handleAnswerChange(
                         faq._id,
-                        e.currentTarget.textContent || ""
+                        e.currentTarget.textContent || ''
                       )
                     }
                     className="p-1 py-2 text-sm border rounded bg-transparent dark:text-white dark:border-gray-600 focus:outline-none focus:ring-1 focus:ring-gray-200 min-w-0 break-words whitespace-pre-wrap"
@@ -170,7 +144,7 @@ const FAQSection: React.FC<FAQSectionProps> = ({
       <div className="mt-2 flex items-center space-x-2">
         <div
           contentEditable
-          onInput={(e) => setNewQuestion(e.currentTarget.textContent || "")}
+          onInput={(e) => setNewQuestion(e.currentTarget.textContent || '')}
           className="flex-grow p-1 py-2 text-sm border rounded bg-transparent dark:text-white dark:border-gray-600 focus:outline-none focus:ring-1 focus:ring-gray-200 min-w-0 break-words whitespace-pre-wrap"
         />
         <button

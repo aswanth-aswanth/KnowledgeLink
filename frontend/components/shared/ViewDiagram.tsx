@@ -1,107 +1,29 @@
-import React, { useState, useRef, useEffect } from "react";
-import Rectangle from "../roadmap/Rectangle";
-import Connection from "../roadmap/Connection";
-import { FaSearchPlus, FaSearchMinus } from "react-icons/fa";
-import TopicModal from "../roadmap/TopicModal";
-
-interface ViewDiagramProps {
-  rectangles: {
-    id: string;
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    name: string;
-    uniqueId: string;
-  }[];
-  connections: {
-    from: string;
-    to: string;
-    style: "straight" | "curved";
-  }[];
-  roadmapData: any;
-}
+import React from 'react';
+import { FaSearchPlus, FaSearchMinus } from 'react-icons/fa';
+import Rectangle from '../roadmap/Rectangle';
+import Connection from '../roadmap/Connection';
+import TopicModal from '../roadmap/TopicModal';
+import { ViewDiagramProps } from '@/types/roadmap';
+import { useViewDiagram } from '@/hooks/useDiagram';
 
 const ViewDiagram: React.FC<ViewDiagramProps> = ({
   rectangles,
   connections,
   roadmapData,
 }) => {
-  const [scale, setScale] = useState(1);
-  const [selectedTopic, setSelectedTopic] = useState(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const svgRef = useRef<SVGSVGElement>(null);
-
-  const findTopicByUniqueId = (
-    uniqueId: string,
-    topics: any = roadmapData.topics
-  ): any => {
-    // Check if the current topic matches the uniqueId
-    if (topics.uniqueId === uniqueId) {
-      return topics;
-    }
-
-    // If the current topic has children, search through them
-    if (topics.children && topics.children.length > 0) {
-      for (const child of topics.children) {
-        const result = findTopicByUniqueId(uniqueId, child);
-        if (result) {
-          return result;
-        }
-      }
-    }
-
-    // If no match is found, return null
-    return null;
-  };
-
-  const handleScaleUp = () => {
-    setScale((prevScale) => Math.min(prevScale + 0.1, 2));
-  };
-
-  const handleScaleDown = () => {
-    setScale((prevScale) => Math.max(prevScale - 0.1, 0.5));
-  };
-
-  const handleRectangleClick = (rect: any) => {
-    const topic = findTopicByUniqueId(rect.uniqueId);
-    if (topic) {
-      setSelectedTopic(topic);
-    }
-  };
-
-  const maxX = Math.max(...rectangles.map((rect) => rect.x + rect.width));
-  const maxY = Math.max(...rectangles.map((rect) => rect.y + rect.height));
-  const svgWidth = Math.max(600, maxX + 100); // Add some padding
-  const svgHeight = Math.max(600, maxY + 100); // Add some padding
-
-  const aspectRatio = `${svgWidth}/${svgHeight}`;
-
-  useEffect(() => {
-    const updateSize = () => {
-      if (containerRef.current && svgRef.current) {
-        const containerWidth = containerRef.current.clientWidth;
-        const containerHeight = containerRef.current.clientHeight;
-        const svgAspectRatio = svgWidth / svgHeight;
-        const containerAspectRatio = containerWidth / containerHeight;
-
-        if (containerAspectRatio > svgAspectRatio) {
-          // Container is wider, fit to height
-          svgRef.current.style.width = `${containerHeight * svgAspectRatio}px`;
-          svgRef.current.style.height = `${containerHeight}px`;
-        } else {
-          // Container is taller, fit to width
-          svgRef.current.style.width = `${containerWidth}px`;
-          svgRef.current.style.height = `${containerWidth / svgAspectRatio}px`;
-        }
-      }
-    };
-
-    window.addEventListener("resize", updateSize);
-    updateSize();
-
-    return () => window.removeEventListener("resize", updateSize);
-  }, [svgWidth, svgHeight]);
+  const {
+    scale,
+    selectedTopic,
+    setSelectedTopic,
+    containerRef,
+    svgRef,
+    handleScaleUp,
+    handleScaleDown,
+    handleRectangleClick,
+    svgWidth,
+    svgHeight,
+    aspectRatio,
+  } = useViewDiagram(rectangles, connections, roadmapData);
 
   return (
     <div ref={containerRef} className="relative w-full h-full overflow-hidden">
@@ -117,7 +39,7 @@ const ViewDiagram: React.FC<ViewDiagramProps> = ({
         className="w-full h-full mt-10 flex items-center justify-center"
         style={
           {
-            "--aspect-ratio": aspectRatio,
+            '--aspect-ratio': aspectRatio,
           } as React.CSSProperties
         }
       >
@@ -126,10 +48,10 @@ const ViewDiagram: React.FC<ViewDiagramProps> = ({
           viewBox={`0 0 ${svgWidth} ${svgHeight}`}
           preserveAspectRatio="xMidYMid meet"
           style={{
-            maxWidth: "100%",
-            maxHeight: "100%",
-            width: "100%",
-            height: "auto",
+            maxWidth: '100%',
+            maxHeight: '100%',
+            width: '100%',
+            height: 'auto',
           }}
         >
           <g transform={`scale(${scale})`} transform-origin="center">
