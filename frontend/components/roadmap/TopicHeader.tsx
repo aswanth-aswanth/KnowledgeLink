@@ -14,7 +14,7 @@ const TopicHeader: React.FC<TopicHeaderProps> = ({
     className="flex cursor-pointer items-center group"
   >
     <button
-      className={`p-2 rounded-md focus:outline-none ${
+      className={`md:p-0 rounded-md focus:outline-none ${
         isDarkMode
           ? 'text-gray-500 dark:hover:bg-gray-800'
           : 'text-gray-400 hover:bg-gray-100'
@@ -33,7 +33,7 @@ const TopicHeader: React.FC<TopicHeaderProps> = ({
       )}
     </button>
     <span
-      className={`flex-grow px-2 py-1 rounded-md font-bold text-lg sm:text-lg ${
+      className={`flex-grow px-2 py-1 rounded-md font-bold text-sm sm:text-base ${
         isDarkMode ? 'text-gray-300' : 'text-gray-600'
       }`}
     >

@@ -26,7 +26,7 @@ const Topic: React.FC<TopicPropsRoadmapViewer> = ({
   } = useTopic(topic, expandedTopics, onContentChange);
 
   return (
-    <div className="topic-node mb-3">
+    <div className="topic-node mb-1 ml-2 sm:ml-6">
       <TopicHeader
         topicName={topic.name}
         level={level}
