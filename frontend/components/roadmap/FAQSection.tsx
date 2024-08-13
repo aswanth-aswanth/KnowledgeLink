@@ -84,7 +84,7 @@ const FAQSection: React.FC<FAQSectionProps> = ({
   };
 
   return (
-    <div className="mt-2 text-base dark:text-gray-300 px-4 ">
+    <div className="mt-2 text-base dark:text-gray-300 max-sm:px-4 sm:px-8 ">
       <h3 className="font-semibold mb-1 text-sm">FAQs</h3>
       <div className="space-y-1">
         {faqs.map((faq) => (
