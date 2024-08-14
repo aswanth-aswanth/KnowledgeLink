@@ -14,9 +14,10 @@ export function useRoadmapContent() {
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [contributions, setContributions] = useState<Record<string, string>>({});
-  const [rectangles, setRectangles] = useState<any[]>([]); 
+  const [rectangles, setRectangles] = useState<any[]>([]);
   const [connections, setConnections] = useState<any[]>([]);
   const [isDiagramLoading, setIsDiagramLoading] = useState<boolean>(true);
+  const [scale, setScale] = useState(1);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -47,6 +48,14 @@ export function useRoadmapContent() {
 
   const handleSubmit = async () => {
     setIsDialogOpen(true);
+  };
+
+  const handleZoom = (direction: 'in' | 'out') => {
+    setScale((prevScale) => {
+      const step = 0.07;
+      const newScale = direction === 'in' ? prevScale + step : prevScale - step;
+      return Math.max(0.5, Math.min(newScale, 2));
+    });
   };
 
   const confirmSubmit = async () => {
@@ -107,5 +116,8 @@ export function useRoadmapContent() {
     handleContentChange,
     handleSubmit,
     confirmSubmit,
+    scale,
+    setScale,
+    handleZoom
   };
 }

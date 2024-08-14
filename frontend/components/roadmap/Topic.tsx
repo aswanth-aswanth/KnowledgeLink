@@ -1,7 +1,7 @@
 import React from 'react';
 import TopicHeader from '@/components/roadmap/TopicHeader';
 import TopicContent from '@/components/roadmap/TopicContent';
-import FAQSection from '@/components/roadmap/FAQSection';
+import FAQSection from '@/components/faq/FAQSection';
 import { TopicPropsRoadmapViewer } from '@/types/roadmap';
 import { useTopic } from '@/hooks/useTopic';
 
