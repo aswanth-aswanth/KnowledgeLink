@@ -51,6 +51,8 @@ const Topic: React.FC<TopicPropsRoadmapViewer> = ({
               roadmapId={roadmapId}
               topicUniqueId={topic.uniqueId}
               topicId={topic._id}
+              topicName={topic.name}
+              topicContent={topic.content}
             />
           )}
           {topic.children.map((child, index) => (

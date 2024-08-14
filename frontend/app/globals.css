@@ -69,6 +69,47 @@ body {
   opacity: 1;
 }
 
+cssCopy/* In your globals.css or a similar global style file */
+
+/* Webkit browsers (Chrome, Safari, newer versions of Edge) */
+.ai-response-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.ai-response-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.ai-response-content::-webkit-scrollbar-thumb {
+  background-color: rgba(155, 155, 155, 0.5);
+  border-radius: 20px;
+  border: transparent;
+}
+
+/* Firefox */
+.ai-response-content {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(155, 155, 155, 0.5) transparent;
+}
+
+/* For Internet Explorer and Edge (older versions) */
+.ai-response-content {
+  -ms-overflow-style: none;
+}
+
+.ai-response-content::-ms-scrollbar {
+  width: 6px;
+}
+
+.ai-response-content::-ms-scrollbar-track {
+  background: transparent;
+}
+
+.ai-response-content::-ms-scrollbar-thumb {
+  background-color: rgba(155, 155, 155, 0.5);
+  border-radius: 20px;
+}
+
 /* ========================================== TAILWIND STYLES */
 @layer utilities {
   .wrapper {

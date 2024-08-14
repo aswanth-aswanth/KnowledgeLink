@@ -5,7 +5,7 @@ import EditModeButtons from './EditModeButtons';
 import ConfirmationDialog from './ConfirmationDialog';
 import { useRoadmapContent } from '@/hooks/useRoadmapContent';
 import RoadmapViewer from '@/components/roadmap/RoadmapViewer';
-import { FiZoomIn, FiZoomOut } from 'react-icons/fi'; // Import icons
+import { FiZoomIn, FiZoomOut } from 'react-icons/fi';
 
 export default function RoadmapContent() {
   const {

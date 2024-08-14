@@ -2,6 +2,8 @@ export interface FAQSectionProps {
     roadmapId: string;
     topicUniqueId: string;
     topicId: string;
+    topicName: string,
+    topicContent: string,
 }
 
 export interface FAQ {
