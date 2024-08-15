@@ -7,6 +7,7 @@ import GetSingleUserController from '../../../infra/http/controllers/GetSingleUs
 import FollowUserController from '../../../infra/http/controllers/FollowUserController';
 import GetSearchUsersController from '../../../infra/http/controllers/GetSearchUsersController';
 import UpdateUserProfileController from '../../../infra/http/controllers/UpdateUserProfileController';
+import SavePostController from '../../../infra/http/controllers/SavePostController'; // Import SavePostController
 import authMiddleware from '../../../infra/http/middleware/authMiddleware';
 import nonAuthMiddleware from '../../../infra/http/middleware/nonAuthMiddleware';
 import GetPaginatedUsersController from '../../../infra/http/controllers/GetPaginatedUsersController';
@@ -26,6 +27,7 @@ const updateUserProfileController = new UpdateUserProfileController();
 const getPaginatedUsersController = new GetPaginatedUsersController();
 const getFollowersController = new GetFollowersController();
 const getFollowingsController = new GetFollowingsController();
+const savePostController = new SavePostController();
 
 profileRouter.post("/subscribe", authMiddleware, subscribeController.handle);
 profileRouter.post("/unsubscribe", authMiddleware, unSubscribeRoadmapController.handle);
@@ -37,5 +39,6 @@ profileRouter.patch("/user/:id/follow", authMiddleware, followUserController.han
 profileRouter.patch("/user", authMiddleware, uploadSingle('Roadmap'), updateUserProfileController.handle);
 profileRouter.get("/user/:id/followers", getFollowersController.handle);
 profileRouter.get("/user/:id/followings", getFollowingsController.handle);
+profileRouter.post("/save-post", authMiddleware, savePostController.handle);
 
 export default profileRouter;

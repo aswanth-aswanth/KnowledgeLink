@@ -41,6 +41,35 @@ export default class UserRepository {
         }
     }
 
+    public async savePost(userId: string, postId: string): Promise<IUser | null> {
+        try {
+            const user = await User.findById(userId);
+            if (!user) {
+                return null;
+            }
+
+            if (!user.favourites) {
+                user.favourites = [];
+            }
+
+            if (!user.favourites.includes(postId)) {
+                user.favourites.push(postId);
+            }
+
+            await user.save();
+
+            return user;
+        } catch (error) {
+            if (error instanceof Error) {
+                console.error(`Error saving post: ${error.message}`);
+                throw new Error('Failed to save post');
+            } else {
+                console.error('Unknown error saving post');
+                throw new Error('Unknown error');
+            }
+        }
+    }
+
     public async getFollowers(userId: string): Promise<{ username: string, image: string, email: string, _id: string }[]> {
         try {
             const user = await User.findById(userId).select('followers').exec();
@@ -162,18 +191,18 @@ export default class UserRepository {
             if (!user) {
                 return null;
             }
-    
+
             if (!user.subscribed) {
                 user.subscribed = [];
             }
-    
+
             const index = user.subscribed.indexOf(roadmapId);
             if (index !== -1) {
                 user.subscribed.splice(index, 1);
             }
-    
+
             await user.save();
-    
+
             return user;
         } catch (error) {
             if (error instanceof Error) {
@@ -185,7 +214,7 @@ export default class UserRepository {
             }
         }
     }
-    
+
 
     public async getSubscribedRoadmaps(userId: string): Promise<string[]> {
         try {
