@@ -1,5 +1,4 @@
-import { Button } from "@/components/ui/button";
-import { FiPlusSquare } from "react-icons/fi";
+import { FiPlusSquare } from 'react-icons/fi';
 
 export function CreatePostButton({ onClick }: { onClick: () => void }) {
   return (

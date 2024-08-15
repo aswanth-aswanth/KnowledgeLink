@@ -1,31 +1,31 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import Tabs from "@/components/shared/Tabs";
-import { Tab } from "@/types";
-import { Provider } from "react-redux";
-import { store } from "@/store";
-import { CreatePostButton } from "./CreatePostButton";
-import { CreatePostModal } from "../../../components/forms/CreatePostModal";
-import { PostFeed } from "../../../components/social/PostFeed";
+'use client';
+import React, { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import Tabs from '@/components/shared/Tabs';
+import { Tab } from '@/types';
+import { Provider } from 'react-redux';
+import { store } from '@/store';
+import { CreatePostButton } from './CreatePostButton';
+import { CreatePostModal } from '../../../components/forms/CreatePostModal';
+import { PostFeed } from '../../../components/social/PostFeed';
 
 const Following: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<string>("Following");
+  const [activeTab] = useState<string>('Following');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const token = searchParams.get("token");
+  const token = searchParams.get('token');
 
   useEffect(() => {
     if (token) {
-      localStorage.setItem("token", token);
-      router.push("/");
+      localStorage.setItem('token', token);
+      router.push('/');
     }
   }, [token]);
 
   const tabs: Tab[] = [
-    { name: "Explore", icon: "🌎" },
-    { name: "Following", icon: "👥" },
+    { name: 'Explore', icon: '🌎' },
+    { name: 'Following', icon: '👥' },
   ];
 
   return (
@@ -35,7 +35,7 @@ const Following: React.FC = () => {
           tabs={tabs}
           activeTab={activeTab}
           onTabClick={(value) => {
-            if (value === "Explore") router.push("/");
+            if (value === 'Explore') router.push('/');
           }}
           tabFor="explore"
         />
