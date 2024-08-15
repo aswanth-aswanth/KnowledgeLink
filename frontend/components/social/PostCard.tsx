@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   Heart,
   MessageSquareMore,
   Share,
   X,
   Link as LinkIcon,
-} from "lucide-react";
-import { MediaGallery } from "./MediaGallery";
-import { CommentSection } from "./CommentSection";
+  MoreVertical,
+} from 'lucide-react';
+import { MediaGallery } from './MediaGallery';
+import { CommentSection } from './CommentSection';
 import {
   WhatsappShareButton,
   FacebookShareButton,
@@ -17,7 +18,16 @@ import {
   FacebookIcon,
   TwitterIcon,
   LinkedinIcon,
-} from "react-share";
+} from 'react-share';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu';
+import { Button } from '../ui/button';
+import apiClient from '@/api/apiClient';
+import toast from 'react-hot-toast';
 
 interface Post {
   _id: string;
@@ -43,12 +53,7 @@ interface PostCardProps {
   onComment: (postId: string, comment: string) => void;
 }
 
-export function PostCard({
-  post,
-  onLike,
-  onSave,
-  onComment,
-}: PostCardProps) {
+export function PostCard({ post, onLike, onSave, onComment }: PostCardProps) {
   const [showComments, setShowComments] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
@@ -70,17 +75,28 @@ export function PostCard({
     });
   };
 
+  const handleSavePost = async () => {
+    try {
+      await apiClient.post('/profile/save-post', { postId: post._id });
+      onSave(post._id);
+      toast.success('Post saved successfully!');
+    } catch (error) {
+      console.error('Error saving post:', error);
+      toast.error('Failed to save post. Please try again.');
+    }
+  };
+
   const mediaItems = [
     ...post.content.images.map((image) => ({
-      type: "image" as const,
+      type: 'image' as const,
       url: image.url,
     })),
     ...post.content.videos.map((video) => ({
-      type: "video" as const,
+      type: 'video' as const,
       url: video.url,
     })),
     ...(post.audios?.map((audio) => ({
-      type: "audio" as const,
+      type: 'audio' as const,
       url: audio,
     })) || []),
   ];
@@ -103,6 +119,32 @@ export function PostCard({
               {new Date(post.createdAt).toLocaleString()}
             </p>
           </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild className="ml-auto dark:text-white">
+              <Button
+                variant="ghost"
+                className="h-8 w-8 p-0 hover:bg-gray-100 dark:hover:bg-gray-700"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <span className="sr-only">Open menu</span>
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
+            >
+              <DropdownMenuItem
+                className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleSavePost();
+                }}
+              >
+                Save Post
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         {/* Title */}
@@ -128,19 +170,22 @@ export function PostCard({
             onClick={() => onLike(post._id)}
             className={`flex flex-col items-center transition-colors duration-200 ${
               post.isLiked
-                ? "text-red-600 dark:text-red-400"
-                : "text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400"
+                ? 'text-red-600 dark:text-red-400'
+                : 'text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400'
             }`}
           >
-            <Heart className="w-6 h-6 mb-1" fill={post.isLiked ? "currentColor" : "none"} />
+            <Heart
+              className="w-6 h-6 mb-1"
+              fill={post.isLiked ? 'currentColor' : 'none'}
+            />
             <span className="text-xs">{post.likes.length} Likes</span>
           </button>
           <button
             onClick={() => setShowComments(!showComments)}
             className={`flex flex-col items-center transition-colors duration-200 ${
               showComments
-                ? "text-green-600 dark:text-green-400"
-                : "text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400"
+                ? 'text-green-600 dark:text-green-400'
+                : 'text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400'
             }`}
           >
             <MessageSquareMore className="w-6 h-6 mb-1" />
@@ -201,11 +246,11 @@ export function PostCard({
                 onClick={handleCopyLink}
                 className={`text-sm font-semibold py-2 px-4 rounded-lg transition-colors duration-200 ${
                   linkCopied
-                    ? "bg-green-600 dark:bg-green-400 text-white"
-                    : "bg-blue-600 dark:bg-blue-400 text-white hover:bg-blue-500 dark:hover:bg-blue-300"
+                    ? 'bg-green-600 dark:bg-green-400 text-white'
+                    : 'bg-blue-600 dark:bg-blue-400 text-white hover:bg-blue-500 dark:hover:bg-blue-300'
                 }`}
               >
-                {linkCopied ? "Link Copied!" : "Copy Link"}
+                {linkCopied ? 'Link Copied!' : 'Copy Link'}
               </button>
             </div>
           </div>
