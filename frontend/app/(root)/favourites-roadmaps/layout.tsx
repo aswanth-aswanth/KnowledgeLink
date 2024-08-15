@@ -1,12 +1,9 @@
-// layout.tsx
-"use client";
+'use client';
 
-import React from "react";
-import Header from "@/components/layouts/Header";
-import { ReduxProvider } from "@/lib/redux-provider";
-import { checkTokenExpiration } from "@/store/authSlice";
-import { store } from "@/store";
-import { useDarkMode } from "@/hooks/useDarkMode";
+import React from 'react';
+import { ReduxProvider } from '@/lib/redux-provider';
+import { checkTokenExpiration } from '@/store/authSlice';
+import { store } from '@/store';
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   React.useEffect(() => {
@@ -21,13 +18,9 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
 };
 
 const LayoutContent = ({ children }: { children: React.ReactNode }) => {
-  const { isDarkMode } = useDarkMode();
-
   return (
     <>
-      {/* <main className={`${isDarkMode && "bg-gray-900"} -mt-[80px]`}> */}
       <div className="-mt-[80px]">{children}</div>
-      {/* </main> */}
     </>
   );
 };
