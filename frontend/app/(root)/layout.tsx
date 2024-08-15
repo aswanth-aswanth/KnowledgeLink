@@ -54,7 +54,7 @@ const LayoutContent = ({ children }: { children: React.ReactNode }) => {
       </div>
       <main
         className={`flex-grow overflow-y-auto sm:px-4 md:px-5 ${
-          !isChatPage ? 'px-3' : ''
+          !isChatPage ? 'px-2' : ''
         }`}
       >
         <div

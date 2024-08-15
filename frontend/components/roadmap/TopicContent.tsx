@@ -42,7 +42,7 @@ const TopicContent: React.FC<TopicContentProps> = ({
       />
     ) : (
       <div
-        className={`h-min p-2 mb-2 sm:indent-4 rounded-xl transition-all duration-200 font-semibold prose-sm tracking-wider max-[320px]:text-sm leading-loose max-[320px]:leading-9 ${
+        className={`h-min p-2 mb-2 sm:indent-4 rounded-xl transition-all duration-200 sm:font-semibold  tracking-wider text-sm leading-loose  ${
           isDarkMode ? 'bg-gray-800 text-gray-300' : 'bg-gray-50 text-gray-600'
         }`}
         dangerouslySetInnerHTML={{ __html: content }}
