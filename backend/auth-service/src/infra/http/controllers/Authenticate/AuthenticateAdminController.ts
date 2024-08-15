@@ -9,7 +9,14 @@ export default class AuthenticateAdminController {
             new TokenManager()
         );
         try {
-            const token = await authenticateAdmin.execute(email, password);
+            const { token, refreshToken } = await authenticateAdmin.execute(email, password);
+
+            res.cookie('refreshToken', refreshToken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                maxAge: 7 * 24 * 60 * 60 * 1000
+            });
+
             return res.json({ token });
         } catch (err) {
             if (err instanceof Error) {

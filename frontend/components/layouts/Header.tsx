@@ -25,6 +25,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
+import apiClient from '@/api/apiClient';
 
 export default function Header() {
   const { isAuthenticated, user } = useSelector(selectAuthState);
@@ -35,8 +36,13 @@ export default function Header() {
     dispatch(checkTokenExpiration());
   }, [dispatch]);
 
-  const handleLogout = () => {
-    dispatch(clearAuthState());
+  const handleLogout = async () => {
+    try {
+      dispatch(clearAuthState());
+      await apiClient.post('/auth/logout');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
   };
 
   return (

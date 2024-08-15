@@ -10,7 +10,7 @@ const app: Express = express();
 const corsOptions = {
   origin: `${process.env.BASE_URL}:3000`,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: '*',
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 };
 

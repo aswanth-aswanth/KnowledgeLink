@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import React from "react";
-import LoginForm from "./LoginForm";
-import SocialLoginButtons from "./SocialLoginButtons";
+import React from 'react';
+import LoginForm from './LoginForm';
+import SocialLoginButtons from './SocialLoginButtons';
 
 const LoginPage = () => {
   return (
