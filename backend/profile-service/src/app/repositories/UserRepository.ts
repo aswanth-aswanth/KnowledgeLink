@@ -215,7 +215,7 @@ export default class UserRepository {
         }
     }
 
-    public async getSavedPosts(userId: string): Promise<string[]> {
+    public async getSavedPosts(userId: string): Promise<any> {
         const user = await User.findById(userId).select('favourites');
         return user ? user.favourites : [];
     }
