@@ -41,16 +41,3 @@ roadmapRouter.get("/:id/members", getAllRoadmapMembersController.handle);
 roadmapRouter.get("/:id", getSingleRoadmapController.handle);
 
 export default roadmapRouter;
-
-/* 
-highlight
-report
-connections following request
-admin side
-reported roadmaps
-implement chat integration
-
-elastic search
-frontend otp
-
- */

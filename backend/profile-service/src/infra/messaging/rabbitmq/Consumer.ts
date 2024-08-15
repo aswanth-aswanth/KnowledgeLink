@@ -31,6 +31,7 @@ class Consumer {
                 'profile_service_queue': this.getAllMembersOfRoadmap,
                 'user.registration': this.handleUserRegistration,
                 'profile_queue2': this.getFollowingList,
+                'get_saved_posts_queue': this.getSavedPosts,
             };
 
             channel.assertQueue(queue, { durable: true });
@@ -57,6 +58,16 @@ class Consumer {
         const subscribed = await userRepository.getSubscribedRoadmaps(userId);
 
         const response = JSON.stringify({ subscribed });
+        channel.sendToQueue(msg.properties.replyTo, Buffer.from(response), {
+            correlationId: msg.properties.correlationId,
+        });
+    }
+
+    private async getSavedPosts(msg: amqp.Message, channel: amqp.Channel, userRepository: UserRepository) {
+        const { userId } = JSON.parse(msg.content.toString());
+        const savedPosts = await userRepository.getSavedPosts(userId);
+
+        const response = JSON.stringify({ savedPosts });
         channel.sendToQueue(msg.properties.replyTo, Buffer.from(response), {
             correlationId: msg.properties.correlationId,
         });
