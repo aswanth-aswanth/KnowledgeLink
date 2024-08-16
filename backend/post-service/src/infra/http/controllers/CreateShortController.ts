@@ -17,11 +17,9 @@ export default class CreateShortController {
 
                 const createShort = new CreateShort(new ShortRepository());
                 const creatorId = (req as any).user.userId;
-
                 const title = Array.isArray(fields.title) ? fields.title[0] : fields.title;
                 const description = Array.isArray(fields.description) ? fields.description[0] : fields.description;
                 const tags = Array.isArray(fields.tags) ? fields.tags : fields.tags ? [fields.tags] : undefined;
-
                 const short = {
                     title,
                     description,
@@ -37,6 +35,7 @@ export default class CreateShortController {
                 }
 
                 try {
+
                     const result = await createShort.execute(short as any, videoFile);
                     return resolve(res.status(201).json(result));
                 } catch (err) {

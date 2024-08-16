@@ -11,6 +11,9 @@ export interface IShort extends Document {
     likes: string[];
     views: number;
 }
+export interface IShortWithIsLiked extends IShort {
+    isLiked: boolean;
+}
 
 const ShortSchema = new Schema<IShort>({
     title: {

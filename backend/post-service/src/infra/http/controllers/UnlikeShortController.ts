@@ -7,7 +7,7 @@ export default class UnlikeShortController {
     public async handle(req: Request, res: Response): Promise<Response> {
         try {
             const { shortId } = req.params;
-            const userId = (req as any).user._id;
+            const userId = (req as any).user.userId;
 
             const unlikeShort = new UnlikeShort(
                 new ShortRepository(),
