@@ -1,8 +1,10 @@
 import * as React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowLeft, Volume2, VolumeX, Heart } from 'lucide-react';
+import { ArrowLeft, Volume2, VolumeX, Heart, Maximize2 } from 'lucide-react';
 import { useSwipeable } from 'react-swipeable';
 import apiClient from '@/api/apiClient';
+import { useInView } from 'react-intersection-observer';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface VideoData {
   _id: string;
@@ -19,14 +21,11 @@ export default function VideoShorts() {
   const [fullscreenVideo, setFullscreenVideo] = React.useState<number | null>(
     null
   );
-  const [scrollPosition, setScrollPosition] = React.useState(0);
   const [isPlaying, setIsPlaying] = React.useState(true);
   const [isMuted, setIsMuted] = React.useState(true);
   const fullscreenRef = React.useRef<HTMLDivElement>(null);
   const videoRefs = React.useRef<(HTMLVideoElement | null)[]>([]);
-  const [scrollDirection, setScrollDirection] = React.useState<
-    'up' | 'down' | null
-  >(null);
+  const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
     fetchVideoData();
@@ -34,10 +33,13 @@ export default function VideoShorts() {
 
   const fetchVideoData = async () => {
     try {
+      setIsLoading(true);
       const response = await apiClient('/post/short/recommended');
       setVideoData(response.data);
     } catch (error) {
       console.error('Error fetching video data:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -45,43 +47,40 @@ export default function VideoShorts() {
     setFullscreenVideo(index);
     setIsPlaying(true);
     setIsMuted(true);
+    const elem = document.documentElement;
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.webkitRequestFullscreen) {
+      /* Safari */
+      elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) {
+      /* IE11 */
+      elem.msRequestFullscreen();
+    }
   };
 
   const closeFullscreen = () => {
     setFullscreenVideo(null);
-  };
-
-  const handleScroll = (event: React.WheelEvent<HTMLDivElement>) => {
-    if (fullscreenVideo !== null) {
-      if (event.deltaY > 0 && fullscreenVideo < videoData.length - 1) {
-        setScrollDirection('down');
-        setTimeout(() => {
-          setFullscreenVideo(fullscreenVideo + 1);
-        }, 300);
-      } else if (event.deltaY < 0 && fullscreenVideo > 0) {
-        setScrollDirection('up');
-        setTimeout(() => {
-          setFullscreenVideo(fullscreenVideo - 1);
-        }, 300);
-      }
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) {
+      /* Safari */
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) {
+      /* IE11 */
+      document.msExitFullscreen();
     }
   };
 
   const handlers = useSwipeable({
     onSwipedUp: () => {
       if (fullscreenVideo !== null && fullscreenVideo < videoData.length - 1) {
-        setScrollDirection('down');
-        setTimeout(() => {
-          setFullscreenVideo(fullscreenVideo + 1);
-        }, 300);
+        setFullscreenVideo(fullscreenVideo + 1);
       }
     },
     onSwipedDown: () => {
       if (fullscreenVideo !== null && fullscreenVideo > 0) {
-        setScrollDirection('up');
-        setTimeout(() => {
-          setFullscreenVideo(fullscreenVideo - 1);
-        }, 300);
+        setFullscreenVideo(fullscreenVideo - 1);
       }
     },
   });
@@ -90,7 +89,6 @@ export default function VideoShorts() {
     if (fullscreenRef.current) {
       fullscreenRef.current.focus();
     }
-    setScrollDirection(null);
   }, [fullscreenVideo]);
 
   const togglePlayPause = () => {
@@ -129,10 +127,6 @@ export default function VideoShorts() {
     });
   }, [fullscreenVideo, isPlaying, isMuted]);
 
-  const handleVideoClick = (index: number) => {
-    openFullscreen(index);
-  };
-
   const handleLike = async (shortId: string, isLiked: boolean) => {
     try {
       const endpoint = isLiked
@@ -158,6 +152,68 @@ export default function VideoShorts() {
     }
   };
 
+  const VideoCard = React.memo(
+    ({ video, index }: { video: VideoData; index: number }) => {
+      const [ref, inView] = useInView({
+        threshold: 0.5,
+        triggerOnce: true,
+      });
+      const [isVideoLoaded, setIsVideoLoaded] = React.useState(false);
+
+      return (
+        <Card
+          ref={ref}
+          className="w-56 h-[27rem] flex-shrink-0 bg-transparent border-none overflow-hidden relative"
+        >
+          <CardContent className="p-0 h-full w-auto">
+            {inView && (
+              <>
+                {!isVideoLoaded && (
+                  <Skeleton className="w-full h-[86%] rounded-xl" />
+                )}
+                <video
+                  src={video.videoUrl}
+                  className={`w-full mx-auto h-[86%] object-cover rounded-xl ${
+                    isVideoLoaded ? '' : 'hidden'
+                  }`}
+                  loop
+                  muted
+                  playsInline
+                  controls
+                  onLoadedData={() => setIsVideoLoaded(true)}
+                >
+                  Your browser does not support the video tag.
+                </video>
+                <button
+                  onClick={() => openFullscreen(index)}
+                  className="absolute top-2 right-2 bg-black bg-opacity-50 text-white p-1 rounded"
+                >
+                  <Maximize2 size={20} />
+                </button>
+              </>
+            )}
+            <div className="p-2 dark:text-white relative">
+              <p className="text-sm font-medium truncate">{video.title}</p>
+              <p className="text-xs truncate">{video.description}</p>
+            </div>
+          </CardContent>
+        </Card>
+      );
+    }
+  );
+
+  if (isLoading) {
+    return (
+      <div className="w-full overflow-x-auto scrollbar-none">
+        <div className="flex space-x-4 pb-4" style={{ width: 'max-content' }}>
+          {[...Array(5)].map((_, index) => (
+            <Skeleton key={index} className="w-56 h-[27rem] rounded-xl" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <p className="text-gray-500 font-medium text-lg mt-6 mb-8">
@@ -166,28 +222,7 @@ export default function VideoShorts() {
       <div className="w-full overflow-x-auto scrollbar-none">
         <div className="flex space-x-4 pb-4" style={{ width: 'max-content' }}>
           {videoData.map((video, index) => (
-            <Card
-              key={video._id}
-              className="w-56 h-[27rem] flex-shrink-0 bg-transparent border-none overflow-hidden relative"
-            >
-              <CardContent className="p-0 h-full w-auto">
-                <video
-                  src={video.videoUrl}
-                  className="w-full mx-auto h-[86%] object-cover rounded-xl"
-                  loop
-                  muted
-                  playsInline
-                  controls
-                  onClick={() => handleVideoClick(index)}
-                >
-                  Your browser does not support the video tag.
-                </video>
-                <div className="p-2 dark:text-white relative">
-                  <p className="text-sm font-medium truncate">{video.title}</p>
-                  <p className="text-xs truncate">{video.description}</p>
-                </div>
-              </CardContent>
-            </Card>
+            <VideoCard key={video._id} video={video} index={index} />
           ))}
         </div>
       </div>
@@ -197,7 +232,6 @@ export default function VideoShorts() {
           ref={fullscreenRef}
           className="fixed inset-0 bg-black z-50 flex flex-col outline-none overflow-hidden"
           tabIndex={0}
-          onWheel={handleScroll}
           {...handlers}
         >
           <button
@@ -212,47 +246,16 @@ export default function VideoShorts() {
           >
             {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
           </button>
-          <div
-            className="w-full transition-transform duration-200 ease-out"
-            style={{ transform: `translateY(${scrollPosition}px)` }}
-          >
-            {fullscreenVideo > 0 && (
-              <div className="w-full h-screen absolute top-0 left-0 transform -translate-y-full">
-                <video
-                  ref={(el) => (videoRefs.current[fullscreenVideo - 1] = el)}
-                  src={videoData[fullscreenVideo - 1].videoUrl}
-                  className="w-full h-full object-cover"
-                  loop
-                  playsInline
-                >
-                  Your browser does not support the video tag.
-                </video>
-              </div>
-            )}
-            <div className="w-max mx-auto h-screen" onClick={togglePlayPause}>
-              <video
-                ref={(el) => (videoRefs.current[fullscreenVideo] = el)}
-                src={videoData[fullscreenVideo].videoUrl}
-                className="w-full mx-auto h-full object-cover"
-                loop
-                playsInline
-              >
-                Your browser does not support the video tag.
-              </video>
-            </div>
-            {fullscreenVideo < videoData.length - 1 && (
-              <div className="w-full h-screen absolute bottom-0 left-0 transform translate-y-full">
-                <video
-                  ref={(el) => (videoRefs.current[fullscreenVideo + 1] = el)}
-                  src={videoData[fullscreenVideo + 1].videoUrl}
-                  className="w-full h-full object-cover"
-                  loop
-                  playsInline
-                >
-                  Your browser does not support the video tag.
-                </video>
-              </div>
-            )}
+          <div className="w-max mx-auto h-screen" onClick={togglePlayPause}>
+            <video
+              ref={(el) => (videoRefs.current[fullscreenVideo] = el)}
+              src={videoData[fullscreenVideo].videoUrl}
+              className="w-screen mx-auto h-screen object-cover"
+              loop
+              playsInline
+            >
+              Your browser does not support the video tag.
+            </video>
           </div>
           <div className="absolute bottom-4 left-4 right-4 text-white">
             <button
