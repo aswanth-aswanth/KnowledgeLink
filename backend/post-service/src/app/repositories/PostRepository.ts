@@ -1,5 +1,5 @@
 import Post, { IPost } from '../../infra/databases/mongoose/models/Post';
-import Comment, { IComment } from '../../infra/databases/mongoose/models/Comment';
+import Comment from '../../infra/databases/mongoose/models/Comment';
 import S3Service from '../../infra/services/S3Service';
 import { File } from 'formidable';
 import mongoose from 'mongoose';
@@ -11,7 +11,6 @@ export default class PostRepository {
     constructor() {
         this.s3Service = new S3Service();
     }
-
     public async create(post: IPost, files: File[]): Promise<IPost> {
         try {
             const uploadPromises = files.map(file => {
@@ -49,7 +48,6 @@ export default class PostRepository {
             }
         }
     }
-
     public async toggleLike(postId: string, userId: string): Promise<{ post: IPost, liked: boolean }> {
         try {
             const post = await Post.findById(postId);
@@ -75,7 +73,6 @@ export default class PostRepository {
             throw error;
         }
     }
-
     public async commentPost(postId: string, userId: string, text: string) {
         try {
             const post = await Post.findById(postId);
@@ -136,20 +133,19 @@ export default class PostRepository {
             const posts = await Post.find({ creatorId: { $in: userIds } })
                 .sort({ createdAt: -1 })
                 .exec();
-    
+
             const postsWithLikeCount = posts.map((post) => ({
                 ...post.toObject(),
                 isLiked: post.likes.includes(currentUserId),
-                likeCount: post.likes.length 
+                likeCount: post.likes.length
             }));
-    
+
             return postsWithLikeCount;
         } catch (error) {
             console.error('Error retrieving posts:', error);
             throw error;
         }
     }
-    
     public async deleteReply(commentId: string, replyId: string, author: string) {
         try {
             const objectId = new mongoose.Types.ObjectId(commentId);
@@ -269,6 +265,24 @@ export default class PostRepository {
             }
         } catch (error) {
             console.error('Error retrieving user posts:', error);
+            throw error;
+        }
+    }
+    public async findPostsByIds(postIds: string[], currentUserId: string): Promise<IPost[]> {
+        try {
+            const posts = await Post.find({ _id: { $in: postIds } })
+                .sort({ createdAt: -1 })
+                .exec();
+
+            const postsWithLikeStatus = posts.map((post) => ({
+                ...post.toObject(),
+                isLiked: post.likes.includes(currentUserId),
+                likeCount: post.likes.length
+            }));
+
+            return postsWithLikeStatus as unknown as IPost[];
+        } catch (error) {
+            console.error('Error retrieving posts by IDs:', error);
             throw error;
         }
     }

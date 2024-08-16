@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   Heart,
   MessageCircle,
@@ -8,9 +8,9 @@ import {
   MessageSquareMore,
   X,
   Link as LinkIcon,
-} from "lucide-react";
-import { MediaGallery } from "./MediaGallery";
-import { CommentSection } from "./CommentSection";
+} from 'lucide-react';
+import { MediaGallery } from './MediaGallery';
+import { CommentSection } from './CommentSection';
 import {
   WhatsappShareButton,
   FacebookShareButton,
@@ -20,9 +20,9 @@ import {
   FacebookIcon,
   TwitterIcon,
   LinkedinIcon,
-} from "react-share";
-import { Post } from "@/types/posts";
-import { PostCardProps } from "@/types/posts";
+} from 'react-share';
+import { Post } from '@/types/posts';
+import { PostCardProps } from '@/types/posts';
 
 export function PostCard({
   post,
@@ -50,15 +50,15 @@ export function PostCard({
 
   const mediaItems = [
     ...post.content.images.map((image) => ({
-      type: "image" as const,
+      type: 'image' as const,
       url: image.url,
     })),
     ...post.content.videos.map((video) => ({
-      type: "video" as const,
+      type: 'video' as const,
       url: video.url,
     })),
     ...(post.audios?.map((audio) => ({
-      type: "audio" as const,
+      type: 'audio' as const,
       url: audio,
     })) || []),
   ];

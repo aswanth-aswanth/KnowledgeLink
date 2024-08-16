@@ -1,5 +1,5 @@
-import RoadmapContent from "./RoadmapContent";
+import RoadmapContent from './RoadmapContent';
 
-export default function RoadmapPage() {
+export default function RoadmapViewerPage() {
   return <RoadmapContent />;
 }

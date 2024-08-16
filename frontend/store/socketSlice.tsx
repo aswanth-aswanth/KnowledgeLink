@@ -1,10 +1,10 @@
 // store/socketSlice.ts
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Socket } from "socket.io-client";
-import io from "socket.io-client";
-import { AppDispatch, RootState } from "./index";
-import toast from "react-hot-toast";
-import { jwtDecode } from "jwt-decode";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Socket } from 'socket.io-client';
+import io from 'socket.io-client';
+import { AppDispatch, RootState } from './index';
+import toast from 'react-hot-toast';
+import { jwtDecode } from 'jwt-decode';
 
 interface SocketState {
   socket: Socket | null;
@@ -17,7 +17,7 @@ const initialState: SocketState = {
 };
 
 const socketSlice = createSlice({
-  name: "socket",
+  name: 'socket',
   initialState,
   reducers: {
     setSocket: (state, action: PayloadAction<Socket | null>) => {
@@ -35,31 +35,31 @@ export const initializeSocket =
   (token: string) => (dispatch: AppDispatch, getState: () => RootState) => {
     // Add getState
     const CHAT_SERVER_URL =
-      process.env.NEXT_PUBLIC_CHAT_SOCKET_URL || "http://localhost:5005";
+      process.env.NEXT_PUBLIC_CHAT_SOCKET_URL || 'http://localhost:5005';
     const newSocket = io(CHAT_SERVER_URL, {
       auth: { token },
-      transports: ["websocket", "polling"],
+      transports: ['websocket', 'polling'],
     });
 
-    newSocket.on("connect", () => {
-      console.log("Connected to chat server");
+    newSocket.on('connect', () => {
+      console.log('Connected to chat server');
     });
 
-    newSocket.on("connect_error", (error) => {
-      console.error("Connection error:", error);
+    newSocket.on('connect_error', (error) => {
+      console.error('Connection error:', error);
     });
 
-    newSocket.on("disconnect", (reason) => {
-      console.log("Disconnected from chat server:", reason);
+    newSocket.on('disconnect', (reason) => {
+      console.log('Disconnected from chat server:', reason);
     });
 
-    newSocket.on("notify", (msg) => {
-      console.log("New Message socketSlice : ", msg);
+    newSocket.on('notify', (msg) => {
+      console.log('New Message socketSlice : ', msg);
       toast.custom(
         (t) => (
           <div
             className={`${
-              t.visible ? "animate-enter" : "animate-leave"
+              t.visible ? 'animate-enter' : 'animate-leave'
             } max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}
           >
             <div className="flex-1 w-0 p-4">
@@ -68,11 +68,11 @@ export const initializeSocket =
                   <img
                     className="h-10 w-10 rounded-full"
                     src={
-                      msg?.senderInfo?.image === ""
-                        ? "/defaultUserImage.png"
+                      msg?.senderInfo?.image === ''
+                        ? '/defaultUserImage.png'
                         : msg?.senderInfo?.image
                     }
-                    alt={msg?.senderInfo?.username || "User"}
+                    alt={msg?.senderInfo?.username || 'User'}
                   />
                 </div>
                 <div className="ml-3 flex-1">

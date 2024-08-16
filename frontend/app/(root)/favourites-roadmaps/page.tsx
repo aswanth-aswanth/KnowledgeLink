@@ -1,53 +1,54 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { CiSquarePlus } from "react-icons/ci";
-import { Separator } from "@/components/ui/separator";
-import RoadmapItems from "@/app/(root)/favourites-roadmaps/RoadmapItems";
-import { useDarkMode } from "@/hooks/useDarkMode";
-import { useRouter } from "next/navigation";
-import apiClient from "@/api/apiClient";
+'use client';
+import React, { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { CiSquarePlus } from 'react-icons/ci';
+import { Separator } from '@/components/ui/separator';
+import RoadmapItems from './RoadmapItems';
+import { useRouter } from 'next/navigation';
+import apiClient from '@/api/apiClient';
+import { useSavedPosts } from '@/hooks/useSavedPosts';
+import { PostCard } from '@/components/social/PostCard';
 
 export default function page() {
-  const { isDarkMode } = useDarkMode();
   const router = useRouter();
   const [adminRoadmaps, setAdminRoadmaps] = useState([]);
   const [subscribedRoadmaps, setSubscribedRoadmaps] = useState([]);
   const [userMemberedRoadmaps, setUserMemberedRoadmaps] = useState([]);
+  const { savedPosts, handleLike, handleComment } = useSavedPosts();
 
   const getAdminRoadmaps = async () => {
     try {
-      const res = await apiClient("/roadmap/admin");
-      console.log("Res : ", res.data);
+      const res = await apiClient('/roadmap/admin');
+      console.log('Res : ', res.data);
       setAdminRoadmaps(res.data);
     } catch (error) {
-      console.log("Error : ", error);
+      console.log('Error : ', error);
     }
   };
 
   const getUserSubscribedRoadmaps = async () => {
     try {
-      const res = await apiClient("/roadmap/subscribed");
-      console.log("Res : ", res.data);
+      const res = await apiClient('/roadmap/subscribed');
+      console.log('Res : ', res.data);
       setSubscribedRoadmaps(res.data);
     } catch (error) {
-      console.log("Error : ", error);
+      console.log('Error : ', error);
     }
   };
 
   const getUserMemberedRoadmaps = async () => {
     try {
-      const res = await apiClient("/roadmap/member");
-      console.log("Res user membered : ", res.data);
+      const res = await apiClient('/roadmap/member');
+      console.log('Res user membered : ', res.data);
       setUserMemberedRoadmaps(res.data);
     } catch (error) {
-      console.log("Error : ", error);
+      console.log('Error : ', error);
     }
   };
 
   const handleUnsubscribe = (roadmapId: string) => {
-    setSubscribedRoadmaps((prev) =>
-      prev.filter((roadmap) => roadmap._id !== roadmapId)
+    setSubscribedRoadmaps((prev: any) =>
+      prev.filter((roadmap: any) => roadmap._id !== roadmapId)
     );
   };
 
@@ -104,7 +105,7 @@ export default function page() {
         )}
       </div>
       <div
-        onClick={() => router.push("/create-roadmap")}
+        onClick={() => router.push('/create-roadmap')}
         className="flex justify-center flex-col items-center mt-10 cursor-pointer"
       >
         <CiSquarePlus className="text-5xl text-gray-400 dark:text-gray-500 transition-colors duration-200" />
@@ -138,13 +139,6 @@ export default function page() {
           </p>
         )}
       </div>
-      <Separator className="my-10 bg-gray-200 dark:bg-gray-700" />
-      <h1 className="font-bold text-center text-2xl mt-20 pb-6 text-gray-800 dark:text-white">
-        Favourites
-      </h1>
-      <p className="text-center pb-10 text-gray-800 dark:text-white">
-        Your favorite roadmaps will appear here.
-      </p>
       <Separator className="my-10 bg-gray-200 dark:bg-gray-700" />
       <h1 className="font-bold text-center text-2xl mt-20 pb-6 text-gray-800 dark:text-white">
         Membered roadmaps
@@ -187,6 +181,26 @@ export default function page() {
         ) : (
           <p className="text-center text-gray-800 dark:text-white">
             You've not been a member of any roadmap yet.
+          </p>
+        )}
+      </div>
+      <Separator className="my-10 bg-gray-200 dark:bg-gray-700" />
+      <h1 className="font-bold text-center text-2xl mt-20 pb-6 text-gray-800 dark:text-white">
+        Favourites
+      </h1>
+      <div className="space-y-6 flex flex-col items-center mx-auto">
+        {savedPosts.length > 0 ? (
+          savedPosts.map((post) => (
+            <PostCard
+              key={post._id}
+              post={post}
+              onLike={handleLike}
+              onComment={handleComment}
+            />
+          ))
+        ) : (
+          <p className="text-center text-gray-800 dark:text-white">
+            You haven't saved any posts yet.
           </p>
         )}
       </div>

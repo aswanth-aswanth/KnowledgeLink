@@ -1,8 +1,8 @@
 // components/TreeDiagram.tsx
-import React from "react";
-import TreeNode from "./TreeNode";
-import { calculateTreeLayout } from "../../utils/treeLayout";
-import { TreeNode as TreeNodeType } from "../../types/TreeTypes";
+import React from 'react';
+import TreeNode from './TreeNode';
+import { calculateTreeLayout } from '../../lib/treeLayout';
+import { TreeNode as TreeNodeType } from '../../types/TreeTypes';
 
 interface TreeDiagramProps {
   data: TreeNodeType;

@@ -1,21 +1,5 @@
-import React from "react";
-
-interface RectangleProps {
-  rect: {
-    id: string;
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    name: string;
-  };
-  isSelected: boolean;
-  onSelect: () => void;
-  onUpdatePosition: (x: number, y: number) => void;
-  onUpdateSize: (width: number, height: number) => void;
-  onDelete: () => void;
-  circlesVisible: boolean;
-}
+import { RectangleProps } from '@/types/roadmap';
+import React from 'react';
 
 const Rectangle: React.FC<RectangleProps> = ({
   rect,
@@ -34,12 +18,12 @@ const Rectangle: React.FC<RectangleProps> = ({
         width={rect.width}
         height={rect.height}
         fill=""
-        stroke={isSelected ? "blue" : "black"}
+        stroke={isSelected ? 'blue' : 'black'}
         strokeWidth="0.4"
         rx="2"
         ry="2"
         onClick={onSelect}
-        style={{ cursor: "pointer" }}
+        style={{ cursor: 'pointer' }}
         className="fill-slate-50 dark:fill-slate-200"
       />
       <text
@@ -49,7 +33,7 @@ const Rectangle: React.FC<RectangleProps> = ({
         dominantBaseline="middle"
         fontSize="12"
         onClick={onSelect}
-        style={{ cursor: "pointer" }}
+        style={{ cursor: 'pointer' }}
       >
         {rect.name}
       </text>

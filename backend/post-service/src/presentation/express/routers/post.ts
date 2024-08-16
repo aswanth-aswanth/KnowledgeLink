@@ -12,6 +12,7 @@ import GetCommentsController from '../../../infra/http/controllers/GetCommentsCo
 import GetRepliesController from '../../../infra/http/controllers/GetRepliesController';
 import GetUserPostsController from '../../../infra/http/controllers/GetUserPostsController';
 import GetUserPostController from '../../../infra/http/controllers/GetUserPostController';
+import GetSavedPostsController from '../../../infra/http/controllers/GetSavedPostsController';
 
 const postRouter = Router();
 
@@ -26,6 +27,7 @@ const getCommentsController = new GetCommentsController();
 const getRepliesController = new GetRepliesController();
 const getUserPostsController = new GetUserPostsController();
 const getUserPostController = new GetUserPostController();
+const getSavedPostsController = new GetSavedPostsController();
 
 postRouter.post("/", authMiddleware, createPostController.handle);
 postRouter.put("/like/:id", authMiddleware, likePostController.handle);
@@ -34,6 +36,7 @@ postRouter.patch("/comment", authMiddleware, deleteCommentController.handle);
 postRouter.post("/reply", authMiddleware, replyCommentController.handle);
 postRouter.patch("/reply", authMiddleware, deleteReplyController.handle);
 postRouter.get("/posts", authMiddleware, getPostsController.handle);
+postRouter.get("/saved-posts", authMiddleware, getSavedPostsController.handle);
 postRouter.get("/posts/:postId", nonAuthMiddleware, getUserPostController.handle);
 postRouter.get("/comments/:postId", nonAuthMiddleware, getCommentsController.handle);
 postRouter.get("/replies/:commentId", nonAuthMiddleware, getRepliesController.handle);

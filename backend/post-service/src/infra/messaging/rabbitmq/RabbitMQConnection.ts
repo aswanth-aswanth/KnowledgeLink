@@ -1,4 +1,5 @@
 import amqp from 'amqplib';
+import Consumer from './Consumer';
 
 class RabbitMQConnection {
     private static instance: RabbitMQConnection;
@@ -21,6 +22,7 @@ class RabbitMQConnection {
             this.connection = await amqp.connect(process.env.RABBITMQ_URL || 'amqp://localhost:5672');
             this.channel = await this.connection.createChannel();
             console.log('RabbitMQ connected successfully (post-service)');
+            Consumer.consume('user.registration');
         } catch (error) {
             console.error('Failed to connect to RabbitMQ (post-service):', error);
         }

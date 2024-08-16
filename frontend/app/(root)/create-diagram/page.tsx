@@ -1,13 +1,11 @@
-"use client";
+'use client';
 
-import React from "react";
-import ClientOnly from "@/contexts/ClientOnly";
-import { EditorProvider } from "@/contexts/EditorContext";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import Editor from "./Editor";
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Editor from './Editor';
 
 const EditorPage: React.FC = () => {
   const editorData = useSelector((state: RootState) => state.topics.editorData);
@@ -15,7 +13,7 @@ const EditorPage: React.FC = () => {
 
   useEffect(() => {
     if (!editorData) {
-      router.push("/");
+      router.push('/');
     }
   }, [editorData, router]);
 
@@ -28,12 +26,8 @@ const EditorPage: React.FC = () => {
 
 export default function Home() {
   return (
-    <EditorProvider>
-      <main className="min-h-screen bg-gray-100">
-        <ClientOnly>
-          <EditorPage />
-        </ClientOnly>
-      </main>
-    </EditorProvider>
+    <main className="min-h-screen bg-gray-100">
+      <EditorPage />
+    </main>
   );
 }

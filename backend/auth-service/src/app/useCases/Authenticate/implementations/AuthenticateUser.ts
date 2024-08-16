@@ -1,3 +1,4 @@
+// AuthenticateUser.ts
 import UserRepository from '../../../repositories/UserRepository';
 import PasswordHasher from '../../../providers/PasswordHasher';
 import TokenManager from '../../../providers/TokenManager';
@@ -13,7 +14,7 @@ export default class AuthenticateUser {
         this.tokenManager = tokenManager;
     }
 
-    public async execute(email: string, password: string): Promise<string> {
+    public async execute(email: string, password: string): Promise<{ token: string, refreshToken: string }> {
         const user = await this.userRepository.findByEmail(email);
 
         if (!user) {
@@ -29,6 +30,9 @@ export default class AuthenticateUser {
             throw new Error("Invalid credentials");
         }
 
-        return this.tokenManager.generateToken({ userId: user._id, username: user.username, email: user.email, image: user.image, role: "user" });
+        const token = this.tokenManager.generateAccessToken({ userId: user._id, username: user.username, email: user.email, image: user.image, role: "user" });
+        const refreshToken = this.tokenManager.generateRefreshToken(user._id);
+
+        return { token, refreshToken };
     }
 }

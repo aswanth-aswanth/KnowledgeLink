@@ -1,15 +1,15 @@
-"use client";
-import React, { useRef, useEffect } from "react";
-import { useEditor } from "./hooks/useEditor";
-import { createRectanglesFromData } from "./utils/editorHelpers";
-import { handleCopySVG } from "./utils/svgHelpers";
-import Rectangle from "./components/Rectangle";
-import Connection from "./components/Connection";
-import Toolbar from "./components/Toolbar";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store";
-import apiClient from "@/api/apiClient";
-import toast from "react-hot-toast";
+'use client';
+import React, { useRef, useEffect } from 'react';
+import { useEditor } from './hooks/useEditor';
+import { createRectanglesFromData } from './utils/editorHelpers';
+import { handleCopySVG } from './utils/svgHelpers';
+import Rectangle from './components/Rectangle';
+import Connection from './components/Connection';
+import Toolbar from './components/Toolbar';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store';
+import apiClient from '@/api/apiClient';
+import toast from 'react-hot-toast';
 
 const Editor: React.FC = () => {
   const {
@@ -72,8 +72,8 @@ const Editor: React.FC = () => {
   }, [editorData, rectangles.length, setRectangles, updateSvgHeight]);
 
   useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleKeyDown]);
 
   const handleSubmitRoadmap = async () => {
@@ -100,7 +100,7 @@ const Editor: React.FC = () => {
           },
         });
 
-        formData.append("data", jsonData);
+        formData.append('data', jsonData);
 
         editorData.mediaFiles.forEach((mediaFile: any, index: any) => {
           if (mediaFile.file instanceof File) {
@@ -112,21 +112,21 @@ const Editor: React.FC = () => {
           }
         });
 
-        const response = await apiClient.post("/roadmap", formData, {
+        const response = await apiClient.post('/roadmap', formData, {
           headers: {
-            "Content-Type": "multipart/form-data",
+            'Content-Type': 'multipart/form-data',
           },
         });
 
         toast(response.data.message, {
-          icon: "👏",
+          icon: '👏',
         });
       } catch (error) {
-        console.error("Error : ", error);
-        toast.error("An unexpected error occurred");
+        console.error('Error : ', error);
+        toast.error('An unexpected error occurred');
       }
     } else {
-      toast.error("You need to login!!!");
+      toast.error('You need to login!!!');
     }
   };
 
@@ -153,7 +153,7 @@ const Editor: React.FC = () => {
         onMouseUp={handleMouseUp}
         onMouseDown={handleMouseDown}
         className="p-4"
-        style={{ transform: `scale(${scale})`, transformOrigin: "top" }}
+        style={{ transform: `scale(${scale})`, transformOrigin: 'top' }}
       >
         {connections.map((conn, index) => (
           <Connection

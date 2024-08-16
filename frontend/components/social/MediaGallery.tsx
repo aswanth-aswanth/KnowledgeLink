@@ -1,17 +1,9 @@
-import { useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { AudioPlayer } from "./AudioPlayer";
-
-interface MediaItem {
-  type: "image" | "video" | "audio";
-  url: string;
-}
-
-interface MediaGalleryProps {
-  mediaItems: MediaItem[];
-}
+import { useRef, useState } from 'react';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { AudioPlayer } from './AudioPlayer';
+import { MediaGalleryProps, MediaItem } from '@/types/posts';
 
 export function MediaGallery({ mediaItems }: MediaGalleryProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -20,13 +12,13 @@ export function MediaGallery({ mediaItems }: MediaGalleryProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const scroll = (direction: "left" | "right") => {
+  const scroll = (direction: 'left' | 'right') => {
     const container = scrollContainerRef.current;
     if (container) {
       const scrollAmount = container.clientWidth;
       container.scrollBy({
-        left: direction === "left" ? -scrollAmount : scrollAmount,
-        behavior: "smooth",
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth',
       });
     }
   };
@@ -68,33 +60,33 @@ export function MediaGallery({ mediaItems }: MediaGalleryProps) {
     index: number,
     inModal: boolean = false
   ) => {
-    if (item.type === "image") {
+    if (item.type === 'image') {
       return (
         <img
           src={item.url}
           alt={`Media item ${index + 1}`}
           className={
             inModal
-              ? "w-full max-h-[74vh] object-contain"
-              : "w-full max-h-[74vh] object-contain cursor-pointer"
+              ? 'w-full max-h-[74vh] object-contain'
+              : 'w-full max-h-[74vh] object-contain cursor-pointer'
           }
           onClick={() => !inModal && openModal(index)}
         />
       );
-    } else if (item.type === "video") {
+    } else if (item.type === 'video') {
       return (
         <video
           src={item.url}
           controls
           className={
             inModal
-              ? "w-full max-h-[74vh] object-contain"
-              : "w-full max-h-[74vh] object-cover cursor-pointer"
+              ? 'w-full max-h-[74vh] object-contain'
+              : 'w-full max-h-[74vh] object-cover cursor-pointer'
           }
           onClick={() => !inModal && openModal(index)}
         />
       );
-    } else if (item.type === "audio") {
+    } else if (item.type === 'audio') {
       return <AudioPlayer url={item.url} />;
     }
   };
@@ -121,7 +113,7 @@ export function MediaGallery({ mediaItems }: MediaGalleryProps) {
             variant="outline"
             size="icon"
             className="absolute top-1/2 left-2 bg-white/80 hover:bg-white transform -translate-y-1/2 rounded-sm"
-            onClick={() => scroll("left")}
+            onClick={() => scroll('left')}
           >
             <ChevronLeft className="h-6 w-6" />
           </Button>
@@ -131,7 +123,7 @@ export function MediaGallery({ mediaItems }: MediaGalleryProps) {
             variant="outline"
             size="icon"
             className="absolute top-1/2 right-2 bg-white/80 hover:bg-white transform -translate-y-1/2 rounded-sm"
-            onClick={() => scroll("right")}
+            onClick={() => scroll('right')}
           >
             <ChevronRight className="h-6 w-6" />
           </Button>
@@ -161,7 +153,7 @@ export function MediaGallery({ mediaItems }: MediaGalleryProps) {
                   variant="outline"
                   size="icon"
                   className="absolute top-1/2 left-2 bg-white/80 hover:bg-white transform -translate-y-1/2 rounded-sm"
-                  onClick={() => scroll("left")}
+                  onClick={() => scroll('left')}
                 >
                   <ChevronLeft className="h-6 w-6" />
                 </Button>

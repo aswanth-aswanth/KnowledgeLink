@@ -1,6 +1,7 @@
+// TokenManager.ts
 import jwt from 'jsonwebtoken';
 
-interface TokenPayload {
+interface AccessTokenPayload {
     userId: string;
     username: string;
     email: string;
@@ -9,14 +10,23 @@ interface TokenPayload {
 }
 
 export default class TokenManager {
-    public generateToken(payload: TokenPayload): string {
-        const token = jwt.sign(payload, process.env.JWT_SECRET!, {
-            expiresIn: '7d'
+    public generateAccessToken(payload: AccessTokenPayload): string {
+        return jwt.sign(payload, process.env.JWT_SECRET!, {
+            expiresIn: '15m'
         });
-        return token;
     }
 
-    public verifyToken(token: string): string | object {
+    public generateRefreshToken(userId: string): string {
+        return jwt.sign({ userId }, process.env.JWT_REFRESH_SECRET!, {
+            expiresIn: '7d'
+        });
+    }
+
+    public verifyAccessToken(token: string): string | object {
         return jwt.verify(token, process.env.JWT_SECRET!);
+    }
+
+    public verifyRefreshToken(token: string): string | object {
+        return jwt.verify(token, process.env.JWT_REFRESH_SECRET!);
     }
 }
