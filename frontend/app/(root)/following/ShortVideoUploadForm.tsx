@@ -5,6 +5,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
+import apiClient from '@/api/apiClient';
 
 interface ShortVideoUploadFormProps {
   onClose: () => void;
@@ -19,6 +21,8 @@ export const ShortVideoUploadForm: React.FC<ShortVideoUploadFormProps> = ({
   const [error, setError] = useState<string>('');
   const [tags, setTags] = useState<string[]>([]);
   const [currentTag, setCurrentTag] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
 
   const handleVideoChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -59,16 +63,46 @@ export const ShortVideoUploadForm: React.FC<ShortVideoUploadFormProps> = ({
     setTags(tags.filter((tag) => tag !== tagToRemove));
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!video) {
       setError('Please select a video to upload.');
       return;
     }
-    // Here you would typically send the data to your backend
-    console.log('Submitting:', { title, description, video, tags });
-    // Close the modal after submission
-    onClose();
+
+    setLoading(true);
+    setError('');
+
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('description', description);
+    formData.append('video', video);
+    formData.append('tags', JSON.stringify(tags));
+
+    try {
+      const response = await apiClient.post('/post/short', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        onUploadProgress: (progressEvent) => {
+          if (progressEvent.total) {
+            const percentCompleted = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
+            setUploadProgress(percentCompleted);
+          }
+        },
+      });
+
+      console.log('Upload successful:', response.data);
+      onClose();
+    } catch (err) {
+      console.error('Error uploading video:', err);
+      setError('Failed to upload video. Please try again.');
+    } finally {
+      setLoading(false);
+      setUploadProgress(0);
+    }
   };
 
   return (
@@ -146,11 +180,24 @@ export const ShortVideoUploadForm: React.FC<ShortVideoUploadFormProps> = ({
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
+      {loading && (
+        <div className="space-y-2">
+          <Progress value={uploadProgress} />
+          <p>Uploading: {uploadProgress}%</p>
+        </div>
+      )}
       <div className="flex justify-end space-x-2">
-        <Button type="button" variant="outline" onClick={onClose}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onClose}
+          disabled={loading}
+        >
           Cancel
         </Button>
-        <Button type="submit">Upload Video</Button>
+        <Button type="submit" disabled={loading}>
+          {loading ? 'Uploading...' : 'Upload Video'}
+        </Button>
       </div>
     </form>
   );

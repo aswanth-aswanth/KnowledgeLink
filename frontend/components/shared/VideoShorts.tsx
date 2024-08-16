@@ -1,65 +1,50 @@
 import * as React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Expand, ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Volume2, VolumeX, Heart } from 'lucide-react';
 import { useSwipeable } from 'react-swipeable';
+import apiClient from '@/api/apiClient';
 
-const videoData = [
-  {
-    id: 1,
-    url: 'https://res.cloudinary.com/yakir/video/upload/w_600/video/user_video.mp4',
-    title: 'Woman Dancing',
-  },
-  {
-    id: 2,
-    url: 'https://res.cloudinary.com/demo/video/upload/f_auto,q_auto/vc_h265/dog.mp4',
-    title: 'Dog Running on Beach',
-  },
-  {
-    id: 3,
-    url: 'https://res.cloudinary.com/yakir/video/upload/w_600/video/user_video.mp4',
-    title: 'Coffee Pouring1',
-  },
-  {
-    id: 4,
-    url: 'https://res.cloudinary.com/yakir/video/upload/w_600/video/user_video.mp4',
-    title: 'Woman Stretching',
-  },
-  {
-    id: 5,
-    url: 'https://res.cloudinary.com/yakir/video/upload/w_600/video/user_video.mp4',
-    title: 'Cooking in Pan2',
-  },
-  {
-    id: 6,
-    url: 'https://res.cloudinary.com/yakir/video/upload/w_600/video/user_video.mp4',
-    title: 'Cooking in Pan3',
-  },
-  {
-    id: 7,
-    url: 'https://res.cloudinary.com/yakir/video/upload/w_600/video/user_video.mp4',
-    title: 'Cooking in Pan4',
-  },
-  {
-    id: 8,
-    url: 'https://res.cloudinary.com/yakir/video/upload/w_600/video/user_video.mp4',
-    title: 'Cooking in Pan4',
-  },
-];
+interface VideoData {
+  _id: string;
+  title: string;
+  description: string;
+  videoUrl: string;
+  likes: string[];
+  views: number;
+  isLiked: boolean;
+}
 
 export default function VideoShorts() {
+  const [videoData, setVideoData] = React.useState<VideoData[]>([]);
   const [fullscreenVideo, setFullscreenVideo] = React.useState<number | null>(
     null
   );
   const [scrollPosition, setScrollPosition] = React.useState(0);
   const [isPlaying, setIsPlaying] = React.useState(true);
+  const [isMuted, setIsMuted] = React.useState(true);
   const fullscreenRef = React.useRef<HTMLDivElement>(null);
   const videoRefs = React.useRef<(HTMLVideoElement | null)[]>([]);
   const [scrollDirection, setScrollDirection] = React.useState<
     'up' | 'down' | null
   >(null);
 
+  React.useEffect(() => {
+    fetchVideoData();
+  }, []);
+
+  const fetchVideoData = async () => {
+    try {
+      const response = await apiClient('/post/short/recommended');
+      setVideoData(response.data);
+    } catch (error) {
+      console.error('Error fetching video data:', error);
+    }
+  };
+
   const openFullscreen = (index: number) => {
     setFullscreenVideo(index);
+    setIsPlaying(true);
+    setIsMuted(true);
   };
 
   const closeFullscreen = () => {
@@ -122,10 +107,11 @@ export default function VideoShorts() {
     }
   };
 
+  const toggleMute = () => {
+    setIsMuted(!isMuted);
+  };
+
   React.useEffect(() => {
-    if (fullscreenRef.current) {
-      fullscreenRef.current.focus();
-    }
     videoRefs.current.forEach((videoRef, index) => {
       if (videoRef) {
         if (index === fullscreenVideo) {
@@ -134,13 +120,43 @@ export default function VideoShorts() {
           } else {
             videoRef.pause();
           }
+          videoRef.muted = isMuted;
         } else {
           videoRef.pause();
           videoRef.currentTime = 0;
         }
       }
     });
-  }, [fullscreenVideo, isPlaying]);
+  }, [fullscreenVideo, isPlaying, isMuted]);
+
+  const handleVideoClick = (index: number) => {
+    openFullscreen(index);
+  };
+
+  const handleLike = async (shortId: string, isLiked: boolean) => {
+    try {
+      const endpoint = isLiked
+        ? `/post/short/${shortId}/unlike`
+        : `/post/short/${shortId}/like`;
+      await apiClient.post(endpoint);
+
+      setVideoData((prevData) =>
+        prevData.map((video) =>
+          video._id === shortId
+            ? {
+                ...video,
+                isLiked: !isLiked,
+                likes: isLiked
+                  ? video.likes.filter((id) => id !== 'currentUserId')
+                  : [...video.likes, 'currentUserId'],
+              }
+            : video
+        )
+      );
+    } catch (error) {
+      console.error('Error liking/unliking video:', error);
+    }
+  };
 
   return (
     <>
@@ -151,32 +167,26 @@ export default function VideoShorts() {
         <div className="flex space-x-4 pb-4" style={{ width: 'max-content' }}>
           {videoData.map((video, index) => (
             <Card
-              key={video.id}
-              className="w-56 h-72 flex-shrink-0 bg-gray-100 overflow-hidden relative"
+              key={video._id}
+              className="w-56 h-[27rem] flex-shrink-0 bg-transparent border-none overflow-hidden relative"
             >
-              <CardContent className="p-0 h-full">
+              <CardContent className="p-0 h-full w-auto">
                 <video
-                  src={video.url}
-                  className="w-full h-full object-cover"
+                  src={video.videoUrl}
+                  className="w-full mx-auto h-[86%] object-cover rounded-xl"
                   loop
                   muted
                   playsInline
                   controls
+                  onClick={() => handleVideoClick(index)}
                 >
                   Your browser does not support the video tag.
                 </video>
+                <div className="p-2 dark:text-white relative">
+                  <p className="text-sm font-medium truncate">{video.title}</p>
+                  <p className="text-xs truncate">{video.description}</p>
+                </div>
               </CardContent>
-              <div className="absolute bottom-0 left-0 right-0 p-2 bg-black text-white flex justify-between items-center">
-                <p className="text-sm font-medium truncate flex-1">
-                  {video.title}
-                </p>
-                <button
-                  onClick={() => openFullscreen(index)}
-                  className="text-gray-600 hover:text-gray-900"
-                >
-                  <Expand size={20} />
-                </button>
-              </div>
             </Card>
           ))}
         </div>
@@ -184,6 +194,7 @@ export default function VideoShorts() {
 
       {fullscreenVideo !== null && (
         <div
+          ref={fullscreenRef}
           className="fixed inset-0 bg-black z-50 flex flex-col outline-none overflow-hidden"
           tabIndex={0}
           onWheel={handleScroll}
@@ -195,6 +206,12 @@ export default function VideoShorts() {
           >
             <ArrowLeft size={24} />
           </button>
+          <button
+            onClick={toggleMute}
+            className="absolute top-4 right-4 text-white cursor-pointer z-50"
+          >
+            {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
+          </button>
           <div
             className="w-full transition-transform duration-200 ease-out"
             style={{ transform: `translateY(${scrollPosition}px)` }}
@@ -203,24 +220,22 @@ export default function VideoShorts() {
               <div className="w-full h-screen absolute top-0 left-0 transform -translate-y-full">
                 <video
                   ref={(el) => (videoRefs.current[fullscreenVideo - 1] = el)}
-                  src={videoData[fullscreenVideo - 1].url}
+                  src={videoData[fullscreenVideo - 1].videoUrl}
                   className="w-full h-full object-cover"
                   loop
                   playsInline
-                  muted
                 >
                   Your browser does not support the video tag.
                 </video>
               </div>
             )}
-            <div className="w-full h-screen" onClick={togglePlayPause}>
+            <div className="w-max mx-auto h-screen" onClick={togglePlayPause}>
               <video
                 ref={(el) => (videoRefs.current[fullscreenVideo] = el)}
-                src={videoData[fullscreenVideo].url}
-                className="w-full h-full object-cover"
+                src={videoData[fullscreenVideo].videoUrl}
+                className="w-full mx-auto h-full object-cover"
                 loop
                 playsInline
-                muted
               >
                 Your browser does not support the video tag.
               </video>
@@ -229,11 +244,10 @@ export default function VideoShorts() {
               <div className="w-full h-screen absolute bottom-0 left-0 transform translate-y-full">
                 <video
                   ref={(el) => (videoRefs.current[fullscreenVideo + 1] = el)}
-                  src={videoData[fullscreenVideo + 1].url}
+                  src={videoData[fullscreenVideo + 1].videoUrl}
                   className="w-full h-full object-cover"
                   loop
                   playsInline
-                  muted
                 >
                   Your browser does not support the video tag.
                 </video>
@@ -241,8 +255,26 @@ export default function VideoShorts() {
             )}
           </div>
           <div className="absolute bottom-4 left-4 right-4 text-white">
+            <button
+              onClick={() =>
+                handleLike(
+                  videoData[fullscreenVideo]._id,
+                  videoData[fullscreenVideo].isLiked
+                )
+              }
+              className={`absolute top-[-40px] right-0 ${
+                videoData[fullscreenVideo].isLiked
+                  ? 'text-red-500'
+                  : 'text-white'
+              }`}
+            >
+              <Heart size={24} />
+            </button>
             <p className="text-lg font-medium">
               {videoData[fullscreenVideo].title}
+            </p>
+            <p className="text-sm mt-1">
+              {videoData[fullscreenVideo].description}
             </p>
           </div>
         </div>
