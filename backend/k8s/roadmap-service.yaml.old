@@ -1,0 +1,34 @@
+# k8s/roadmap-service.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: roadmap-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: roadmap-service
+  template:
+    metadata:
+      labels:
+        app: roadmap-service
+    spec:
+      containers:
+      - name: roadmap-service
+        image: aswantht/roadmap-roadmap-service:latest
+        ports:
+        - containerPort: 5001
+        envFrom:
+        - secretRef:
+            name: roadmap-service-secrets
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: roadmap-service
+spec:
+  selector:
+    app: roadmap-service
+  ports:
+  - port: 5001
+    targetPort: 5001

@@ -1,0 +1,61 @@
+# nginx-ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: roadmap-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /auth(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: auth-service
+            port: 
+              number: 5000
+      - path: /roadmap(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: roadmap-service
+            port: 
+              number: 5001
+      - path: /profile(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: profile-service
+            port: 
+              number: 5002
+      - path: /post(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: post-service
+            port: 
+              number: 5003
+      - path: /notification(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: notification-service
+            port: 
+              number: 5004
+      - path: /chat(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: chat-service
+            port: 
+              number: 5005
+      - path: /recommendation(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: recommendation-service
+            port: 
+              number: 5006
