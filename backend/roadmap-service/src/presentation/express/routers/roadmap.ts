@@ -32,7 +32,7 @@ roadmapRouter.post("/:id/contribute", authMiddleware, contributeToRoadmapControl
 roadmapRouter.patch("/:id/merge", authMiddleware, mergeContributionController.handle);
 roadmapRouter.get("/:id/contributions", authMiddleware, getContributionsController.handle);
 roadmapRouter.get("/member", authMiddleware, getRoadmapsByMemberController.handle);
-roadmapRouter.get("/", getRoadmapsByTypeController.handle);
+roadmapRouter.get("/type", getRoadmapsByTypeController.handle);
 roadmapRouter.get("/all", getAllRoadmapsController.handle);
 roadmapRouter.get("/admin", authMiddleware, getRoadmapsByAdminController.handle);
 roadmapRouter.get("/subscribed", authMiddleware, getAllSubscribedController.handle);

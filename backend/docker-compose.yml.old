@@ -1,11 +1,11 @@
-version: "3"
+version: '3'
 
 services:
   rabbitmq:
     image: rabbitmq:3-management
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - "5672:5672"  
+      - "15672:15672" 
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
     networks:
@@ -14,85 +14,57 @@ services:
   auth:
     image: aswantht/roadmap-auth-service:latest
     build: ./auth-service
-    ports:
-      - "5000:5000"
-    depends_on:
-      - rabbitmq
     env_file:
-      - ./auth-service/.env
+      - ./auth-service/.env 
     networks:
       - backend_network
 
   roadmap:
     image: aswantht/roadmap-roadmap-service:latest
     build: ./roadmap-service
-    ports:
-      - "5001:5001"
-    depends_on:
-      - rabbitmq
     env_file:
-      - ./roadmap-service/.env
+      - ./roadmap-service/.env 
     networks:
       - backend_network
 
   profile:
     image: aswantht/roadmap-profile-service:latest
     build: ./profile-service
-    ports:
-      - "5002:5002"
-    depends_on:
-      - rabbitmq
     env_file:
-      - ./profile-service/.env
+      - ./profile-service/.env 
     networks:
       - backend_network
 
   post:
     image: aswantht/roadmap-post-service:latest
     build: ./post-service
-    ports:
-      - "5003:5003"
-    depends_on:
-      - rabbitmq
     env_file:
-      - ./post-service/.env
+      - ./post-service/.env 
     networks:
       - backend_network
 
   notification:
     image: aswantht/roadmap-notification-service:latest
     build: ./notification-service
-    ports:
-      - "5004:5004"
-    depends_on:
-      - rabbitmq
     env_file:
-      - ./notification-service/.env
+      - ./notification-service/.env 
     networks:
       - backend_network
 
   chat:
     image: aswantht/roadmap-chat-service:latest
     build: ./chat-service
-    ports:
-      - "5005:5005"
-    depends_on:
-      - rabbitmq
     env_file:
-      - ./chat-service/.env
+      - ./chat-service/.env 
     networks:
       - backend_network
 
   recommendation:
     image: aswantht/roadmap-recommendation-service:latest
     build: ./recommendation-service
-    ports:
-      - "5006:5006"
-    depends_on:
-      - rabbitmq
     env_file:
-      - ./recommendation-service/.env
-    networks:
+      - ./recommendation-service/.env 
+    networks: 
       - backend_network
 
   nginx:
