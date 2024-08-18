@@ -4,6 +4,9 @@ class RabbitMQConnection {
     private static instance: RabbitMQConnection;
     private connection!: amqp.Connection;
     private channel!: amqp.Channel;
+    private retryInterval: number = 5000;
+    private maxRetries: number = 10;
+    private retryCount: number = 0;
 
     private constructor() {
         this.connect();
@@ -22,7 +25,18 @@ class RabbitMQConnection {
             this.channel = await this.connection.createChannel();
             console.log('RabbitMQ connected successfully (roadmap-service)');
         } catch (error) {
-            console.error('Failed to connect to RabbitMQ (roadmap-service):', error);
+            this.retryCount++;
+            console.error(`Failed to connect to RabbitMQ (roadmap-service). Attempt ${this.retryCount} of ${this.maxRetries}:`, error);
+
+            if (this.retryCount < this.maxRetries) {
+                setTimeout(() => {
+                    console.log('Retrying to connect to RabbitMQ...');
+                    this.connect();
+                }, this.retryInterval);
+            } else {
+                console.error('Exceeded maximum retry attempts. Exiting...');
+                process.exit(1);
+            }
         }
     }
 
