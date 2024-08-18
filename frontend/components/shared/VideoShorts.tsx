@@ -3,7 +3,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ArrowLeft, Volume2, VolumeX, Heart, Maximize2 } from 'lucide-react';
 import { useSwipeable } from 'react-swipeable';
 import apiClient from '@/api/apiClient';
-import { useInView } from 'react-intersection-observer';
 import { Skeleton } from '@/components/ui/skeleton';
 
 interface VideoData {
@@ -158,55 +157,44 @@ export default function VideoShorts() {
     }
   };
 
-  const VideoCard = React.memo(
-    ({ video, index }: { video: VideoData; index: number }) => {
-      const [ref, inView] = useInView({
-        threshold: 0.5,
-        triggerOnce: true,
-      });
-      const [isVideoLoaded, setIsVideoLoaded] = React.useState(false);
+  const VideoCard = React.memo(({ video, index }: { video: VideoData; index: number }) => {
+    const [isVideoLoaded, setIsVideoLoaded] = React.useState(false);
 
-      return (
-        <Card
-          ref={ref}
-          className="w-56 h-[27rem] flex-shrink-0 bg-transparent border-none overflow-hidden relative"
-        >
-          <CardContent className="p-0 h-full w-auto">
-            {inView && (
-              <>
-                {!isVideoLoaded && (
-                  <Skeleton className="w-full h-[86%] rounded-xl" />
-                )}
-                <video
-                  src={video.videoUrl}
-                  className={`w-full mx-auto h-[86%] object-cover rounded-xl ${
-                    isVideoLoaded ? '' : 'hidden'
-                  }`}
-                  loop
-                  muted
-                  playsInline
-                  controls
-                  onLoadedData={() => setIsVideoLoaded(true)}
-                >
-                  Your browser does not support the video tag.
-                </video>
-                <button
-                  onClick={() => openFullscreen(index)}
-                  className="absolute top-2 right-2 bg-black bg-opacity-50 text-white p-1 rounded"
-                >
-                  <Maximize2 size={20} />
-                </button>
-              </>
+    return (
+      <Card className="w-56 h-[27rem] flex-shrink-0 bg-transparent border-none overflow-hidden relative">
+        <CardContent className="p-0 h-full w-auto">
+          <div className="relative w-full h-[86%]">
+            {!isVideoLoaded && (
+              <Skeleton className="absolute inset-0 w-full h-full rounded-xl" />
             )}
-            <div className="p-2 dark:text-white relative">
-              <p className="text-sm font-medium truncate">{video.title}</p>
-              <p className="text-xs truncate">{video.description}</p>
-            </div>
-          </CardContent>
-        </Card>
-      );
-    }
-  );
+            <video
+              src={video.videoUrl}
+              className={`w-full h-full object-cover rounded-xl ${
+                isVideoLoaded ? 'opacity-100' : 'opacity-0'
+              }`}
+              loop
+              muted
+              playsInline
+              controls
+              onLoadedData={() => setIsVideoLoaded(true)}
+            >
+              Your browser does not support the video tag.
+            </video>
+            <button
+              onClick={() => openFullscreen(index)}
+              className="absolute top-2 right-2 bg-black bg-opacity-50 text-white p-1 rounded"
+            >
+              <Maximize2 size={20} />
+            </button>
+          </div>
+          <div className="p-2 dark:text-white">
+            <p className="text-sm font-medium truncate">{video.title}</p>
+            <p className="text-xs truncate">{video.description}</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  });
 
   if (isLoading) {
     return (
