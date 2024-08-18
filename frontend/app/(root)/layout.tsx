@@ -1,11 +1,10 @@
-'use client';
-
+"use client";
 import React, { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Header from '@/components/layouts/Header';
 import { ReduxProvider } from '@/lib/redux-provider';
 import { checkTokenExpiration, selectAuthState } from '@/store/authSlice';
-import { store } from '@/store';
+import { store, AppDispatch } from '@/store';
 import { useDarkMode } from '@/hooks/useDarkMode';
 import { useNotifications } from '@/hooks/useNotifications';
 import { useSelector, useDispatch } from 'react-redux';
@@ -26,19 +25,19 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
 const LayoutContent = ({ children }: { children: React.ReactNode }) => {
   const { isDarkMode } = useDarkMode();
   const { user, token, isAuthenticated } = useSelector(selectAuthState);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>(); // Use AppDispatch directly
   const userEmail = user?.email;
   const pathname = usePathname();
 
   useEffect(() => {
     if (isAuthenticated && token) {
-      dispatch(initializeSocket(token));
+      dispatch(initializeSocket(token)); // No need for ThunkDispatch here
     }
   }, [isAuthenticated, token, dispatch]);
 
   useNotifications(
     process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:5004',
-    userEmail
+    userEmail as string
   );
 
   const isChatPage = pathname === '/chat';

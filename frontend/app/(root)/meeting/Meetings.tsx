@@ -6,9 +6,12 @@ import { MeetingList } from "./MeetingList";
 import apiClient from "@/api/apiClient";
 import { Meeting } from "@/types/meetings";
 
+// Define a type for the keys
+type MeetingFilter = "all" | "created" | "invited";
+
 export default function MeetingsPage() {
   const user = useSelector((state: RootState) => state.auth.user);
-  const [activeTab, setActiveTab] = useState("all");
+  const [activeTab, setActiveTab] = useState<MeetingFilter>("all");
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -28,7 +31,7 @@ export default function MeetingsPage() {
     }
   };
 
-  const filteredMeetings = {
+  const filteredMeetings: Record<MeetingFilter, Meeting[]> = {
     all: meetings,
     created: meetings.filter((meeting) => meeting.createdBy === user?.email),
     invited: meetings.filter(
@@ -53,7 +56,7 @@ export default function MeetingsPage() {
           {["all", "created", "invited"].map((tab) => (
             <button
               key={tab}
-              onClick={() => setActiveTab(tab)}
+              onClick={() => setActiveTab(tab as MeetingFilter)} // Casting to MeetingFilter
               className={`flex-1 px-3 py-2 text-sm sm:text-base transition-colors duration-200 ${
                 activeTab === tab
                   ? "bg-white text-gray-900 dark:bg-gray-800 dark:text-gray-100"

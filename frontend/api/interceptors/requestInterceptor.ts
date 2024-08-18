@@ -1,7 +1,7 @@
-import { AxiosRequestConfig } from 'axios';
+import { InternalAxiosRequestConfig } from 'axios';
 
-const requestInterceptor = (config: AxiosRequestConfig) => {
-  const token = localStorage.getItem('token');;
+const requestInterceptor = (config: InternalAxiosRequestConfig) => {
+  const token = localStorage.getItem('token');
 
   if (token) {
     config.headers = config.headers || {};

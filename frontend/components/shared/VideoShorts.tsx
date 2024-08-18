@@ -16,6 +16,12 @@ interface VideoData {
   isLiked: boolean;
 }
 
+interface FullscreenElement extends HTMLElement {
+  webkitRequestFullscreen?: () => void;
+  msRequestFullscreen?: () => void;
+  mozRequestFullScreen?: () => void;
+}
+
 export default function VideoShorts() {
   const [videoData, setVideoData] = React.useState<VideoData[]>([]);
   const [fullscreenVideo, setFullscreenVideo] = React.useState<number | null>(
@@ -47,7 +53,7 @@ export default function VideoShorts() {
     setFullscreenVideo(index);
     setIsPlaying(true);
     setIsMuted(true);
-    const elem = document.documentElement;
+    const elem = document.documentElement as FullscreenElement;
     if (elem.requestFullscreen) {
       elem.requestFullscreen();
     } else if (elem.webkitRequestFullscreen) {
@@ -63,12 +69,12 @@ export default function VideoShorts() {
     setFullscreenVideo(null);
     if (document.exitFullscreen) {
       document.exitFullscreen();
-    } else if (document.webkitExitFullscreen) {
+    } else if ((document as any).webkitExitFullscreen) {
       /* Safari */
-      document.webkitExitFullscreen();
-    } else if (document.msExitFullscreen) {
+      (document as any).webkitExitFullscreen();
+    } else if ((document as any).msExitFullscreen) {
       /* IE11 */
-      document.msExitFullscreen();
+      (document as any).msExitFullscreen();
     }
   };
 
@@ -229,7 +235,6 @@ export default function VideoShorts() {
 
       {fullscreenVideo !== null && (
         <div
-          ref={fullscreenRef}
           className="fixed inset-0 bg-black z-50 flex flex-col outline-none overflow-hidden"
           tabIndex={0}
           {...handlers}
@@ -248,7 +253,9 @@ export default function VideoShorts() {
           </button>
           <div className="w-max mx-auto h-screen" onClick={togglePlayPause}>
             <video
-              ref={(el) => (videoRefs.current[fullscreenVideo] = el)}
+              ref={(el) => {
+                videoRefs.current[fullscreenVideo] = el;
+              }}
               src={videoData[fullscreenVideo].videoUrl}
               className="w-screen mx-auto h-screen object-cover"
               loop

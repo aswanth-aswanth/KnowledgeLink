@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { Tab } from "@/types";
-import Tabs from "@/components/shared/Tabs";
-import RoadmapItems from "../../app/(root)/favourites-roadmaps/RoadmapItems";
-import apiClient from "@/api/apiClient";
-import { Skeleton } from "@/components/ui/skeleton";
+import React, { useState, useEffect } from 'react';
+import { Tab } from '@/types';
+import Tabs from '@/components/shared/Tabs';
+import RoadmapItems from '../../app/(root)/favourites-roadmaps/RoadmapItems';
+import apiClient from '@/api/apiClient';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function Roadmaps() {
   const [activeTab, setActiveTab] = useState<string>(
-    "Expert Collaboration Roadmap"
+    'Expert Collaboration Roadmap'
   );
   const [roadmapData, setRoadmapData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,16 +18,16 @@ export default function Roadmaps() {
       const res = await apiClient.get(`/roadmap/type?type=${roadmapType}`);
       setRoadmapData(res.data);
     } catch (error) {
-      console.log("Error: ", error);
+      console.log('Error: ', error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    const tab = tabs.find((t) => t.name === activeTab);
+    const tab = tabs.find((t: Tab) => t.name === activeTab);
     if (tab) {
-      getRoadmapByType(tab.dbName);
+      getRoadmapByType(tab.dbName || 'expert_collaboration');
     }
   }, [activeTab]);
 
@@ -38,15 +38,15 @@ export default function Roadmaps() {
 
   const tabs: Tab[] = [
     {
-      name: "Expert Collaboration Roadmap",
-      icon: "👨‍🏫",
-      dbName: "expert_collaboration",
+      name: 'Expert Collaboration Roadmap',
+      icon: '👨‍🏫',
+      dbName: 'expert_collaboration',
     },
-    { name: "Public Voting Roadmap", icon: "🗳️", dbName: "public_voting" },
+    { name: 'Public Voting Roadmap', icon: '🗳️', dbName: 'public_voting' },
     {
-      name: "Moderated Submission Roadmap",
-      icon: "📝",
-      dbName: "moderator_submission",
+      name: 'Moderated Submission Roadmap',
+      icon: '📝',
+      dbName: 'moderator_submission',
     },
   ];
 
@@ -80,7 +80,7 @@ export default function Roadmaps() {
           ? Array(6)
               .fill(0)
               .map((_, index) => <SkeletonRoadmapItem key={index} />)
-          : roadmapData.map((card, index) => (
+          : roadmapData.map((card: any, index) => (
               <div key={index} className="w-full md:w-[calc(33.333%-1rem)]">
                 <RoadmapItems
                   title={card.title}

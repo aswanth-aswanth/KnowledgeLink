@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 import {
   Table,
   TableBody,
@@ -8,7 +8,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,14 +16,14 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { MoreHorizontal, Search } from "lucide-react";
-import { useDarkMode } from "@/hooks/useDarkMode";
-import { cn } from "@/lib/utils";
-import apiClient from "@/api/apiClient";
-import { useParams, useRouter } from "next/navigation";
+} from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { MoreHorizontal, Search } from 'lucide-react';
+import { useDarkMode } from '@/hooks/useDarkMode';
+import { cn } from '@/lib/utils';
+import apiClient from '@/api/apiClient';
+import { useParams, useRouter } from 'next/navigation';
 
 interface User {
   _id: string;
@@ -35,13 +35,16 @@ interface User {
 }
 
 export default function UsersList() {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
   const { isDarkMode } = useDarkMode();
   const router = useRouter();
   const params = useParams();
-  const userId: string = params.userId;
+
+  const userId = Array.isArray(params.userId)
+    ? params.userId[0]
+    : params.userId;
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -54,7 +57,7 @@ export default function UsersList() {
         setUsers((prevUsers) => [...prevUsers, ...data]);
       }
     } catch (error) {
-      console.error("Error fetching users:", error);
+      console.error('Error fetching users:', error);
     }
     setLoading(false);
   };
@@ -71,12 +74,12 @@ export default function UsersList() {
 
   return (
     <div
-      className={cn("p-4 rounded-lg", isDarkMode ? "bg-gray-800" : "bg-white")}
+      className={cn('p-4 rounded-lg', isDarkMode ? 'bg-gray-800' : 'bg-white')}
     >
       <h1
         className={cn(
-          "text-2xl font-bold mb-4",
-          isDarkMode ? "text-white" : "text-gray-800"
+          'text-2xl font-bold mb-4',
+          isDarkMode ? 'text-white' : 'text-gray-800'
         )}
       >
         All Users
@@ -89,10 +92,10 @@ export default function UsersList() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className={cn(
-              "pl-10",
+              'pl-10',
               isDarkMode
-                ? "bg-gray-700 text-white"
-                : "bg-gray-100 text-gray-800"
+                ? 'bg-gray-700 text-white'
+                : 'bg-gray-100 text-gray-800'
             )}
           />
           <Search
@@ -121,7 +124,7 @@ export default function UsersList() {
                 >
                   <img
                     src={`${
-                      user.image == "" ? "/defaultUserImage.png" : user?.image
+                      user.image == '' ? '/defaultUserImage.png' : user?.image
                     }`}
                     className="rounded-full w-10 h-10"
                     alt=""
