@@ -19,7 +19,7 @@ interface Post {
   tags?: string[];
   createdAt: Date;
   updatedAt: Date;
-  creatorEmail: string;
+  creatorId: string;
   likes: string[];
   comments: any[];
   isLiked: boolean;
@@ -100,7 +100,6 @@ export function PostFeed() {
           key={post._id}
           post={post}
           onLike={handleLike}
-          onComment={handleComment}
           onShare={handleShare}
           onSave={handleSave}
         />

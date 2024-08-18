@@ -1,14 +1,18 @@
-// store/socketSlice.ts
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, ThunkAction } from '@reduxjs/toolkit';
 import { Socket } from 'socket.io-client';
 import io from 'socket.io-client';
 import { AppDispatch, RootState } from './index';
 import toast from 'react-hot-toast';
-import { jwtDecode } from 'jwt-decode';
+
+// Define a custom socket type if necessary
+interface CustomSocket extends Socket {
+  // Override or add properties if necessary
+  receiveBuffer: any[]; // Adjust this type based on your needs
+}
 
 interface SocketState {
-  socket: Socket | null;
-  lastMessage: any | null;
+  socket: CustomSocket | null; // Use CustomSocket here
+  lastMessage: any | null; // Consider defining a specific type for messages
 }
 
 const initialState: SocketState = {
@@ -20,27 +24,37 @@ const socketSlice = createSlice({
   name: 'socket',
   initialState,
   reducers: {
-    setSocket: (state, action: PayloadAction<Socket | null>) => {
-      state.socket = action.payload;
+    setSocket: (state, action: PayloadAction<CustomSocket | null>) => {
+      state.socket = action.payload; // No need for type assertion now
     },
     setLastMessage: (state, action: PayloadAction<any>) => {
-      state.lastMessage = action.payload;
+      state.lastMessage = action.payload; // Consider defining a specific type for messages
     },
   },
 });
 
 export const { setSocket, setLastMessage } = socketSlice.actions;
 
-export const initializeSocket =
-  (token: string) => (dispatch: AppDispatch, getState: () => RootState) => {
-    // Add getState
+// Thunk action to initialize the socket connection
+export const initializeSocket = (
+  token: string
+): ThunkAction<
+  void,
+  RootState,
+  undefined,
+  PayloadAction<CustomSocket | null>
+> => {
+  return (dispatch: AppDispatch, getState: () => RootState) => {
     const CHAT_SERVER_URL =
       process.env.NEXT_PUBLIC_CHAT_SOCKET_URL || 'http://localhost:5005';
+
+    // Create a new socket instance
     const newSocket = io(CHAT_SERVER_URL, {
       auth: { token },
       transports: ['websocket', 'polling'],
     });
 
+    // Set up socket event listeners
     newSocket.on('connect', () => {
       console.log('Connected to chat server');
     });
@@ -97,7 +111,9 @@ export const initializeSocket =
       );
     });
 
-    dispatch(setSocket(newSocket));
+    // Dispatch the setSocket action with the new socket
+    dispatch(setSocket(newSocket as CustomSocket)); // Use type assertion here if necessary
   };
+};
 
 export default socketSlice.reducer;

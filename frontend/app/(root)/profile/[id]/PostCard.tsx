@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   Heart,
   MessageCircle,
@@ -6,24 +6,46 @@ import {
   Bookmark,
   Send,
   MessageSquareMore,
-} from "lucide-react";
-import { MediaGallery } from "./MediaGallery";
-import { CommentSection } from "./CommentSection";
-import apiClient from "@/api/apiClient";
+} from 'lucide-react';
+import { MediaGallery } from './MediaGallery';
+import { CommentSection } from './CommentSection';
+import apiClient from '@/api/apiClient';
+
+// interface Post {
+//   _id: string;
+//   title: string;
+//   description: string;
+//   content: {
+//     videos: { type: string; url: string; duration: number }[];
+//     images: { url: string }[];
+//   };
+//   audios?: string[];
+//   createdAt: Date;
+//   creatorId: string;
+//   likes: string[];
+//   isLiked: boolean;
+//   comments: any[];
+// }
 
 interface Post {
   _id: string;
-  title: string;
+  title?: string;
   description: string;
   content: {
-    videos: { type: string; url: string; duration: number }[];
+    videos: {
+      type: "youtubeVideo" | "videoFile";
+      url: string;
+      duration: number;
+    }[];
     images: { url: string }[];
   };
   audios?: string[];
+  tags?: string[];
   createdAt: Date;
-  creatorName: string;
-  creatorEmail: string;
+  updatedAt: Date;
+  creatorId: string;
   likes: string[];
+  comments: any[];
   isLiked: boolean;
 }
 
@@ -35,57 +57,57 @@ interface PostCardProps {
 }
 
 export function PostCard({ post, onLike, onShare, onSave }: PostCardProps) {
-  const [commentText, setCommentText] = useState("");
+  const [commentText, setCommentText] = useState('');
   const [showComments, setShowComments] = useState(false);
 
   const mediaItems = [
     ...post.content.images.map((image) => ({
-      type: "image" as const,
+      type: 'image' as const,
       url: image.url,
     })),
     ...post.content.videos.map((video) => ({
-      type: "video" as const,
+      type: 'video' as const,
       url: video.url,
     })),
     ...(post.audios?.map((audio) => ({
-      type: "audio" as const,
+      type: 'audio' as const,
       url: audio,
     })) || []),
   ];
 
-  const handleCommentSubmit = () => {
-    if (commentText.trim()) {
-      onComment(post._id, commentText);
-      setCommentText("");
-    }
-  };
+  // const handleCommentSubmit = () => {
+  //   if (commentText.trim()) {
+  //     onComment(post._id, commentText);
+  //     setCommentText("");
+  //   }
+  // };
 
-  const handleAddReply = (commentId: string, replyText: string) => {
-    // Implement reply functionality here
-    console.log(`Replying to comment ${commentId}: ${replyText}`);
-  };
+  // const handleAddReply = (commentId: string, replyText: string) => {
+  //   // Implement reply functionality here
+  //   console.log(`Replying to comment ${commentId}: ${replyText}`);
+  // };
 
-  const handleAddComment = async (text: string) => {
-    try {
-      await apiClient.post(`/post/comment/${post._id}`, { text });
-      // You might want to update the post's comment count here
-    } catch (error) {
-      console.error("Error adding comment:", error);
-    }
-  };
+  // const handleAddComment = async (text: string) => {
+  //   try {
+  //     await apiClient.post(`/post/comment/${post._id}`, { text });
+  //     // You might want to update the post's comment count here
+  //   } catch (error) {
+  //     console.error("Error adding comment:", error);
+  //   }
+  // };
 
   return (
     <div className="bg-white rounded-2xl shadow-md overflow-hidden mb-6">
       <div className="p-4">
         <div className="flex items-center mb-4">
           <img
-            src={`https://ui-avatars.com/api/?name=${post.creatorName}&background=random`}
-            alt={post.creatorName}
+            src={`https://ui-avatars.com/api/?name=${post.creatorId}&background=random`}
+            alt={post.creatorId}
             className="w-12 h-12 rounded-full mr-4"
           />
           <div>
-            <h3 className="font-bold text-lg">{post.creatorName}</h3>
-            <p className="text-gray-600 text-sm">{post.creatorEmail}</p>
+            <h3 className="font-bold text-lg">{post.creatorId}</h3>
+            <p className="text-gray-600 text-sm">{post.creatorId}</p>
           </div>
         </div>
 
@@ -112,12 +134,12 @@ export function PostCard({ post, onLike, onShare, onSave }: PostCardProps) {
           <button
             onClick={() => onLike(post._id)}
             className={`flex items-center ${
-              post.isLiked ? "text-red-500" : "text-gray-600 hover:text-red-500"
+              post.isLiked ? 'text-red-500' : 'text-gray-600 hover:text-red-500'
             }`}
           >
             <Heart
               className="w-5 h-5 mr-1"
-              fill={post.isLiked ? "currentColor" : "none"}
+              fill={post.isLiked ? 'currentColor' : 'none'}
             />
             <span>Like ({post.likes.length})</span>
           </button>
@@ -126,7 +148,7 @@ export function PostCard({ post, onLike, onShare, onSave }: PostCardProps) {
             className="flex items-center text-gray-600 hover:text-green-500"
           >
             <MessageSquareMore className="w-5 h-5 mr-1" />
-            <span>Comments ({post.comments.length})</span>
+            <span>Comments ({post?.comments?.length})</span>
           </button>
           <button
             onClick={() => onShare(post._id)}

@@ -1,22 +1,34 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useDarkMode } from "@/hooks/useDarkMode";
-import apiClient from "@/api/apiClient";
-import { useParams, useRouter } from "next/navigation";
+'use client';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useDarkMode } from '@/hooks/useDarkMode';
+import apiClient from '@/api/apiClient';
+import { useParams, useRouter } from 'next/navigation';
+
+interface User {
+  _id: string;
+  username: string;
+  email: string;
+  bio?: string;
+  image?: string;
+  followersCount: number;
+  followingCount: number;
+  // Add any other properties that are expected in the user object
+}
 
 export default function AdminUserProfile() {
   const dispatch = useDispatch();
   const { isDarkMode } = useDarkMode();
   const params = useParams();
-  const router = useRouter(); // Use the router hook for navigation
-  const userId: string = params.userId;
+  const router = useRouter();
+  const userId = Array.isArray(params.userId)
+    ? params.userId[0]
+    : params.userId;
 
-  const { isAuthenticated } = useSelector((state) => state.auth);
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null); // Use User interface
 
   useEffect(() => {
     fetchUserDetails();
@@ -27,13 +39,13 @@ export default function AdminUserProfile() {
       const response = await apiClient(`/profile/user/${userId}`);
       setUser(response.data);
     } catch (error) {
-      console.error("Failed to fetch user details", error);
+      console.error('Failed to fetch user details', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleNavigation = (type) => {
+  const handleNavigation = (type: string) => {
     router.push(`/admin/users/${type}/${userId}`);
   };
 
@@ -71,15 +83,15 @@ export default function AdminUserProfile() {
         <CardContent className="p-6 py-10 my-3">
           <div className="flex flex-col items-center mb-6">
             <Avatar className="w-24 h-24 border-2 border-gray-300 shadow-md">
-              <AvatarImage src={user?.image} />
+              <AvatarImage src={user.image} />
               <AvatarFallback className="text-xl bg-gray-400 text-gray-700">
-                {user?.username.charAt(0)}
+                {user.username.charAt(0)}
               </AvatarFallback>
             </Avatar>
             <h2 className="mt-4 text-2xl dark:text-white font-bold text-gray-800">
-              {user?.username}
+              {user.username}
             </h2>
-            <p className="text-gray-600 dark:text-white">{user?.email}</p>
+            <p className="text-gray-600 dark:text-white">{user.email}</p>
           </div>
 
           <div className="space-y-4 dark:text-white">
@@ -88,7 +100,7 @@ export default function AdminUserProfile() {
                 Username
               </h3>
               <p className="mt-1 text-gray-600 dark:text-white">
-                {user?.username}
+                {user.username}
               </p>
             </div>
 
@@ -97,32 +109,23 @@ export default function AdminUserProfile() {
                 Bio
               </h3>
               <p className="mt-1 text-gray-600 dark:text-white">
-                {user?.bio || "No bio provided"}
+                {user.bio || 'No bio provided'}
               </p>
             </div>
-
-            {/* <div>
-              <h3 className="text-md font-semibold text-gray-800 dark:text-white">
-                Joined On
-              </h3>
-              <p className="mt-1 text-gray-600 dark:text-white">
-                {new Date(user?.createdAt).toLocaleDateString()}
-              </p>
-            </div> */}
 
             {/* Followers and Following Buttons */}
             <div className="flex space-x-6">
               <button
-                onClick={() => handleNavigation("followers")}
+                onClick={() => handleNavigation('followers')}
                 className="text-md font-semibold text-blue-600 dark:text-blue-400"
               >
-                Followers: {user?.followersCount}
+                Followers: {user.followersCount}
               </button>
               <button
-                onClick={() => handleNavigation("followings")}
+                onClick={() => handleNavigation('followings')}
                 className="text-md font-semibold text-blue-600 dark:text-blue-400"
               >
-                Following: {user?.followingCount}
+                Following: {user.followingCount}
               </button>
             </div>
           </div>

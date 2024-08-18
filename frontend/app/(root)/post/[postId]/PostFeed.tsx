@@ -92,16 +92,16 @@ export function PostFeed() {
 
   return (
     <div className="space-y-6 flex flex-col items-center mx-auto">
-      {posts.map((post) => (
-        <PostCard
-          key={post._id}
-          post={post}
-          onLike={handleLike}
-          onComment={handleComment}
-          onShare={handleShare}
-          onSave={handleSave}
-        />
-      ))}
-    </div>
+    {posts.map((post) => (
+      <PostCard
+        key={post._id}
+        post={{ ...post, title: post.title || "" }}
+        onLike={handleLike}
+        onComment={handleComment}
+        onShare={handleShare}
+        onSave={handleSave}
+      />
+    ))}
+  </div>
   );
 }

@@ -68,16 +68,16 @@ export function PostCard({
       <div className="p-1 py-3 sm:p-4">
         <div className="flex items-center mb-4">
           <img
-            src={`https://ui-avatars.com/api/?name=${post.creatorName}&background=random`}
-            alt={post.creatorName}
+            src={`https://ui-avatars.com/api/?name=${post.creatorId}&background=random`}
+            alt={'creatorName'}
             className="w-6 h-6 sm:w-10 sm:h-10 rounded-full mr-2 sm:mr-4"
           />
           <div>
             <h3 className="font-bold text-lg dark:text-white">
-              {post.creatorName}
+              {'Creator name'}
             </h3>
             <p className="text-gray-600 dark:text-gray-300 text-sm">
-              {post.creatorEmail}
+              {'creator Email'}
             </p>
           </div>
         </div>
@@ -139,7 +139,7 @@ export function PostCard({
                 <WhatsappShareButton url={shareUrl} title={post.title}>
                   <WhatsappIcon size={40} round />
                 </WhatsappShareButton>
-                <FacebookShareButton url={shareUrl} quote={post.title}>
+                <FacebookShareButton url={shareUrl} title={post.title}>
                   <FacebookIcon size={40} round />
                 </FacebookShareButton>
                 <TwitterShareButton url={shareUrl} title={post.title}>

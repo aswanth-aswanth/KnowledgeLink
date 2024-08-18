@@ -2,6 +2,7 @@ import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { jwtDecode } from 'jwt-decode';
 import { isTokenExpired } from '@/lib/auth';
 import apiClient from '@/api/apiClient';
+import axios from 'axios';
 
 export interface User {
   id: string;
@@ -36,7 +37,10 @@ export const updateUserProfile = createAsyncThunk(
       });
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      if (axios.isAxiosError(error) && error.response) {
+        return rejectWithValue(error.response.data);
+      }
+      return rejectWithValue('An unexpected error occurred');
     }
   }
 );

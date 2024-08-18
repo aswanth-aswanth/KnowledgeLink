@@ -18,3 +18,6 @@ dist/
 .vscode/
 *.swp
 *.swo
+
+# Kubernetes secrets
+backend/k8s/secrets/

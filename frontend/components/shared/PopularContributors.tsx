@@ -1,22 +1,22 @@
-import React, { useEffect, useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Skeleton } from "@/components/ui/skeleton";
-import apiClient from "@/api/apiClient";
-import { useRouter } from "next/navigation";
-import { useDarkMode } from "@/hooks/useDarkMode";
+import React, { useEffect, useState } from 'react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Skeleton } from '@/components/ui/skeleton';
+import apiClient from '@/api/apiClient';
+import { useRouter } from 'next/navigation';
+import { useDarkMode } from '@/hooks/useDarkMode';
 
 export default function PopularContributors() {
-  const [contributors, setContributors] = useState([]);
+  const [contributors, setContributors] = useState<any | []>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const { isDarkMode } = useDarkMode();
 
   const getUsers = async () => {
     try {
-      const res = await apiClient.get("/profile/users");
+      const res = await apiClient.get('/profile/users');
       setContributors(res.data);
     } catch (error) {
-      console.log("Error fetching contributors:", error);
+      console.log('Error fetching contributors:', error);
     } finally {
       setLoading(false);
     }
@@ -41,15 +41,15 @@ export default function PopularContributors() {
       </p>
       <div
         className={`flex gap-8 sm:gap-12 md:gap-28 max-w-[1224px] overflow-x-auto py-8 ${
-          isDarkMode ? "bg-gray-900 text-white" : "bg-white text-gray-900"
+          isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'
         }`}
-        style={{ overflowX: "auto", scrollbarWidth: "none" }}
+        style={{ overflowX: 'auto', scrollbarWidth: 'none' }}
       >
         {loading
           ? Array(5)
               .fill(0)
               .map((_, index) => <ContributorSkeleton key={index} />)
-          : contributors.map((contributor, index) => (
+          : contributors.map((contributor: any, index: string) => (
               <div
                 key={index}
                 className="flex flex-col items-center text-center w-max"

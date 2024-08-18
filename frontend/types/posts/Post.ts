@@ -1,16 +1,22 @@
 export interface Post {
     _id: string;
-    title: string;
+    title?: string;
     description: string;
     content: {
-        videos: { type: string; url: string; duration: number }[];
-        images: { url: string }[];
+      videos: {
+        type: "youtubeVideo" | "videoFile";
+        url: string;
+        duration: number;
+      }[];
+      images: { url: string }[];
     };
     audios?: string[];
+    tags?: string[];
     createdAt: Date;
-    creatorName?: string;
-    creatorEmail: string;
+    updatedAt: Date;
+    creatorId?: string;
     likes: string[];
     comments: any[];
     isLiked: boolean;
-}
+  }
+  
