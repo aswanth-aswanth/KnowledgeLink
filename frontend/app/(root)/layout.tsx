@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import React, { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Header from '@/components/layouts/Header';

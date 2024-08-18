@@ -16,7 +16,7 @@ metadata:
     # WebSocket support
     nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
-    nginx.ingress.kubernetes.io/websocket-services: "chat-service"
+    nginx.ingress.kubernetes.io/websocket-services: "chat-service,notification-service"
 spec:
   tls:
   - hosts:

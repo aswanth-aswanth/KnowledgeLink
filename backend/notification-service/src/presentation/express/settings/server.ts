@@ -11,11 +11,13 @@ import SocketService from '../../../infra/services/SocketService';
 const PORT = process.env.PORT || 5003;
 
 const server = http.createServer(app);
+
 const io = new SocketIOServer(server, {
     cors: {
         origin: `${process.env.FRONTEND_URL}`,
         methods: ["GET", "POST", "PUT", "PATCH", "DELETE"]
-    }
+    },
+    path: '/notification/socket.io'
 });
 
 SocketService.getInstance().setIO(io);

@@ -4,7 +4,9 @@ import toast from 'react-hot-toast';
 
 export function useNotifications(url: string, userEmail: string | null) {
   useEffect(() => {
-    const socket = io(url);
+    const socket = io(url, {
+      path: '/notification/socket.io'
+    });
 
     if (userEmail) {
       socket.emit('register', userEmail);
