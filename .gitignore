@@ -20,4 +20,4 @@ dist/
 *.swo
 
 # Kubernetes secrets
-k8s/secrets/
+backend/k8s/secrets/
