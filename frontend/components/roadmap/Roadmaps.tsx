@@ -15,7 +15,7 @@ export default function Roadmaps() {
   const getRoadmapByType = async (roadmapType: string) => {
     setLoading(true);
     try {
-      const res = await apiClient.get(`/roadmap/type?type=${roadmapType}`);
+      const res = await apiClient(`/roadmap/type?type=${roadmapType}`);
       setRoadmapData(res.data);
     } catch (error) {
       console.log('Error: ', error);
