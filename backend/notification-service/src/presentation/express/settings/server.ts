@@ -17,8 +17,9 @@ const io = new SocketIOServer(server, {
         origin: `${process.env.FRONTEND_URL}`,
         methods: ["GET", "POST", "PUT", "PATCH", "DELETE"]
     },
-    path: '/notification/socket.io'
+    path: '/socket.io/notification'
 });
+
 
 SocketService.getInstance().setIO(io);
 

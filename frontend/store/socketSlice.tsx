@@ -53,11 +53,10 @@ export const initializeSocket = (
     // });
 
     const newSocket = io(CHAT_SERVER_URL, {
-      path: '/chat/socket.io',
+      path: '/socket.io/chat',
       auth: { token },
       transports: ['websocket', 'polling'],
     });
-
     // Set up socket event listeners
     newSocket.on('connect', () => {
       console.log('Connected to chat server');

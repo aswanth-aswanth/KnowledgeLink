@@ -68,6 +68,20 @@ spec:
             name: chat-service
             port: 
               number: 5005
+      - path: /socket.io/chat(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: chat-service
+            port: 
+              number: 5005
+      - path: /socket.io/notification(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: notification-service
+            port: 
+              number: 5004
       - path: /recommendation(/|$)(.*)
         pathType: Prefix
         backend:

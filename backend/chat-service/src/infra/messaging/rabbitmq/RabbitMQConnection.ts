@@ -23,11 +23,11 @@ class RabbitMQConnection {
         try {
             this.connection = await amqp.connect(process.env.RABBITMQ_URL || 'amqp://localhost:5672');
             this.channel = await this.connection.createChannel();
-            console.log('RabbitMQ connected successfully (profile-service)');
+            console.log('RabbitMQ connected successfully (chat-service)');
             Consumer.consume('user.registration');
         } catch (error) {
             this.retryCount++;
-            console.error(`Failed to connect to RabbitMQ (profile-service). Attempt ${this.retryCount} of ${this.maxRetries}:`, error);
+            console.error(`Failed to connect to RabbitMQ (chat-service). Attempt ${this.retryCount} of ${this.maxRetries}:`, error);
 
             if (this.retryCount < this.maxRetries) {
                 setTimeout(() => {

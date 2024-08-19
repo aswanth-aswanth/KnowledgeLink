@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 export function useNotifications(url: string, userEmail: string | null) {
   useEffect(() => {
     const socket = io(url, {
-      path: '/notification/socket.io'
+      path: '/socket.io/notification'
     });
 
     if (userEmail) {

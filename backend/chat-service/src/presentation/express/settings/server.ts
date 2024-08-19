@@ -17,7 +17,7 @@ const io = new SocketIOServer(server, {
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     credentials: true
   },
-  path: '/chat/socket.io'
+  path: '/socket.io/chat'
 });
 
 SocketService.getInstance().setIO(io);
