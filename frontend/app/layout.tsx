@@ -2,6 +2,8 @@ import { Toaster } from 'react-hot-toast';
 import './globals.css';
 import { Lato } from 'next/font/google';
 
+export const runtime = 'edge';
+
 const lato = Lato({
   subsets: ['latin'],
   weight: ['400', '700'],

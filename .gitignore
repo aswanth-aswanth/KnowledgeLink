@@ -21,3 +21,4 @@ dist/
 
 # Kubernetes secrets
 backend/k8s/secrets/
+.vercel
