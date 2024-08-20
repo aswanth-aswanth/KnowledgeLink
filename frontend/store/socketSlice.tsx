@@ -45,18 +45,22 @@ export const initializeSocket = (
   PayloadAction<CustomSocket | null>
 > => {
   return (dispatch: AppDispatch, getState: () => RootState) => {
-    const CHAT_SERVER_URL = process.env.NEXT_PUBLIC_CHAT_SOCKET_URL || 'https://knowledgelink.aswanth.online';
+    const CHAT_SERVER_URL =
+      process.env.NEXT_PUBLIC_CHAT_SOCKET_URL ||
+      'https://knowledgelink.aswanth.online';
 
     // const newSocket = io(CHAT_SERVER_URL, {
     //   auth: { token },
     //   transports: ['websocket', 'polling'],
     // });
 
-    const newSocket = io(CHAT_SERVER_URL, {
-      path: '/socket.io/chat',
-      auth: { token },
-      transports: ['websocket', 'polling'],
-    });
+    const newSocket = io(
+      'https://knowledgelink.aswanth.online/socket.io/chat',
+      {
+        auth: { token },
+        transports: ['websocket'],
+      }
+    );
     // Set up socket event listeners
     newSocket.on('connect', () => {
       console.log('Connected to chat server');

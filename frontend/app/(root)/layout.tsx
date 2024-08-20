@@ -36,7 +36,8 @@ const LayoutContent = ({ children }: { children: React.ReactNode }) => {
   }, [isAuthenticated, token, dispatch]);
 
   useNotifications(
-    process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:5004',
+    // process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:5004',
+    'https://knowledgelink.aswanth.online/socket.io/notification',
     userEmail as string
   );
 
