@@ -3,8 +3,10 @@ import io from 'socket.io-client';
 import toast from 'react-hot-toast';
 
 export function useNotifications(url: string, userEmail: string | null) {
+  const token = localStorage.getItem('token');
   useEffect(() => {
     const socket = io(url, {
+      auth: { token },
       path: '/socket.io/notification'
     });
 
