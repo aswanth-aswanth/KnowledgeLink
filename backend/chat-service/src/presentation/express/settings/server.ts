@@ -12,13 +12,22 @@ const PORT = process.env.PORT || 5005;
 
 const server = http.createServer(app);
 
+// const io = new SocketIOServer(server, {
+//   cors: {
+//     origin: process.env.FRONTEND_URL || 'https://knowledgelink.up.railway.app',
+//     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+//     credentials: true
+//   },
+//   path: '/socket.io'
+// });
+
 const io = new SocketIOServer(server, {
+  path: '/socket.io/',
   cors: {
-    origin: process.env.FRONTEND_URL || 'https://knowledgelink.up.railway.app',
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    origin: 'https://knowledgelink.up.railway.app',
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     credentials: true
-  },
-  path: '/socket.io'
+  }
 });
 
 SocketService.getInstance().setIO(io);

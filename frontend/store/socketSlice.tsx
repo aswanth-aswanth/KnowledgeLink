@@ -54,13 +54,19 @@ export const initializeSocket = (
     //   transports: ['websocket', 'polling'],
     // });
 
-    const newSocket = io(
-      'https://knowledgelink.aswanth.online/socket.io/chat',
-      {
-        auth: { token },
-        transports: ['websocket'],
-      }
-    );
+    const newSocket = io('https://knowledgelink.aswanth.online', {
+      path: '/socket.io/',
+      auth: { token },
+      transports: ['websocket'],
+    });
+
+    // io('https://your-backend-domain.com', {
+    //   path: '/socket.io/',
+    //   withCredentials: true,
+    //   extraHeaders: {
+    //     'my-custom-header': 'custom-value'
+    //   }
+    // });
     // Set up socket event listeners
     newSocket.on('connect', () => {
       console.log('Connected to chat server');
