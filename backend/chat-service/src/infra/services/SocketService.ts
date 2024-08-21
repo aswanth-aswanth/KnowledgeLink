@@ -1,4 +1,4 @@
-import { Namespace, Socket } from 'socket.io';
+import { Server as SocketIOServer, Socket } from 'socket.io';
 import socketAuthMiddleware from '../http/middleware/socketAuthMiddleware';
 import SendMessage from '../../app/useCases/SendMessage';
 import ChatRepository from '../../app/repositories/ChatRepository';
@@ -6,7 +6,7 @@ import MarkMessageAsRead from '../../app/useCases/MarkMessageAsRead';
 
 class SocketService {
   private static instance: SocketService;
-  private io!: Namespace;
+  private io!: SocketIOServer;
   private userSockets: Map<string, string> = new Map();
 
   private constructor() { }
@@ -18,7 +18,7 @@ class SocketService {
     return SocketService.instance;
   }
 
-  setIO(io: Namespace) {
+  setIO(io: SocketIOServer) {
     this.io = io;
     this.setupMiddleware();
     this.setupSocketConnections();

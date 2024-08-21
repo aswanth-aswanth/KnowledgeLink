@@ -26,67 +26,53 @@ spec:
   - host: knowledgelink.aswanth.online
     http:
       paths:
-      - path: /auth(/|$)(.*)
+      - path: /auth-service(/|$)(.*)
         pathType: Prefix
         backend:
           service:
             name: auth-service
-            port: 
+            port:
               number: 5000
-      - path: /roadmap(/|$)(.*)
+      - path: /roadmap-service(/|$)(.*)
         pathType: Prefix
         backend:
           service:
             name: roadmap-service
-            port: 
+            port:
               number: 5001
-      - path: /profile(/|$)(.*)
+      - path: /profile-service(/|$)(.*)
         pathType: Prefix
         backend:
           service:
             name: profile-service
-            port: 
+            port:
               number: 5002
-      - path: /post(/|$)(.*)
+      - path: /post-service(/|$)(.*)
         pathType: Prefix
         backend:
           service:
             name: post-service
-            port: 
+            port:
               number: 5003
-      - path: /notification(/|$)(.*)
+      - path: /notification-service(/|$)(.*)
         pathType: Prefix
         backend:
           service:
             name: notification-service
-            port: 
+            port:
               number: 5004
-      - path: /chat(/|$)(.*)
+      - path: /chat-service(/|$)(.*)
         pathType: Prefix
         backend:
           service:
             name: chat-service
-            port: 
+            port:
               number: 5005
-      - path: /socket.io
-        pathType: Prefix
-        backend:
-          service:
-            name: chat-service
-            port: 
-              number: 5005
-      - path: /socket.io/notification(/|$)(.*)
-        pathType: Prefix
-        backend:
-          service:
-            name: notification-service
-            port: 
-              number: 5004
-      - path: /recommendation(/|$)(.*)
+      - path: /recommendation-service(/|$)(.*)
         pathType: Prefix
         backend:
           service:
             name: recommendation-service
-            port: 
+            port:
               number: 5006
   ingressClassName: nginx
