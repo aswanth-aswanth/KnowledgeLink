@@ -47,7 +47,7 @@ export const initializeSocket = (
   return (dispatch: AppDispatch, getState: () => RootState) => {
     const CHAT_SERVER_URL =
       process.env.NEXT_PUBLIC_CHAT_SOCKET_URL ||
-      'https://knowledgelink.aswanth.online';
+      'https://backend.aswanth.online';
 
     // const newSocket = io(CHAT_SERVER_URL, {
     //   auth: { token },
@@ -56,7 +56,7 @@ export const initializeSocket = (
     // 'https://yourdomain.com/chat-service', {
     // path: '/socket.io', /
 
-    const newSocket = io('https://knowledgelink.aswanth.online/chat-service', {
+    const newSocket = io('https://backend.aswanth.online/chat-service', {
       auth: { token },
       path: '/socket.io',
       transports: ['websocket'],

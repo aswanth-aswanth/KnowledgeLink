@@ -20,10 +20,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - knowledgelink.aswanth.online
+    - backend.aswanth.online
     secretName: knowledgelink-tls
   rules:
-  - host: knowledgelink.aswanth.online
+  - host: backend.aswanth.online
     http:
       paths:
       - path: /auth-service(/|$)(.*)

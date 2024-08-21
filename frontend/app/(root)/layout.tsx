@@ -37,7 +37,7 @@ const LayoutContent = ({ children }: { children: React.ReactNode }) => {
 
   useNotifications(
     // process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:5004',
-    'https://knowledgelink.aswanth.online/socket.io/notification',
+    'https://backend.aswanth.online/socket.io/notification',
     userEmail as string
   );
 
