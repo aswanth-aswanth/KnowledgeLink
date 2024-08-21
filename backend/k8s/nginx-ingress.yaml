@@ -68,7 +68,7 @@ spec:
             name: chat-service
             port: 
               number: 5005
-      - path: /socket.io/
+      - path: /socket.io
         pathType: Prefix
         backend:
           service:

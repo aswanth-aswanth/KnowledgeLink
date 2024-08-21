@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 5005;
 const server = http.createServer(app);
 
 const io = new SocketIOServer(server, {
-  path: '/socket.io/',
+  path: '/socket.io',
   cors: {
     origin: 'https://knowledgelink.up.railway.app',
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
