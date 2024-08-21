@@ -54,7 +54,7 @@ export const initializeSocket = (
     //   transports: ['websocket', 'polling'],
     // });
 
-    const newSocket = io('https://knowledgelink.aswanth.online', {
+    const newSocket = io('https://knowledgelink.aswanth.online/socket.io/chat', {
       path: '/socket.io/',
       auth: { token },
       transports: ['websocket'],

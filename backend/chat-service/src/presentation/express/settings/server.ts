@@ -5,21 +5,12 @@ import app from "./app";
 import "../../../infra/messaging/rabbitmq/RabbitMQConnection";
 import connectDB from "../../../infra/databases/mongoose/connection";
 import http from 'http';
-import { Server as SocketIOServer } from 'socket.io';
+import { Server as SocketIOServer, Namespace } from 'socket.io';
 import SocketService from '../../../infra/services/SocketService';
 
 const PORT = process.env.PORT || 5005;
 
 const server = http.createServer(app);
-
-// const io = new SocketIOServer(server, {
-//   cors: {
-//     origin: process.env.FRONTEND_URL || 'https://knowledgelink.up.railway.app',
-//     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-//     credentials: true
-//   },
-//   path: '/socket.io'
-// });
 
 const io = new SocketIOServer(server, {
   path: '/socket.io/',
@@ -30,7 +21,8 @@ const io = new SocketIOServer(server, {
   }
 });
 
-SocketService.getInstance().setIO(io);
+const chatNamespace: Namespace = io.of('/chat');
+SocketService.getInstance().setIO(chatNamespace);
 
 server.listen(PORT, () => {
   console.log(`chat-service connected to ${PORT}`);
