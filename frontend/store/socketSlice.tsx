@@ -55,7 +55,7 @@ export const initializeSocket = (
     // });
 
     const newSocket = io('https://knowledgelink.aswanth.online/socket.io/chat', {
-      path: '/socket.io/',
+      path: '/socket.io',
       auth: { token },
       transports: ['websocket'],
     });
