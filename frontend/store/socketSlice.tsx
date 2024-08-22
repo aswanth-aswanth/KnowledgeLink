@@ -59,10 +59,16 @@ export const initializeSocket = (
     //   path: '/socket.io',
     //   transports: ['websocket'],
     // });
+    // const newSocket = io('https://backend.aswanth.online', {
+    //   path: '/socket.io',
+    //   transports: ['websocket'],
+    //   auth: { token },
+    // });
     const newSocket = io('https://backend.aswanth.online/chat', {
-      path: '/socket.io',
+      path: '/chat/socket.io',
       transports: ['websocket'],
       auth: { token },
+      withCredentials: true,
     });
 
     // io('https://your-backend-domain.com', {
