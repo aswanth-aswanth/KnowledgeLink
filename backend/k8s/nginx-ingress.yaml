@@ -9,7 +9,7 @@ metadata:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
     # CORS configuration
     nginx.ingress.kubernetes.io/enable-cors: "true"
-    nginx.ingress.kubernetes.io/cors-allow-origin: "https://knowledgelink.up.railway.app, https://your-frontend-domain.com"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://knowledgelink.up.railway.app"
     nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, DELETE, PATCH, OPTIONS"
     nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization"
     nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
@@ -79,7 +79,7 @@ spec:
             name: recommendation-service
             port:
               number: 5006
-      - path: /(chat/socket\.io)(/|$)(.*)
+      - path: /socket\.io(/|$)(.*)
         pathType: Prefix
         backend:
           service:

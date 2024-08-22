@@ -45,40 +45,15 @@ export const initializeSocket = (
   PayloadAction<CustomSocket | null>
 > => {
   return (dispatch: AppDispatch, getState: () => RootState) => {
-    const CHAT_SERVER_URL =
-      process.env.NEXT_PUBLIC_CHAT_SOCKET_URL ||
-      'https://backend.aswanth.online';
-
-    // const newSocket = io(CHAT_SERVER_URL, {
-    //   auth: { token },
-    //   transports: ['websocket', 'polling'],
-    // });
-
-    // const newSocket = io('https://backend.aswanth.online/chat-service', {
-    //   auth: { token },
-    //   path: '/socket.io',
-    //   transports: ['websocket'],
-    // });
-    // const newSocket = io('https://backend.aswanth.online', {
-    //   path: '/socket.io',
-    //   transports: ['websocket'],
-    //   auth: { token },
-    // });
+    
     const newSocket = io('https://backend.aswanth.online/chat', {
-      path: '/chat/socket.io',
+      path: '/socket.io',
       transports: ['websocket'],
       auth: { token },
+      secure: true,
       withCredentials: true,
     });
 
-    // io('https://your-backend-domain.com', {
-    //   path: '/socket.io/',
-    //   withCredentials: true,
-    //   extraHeaders: {
-    //     'my-custom-header': 'custom-value'
-    //   }
-    // });
-    // Set up socket event listeners
     newSocket.on('connect', () => {
       console.log('Connected to chat server');
     });
