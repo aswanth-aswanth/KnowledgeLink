@@ -12,14 +12,6 @@ const PORT = process.env.PORT || 5005;
 
 const server = http.createServer(app);
 
-// const io = new SocketIOServer(server, {
-//   cors: {
-//     origin: 'https://knowledgelink.up.railway.app',
-//     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-//     credentials: true
-//   }
-// });
-
 const io = new SocketIOServer(server, {
   path: '/socket.io',
   cors: {
@@ -29,8 +21,8 @@ const io = new SocketIOServer(server, {
   },
 });
 
-// const chatNamespace: Namespace = io.of('/chat');
-SocketService.getInstance().setIO(io);
+const chatNamespace: Namespace = io.of('/chat');
+SocketService.getInstance().setIO(chatNamespace);
 
 server.listen(PORT, () => {
   console.log(`chat-service connected to ${PORT}`);

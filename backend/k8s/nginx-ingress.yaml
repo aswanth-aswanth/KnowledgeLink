@@ -16,7 +16,10 @@ metadata:
     # WebSocket support
     nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
-    nginx.ingress.kubernetes.io/websocket-services: "chat-service,notification-service"
+    nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
+    nginx.ingress.kubernetes.io/proxy-set-headers: |
+      Upgrade $http_upgrade;
+      Connection "Upgrade";
 spec:
   tls:
   - hosts:
@@ -26,53 +29,60 @@ spec:
   - host: backend.aswanth.online
     http:
       paths:
-      - path: /auth-service(/|$)(.*)
+      - path: /auth(/|$)(.*)
         pathType: Prefix
         backend:
           service:
             name: auth-service
             port:
               number: 5000
-      - path: /roadmap-service(/|$)(.*)
+      - path: /roadmap(/|$)(.*)
         pathType: Prefix
         backend:
           service:
             name: roadmap-service
             port:
               number: 5001
-      - path: /profile-service(/|$)(.*)
+      - path: /profile(/|$)(.*)
         pathType: Prefix
         backend:
           service:
             name: profile-service
             port:
               number: 5002
-      - path: /post-service(/|$)(.*)
+      - path: /post(/|$)(.*)
         pathType: Prefix
         backend:
           service:
             name: post-service
             port:
               number: 5003
-      - path: /notification-service(/|$)(.*)
+      - path: /notification(/|$)(.*)
         pathType: Prefix
         backend:
           service:
             name: notification-service
             port:
               number: 5004
-      - path: /chat-service(/|$)(.*)
+      - path: /chat(/|$)(.*)
         pathType: Prefix
         backend:
           service:
             name: chat-service
             port:
               number: 5005
-      - path: /recommendation-service(/|$)(.*)
+      - path: /recommendation(/|$)(.*)
         pathType: Prefix
         backend:
           service:
             name: recommendation-service
             port:
               number: 5006
+      - path: /socket.io(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: chat-service
+            port:
+              number: 5005
   ingressClassName: nginx

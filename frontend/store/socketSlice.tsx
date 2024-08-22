@@ -53,13 +53,16 @@ export const initializeSocket = (
     //   auth: { token },
     //   transports: ['websocket', 'polling'],
     // });
-    // 'https://yourdomain.com/chat-service', {
-    // path: '/socket.io', /
 
-    const newSocket = io('https://backend.aswanth.online/chat-service', {
-      auth: { token },
+    // const newSocket = io('https://backend.aswanth.online/chat-service', {
+    //   auth: { token },
+    //   path: '/socket.io',
+    //   transports: ['websocket'],
+    // });
+    const newSocket = io('https://backend.aswanth.online/chat', {
       path: '/socket.io',
       transports: ['websocket'],
+      auth: { token },
     });
 
     // io('https://your-backend-domain.com', {
