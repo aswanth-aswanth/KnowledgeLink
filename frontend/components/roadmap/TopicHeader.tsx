@@ -16,7 +16,7 @@ const TopicHeader: React.FC<TopicHeaderProps> = ({
     <button
       className={`md:p-0 rounded-md focus:outline-none ${
         isDarkMode
-          ? 'text-gray-500 dark:hover:bg-gray-800'
+          ? 'text-white dark:hover:bg-gray-800'
           : 'text-gray-400 hover:bg-gray-100'
       }`}
     >
@@ -34,7 +34,7 @@ const TopicHeader: React.FC<TopicHeaderProps> = ({
     </button>
     <span
       className={`flex-grow px-2 py-1 rounded-md font-bold text-sm sm:text-base ${
-        isDarkMode ? 'text-gray-300' : 'text-gray-600'
+        isDarkMode ? 'text-white' : 'text-gray-600'
       }`}
     >
       {topicName}

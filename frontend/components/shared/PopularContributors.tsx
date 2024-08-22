@@ -36,7 +36,7 @@ export default function PopularContributors() {
 
   return (
     <>
-      <p className="text-gray-500 font-medium text-lg mt-6 mb-8">
+      <p className="dark:text-white font-medium text-lg mt-6 mb-8">
         Popular writers
       </p>
       <div

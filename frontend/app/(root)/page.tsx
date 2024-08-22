@@ -36,8 +36,8 @@ const TabNavigation: React.FC = () => {
         }}
         tabFor="explore"
       />
-      <VideoShorts />
       <PopularContributors />
+      <VideoShorts />
       <TrendingArticles />
       <Roadmaps />
     </div>
