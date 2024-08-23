@@ -27,10 +27,11 @@ class RabbitMQConnection {
 
             this.channel.assertExchange('user.registration.fanout', 'fanout', { durable: true });
 
-            const queue = await this.channel.assertQueue('', { exclusive: true });
-            await this.channel.bindQueue(queue.queue, 'user.registration.fanout', '');
+            const queue = 'user_registration_queue';
+            await this.channel.assertQueue(queue, { durable: true });
+            await this.channel.bindQueue(queue, 'user.registration.fanout', '');
 
-            Consumer.consume(queue.queue);
+            Consumer.consume(queue);
             Consumer.consume('user.registration');
 
             console.log('RabbitMQ connected successfully (chat-service)');
