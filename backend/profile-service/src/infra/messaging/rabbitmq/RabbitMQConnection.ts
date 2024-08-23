@@ -1,5 +1,6 @@
 import amqp from 'amqplib';
 import Consumer from './Consumer';
+
 class RabbitMQConnection {
     private static instance: RabbitMQConnection;
     private connection!: amqp.Connection;
@@ -24,10 +25,16 @@ class RabbitMQConnection {
             this.connection = await amqp.connect(process.env.RABBITMQ_URL || 'amqp://localhost:5672');
             this.channel = await this.connection.createChannel();
             console.log('RabbitMQ connected successfully (profile-service)');
+
+            await this.channel.assertExchange('user.registration.fanout', 'fanout', { durable: true });
+            const queue = await this.channel.assertQueue('', { exclusive: true });
+            this.channel.bindQueue(queue.queue, 'user.registration.fanout', '');
+
+            Consumer.consume(queue.queue);
+
             Consumer.consume('profile_queue');
             Consumer.consume('profile_queue2');
             Consumer.consume('profile_service_queue');
-            Consumer.consume('user.registration');
             Consumer.consume('get_saved_posts_queue');
         } catch (error) {
             this.retryCount++;

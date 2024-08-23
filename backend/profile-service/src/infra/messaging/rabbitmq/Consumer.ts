@@ -25,7 +25,6 @@ class Consumer {
                 throw new Error('Channel is not available');
             }
 
-            // Define your functions
             const functionMap: { [key: string]: QueueFunction } = {
                 'profile_queue': this.getSubscribedRoadmaps,
                 'profile_service_queue': this.getAllMembersOfRoadmap,
@@ -39,7 +38,6 @@ class Consumer {
                 if (msg !== null) {
                     console.log(`Message received from queue ${queue}: ${msg.content.toString()}`);
 
-                    // Check if the function exists for the queue
                     if (functionMap[queue]) {
                         await functionMap[queue](msg, channel, userRepository);
                     } else {
