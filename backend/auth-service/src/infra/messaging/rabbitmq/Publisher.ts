@@ -40,13 +40,13 @@ class Publisher {
         }
     }
 
-    async publish(message: string) {
+    async publish(exchange: string, message: string) {
         try {
             if (!this.channel) {
                 await this.connect();
             }
-            this.channel.publish('user.registration.fanout', '', Buffer.from(message), { persistent: true });
-            console.log(`Message sent to exchange user.registration.fanout: ${message}`);
+            this.channel.publish(exchange, '', Buffer.from(message), { persistent: true });
+            console.log(`Message sent to exchange ${exchange}: ${message}`);
         } catch (error) {
             console.error('Failed to publish message:', error);
         }

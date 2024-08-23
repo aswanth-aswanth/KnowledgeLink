@@ -22,8 +22,9 @@ export default class CreateUser {
 
     // Publish user details to RabbitMQ
     const publisher = await Publisher.getInstance();
-    await publisher.publish('user.registration', JSON.stringify({ email, username, _id: newUser._id }));
+    await publisher.publish('user.registration.fanout', JSON.stringify({ email, username, _id: newUser._id }));
 
     return newUser;
   }
 }
+

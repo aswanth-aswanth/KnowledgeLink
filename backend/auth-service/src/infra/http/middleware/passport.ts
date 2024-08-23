@@ -22,7 +22,7 @@ passport.use(new GoogleStrategy({
         });
         await user.save();
         const publisher = await Publisher.getInstance();
-        await publisher.publish('user.registration', JSON.stringify({
+        await publisher.publish('user.registration.fanout', JSON.stringify({
           email: user.email,
           username: user.username,
           image: user.image,
@@ -35,6 +35,7 @@ passport.use(new GoogleStrategy({
       done(error);
     }
   }));
+
 
 passport.serializeUser((user: any, done) => {
   done(null, user.id);
