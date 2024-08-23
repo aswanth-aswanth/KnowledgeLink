@@ -9,8 +9,9 @@ export default class GetUsersController {
         );
 
         try {
-
-            const users = await getUsers.execute();
+            const currentUserId = req.user?.userId; 
+            const users = await getUsers.execute(currentUserId); 
+            
             if (!users) {
                 return res.status(404).json({ error: "Users not found" });
             }

@@ -8,7 +8,11 @@ export default class GetUsers {
         this.userRepository = userRepository;
     }
 
-    public async execute(): Promise<IUser | object | null> {
-        return await this.userRepository.getUsers();
+    public async execute(currentUserId: string | null): Promise<IUser[] | object | null> {
+        const users = await this.userRepository.getUsers();
+        if (currentUserId) {
+            return users.filter(user => user._id.toString() !== currentUserId);
+        }
+        return users;
     }
 }

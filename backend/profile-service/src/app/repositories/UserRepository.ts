@@ -256,7 +256,7 @@ export default class UserRepository {
         }
     }
 
-    public async getUsers(): Promise<object[]> {
+    public async getUsers(): Promise<IUser[]> {
         try {
             const users = await User.find().select('_id username email image').exec();
             return users;

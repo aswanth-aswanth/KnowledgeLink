@@ -31,7 +31,7 @@ const savePostController = new SavePostController();
 
 profileRouter.post("/subscribe", authMiddleware, subscribeController.handle);
 profileRouter.post("/unsubscribe", authMiddleware, unSubscribeRoadmapController.handle);
-profileRouter.get("/users", getUsersController.handle);
+profileRouter.get("/users", nonAuthMiddleware, getUsersController.handle);
 profileRouter.get("/users/paginated", getPaginatedUsersController.handle);
 profileRouter.get("/search", getSearchUsersController.handle);
 profileRouter.get("/user/:id", nonAuthMiddleware, getSingleUserController.handle);
