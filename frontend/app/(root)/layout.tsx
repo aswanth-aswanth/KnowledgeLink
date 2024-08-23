@@ -25,21 +25,17 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
 const LayoutContent = ({ children }: { children: React.ReactNode }) => {
   const { isDarkMode } = useDarkMode();
   const { user, token, isAuthenticated } = useSelector(selectAuthState);
-  const dispatch = useDispatch<AppDispatch>(); // Use AppDispatch directly
+  const dispatch = useDispatch<AppDispatch>();
   const userEmail = user?.email;
   const pathname = usePathname();
 
   useEffect(() => {
     if (isAuthenticated && token) {
-      dispatch(initializeSocket(token)); // No need for ThunkDispatch here
+      dispatch(initializeSocket(token));
     }
   }, [isAuthenticated, token, dispatch]);
 
-  useNotifications(
-    // process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:5004',
-    'https://backend.aswanth.online/socket.io/notification',
-    userEmail as string
-  );
+  useNotifications('https://backend.aswanth.online', userEmail as string);
 
   const isChatPage = pathname === '/chat';
 

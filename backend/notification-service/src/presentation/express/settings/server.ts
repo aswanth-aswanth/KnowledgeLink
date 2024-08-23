@@ -8,22 +8,22 @@ import http from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 import SocketService from '../../../infra/services/SocketService';
 
-const PORT = process.env.PORT || 5003;
+const PORT = process.env.PORT || 5004;
 
 const server = http.createServer(app);
 
 const io = new SocketIOServer(server, {
-    cors: {
-      origin: process.env.FRONTEND_URL || 'https://knowledgelink.up.railway.app',
-      methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-      credentials: true
-    },
-    path: '/socket.io' 
-  });
+  cors: {
+    origin: process.env.FRONTEND_URL || '*',
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    credentials: true
+  },
+  path: '/notification/socket.io'
+});
 
 SocketService.getInstance().setIO(io);
 
 server.listen(PORT, () => {
-    console.log(`notification-service connected to ${PORT}`);
-    connectDB();
+  console.log(`notification-service connected to ${PORT}`);
+  connectDB();
 });
