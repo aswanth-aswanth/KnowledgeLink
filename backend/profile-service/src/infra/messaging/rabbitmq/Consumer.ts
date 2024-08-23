@@ -28,9 +28,9 @@ class Consumer {
             const functionMap: { [key: string]: QueueFunction } = {
                 'profile_queue': this.getSubscribedRoadmaps,
                 'profile_service_queue': this.getAllMembersOfRoadmap,
-                'user.registration.fanout': this.handleUserRegistration,
                 'profile_queue2': this.getFollowingList,
                 'get_saved_posts_queue': this.getSavedPosts,
+                'profile_user_registration_queue': this.handleUserRegistration,
             };
 
             await channel.assertQueue(queue, { durable: true });

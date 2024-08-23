@@ -26,7 +26,7 @@ class Consumer {
             }
 
             const functionMap: { [key: string]: QueueFunction } = {
-                'user.registration': this.handleUserRegistration,
+                'user_registration_queue': this.handleUserRegistration,
             };
 
             channel.assertQueue(queue, { durable: true });

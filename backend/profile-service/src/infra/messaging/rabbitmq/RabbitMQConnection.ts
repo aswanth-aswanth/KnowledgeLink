@@ -28,7 +28,7 @@ class RabbitMQConnection {
 
             await this.channel.assertExchange('user.registration.fanout', 'fanout', { durable: true });
 
-            const queues = ['profile_queue', 'profile_queue2', 'profile_service_queue', 'get_saved_posts_queue'];
+            const queues = ['profile_queue', 'profile_queue2', 'profile_service_queue', 'get_saved_posts_queue', 'profile_user_registration_queue'];
             for (const queue of queues) {
                 await this.channel.assertQueue(queue, { durable: true });
             }
@@ -37,6 +37,7 @@ class RabbitMQConnection {
             await this.channel.bindQueue('profile_queue2', 'user.registration.fanout', '');
             await this.channel.bindQueue('profile_service_queue', 'user.registration.fanout', '');
             await this.channel.bindQueue('get_saved_posts_queue', 'user.registration.fanout', '');
+            await this.channel.bindQueue('profile_user_registration_queue', 'user.registration.fanout', '');
 
             for (const queue of queues) {
                 Consumer.consume(queue);
