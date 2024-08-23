@@ -9,6 +9,10 @@ export function useNotifications(url: string, userEmail: string | null) {
       auth: { token },
       path: '/notify/socket.io',
       withCredentials: true,
+    }); const socket = io(url, {
+      auth: { token },
+      path: '/notify/socket.io',
+      withCredentials: true,
     });
 
     if (userEmail) {
