@@ -3,33 +3,33 @@ import io from 'socket.io-client';
 import toast from 'react-hot-toast';
 
 export function useNotifications(url: string, userEmail: string | null) {
-  const token = localStorage.getItem('token');
-  useEffect(() => {
-    const socket = io(url, {
-      auth: { token },
-      path: '/notify/socket.io',
-      withCredentials: true,
-    });
+  // const token = localStorage.getItem('token');
+  // useEffect(() => {
+  //   const socket = io(url, {
+  //     auth: { token },
+  //     path: '/notify/socket.io',
+  //     withCredentials: true,
+  //   });
 
-    if (userEmail) {
-      socket.emit('register', userEmail);
-    }
+  //   if (userEmail) {
+  //     socket.emit('register', userEmail);
+  //   }
 
-    socket.on('notification', (notification: { type: string; message: string; postId: string }) => {
-      console.count("toast notified2");
-      toast(notification.message, {
-        icon: '👏',
-        duration: 6000,
-        style: {
-          borderRadius: '10px',
-          background: '#333',
-          color: '#fff',
-        },
-      });
-    });
+  //   socket.on('notification', (notification: { type: string; message: string; postId: string }) => {
+  //     console.count("toast notified2");
+  //     toast(notification.message, {
+  //       icon: '👏',
+  //       duration: 6000,
+  //       style: {
+  //         borderRadius: '10px',
+  //         background: '#333',
+  //         color: '#fff',
+  //       },
+  //     });
+  //   });
 
-    return () => {
-      socket.disconnect();
-    };
-  }, [url, userEmail]);
+  //   return () => {
+  //     socket.disconnect();
+  //   };
+  // }, [url, userEmail]);
 }
