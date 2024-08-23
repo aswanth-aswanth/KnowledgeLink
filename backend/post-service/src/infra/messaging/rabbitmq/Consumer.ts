@@ -25,15 +25,13 @@ class Consumer {
             }
 
             const functionMap: { [key: string]: QueueFunction } = {
-                'user.registration': this.handleUserRegistration,
+                'post_service_queue': this.handleUserRegistration,
             };
 
-            channel.assertQueue(queue, { durable: true });
             channel.consume(queue, async (msg) => {
                 if (msg !== null) {
                     console.log(`Message received from queue ${queue}: ${msg.content.toString()}`);
 
-                    // Check if the function exists for the queue
                     if (functionMap[queue]) {
                         await functionMap[queue](msg, channel, userRepository);
                     } else {

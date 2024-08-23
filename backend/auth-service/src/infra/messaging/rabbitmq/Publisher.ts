@@ -21,6 +21,7 @@ class Publisher {
         try {
             const connection = await amqp.connect(process.env.RABBITMQ_URL || 'amqp://localhost:5672');
             this.channel = await connection.createChannel();
+            this.channel.assertExchange('user.registration.fanout', 'fanout', { durable: true });
             console.log('RabbitMQ connected successfully (auth-service)');
             this.retryCount = 0;
         } catch (error) {
@@ -39,14 +40,13 @@ class Publisher {
         }
     }
 
-    async publish(queue: string, message: string) {
+    async publish(message: string) {
         try {
             if (!this.channel) {
                 await this.connect();
             }
-            this.channel.assertQueue(queue, { durable: true });
-            this.channel.sendToQueue(queue, Buffer.from(message), { persistent: true });
-            console.log(`Message sent to queue ${queue}: ${message}`);
+            this.channel.publish('user.registration.fanout', '', Buffer.from(message), { persistent: true });
+            console.log(`Message sent to exchange user.registration.fanout: ${message}`);
         } catch (error) {
             console.error('Failed to publish message:', error);
         }

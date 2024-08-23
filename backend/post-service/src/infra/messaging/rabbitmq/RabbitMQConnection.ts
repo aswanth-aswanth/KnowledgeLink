@@ -24,7 +24,13 @@ class RabbitMQConnection {
             this.connection = await amqp.connect(process.env.RABBITMQ_URL || 'amqp://localhost:5672');
             this.channel = await this.connection.createChannel();
             console.log('RabbitMQ connected successfully (post-service)');
-            Consumer.consume('user.registration');
+
+            const queueName = 'post_service_queue';
+            await this.channel.assertExchange('user.registration.fanout', 'fanout', { durable: true });
+            const q = await this.channel.assertQueue(queueName, { durable: true });
+            await this.channel.bindQueue(q.queue, 'user.registration.fanout', '');
+
+            Consumer.consume(queueName);
         } catch (error) {
             this.retryCount++;
             console.error(`Failed to connect to RabbitMQ (post-service). Attempt ${this.retryCount} of ${this.maxRetries}:`, error);
