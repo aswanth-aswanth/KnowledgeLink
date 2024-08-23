@@ -39,7 +39,6 @@ class SocketService {
         socket.join(chatId);
       });
 
-      // Rest of the code remains the same
     });
 
     this.io.on('connect_error', (error) => {

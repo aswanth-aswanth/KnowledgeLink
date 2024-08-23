@@ -1,6 +1,5 @@
 import amqp from 'amqplib';
 import RabbitMQConnection from './RabbitMQConnection';
-import { ConsumeMessage } from 'amqplib';
 import UserRepository from '../../../app/repositories/UserRepository';
 
 type QueueFunction = (msg: amqp.Message, channel: amqp.Channel, userRepository: UserRepository) => Promise<void>;
@@ -26,7 +25,6 @@ class Consumer {
                 throw new Error('Channel is not available');
             }
 
-            // Define your functions
             const functionMap: { [key: string]: QueueFunction } = {
                 'user.registration': this.handleUserRegistration,
             };
@@ -36,7 +34,6 @@ class Consumer {
                 if (msg !== null) {
                     console.log(`Message received from queue ${queue}: ${msg.content.toString()}`);
 
-                    // Check if the function exists for the queue
                     if (functionMap[queue]) {
                         await functionMap[queue](msg, channel, userRepository);
                     } else {
@@ -49,6 +46,7 @@ class Consumer {
             console.error('Failed to consume message:', error);
         }
     }
+
     private async handleUserRegistration(msg: amqp.Message, channel: amqp.Channel, userRepository: UserRepository) {
         const userData = JSON.parse(msg.content.toString());
         console.log("userData", userData);
@@ -56,9 +54,9 @@ class Consumer {
             const newUser = await userRepository.create({
                 ...userData
             });
-            console.log(`User created in profile service: ${newUser._id}`);
+            console.log(`User created in chat service: ${newUser._id}`);
         } catch (error) {
-            console.error('Failed to create user in profile service:', error);
+            console.error('Failed to create user in chat service:', error);
         }
     }
 }

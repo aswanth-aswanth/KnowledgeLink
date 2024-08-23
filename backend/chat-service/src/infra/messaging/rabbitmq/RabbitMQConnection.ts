@@ -1,5 +1,6 @@
 import amqp from 'amqplib';
 import Consumer from './Consumer';
+
 class RabbitMQConnection {
     private static instance: RabbitMQConnection;
     private connection!: amqp.Connection;
@@ -23,8 +24,17 @@ class RabbitMQConnection {
         try {
             this.connection = await amqp.connect(process.env.RABBITMQ_URL || 'amqp://localhost:5672');
             this.channel = await this.connection.createChannel();
-            console.log('RabbitMQ connected successfully (chat-service)');
+
+            this.channel.assertExchange('user.registration.fanout', 'fanout', { durable: true });
+
+            const queue = await this.channel.assertQueue('', { exclusive: true });
+            await this.channel.bindQueue(queue.queue, 'user.registration.fanout', '');
+
+            Consumer.consume(queue.queue);
             Consumer.consume('user.registration');
+
+            console.log('RabbitMQ connected successfully (chat-service)');
+            this.retryCount = 0;
         } catch (error) {
             this.retryCount++;
             console.error(`Failed to connect to RabbitMQ (chat-service). Attempt ${this.retryCount} of ${this.maxRetries}:`, error);
