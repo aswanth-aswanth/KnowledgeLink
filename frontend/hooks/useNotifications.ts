@@ -7,7 +7,7 @@ export function useNotifications(url: string, userEmail: string | null) {
   useEffect(() => {
     const socket = io(url, {
       auth: { token },
-      path: '/notification/socket.io',
+      path: '/notify/socket.io',
       withCredentials: true,
     });
 

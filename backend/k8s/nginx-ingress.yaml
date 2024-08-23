@@ -65,7 +65,7 @@ spec:
             name: notification-service
             port:
               number: 5004
-      - path: /notification/socket.io(/|$)(.*)
+      - path: /notify/socket.io(/|$)(.*)
         pathType: Prefix
         backend:
           service:

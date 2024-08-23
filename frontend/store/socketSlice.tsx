@@ -4,15 +4,13 @@ import io from 'socket.io-client';
 import { AppDispatch, RootState } from './index';
 import toast from 'react-hot-toast';
 
-// Define a custom socket type if necessary
 interface CustomSocket extends Socket {
-  // Override or add properties if necessary
-  receiveBuffer: any[]; // Adjust this type based on your needs
+  receiveBuffer: any[];
 }
 
 interface SocketState {
-  socket: CustomSocket | null; // Use CustomSocket here
-  lastMessage: any | null; // Consider defining a specific type for messages
+  socket: CustomSocket | null;
+  lastMessage: any | null;
 }
 
 const initialState: SocketState = {
@@ -25,17 +23,16 @@ const socketSlice = createSlice({
   initialState,
   reducers: {
     setSocket: (state, action: PayloadAction<CustomSocket | null>) => {
-      state.socket = action.payload; // No need for type assertion now
+      state.socket = action.payload;
     },
     setLastMessage: (state, action: PayloadAction<any>) => {
-      state.lastMessage = action.payload; // Consider defining a specific type for messages
+      state.lastMessage = action.payload;
     },
   },
 });
 
 export const { setSocket, setLastMessage } = socketSlice.actions;
 
-// Thunk action to initialize the socket connection
 export const initializeSocket = (
   token: string
 ): ThunkAction<
@@ -45,7 +42,6 @@ export const initializeSocket = (
   PayloadAction<CustomSocket | null>
 > => {
   return (dispatch: AppDispatch, getState: () => RootState) => {
-    
     const newSocket = io('https://backend.aswanth.online/chat', {
       path: '/socket.io',
       transports: ['websocket'],
@@ -110,8 +106,7 @@ export const initializeSocket = (
       );
     });
 
-    // Dispatch the setSocket action with the new socket
-    dispatch(setSocket(newSocket as CustomSocket)); // Use type assertion here if necessary
+    dispatch(setSocket(newSocket as CustomSocket));
   };
 };
 

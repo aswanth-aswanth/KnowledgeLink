@@ -18,7 +18,7 @@ const io = new SocketIOServer(server, {
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     credentials: true
   },
-  path: '/notification/socket.io'
+  path: '/notify/socket.io'
 });
 
 SocketService.getInstance().setIO(io);
