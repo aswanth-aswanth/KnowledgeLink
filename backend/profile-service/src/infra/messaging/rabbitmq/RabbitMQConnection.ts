@@ -27,15 +27,20 @@ class RabbitMQConnection {
             console.log('RabbitMQ connected successfully (profile-service)');
 
             await this.channel.assertExchange('user.registration.fanout', 'fanout', { durable: true });
-            const queue = await this.channel.assertQueue('', { exclusive: true });
-            this.channel.bindQueue(queue.queue, 'user.registration.fanout', '');
 
-            Consumer.consume(queue.queue);
+            const queues = ['profile_queue', 'profile_queue2', 'profile_service_queue', 'get_saved_posts_queue'];
+            for (const queue of queues) {
+                await this.channel.assertQueue(queue, { durable: true });
+            }
 
-            Consumer.consume('profile_queue');
-            Consumer.consume('profile_queue2');
-            Consumer.consume('profile_service_queue');
-            Consumer.consume('get_saved_posts_queue');
+            await this.channel.bindQueue('profile_queue', 'user.registration.fanout', '');
+            await this.channel.bindQueue('profile_queue2', 'user.registration.fanout', '');
+            await this.channel.bindQueue('profile_service_queue', 'user.registration.fanout', '');
+            await this.channel.bindQueue('get_saved_posts_queue', 'user.registration.fanout', '');
+
+            for (const queue of queues) {
+                Consumer.consume(queue);
+            }
         } catch (error) {
             this.retryCount++;
             console.error(`Failed to connect to RabbitMQ (profile-service). Attempt ${this.retryCount} of ${this.maxRetries}:`, error);

@@ -28,12 +28,12 @@ class Consumer {
             const functionMap: { [key: string]: QueueFunction } = {
                 'profile_queue': this.getSubscribedRoadmaps,
                 'profile_service_queue': this.getAllMembersOfRoadmap,
-                'user.registration': this.handleUserRegistration,
+                'user.registration.fanout': this.handleUserRegistration,
                 'profile_queue2': this.getFollowingList,
                 'get_saved_posts_queue': this.getSavedPosts,
             };
 
-            channel.assertQueue(queue, { durable: true });
+            await channel.assertQueue(queue, { durable: true });
             channel.consume(queue, async (msg) => {
                 if (msg !== null) {
                     console.log(`Message received from queue ${queue}: ${msg.content.toString()}`);
