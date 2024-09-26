@@ -46,7 +46,6 @@ export const initializeSocket = (
       path: '/socket.io',
       transports: ['websocket'],
       auth: { token },
-      secure: true,
       withCredentials: true,
     });
 

@@ -16,7 +16,7 @@ const RoadmapViewer: React.FC<RoadmapViewerProps> = ({
     <div
       className={`nested-note-taker sm:rounded-xl ${
         isDarkMode ? 'bg-gray-800 shadow-lg' : 'bg-white shadow-sm'
-      } p-0 sm:p-6`}
+      } p-0 sm:p-6 lg:px-[120px]`}
     >
       <h1
         className={`text-2xl px-2 pt-5 sm:px-0 sm:pt-0 font-bold mb-4 ${

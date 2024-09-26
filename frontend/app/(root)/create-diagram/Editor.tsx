@@ -59,6 +59,7 @@ const Editor: React.FC = () => {
 
   const svgRef = useRef<SVGSVGElement>(null);
   const editorData = useSelector((state: RootState) => state.topics.editorData);
+  console.log('EditorData : ', editorData);
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
   );
@@ -147,12 +148,11 @@ const Editor: React.FC = () => {
       />
       <svg
         ref={svgRef}
-        width="100%"
         height={svgHeight}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseDown={handleMouseDown}
-        className="p-4"
+        className="p-4 w-[74%] mx-auto"
         style={{ transform: `scale(${scale})`, transformOrigin: 'top' }}
       >
         {connections.map((conn, index) => (

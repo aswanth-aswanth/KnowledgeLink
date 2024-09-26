@@ -13,16 +13,14 @@ const PORT = process.env.PORT || 5005;
 const server = http.createServer(app);
 
 const io = new SocketIOServer(server, {
-  path: '/socket.io',
   cors: {
-    origin: '*',
-    methods: ['GET', 'POST','PUT','PATCH','DELETE'],
-    credentials: true,
-  },
+    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    credentials: true
+  }
 });
 
-const chatNamespace: Namespace = io.of('/chat');
-SocketService.getInstance().setIO(chatNamespace);
+SocketService.getInstance().setIO(io);
 
 server.listen(PORT, () => {
   console.log(`chat-service connected to ${PORT}`);

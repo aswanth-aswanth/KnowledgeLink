@@ -1,5 +1,5 @@
-import React from "react";
-import { ConnectionProps } from "@/types/roadmap";
+import React from 'react';
+import { ConnectionProps } from '@/types/roadmap';
 
 const Connection: React.FC<ConnectionProps> = ({
   connection,
@@ -26,15 +26,15 @@ const Connection: React.FC<ConnectionProps> = ({
   let stroke: string;
   let strokeWidth: string;
 
-  if (connection.style === "straight") {
+  if (connection.style === 'straight') {
     const curveX1 = startX + (midX - startX) / 2;
     const curveY1 = startY - 88;
     const curveX2 = endX - (endX - midX) / 2;
     const curveY2 = endY + 90;
     pathD = `M${startX},${startY} C${curveX1},${curveY1} ${curveX2},${curveY2} ${endX},${endY}`;
-    strokeDasharray = "0 0";
-    stroke = "url(#straightLineGradient)";
-    strokeWidth = "7";
+    strokeDasharray = '0 0';
+    stroke = 'url(#straightLineGradient)';
+    strokeWidth = '7';
   } else {
     const controlPointFactorX = 0.2;
     const controlPointFactorY = 0.6;
@@ -44,9 +44,9 @@ const Connection: React.FC<ConnectionProps> = ({
     },${startY + (endY - startY) * controlPointFactorY} ${
       endX - (endX - startX) * controlPointFactorX
     },${endY - (endY - startY) * controlPointFactorY} ${endX},${endY}`;
-    strokeDasharray = "10 8";
-    stroke = "url(#lineGradient)";
-    strokeWidth = "3";
+    strokeDasharray = '10 8';
+    stroke = 'url(#lineGradient)';
+    strokeWidth = '3';
   }
 
   return (
@@ -83,7 +83,7 @@ const Connection: React.FC<ConnectionProps> = ({
             fill="red"
             stroke="white"
             strokeWidth="2"
-            style={{ cursor: "pointer" }}
+            style={{ cursor: 'pointer' }}
             onClick={onDelete}
           />
           <circle
@@ -93,10 +93,10 @@ const Connection: React.FC<ConnectionProps> = ({
             fill="blue"
             stroke="white"
             strokeWidth="2"
-            style={{ cursor: "pointer" }}
+            style={{ cursor: 'pointer' }}
             onClick={() =>
               onChangeStyle(
-                connection.style === "straight" ? "curved" : "straight"
+                connection.style === 'straight' ? 'curved' : 'straight'
               )
             }
           />

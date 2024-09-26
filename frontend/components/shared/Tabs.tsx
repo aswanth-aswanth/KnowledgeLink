@@ -37,7 +37,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs, activeTab, onTabClick, tabFor }) => {
             ${tabFor === 'explore' ? 'flex-1' : 'px-4 py-2'}`}
         >
           <span className="text-lg hidden md:inline">{tab.icon}</span>
-          <span className="font-medium text-white text-xs sm:text-sm md:text-lg">
+          <span className="font-medium dark:text-white text-xs sm:text-sm md:text-lg">
             {tab.name}
           </span>
           <span
