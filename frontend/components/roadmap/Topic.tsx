@@ -26,7 +26,7 @@ const Topic: React.FC<TopicPropsRoadmapViewer> = ({
   } = useTopic(topic, expandedTopics, onContentChange);
 
   return (
-    <div className="topic-node mb-1 ml-2 sm:ml-6">
+    <div className="topic-node mb-1 ml-3 sm:ml-6">
       <TopicHeader
         topicName={topic.name}
         level={level}
@@ -55,20 +55,20 @@ const Topic: React.FC<TopicPropsRoadmapViewer> = ({
               topicContent={topic.content}
             />
           )}
-          {topic.children.map((child, index) => (
-            <Topic
-              key={child.uniqueId}
-              topic={child}
-              level={`${level}-${index + 1}`}
-              expandedTopics={expandedTopics}
-              setExpandedTopics={setExpandedTopics}
-              isEditMode={isEditMode}
-              onContentChange={onContentChange}
-              roadmapId={roadmapId}
-            />
-          ))}
         </>
       )}
+      {topic.children.map((child, index) => (
+        <Topic
+          key={child.uniqueId}
+          topic={child}
+          level={`${level}-${index + 1}`}
+          expandedTopics={expandedTopics}
+          setExpandedTopics={setExpandedTopics}
+          isEditMode={isEditMode}
+          onContentChange={onContentChange}
+          roadmapId={roadmapId}
+        />
+      ))}
     </div>
   );
 };
