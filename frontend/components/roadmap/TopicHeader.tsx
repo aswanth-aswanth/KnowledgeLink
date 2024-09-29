@@ -40,7 +40,7 @@ const TopicHeader: React.FC<TopicHeaderProps> = ({
       {topicName}
     </span>
     <span
-      className={`text-xs mr-2 ${
+      className={`hidden md:block text-xs mr-2 ${
         isDarkMode ? 'text-gray-500' : 'text-gray-400'
       }`}
     >
