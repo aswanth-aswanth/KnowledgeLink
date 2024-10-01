@@ -132,7 +132,7 @@ export default function RoadmapContent() {
   return (
     <div>
       {isDiagramLoading ? (
-        <Skeleton className="w-full h-screen bg-slate-300" />
+        <Skeleton className="w-full h-screen dark:bg-slate-300" />
       ) : rectangles.length > 0 ? (
         <ViewDiagram
           rectangles={rectangles}
