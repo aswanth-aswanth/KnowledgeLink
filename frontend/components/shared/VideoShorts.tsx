@@ -195,9 +195,15 @@ export default function VideoShorts() {
   if (isLoading) {
     return (
       <div className="w-full overflow-x-auto scrollbar-none">
+        <p className="dark:text-white font-medium text-lg mt-6 mb-8">
+          Recommended for you
+        </p>
         <div className="flex space-x-4 pb-4" style={{ width: 'max-content' }}>
           {[...Array(5)].map((_, index) => (
-            <Skeleton key={index} className="w-56 h-[27rem] rounded-xl bg-slate-300" />
+            <Skeleton
+              key={index}
+              className="w-56 h-[27rem] rounded-xl bg-slate-300"
+            />
           ))}
         </div>
       </div>
