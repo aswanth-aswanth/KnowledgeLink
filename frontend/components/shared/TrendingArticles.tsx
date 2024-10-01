@@ -56,7 +56,7 @@ const TrendingArticles = () => {
 
   const SkeletonCard = () => (
     <Card
-      className={`flex min-h-[305px] flex-col ${
+      className={`flex min-h-[305px] border dark:border-gray-700 flex-col ${
         isDarkMode ? 'bg-gray-800' : 'bg-white'
       }`}
     >
