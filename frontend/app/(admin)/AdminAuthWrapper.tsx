@@ -1,16 +1,16 @@
-"use client";
-import { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { checkTokenExpiration } from "@/store/authSlice";
-import { selectAuthState } from "@/store/selectors";
-import SignIn from "@/components/auth/SignIn";
+'use client';
+import { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { checkTokenExpiration } from '@/store/authSlice';
+import { selectAuthState } from '@/store/selectors';
+import SignIn from '@/components/auth/SignIn';
 
 const AdminAuthWrapper = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
   const { isAuthenticated, user } = useSelector(selectAuthState);
   const dispatch = useDispatch();
-  console.log("isAuthenticated : ", isAuthenticated);
-  console.log("user : ", user);
+  console.log('isAuthenticated : ', isAuthenticated);
+  console.log('user : ', user);
 
   useEffect(() => {
     dispatch(checkTokenExpiration());
@@ -18,10 +18,10 @@ const AdminAuthWrapper = ({ children }: { children: React.ReactNode }) => {
   }, [dispatch]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="dark:text-white">Loading...</div>;
   }
 
-  if (!isAuthenticated || !user || user.role !== "admin") {
+  if (!isAuthenticated || !user || user.role !== 'admin') {
     return <SignIn />;
   }
 

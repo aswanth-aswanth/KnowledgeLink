@@ -51,13 +51,13 @@ export default function Roadmaps() {
   ];
 
   const SkeletonRoadmapItem = () => (
-    <div className="border rounded-lg p-4 shadow-sm w-full md:w-[calc(33.333%-1rem)] mb-4">
-      <Skeleton className="h-6 w-3/4 mb-2" />
-      <Skeleton className="h-4 w-full mb-2" />
-      <Skeleton className="h-4 w-5/6 mb-2" />
+    <div className="border rounded-xl p-4 shadow-sm w-full md:w-[calc(33.333%-1rem)] mb-4">
+      <Skeleton className="rounded-xl bg-slate-300 h-6 w-3/4 mb-2" />
+      <Skeleton className="rounded-xl bg-slate-300 h-4 w-full mb-2" />
+      <Skeleton className="rounded-xl bg-slate-300 h-4 w-5/6 mb-2" />
       <div className="flex justify-between items-center mt-4">
-        <Skeleton className="h-4 w-16" />
-        <Skeleton className="h-8 w-24" />
+        <Skeleton className="rounded-xl bg-slate-300 h-4 w-16" />
+        <Skeleton className="rounded-xl bg-slate-300 h-8 w-24" />
       </div>
     </div>
   );

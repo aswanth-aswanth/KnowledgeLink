@@ -166,7 +166,7 @@ export default function VideoShorts() {
           <CardContent className="p-0 h-full w-auto">
             <div className="relative w-full h-[86%]">
               {!isVideoLoaded && (
-                <Skeleton className="absolute inset-0 w-full h-full rounded-xl" />
+                <Skeleton className="bg-slate-300 absolute inset-0 w-full h-full rounded-xl" />
               )}
               <video
                 src={video.videoUrl}
@@ -197,7 +197,7 @@ export default function VideoShorts() {
       <div className="w-full overflow-x-auto scrollbar-none">
         <div className="flex space-x-4 pb-4" style={{ width: 'max-content' }}>
           {[...Array(5)].map((_, index) => (
-            <Skeleton key={index} className="w-56 h-[27rem] rounded-xl" />
+            <Skeleton key={index} className="w-56 h-[27rem] rounded-xl bg-slate-300" />
           ))}
         </div>
       </div>

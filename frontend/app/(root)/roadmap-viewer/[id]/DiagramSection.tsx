@@ -9,7 +9,7 @@ export default function DiagramSection({
   roadmapData,
 }: DiagramSectionProps) {
   if (isDiagramLoading) {
-    return <Skeleton className="w-full h-[90.9vh]" />;
+    return <Skeleton className="w-full h-[90.9vh] bg-slate-300" />;
   }
 
   if (rectangles.length > 0) {

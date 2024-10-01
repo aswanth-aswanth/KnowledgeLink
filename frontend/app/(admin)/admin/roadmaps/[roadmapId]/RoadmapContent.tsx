@@ -126,13 +126,13 @@ export default function RoadmapContent() {
   };
 
   if (!roadmapData) {
-    return <div>Loading...</div>;
+    return <div className='dark:text-white'>Loading...</div>;
   }
 
   return (
     <div>
       {isDiagramLoading ? (
-        <Skeleton className="w-full h-screen" />
+        <Skeleton className="w-full h-screen bg-slate-300" />
       ) : rectangles.length > 0 ? (
         <ViewDiagram
           rectangles={rectangles}

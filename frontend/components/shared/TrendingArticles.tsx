@@ -61,18 +61,18 @@ const TrendingArticles = () => {
       }`}
     >
       <CardHeader className="pb-2">
-        <Skeleton className="h-6 w-3/4 mb-2" />
+        <Skeleton className="rounded-xl bg-slate-300 h-6 w-3/4 mb-2" />
       </CardHeader>
       <CardContent className="flex-grow p-3">
-        <Skeleton className="h-4 w-5/6 mb-2" />
-        <Skeleton className="h-4 w-full mb-2" />
-        <Skeleton className="h-4 w-4/5 mb-2" />
-        <Skeleton className="h-4 w-3/4" />
+        <Skeleton className="rounded-xl bg-slate-300 h-4 w-5/6 mb-2" />
+        <Skeleton className="rounded-xl bg-slate-300 h-4 w-full mb-2" />
+        <Skeleton className="rounded-xl bg-slate-300 h-4 w-4/5 mb-2" />
+        <Skeleton className="rounded-xl bg-slate-300 h-4 w-3/4" />
       </CardContent>
       <CardFooter className="mt-auto pt-4 border-t border-gray-200 dark:border-gray-700">
         <div className="flex items-center justify-between w-full">
-          <Skeleton className="h-4 w-1/3" />
-          <Skeleton className="h-4 w-1/4" />
+          <Skeleton className="rounded-xl bg-slate-300 h-4 w-1/3" />
+          <Skeleton className="rounded-xl bg-slate-300 h-4 w-1/4" />
         </div>
       </CardFooter>
     </Card>

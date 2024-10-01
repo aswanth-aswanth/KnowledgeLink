@@ -28,9 +28,9 @@ export default function PopularContributors() {
 
   const ContributorSkeleton = () => (
     <div className="flex flex-col items-center text-center w-max">
-      <Skeleton className="h-20 w-20 rounded-full" />
-      <Skeleton className="h-4 w-24 mt-2" />
-      <Skeleton className="h-3 w-32 mt-2" />
+      <Skeleton className="bg-slate-300 h-20 w-20 rounded-full" />
+      <Skeleton className="bg-slate-300 h-4 w-24 mt-2" />
+      <Skeleton className="bg-slate-300 h-3 w-32 mt-2" />
     </div>
   );
 
