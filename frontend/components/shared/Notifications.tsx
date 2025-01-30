@@ -1,19 +1,19 @@
-import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { GoBell } from "react-icons/go";
+import { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { GoBell } from 'react-icons/go';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { Notification } from "@/types/NotificationTypes";
+} from '@/components/ui/popover';
+import { Notification } from '@/types/NotificationTypes';
 import {
   getNotifications,
   getNotificationCount,
   markNotificationsAsRead,
-} from "@/api/notificationApi";
-import { useDarkMode } from "@/hooks/useDarkMode";
+} from '@/api';
+import { useDarkMode } from '@/hooks/useDarkMode';
 
 export default function NotificationPopover() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -43,7 +43,7 @@ export default function NotificationPopover() {
         .map((notification: Notification) => notification._id);
       setNewlyDisplayedIds(newIds);
     } catch (error) {
-      console.error("Error fetching notifications:", error);
+      console.error('Error fetching notifications:', error);
     }
   };
 
@@ -52,7 +52,7 @@ export default function NotificationPopover() {
       const response = await getNotificationCount();
       setDisplayCount(response.unReadCount);
     } catch (error) {
-      console.error("Error fetching notifications:", error);
+      console.error('Error fetching notifications:', error);
     }
   };
 
@@ -78,7 +78,7 @@ export default function NotificationPopover() {
       // Update the notification count
       fetchNotificationCount();
     } catch (error) {
-      console.log("Error marking notifications as read:", error);
+      console.log('Error marking notifications as read:', error);
     }
   };
 
@@ -97,13 +97,13 @@ export default function NotificationPopover() {
           variant="outline"
           className={`p-2 sm:p-4 outline-none border-none relative ${
             isDarkMode
-              ? "bg-gray-800 hover:bg-gray-700"
-              : "bg-white hover:bg-gray-100"
+              ? 'bg-gray-800 hover:bg-gray-700'
+              : 'bg-white hover:bg-gray-100'
           } transition duration-300 ease-in-out`}
         >
           <GoBell
             className={`text-xl ${
-              isDarkMode ? "text-gray-200" : "text-gray-600"
+              isDarkMode ? 'text-gray-200' : 'text-gray-600'
             }`}
           />
           {/* {nottionifications?.filter((n) => !n.read)?.length > 0 && ( */}
@@ -117,17 +117,17 @@ export default function NotificationPopover() {
       </PopoverTrigger>
       <PopoverContent
         className={`w-96 ${
-          isDarkMode ? "bg-gray-800" : "bg-white"
+          isDarkMode ? 'bg-gray-800' : 'bg-white'
         } p-0 rounded-lg shadow-xl`}
       >
         <div
           className={`p-4 border-b ${
-            isDarkMode ? "border-gray-700" : "border-gray-200"
+            isDarkMode ? 'border-gray-700' : 'border-gray-200'
           }`}
         >
           <h4
             className={`font-medium text-lg ${
-              isDarkMode ? "text-white" : "text-gray-900"
+              isDarkMode ? 'text-white' : 'text-gray-900'
             }`}
           >
             Notifications
@@ -140,48 +140,48 @@ export default function NotificationPopover() {
                 <div
                   key={notification?._id}
                   className={`p-4 border-b ${
-                    isDarkMode ? "border-gray-700" : "border-gray-200"
+                    isDarkMode ? 'border-gray-700' : 'border-gray-200'
                   } 
                     ${
                       notification.read
                         ? isDarkMode
-                          ? "bg-gray-800"
-                          : "bg-white"
+                          ? 'bg-gray-800'
+                          : 'bg-white'
                         : isDarkMode
-                        ? "bg-blue-900"
-                        : "bg-blue-50"
+                        ? 'bg-blue-900'
+                        : 'bg-blue-50'
                     } transition duration-300 ease-in-out hover:${
-                    isDarkMode ? "bg-gray-700" : "bg-gray-50"
+                    isDarkMode ? 'bg-gray-700' : 'bg-gray-50'
                   }`}
                 >
                   <div className="flex items-start">
                     <div
                       className={`flex-shrink-0 h-10 w-10 rounded-full flex items-center justify-center 
                       ${
-                        notification.type === "like"
+                        notification.type === 'like'
                           ? isDarkMode
-                            ? "bg-red-900 text-red-200"
-                            : "bg-red-100 text-red-600"
+                            ? 'bg-red-900 text-red-200'
+                            : 'bg-red-100 text-red-600'
                           : isDarkMode
-                          ? "bg-blue-900 text-blue-200"
-                          : "bg-blue-100 text-blue-600"
+                          ? 'bg-blue-900 text-blue-200'
+                          : 'bg-blue-100 text-blue-600'
                       }`}
                     >
                       <span className="text-xl">
-                        {notification.type === "like" ? "❤️" : "💬"}
+                        {notification.type === 'like' ? '❤️' : '💬'}
                       </span>
                     </div>
                     <div className="ml-3 flex-1">
                       <p
                         className={`text-sm font-medium ${
-                          isDarkMode ? "text-white" : "text-gray-900"
+                          isDarkMode ? 'text-white' : 'text-gray-900'
                         }`}
                       >
                         {notification.content}
                       </p>
                       <p
                         className={`text-xs ${
-                          isDarkMode ? "text-gray-400" : "text-gray-500"
+                          isDarkMode ? 'text-gray-400' : 'text-gray-500'
                         } mt-1`}
                       >
                         {new Date(notification.createdAt).toLocaleString()}
@@ -192,8 +192,8 @@ export default function NotificationPopover() {
                         className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium 
                         ${
                           isDarkMode
-                            ? "bg-green-800 text-green-100"
-                            : "bg-green-100 text-green-800"
+                            ? 'bg-green-800 text-green-100'
+                            : 'bg-green-100 text-green-800'
                         }`}
                       >
                         New
@@ -210,8 +210,8 @@ export default function NotificationPopover() {
                     }
                     className={`${
                       isDarkMode
-                        ? "bg-blue-600 hover:bg-blue-700 text-white"
-                        : "bg-blue-100 hover:bg-blue-200 text-blue-600"
+                        ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                        : 'bg-blue-100 hover:bg-blue-200 text-blue-600'
                     } transition duration-300 ease-in-out`}
                   >
                     Load More
@@ -222,7 +222,7 @@ export default function NotificationPopover() {
           ) : (
             <p
               className={`text-sm ${
-                isDarkMode ? "text-gray-400" : "text-gray-500"
+                isDarkMode ? 'text-gray-400' : 'text-gray-500'
               } p-4`}
             >
               No notifications

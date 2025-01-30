@@ -1,9 +1,14 @@
-import { useState, useEffect, useRef, useCallback } from "react";
-import { jwtDecode } from "jwt-decode";
-import { useRouter } from "next/navigation";
-import { useDarkMode } from "@/hooks/useDarkMode";
-import { deleteMessage, fetchChatMessages } from "@/api/chatWindow";
-import { Message, EncapsulatedMessage, Chat, ChatWindowProps } from "@/types/chatwindow";
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { jwtDecode } from 'jwt-decode';
+import { useRouter } from 'next/navigation';
+import { useDarkMode } from '@/hooks/useDarkMode';
+import { deleteMessage, fetchChatMessages } from '@/api';
+import {
+  Message,
+  EncapsulatedMessage,
+  Chat,
+  ChatWindowProps,
+} from '@/types/chatwindow';
 
 export const useChatWindow = ({
   selectedChatId,
@@ -14,7 +19,7 @@ export const useChatWindow = ({
   userChats,
 }: ChatWindowProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
-  const [newMessage, setNewMessage] = useState("");
+  const [newMessage, setNewMessage] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [selectedUser, setSelectedUser] = useState<Chat | null>(null);
@@ -23,7 +28,7 @@ export const useChatWindow = ({
   const { isDarkMode } = useDarkMode();
 
   const scrollToBottom = useCallback(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
   const getCurrentUserId = useCallback(() => {
@@ -31,7 +36,7 @@ export const useChatWindow = ({
       const decodedToken: any = jwtDecode(token);
       return decodedToken.userId;
     } catch (error) {
-      console.error("Error decoding token:", error);
+      console.error('Error decoding token:', error);
       return null;
     }
   }, [token]);
@@ -53,7 +58,7 @@ export const useChatWindow = ({
           setMessages(response);
           scrollToBottom();
         } catch (error) {
-          console.error("Error fetching messages:", error);
+          console.error('Error fetching messages:', error);
         }
       };
 
@@ -113,14 +118,14 @@ export const useChatWindow = ({
         }
       };
 
-      socket.on("new_message", newMessageHandler);
-      socket.on("message_read", messageReadHandler);
-      socket.on("delete_message", messageDeletedHandler);
+      socket.on('new_message', newMessageHandler);
+      socket.on('message_read', messageReadHandler);
+      socket.on('delete_message', messageDeletedHandler);
 
       return () => {
-        socket.off("new_message", newMessageHandler);
-        socket.off("message_read", messageReadHandler);
-        socket.off("delete_message", messageDeletedHandler);
+        socket.off('new_message', newMessageHandler);
+        socket.off('message_read', messageReadHandler);
+        socket.off('delete_message', messageDeletedHandler);
       };
     }
   }, [socket, selectedChatId, scrollToBottom]);
@@ -128,14 +133,14 @@ export const useChatWindow = ({
   const handleSend = async () => {
     if (newMessage.trim() && selectedChatId) {
       sendMessage(selectedChatId, newMessage);
-      setNewMessage("");
+      setNewMessage('');
     }
   };
 
   const formatTime = (timestamp: string) => {
-    return new Date(timestamp).toLocaleString("en-US", {
-      hour: "numeric",
-      minute: "numeric",
+    return new Date(timestamp).toLocaleString('en-US', {
+      hour: 'numeric',
+      minute: 'numeric',
       hour12: true,
     });
   };
@@ -157,7 +162,7 @@ export const useChatWindow = ({
     if (containerBottom >= containerHeight - 100) {
       messages.forEach((message) => {
         if (message.readBy.length === 0 && message.senderId !== currentUserId) {
-          socket?.emit("message_read", {
+          socket?.emit('message_read', {
             chatId: message.chatId,
             messageId: message.id,
           });
@@ -170,7 +175,7 @@ export const useChatWindow = ({
     try {
       if (selectedChatId) await deleteMessage(selectedChatId, messageId);
     } catch (error) {
-      console.error("Error deleting message:", error);
+      console.error('Error deleting message:', error);
     }
   };
 

@@ -1,28 +1,28 @@
-import { useState, useCallback, useEffect } from "react";
-import { useDebounce } from "use-debounce";
-import { User, GroupChat, Chat, EncapsulatedMessage } from "@/types/chat";
+import { useState, useCallback, useEffect } from 'react';
+import { useDebounce } from 'use-debounce';
+import { User, GroupChat, Chat, EncapsulatedMessage } from '@/types/chat';
 import {
   createGroup,
   fetchGroupChats,
   getSearchUsers,
   startConversation,
-} from "@/api/chat";
-import apiClient from "@/api/apiClient";
+} from '@/api';
+import apiClient from '@/api/apiClient';
 
 export const useSidebarLogic = (
   socket: any,
   setUserChats: React.Dispatch<React.SetStateAction<Chat[]>>
 ) => {
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const [isCreateGroupModalOpen, setIsCreateGroupModalOpen] = useState(false);
-  const [groupName, setGroupName] = useState("");
+  const [groupName, setGroupName] = useState('');
   const [selectedParticipants, setSelectedParticipants] = useState<string[]>(
     []
   );
-  const [modalSearchTerm, setModalSearchTerm] = useState("");
+  const [modalSearchTerm, setModalSearchTerm] = useState('');
   const [debouncedModalSearchTerm] = useDebounce(modalSearchTerm, 300);
   const [modalSearchResults, setModalSearchResults] = useState<User[]>([]);
   const [groupChats, setGroupChats] = useState<GroupChat[]>([]);
@@ -37,7 +37,7 @@ export const useSidebarLogic = (
           setSearchResults(data);
         }
       } catch (error) {
-        console.error("Error fetching search results:", error);
+        console.error('Error fetching search results:', error);
       }
     } else {
       if (forModal) {
@@ -51,21 +51,21 @@ export const useSidebarLogic = (
   const handleStartConversation = useCallback(async (participantId: string) => {
     try {
       const response = await startConversation(participantId);
-      console.log("Response : ", response);
+      console.log('Response : ', response);
     } catch (error) {
-      console.error("Error starting conversation:", error);
+      console.error('Error starting conversation:', error);
     }
   }, []);
 
   const handleCreateGroup = useCallback(async () => {
     try {
       const response = await createGroup(groupName, selectedParticipants);
-      console.log("Group created:", response);
+      console.log('Group created:', response);
       setIsCreateGroupModalOpen(false);
-      setGroupName("");
+      setGroupName('');
       setSelectedParticipants([]);
     } catch (error) {
-      console.error("Error creating group:", error);
+      console.error('Error creating group:', error);
     }
   }, [groupName, selectedParticipants]);
 
@@ -80,15 +80,15 @@ export const useSidebarLogic = (
   const fetchGroupChat = useCallback(async () => {
     try {
       const response = await fetchGroupChats();
-      console.log("response : group : ", response);
+      console.log('response : group : ', response);
       setGroupChats(response);
     } catch (error) {
-      console.error("Error fetching group chats:", error);
+      console.error('Error fetching group chats:', error);
     }
   }, []);
 
   const clearSearch = useCallback(() => {
-    setSearchTerm("");
+    setSearchTerm('');
     setSearchResults([]);
     setIsSearchExpanded(false);
   }, []);
@@ -98,15 +98,15 @@ export const useSidebarLogic = (
       const newMessageHandler = (encapsulatedMessage: EncapsulatedMessage) => {
         Object.keys(encapsulatedMessage).forEach((key) => {
           const message = encapsulatedMessage[key];
-          console.log("newMessage received in Sidebar.tsx : ", message);
+          console.log('newMessage received in Sidebar.tsx : ', message);
           setUserChats((prevChats) =>
             prevChats.map((chat) =>
               chat.chatId === message.chatId
                 ? {
-                  ...chat,
-                  lastMessage: message.content,
-                  updatedAt: message.createdAt,
-                }
+                    ...chat,
+                    lastMessage: message.content,
+                    updatedAt: message.createdAt,
+                  }
                 : chat
             )
           );
@@ -129,10 +129,10 @@ export const useSidebarLogic = (
                     prevChats.map((c) =>
                       c.chatId === chatId
                         ? {
-                          ...c,
-                          lastMessage: newLastMessage.content,
-                          updatedAt: newLastMessage.createdAt,
-                        }
+                            ...c,
+                            lastMessage: newLastMessage.content,
+                            updatedAt: newLastMessage.createdAt,
+                          }
                         : c
                     )
                   );
@@ -144,12 +144,12 @@ export const useSidebarLogic = (
         );
       };
 
-      socket.on("new_message", newMessageHandler);
-      socket.on("delete_message", deleteMessageHandler);
+      socket.on('new_message', newMessageHandler);
+      socket.on('delete_message', deleteMessageHandler);
 
       return () => {
-        socket.off("new_message", newMessageHandler);
-        socket.off("delete_message", deleteMessageHandler);
+        socket.off('new_message', newMessageHandler);
+        socket.off('delete_message', deleteMessageHandler);
       };
     }
   }, [socket, setUserChats]);
@@ -159,8 +159,8 @@ export const useSidebarLogic = (
       const response = await apiClient.get(`/chat/${chatId}/messages?limit=1`);
       return response.data[0];
     } catch (error) {
-      console.error("Error fetching new last message:", error);
-      return { content: "No messages", createdAt: new Date().toISOString() };
+      console.error('Error fetching new last message:', error);
+      return { content: 'No messages', createdAt: new Date().toISOString() };
     }
   };
 
@@ -187,6 +187,6 @@ export const useSidebarLogic = (
     handleCreateGroup,
     toggleParticipant,
     fetchGroupChat,
-    clearSearch
+    clearSearch,
   };
 };

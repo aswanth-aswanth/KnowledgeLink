@@ -1,19 +1,19 @@
-import { useState, useCallback } from "react";
-import { Chat } from "@/types/chat";
-import { fetchUserChat } from "@/api/chat/fetchUserChats";
+import { useState, useCallback } from 'react';
+import { Chat } from '@/types/chat';
+import { fetchUserChat } from '@/api';
 
 export default function useChat() {
-    const [userChats, setUserChats] = useState<Chat[]>([]);
+  const [userChats, setUserChats] = useState<Chat[]>([]);
 
-    const fetchUserChats = useCallback(async () => {
-        try {
-            const chat = await fetchUserChat();
-            console.log("data : ", chat);
-            setUserChats(chat);
-        } catch (error) {
-            console.error("Error fetching user chats:", error);
-        }
-    }, []);
+  const fetchUserChats = useCallback(async () => {
+    try {
+      const chat = await fetchUserChat();
+      console.log('data : ', chat);
+      setUserChats(chat);
+    } catch (error) {
+      console.error('Error fetching user chats:', error);
+    }
+  }, []);
 
-    return { userChats, setUserChats, fetchUserChats };
+  return { userChats, setUserChats, fetchUserChats };
 }

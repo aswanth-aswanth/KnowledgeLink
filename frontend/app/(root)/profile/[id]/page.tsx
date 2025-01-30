@@ -5,14 +5,8 @@ import { FaUserCircle, FaUsers, FaNewspaper } from 'react-icons/fa';
 import { useDarkMode } from '@/hooks/useDarkMode';
 import { usePathname } from 'next/navigation';
 import { PostFeed } from './PostFeed';
-import {
-  getUserProfile,
-  followUser,
-  getFollowers,
-  getFollowings,
-} from '@/api/userApi';
+import { getUserProfile, followUser, getFollowers, getFollowings } from '@/api';
 import FollowList from './FollowList';
-import { getUserPosts } from '@/api/postApi';
 import { User } from '@/types/userTypes';
 import { Post } from '@/types/postTypes';
 

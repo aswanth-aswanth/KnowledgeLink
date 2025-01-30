@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
-import { useParams, usePathname } from "next/navigation";
-import { useToast } from "@/components/ui/use-toast";
+import { useState, useEffect } from 'react';
+import { useParams, usePathname } from 'next/navigation';
+import { useToast } from '@/components/ui/use-toast';
 import {
   fetchDiagramData,
   fetchRoadmapData,
   submitRoadmapContribution,
-} from "@/api/roadmapViewer";
+} from '@/api';
 
 export function useRoadmapContent() {
   const params = useParams<{ id: string }>();
@@ -13,7 +13,9 @@ export function useRoadmapContent() {
   const [roadmapData, setRoadmapData] = useState<any | null>(null);
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
-  const [contributions, setContributions] = useState<Record<string, string>>({});
+  const [contributions, setContributions] = useState<Record<string, string>>(
+    {}
+  );
   const [rectangles, setRectangles] = useState<any[]>([]);
   const [connections, setConnections] = useState<any[]>([]);
   const [isDiagramLoading, setIsDiagramLoading] = useState<boolean>(true);
@@ -28,7 +30,7 @@ export function useRoadmapContent() {
           setRoadmapData(result);
           return getDiagramData(result);
         } catch (error) {
-          console.log("Error : ", error);
+          console.log('Error : ', error);
         }
       }
     };
@@ -62,7 +64,7 @@ export function useRoadmapContent() {
     try {
       const contributionData = {
         contributedDocumentIds: Object.keys(contributions),
-        contributorId: "user_id_here",
+        contributorId: 'user_id_here',
         contributions: Object.entries(contributions).map(([id, content]) => ({
           id,
           content: { data: content },
@@ -75,14 +77,14 @@ export function useRoadmapContent() {
       setIsEditMode(false);
 
       toast({
-        title: "Contribution submitted",
-        description: "Your contribution has been successfully submitted.",
+        title: 'Contribution submitted',
+        description: 'Your contribution has been successfully submitted.',
       });
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to submit contribution. Please try again.",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to submit contribution. Please try again.',
+        variant: 'destructive',
       });
     }
   };
@@ -96,7 +98,7 @@ export function useRoadmapContent() {
         setConnections(result[1].connections);
       }
     } catch (error) {
-      console.log("Error : ", error);
+      console.log('Error : ', error);
     } finally {
       setIsDiagramLoading(false);
     }
@@ -118,6 +120,6 @@ export function useRoadmapContent() {
     confirmSubmit,
     scale,
     setScale,
-    handleZoom
+    handleZoom,
   };
 }

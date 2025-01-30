@@ -1,14 +1,14 @@
-import React, { useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
-import { login } from "@/api/auth";
-import { loginSchema } from "@/lib/validation/authSchemas";
-import { AxiosError } from "axios";
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
+import { login } from '@/api';
+import { loginSchema } from '@/lib/validation/authSchemas';
+import { AxiosError } from 'axios';
 
 const LoginForm = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -20,7 +20,7 @@ const LoginForm = () => {
     if (!validationResult.success) {
       const errorMessages = validationResult.error.errors
         .map((err) => err.message)
-        .join(", ");
+        .join(', ');
       toast.error(errorMessages);
       setIsLoading(false);
       return;
@@ -31,19 +31,19 @@ const LoginForm = () => {
       const response = await login(data);
 
       const token = response.token;
-      localStorage.setItem("token", token);
+      localStorage.setItem('token', token);
 
-      toast("Login successful!", {
-        icon: "👏",
+      toast('Login successful!', {
+        icon: '👏',
       });
-      router.push("/");
+      router.push('/');
     } catch (error) {
       if (error instanceof AxiosError && error.response) {
-        const errorMsg = error.response.data?.error || "An error occurred";
+        const errorMsg = error.response.data?.error || 'An error occurred';
         toast.error(errorMsg);
       } else {
-        console.error("Unexpected error:", error);
-        toast.error("An unexpected error occurred");
+        console.error('Unexpected error:', error);
+        toast.error('An unexpected error occurred');
       }
     } finally {
       setIsLoading(false);
@@ -95,12 +95,12 @@ const LoginForm = () => {
             <span className="ml-2">Signing in...</span>
           </div>
         ) : (
-          "Sign in"
+          'Sign in'
         )}
       </button>
       <p className="text-center text-sm">
-        Don't have an account?{" "}
-        <Link href={"sign-up"} className="text-blue-500">
+        Don't have an account?{' '}
+        <Link href={'sign-up'} className="text-blue-500">
           Register here.
         </Link>
       </p>
