@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import { login } from '@/api';
 import { loginSchema } from '@/lib/validation/authSchemas';
 import { AxiosError } from 'axios';
+import { saveToLocalStorage } from '@/lib/utils';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -31,8 +32,7 @@ const LoginForm = () => {
       const response = await login(data);
 
       const token = response.token;
-      localStorage.setItem('token', token);
-
+      saveToLocalStorage('token', token);
       toast('Login successful!', {
         icon: '👏',
       });

@@ -1,31 +1,32 @@
-"use client";
-import apiClient from "@/api/apiClient";
-import { checkTokenExpiration } from "@/store/authSlice";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+'use client';
+import apiClient from '@/api/apiClient';
+import { saveToLocalStorage } from '@/lib/utils';
+import { checkTokenExpiration } from '@/store/authSlice';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 export default function SignIn() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const dispatch = useDispatch();
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    console.log("handleSubmit : ", email, password);
+    console.log('handleSubmit : ', email, password);
     e.preventDefault();
     try {
-      const response = await apiClient.post("/auth/adminlogin", {
+      const response = await apiClient.post('/auth/adminlogin', {
         email,
         password,
       });
-      console.log("response : ", response.data);
+      console.log('response : ', response.data);
       const { token } = response.data;
-      localStorage.setItem("token", token);
+      saveToLocalStorage('token', token);
       dispatch(checkTokenExpiration());
-      router.replace("/admin/users/userlist");
+      router.replace('/admin/users/userlist');
     } catch (error) {
-      console.error("Login failed:", error);
+      console.error('Login failed:', error);
       // Handle error (show message to user)
     }
   };

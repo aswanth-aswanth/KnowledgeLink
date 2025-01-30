@@ -10,6 +10,7 @@ import { CreatePostModal } from '../../../components/forms/CreatePostModal';
 import { PostFeed } from '../../../components/social/PostFeed';
 import { ShortVideoUploadForm } from './ShortVideoUploadForm';
 import { CreateShortButton } from './CreateShortButton';
+import { saveToLocalStorage } from '@/lib/utils';
 
 const Following: React.FC = () => {
   const [activeTab] = useState<string>('Following');
@@ -22,7 +23,7 @@ const Following: React.FC = () => {
 
   useEffect(() => {
     if (token) {
-      localStorage.setItem('token', token);
+      saveToLocalStorage('token', token);
       router.push('/');
     }
   }, [token, router]);

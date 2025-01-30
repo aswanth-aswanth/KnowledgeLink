@@ -3,6 +3,7 @@ import { jwtDecode } from 'jwt-decode';
 import { isTokenExpired } from '@/lib/auth';
 import apiClient from '@/api/apiClient';
 import axios from 'axios';
+import { getFromLocalStorage, removeFromLocalStorage } from '@/lib/utils';
 
 export interface User {
   id: string;
@@ -50,7 +51,14 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    setAuthState: (state, action: PayloadAction<{ isAuthenticated: boolean; user: User; token: string }>) => {
+    setAuthState: (
+      state,
+      action: PayloadAction<{
+        isAuthenticated: boolean;
+        user: User;
+        token: string;
+      }>
+    ) => {
       state.isAuthenticated = action.payload.isAuthenticated;
       state.user = action.payload.user;
       state.token = action.payload.token;
@@ -60,27 +68,33 @@ const authSlice = createSlice({
       state.user = null;
       state.token = null;
       if (typeof window !== 'undefined') {
-        localStorage.removeItem('token');
+        removeFromLocalStorage('token');
       }
     },
     checkTokenExpiration: (state) => {
       if (typeof window !== 'undefined') {
-        const storedToken = localStorage.getItem('token');
+        const storedToken = getFromLocalStorage('token');
         if (storedToken) {
           if (isTokenExpired(storedToken)) {
-            localStorage.removeItem('token');
+            removeFromLocalStorage('token');
             state.isAuthenticated = false;
             state.user = null;
             state.token = null;
           } else {
-            const decoded = jwtDecode<{ id: string; username: string; email: string; image?: string; role?: string }>(storedToken);
+            const decoded = jwtDecode<{
+              id: string;
+              username: string;
+              email: string;
+              image?: string;
+              role?: string;
+            }>(storedToken);
             state.isAuthenticated = true;
             state.user = {
               id: decoded.id,
               name: decoded.username,
               email: decoded.email,
               imageUrl: decoded.image,
-              role: decoded.role
+              role: decoded.role,
             };
             state.token = storedToken;
           }
@@ -103,7 +117,12 @@ const authSlice = createSlice({
 });
 
 // Export actions and reducer
-export const { setAuthState, clearAuthState, checkTokenExpiration, updateUser } = authSlice.actions;
+export const {
+  setAuthState,
+  clearAuthState,
+  checkTokenExpiration,
+  updateUser,
+} = authSlice.actions;
 export const authReducer = authSlice.reducer;
 
 // Selector

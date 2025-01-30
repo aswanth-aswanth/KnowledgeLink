@@ -7,6 +7,7 @@ import TrendingArticles from '@/components/shared/TrendingArticles';
 import Tabs from '@/components/shared/Tabs';
 import { Tab } from '@/types';
 import Roadmaps from '@/components/roadmap/Roadmaps';
+import { saveToLocalStorage } from '@/lib/utils';
 
 const TabNavigation: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('Explore');
@@ -16,7 +17,7 @@ const TabNavigation: React.FC = () => {
 
   useEffect(() => {
     if (token) {
-      localStorage.setItem('token', token);
+      saveToLocalStorage('token', token);
       router.push('/');
     }
   }, [token]);

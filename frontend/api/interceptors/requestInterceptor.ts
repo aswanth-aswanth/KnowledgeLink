@@ -1,7 +1,8 @@
 import { InternalAxiosRequestConfig } from 'axios';
+import { getFromLocalStorage } from '@/lib/utils';
 
 const requestInterceptor = (config: InternalAxiosRequestConfig) => {
-  const token = localStorage.getItem('token');
+  const token = getFromLocalStorage('token');
 
   if (token) {
     config.headers = config.headers || {};
