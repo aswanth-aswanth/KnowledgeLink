@@ -1,12 +1,5 @@
 import React, { useEffect } from 'react';
-import {
-  FiSearch,
-  FiUser,
-  FiSun,
-  FiMoon,
-  FiLogOut,
-  FiSettings,
-} from 'react-icons/fi';
+import { FiSearch, FiUser, FiLogOut, FiSettings } from 'react-icons/fi';
 import { useSelector, useDispatch } from 'react-redux';
 import { clearAuthState, checkTokenExpiration } from '@/store/authSlice';
 import { selectAuthState } from '@/store/selectors';
@@ -26,6 +19,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import apiClient from '@/api/apiClient';
+import ThemeSwitcher from '@/components/ThemeSwitcher';
 
 export default function Header() {
   const { isAuthenticated, user } = useSelector(selectAuthState);
@@ -47,11 +41,7 @@ export default function Header() {
 
   return (
     <header
-      className={`flex items-center justify-between p-2 relative z-50 max-w-[100vw] overflow-hidden shadow-md ${
-        isDarkMode
-          ? 'bg-gradient-to-r from-gray-900 to-gray-800 shadow-lg text-white'
-          : 'bg-white'
-      }`}
+      className={`flex items-center justify-between p-2 relative z-50 max-w-[100vw] overflow-hidden shadow-md bg-header text-text`}
     >
       <div className="flex items-center">
         <Hamburger />
@@ -71,19 +61,7 @@ export default function Header() {
         </div>
       </div>
       <div className="flex items-center space-x-2 sm:space-x-4 mr-2 sm:mr-10">
-        <button
-          onClick={toggleDarkMode}
-          className="p-2 sm:p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
-          aria-label={
-            isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'
-          }
-        >
-          {isDarkMode ? (
-            <FiSun className="w-5 h-5 text-yellow-400" />
-          ) : (
-            <FiMoon className="w-5 h-5 text-gray-700" />
-          )}
-        </button>
+        <ThemeSwitcher />
         <Notifications />
         {isAuthenticated && user ? (
           <DropdownMenu>

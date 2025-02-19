@@ -1,6 +1,7 @@
 import { Toaster } from 'react-hot-toast';
 import './globals.css';
 import { Lato } from 'next/font/google';
+import { ThemeProvider } from 'next-themes';
 
 export const runtime = 'edge';
 
@@ -18,8 +19,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${lato.variable}`}>
       <body>
-        {children}
-        <Toaster position="bottom-right" reverseOrder={false} />
+        <ThemeProvider attribute="class">
+          {children}
+          <Toaster position="bottom-right" reverseOrder={false} />
+        </ThemeProvider>
       </body>
     </html>
   );

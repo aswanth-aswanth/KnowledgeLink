@@ -9,14 +9,12 @@ import TrendingArticles from '@/components/shared/TrendingArticles';
 import Tabs from '@/components/shared/Tabs';
 import Roadmaps from '@/components/roadmap/Roadmaps';
 import { saveToLocalStorage } from '@/lib/utils';
-import { useDarkMode } from '@/hooks/useDarkMode';
 
 const TabNavigation: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('Explore');
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
-  const { isDarkMode } = useDarkMode();
 
   useEffect(() => {
     if (token) {
@@ -41,8 +39,7 @@ const TabNavigation: React.FC = () => {
         tabs={tabs}
         activeTab={activeTab}
         onTabClick={handleTabClick}
-        isDarkMode={isDarkMode}
-        tabFor="explore"
+        tabFor="Explore"
       />
       <PopularContributors />
       <VideoShorts />

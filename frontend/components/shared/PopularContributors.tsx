@@ -3,13 +3,11 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import apiClient from '@/api/apiClient';
 import { useRouter } from 'next/navigation';
-import { useDarkMode } from '@/hooks/useDarkMode';
 
 export default function PopularContributors() {
   const [contributors, setContributors] = useState<any | []>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-  const { isDarkMode } = useDarkMode();
 
   const getUsers = async () => {
     try {
@@ -36,13 +34,9 @@ export default function PopularContributors() {
 
   return (
     <>
-      <p className="dark:text-white font-medium text-lg mt-6 mb-8">
-        Popular writers
-      </p>
+      <p className="text-text font-medium text-lg mt-6 mb-8">Popular writers</p>
       <div
-        className={`flex gap-8 sm:gap-12 md:gap-28 max-w-[1224px] overflow-x-auto py-8 ${
-          isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'
-        }`}
+        className={`flex gap-8 sm:gap-12 md:gap-28 max-w-[1224px] overflow-x-auto py-8 bg-background text-text2`}
         style={{ overflowX: 'auto', scrollbarWidth: 'none' }}
       >
         {loading

@@ -2,6 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --primary: #624cf5;
+  --primary-foreground: #ffffff;
+  --bgColor: #ffffff;
+  --headerBg: var(--bgColor);
+  --text: #000000;
+  --text2: #111827;
+  --text3: #1f2937;
+  --lightGray: #ffffff;
+  --lightGrayFont: #6b7280;
+  --lightGray2: #f3f4f6;
+}
+
+.dark {
+  --primary: #4323c1;
+  --primary-foreground: #e0e0e0;
+  --bgColor: #111827;
+  --headerBg: linear-gradient(to right, #111827, #1f2937);
+  --text: #ffffff;
+  --text2: #ffffff;
+  --text3: var(--text2);
+  --lightGray: #1f2937;
+  --lightGrayFont: #6b7280;
+  --lightGray2: var(--bgColor);
+}
+
 * {
   padding: 0;
   margin: 0;

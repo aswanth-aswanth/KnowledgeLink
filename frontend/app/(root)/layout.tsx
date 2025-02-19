@@ -40,11 +40,7 @@ const LayoutContent = ({ children }: { children: React.ReactNode }) => {
   const isChatPage = pathname === '/chat';
 
   return (
-    <div
-      className={`${
-        isDarkMode ? 'bg-gray-900 dark' : ''
-      } flex flex-col min-h-screen`}
-    >
+    <div className={'flex flex-col min-h-screen bg-background'}>
       <div className={`${isChatPage && 'hidden md:block'}`}>
         <Header />
       </div>

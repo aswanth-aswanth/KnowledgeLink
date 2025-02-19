@@ -72,7 +72,7 @@ export default function Roadmaps() {
           tabs={tabs}
           activeTab={activeTab}
           onTabClick={handleTabClick}
-          tabFor="typesofroadmap"
+          tabFor="Expert Collaboration Roadmap"
         />
       </div>
       <div className="flex flex-wrap justify-center mt-14 gap-4">

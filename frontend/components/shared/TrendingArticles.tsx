@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { useDarkMode } from '@/hooks/useDarkMode';
 import {
   Card,
   CardHeader,
@@ -20,7 +19,6 @@ interface Article {
 }
 
 const TrendingArticles = () => {
-  const { isDarkMode } = useDarkMode();
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [count, setCount] = useState(6);
@@ -55,11 +53,7 @@ const TrendingArticles = () => {
   };
 
   const SkeletonCard = () => (
-    <Card
-      className={`flex min-h-[305px] border dark:border-gray-700 flex-col ${
-        isDarkMode ? 'bg-gray-800' : 'bg-white'
-      }`}
-    >
+    <Card className="flex min-h-[305px] border dark:border-gray-700 flex-col bg-lightGray">
       <CardHeader className="pb-2">
         <Skeleton className="rounded-xl bg-slate-300 h-6 w-3/4 mb-2" />
       </CardHeader>
@@ -79,16 +73,8 @@ const TrendingArticles = () => {
   );
 
   return (
-    <div
-      className={`max-w-6xl mx-auto sm:p-8 ${
-        isDarkMode ? 'bg-gray-900 text-white' : 'md:bg-gray-100'
-      }`}
-    >
-      <h2
-        className={`text-2xl font-bold mb-8 ${
-          isDarkMode ? 'text-white' : 'text-gray-800'
-        }`}
-      >
+    <div className={'max-w-6xl mx-auto sm:p-8 bg-lightGray2 text-text'}>
+      <h2 className={'text-2xl font-bold mb-8 text-text3 '}>
         Trending Articles
       </h2>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -99,40 +85,27 @@ const TrendingArticles = () => {
           : articles.map((article, index) => (
               <Card
                 key={index}
-                className={`flex min-h-[305px] border-none flex-col ${
-                  isDarkMode ? 'bg-gray-800 text-white' : 'bg-white'
-                } hover:shadow-lg transition-shadow duration-300 cursor-pointer`}
+                className="flex min-h-[305px] border-none flex-col  bg-white dark:bg-gray-800 dark:text-white 
+                 hover:shadow-lg transition-shadow duration-300 cursor-pointer"
               >
                 <CardHeader className="pb-2">
                   <h3
-                    className={`text-xl font-semibold ${
-                      isDarkMode ? 'text-white' : 'text-gray-900'
-                    } mb-2 line-clamp-2`}
+                    className={`text-xl font-semibold text-text mb-2 line-clamp-2`}
                   >
                     {article.name}
                   </h3>
                 </CardHeader>
                 <CardContent className="flex-grow overflow-auto p-3 max-h-[380px]">
-                  <h4
-                    className={`text-lg font-medium ${
-                      isDarkMode ? 'text-gray-200' : 'text-gray-800'
-                    } mb-2`}
-                  >
+                  <h4 className="text-lg font-medium  text-text3 mb-2">
                     {article.question}
                   </h4>
                   <div
-                    className={`${
-                      isDarkMode ? 'text-gray-300' : 'text-gray-700'
-                    } article-content`}
+                    className="text-text3"
                     dangerouslySetInnerHTML={createMarkup(article.content)}
                   />
                 </CardContent>
                 <CardFooter className="mt-auto pt-4 border-t border-gray-200 dark:border-gray-700">
-                  <div
-                    className={`flex items-center justify-between text-sm ${
-                      isDarkMode ? 'text-gray-400' : 'text-gray-600'
-                    } w-full`}
-                  >
+                  <div className="flex items-center justify-between text-sm text-text3 w-full">
                     <span className="truncate max-w-[50%]">
                       {article.author}
                     </span>
@@ -146,12 +119,8 @@ const TrendingArticles = () => {
         <Button
           onClick={handleLoadMore}
           disabled={loading}
-          variant={isDarkMode ? 'outline' : 'default'}
-          className={`${
-            isDarkMode
-              ? 'bg-gray-800 text-white hover:bg-gray-700'
-              : 'bg-blue-600 text-white hover:bg-blue-700'
-          } transition-colors duration-300`}
+          variant="default"
+          className="dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-300 "
         >
           {loading ? 'Loading...' : 'Load more'}
         </Button>
