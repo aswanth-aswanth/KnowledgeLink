@@ -13,7 +13,6 @@ import {
   getNotificationCount,
   markNotificationsAsRead,
 } from '@/api';
-import { useDarkMode } from '@/hooks/useDarkMode';
 
 export default function NotificationPopover() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -21,7 +20,6 @@ export default function NotificationPopover() {
   const [displayCount, setDisplayCount] = useState(0);
   const [totalMessages, setTotalMessages] = useState(5);
   const [newlyDisplayedIds, setNewlyDisplayedIds] = useState<string[]>([]);
-  const { isDarkMode } = useDarkMode();
 
   useEffect(() => {
     fetchNotificationCount();
@@ -95,41 +93,19 @@ export default function NotificationPopover() {
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          className={`p-2 sm:p-4 outline-none border-none relative ${
-            isDarkMode
-              ? 'bg-gray-800 hover:bg-gray-700'
-              : 'bg-white hover:bg-gray-100'
-          } transition duration-300 ease-in-out`}
+          className="p-2 outline-none border-none relative rounded-full dark:hover:bg-gray-700 hover:bg-gray-100 transition duration-300 ease-in-out"
         >
-          <GoBell
-            className={`text-xl ${
-              isDarkMode ? 'text-gray-200' : 'text-gray-600'
-            }`}
-          />
-          {/* {nottionifications?.filter((n) => !n.read)?.length > 0 && ( */}
+          <GoBell className="text-xl bg-transparent dark:text-gray-200 text-gray-600" />
           {displayCount != 0 && (
             <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
               {displayCount}
             </span>
           )}
-          {/* )} */}
         </Button>
       </PopoverTrigger>
-      <PopoverContent
-        className={`w-96 ${
-          isDarkMode ? 'bg-gray-800' : 'bg-white'
-        } p-0 rounded-lg shadow-xl`}
-      >
-        <div
-          className={`p-4 border-b ${
-            isDarkMode ? 'border-gray-700' : 'border-gray-200'
-          }`}
-        >
-          <h4
-            className={`font-medium text-lg ${
-              isDarkMode ? 'text-white' : 'text-gray-900'
-            }`}
-          >
+      <PopoverContent className="w-96 bg-white dark:bg-gray-800 p-0 rounded-lg shadow-xl">
+        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+          <h4 className="font-medium text-lg text-gray-900 dark:text-white">
             Notifications
           </h4>
         </div>
@@ -139,32 +115,18 @@ export default function NotificationPopover() {
               {notifications?.slice(0, totalMessages).map((notification) => (
                 <div
                   key={notification?._id}
-                  className={`p-4 border-b ${
-                    isDarkMode ? 'border-gray-700' : 'border-gray-200'
-                  } 
-                    ${
-                      notification.read
-                        ? isDarkMode
-                          ? 'bg-gray-800'
-                          : 'bg-white'
-                        : isDarkMode
-                        ? 'bg-blue-900'
-                        : 'bg-blue-50'
-                    } transition duration-300 ease-in-out hover:${
-                    isDarkMode ? 'bg-gray-700' : 'bg-gray-50'
-                  }`}
+                  className={`p-4 border-b border-gray-200 dark:border-gray-700 ${
+                    notification.read
+                      ? 'bg-white dark:bg-gray-800'
+                      : 'bg-blue-50 dark:bg-blue-900'
+                  } transition duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700`}
                 >
                   <div className="flex items-start">
                     <div
-                      className={`flex-shrink-0 h-10 w-10 rounded-full flex items-center justify-center 
-                      ${
+                      className={`flex-shrink-0 h-10 w-10 rounded-full flex items-center justify-center ${
                         notification.type === 'like'
-                          ? isDarkMode
-                            ? 'bg-red-900 text-red-200'
-                            : 'bg-red-100 text-red-600'
-                          : isDarkMode
-                          ? 'bg-blue-900 text-blue-200'
-                          : 'bg-blue-100 text-blue-600'
+                          ? 'bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-200'
+                          : 'bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-200'
                       }`}
                     >
                       <span className="text-xl">
@@ -172,30 +134,15 @@ export default function NotificationPopover() {
                       </span>
                     </div>
                     <div className="ml-3 flex-1">
-                      <p
-                        className={`text-sm font-medium ${
-                          isDarkMode ? 'text-white' : 'text-gray-900'
-                        }`}
-                      >
+                      <p className="text-sm font-medium text-gray-900 dark:text-white">
                         {notification.content}
                       </p>
-                      <p
-                        className={`text-xs ${
-                          isDarkMode ? 'text-gray-400' : 'text-gray-500'
-                        } mt-1`}
-                      >
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                         {new Date(notification.createdAt).toLocaleString()}
                       </p>
                     </div>
                     {!notification.read && (
-                      <span
-                        className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium 
-                        ${
-                          isDarkMode
-                            ? 'bg-green-800 text-green-100'
-                            : 'bg-green-100 text-green-800'
-                        }`}
-                      >
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100">
                         New
                       </span>
                     )}
@@ -208,11 +155,7 @@ export default function NotificationPopover() {
                     onClick={() =>
                       setTotalMessages((prevCount) => prevCount + 5)
                     }
-                    className={`${
-                      isDarkMode
-                        ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                        : 'bg-blue-100 hover:bg-blue-200 text-blue-600'
-                    } transition duration-300 ease-in-out`}
+                    className="bg-blue-100 hover:bg-blue-200 text-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 dark:text-white transition duration-300 ease-in-out"
                   >
                     Load More
                   </Button>
@@ -220,11 +163,7 @@ export default function NotificationPopover() {
               )}
             </>
           ) : (
-            <p
-              className={`text-sm ${
-                isDarkMode ? 'text-gray-400' : 'text-gray-500'
-              } p-4`}
-            >
+            <p className="text-sm text-gray-500 dark:text-gray-400 p-4">
               No notifications
             </p>
           )}

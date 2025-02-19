@@ -11,7 +11,6 @@ import {
   setEditorData,
   setRootTitleAndContent,
 } from '@/store/topicsSlice';
-import { useDarkMode } from '@/hooks/useDarkMode';
 import ChooseRoadmapType from './ChooseRoadmapType';
 import TopicNode from './TopicNode';
 import { Button } from '@/components/ui/button';
@@ -32,7 +31,6 @@ const NestedNoteTaker: React.FC = () => {
   const rootTopic = useSelector(
     (state: RootState) => state.topics.topics[state.topics.rootId]
   );
-  const { isDarkMode } = useDarkMode();
   const [roadmapType, setRoadmapType] = useState('public_voting');
   const router = useRouter();
 
@@ -195,23 +193,19 @@ const NestedNoteTaker: React.FC = () => {
   return (
     <>
       <div className="max-w-6xl mx-auto sm:px-6 lg:px-8">
-        <div
-          className={`nested-note-taker rounded-lg ${
-            isDarkMode ? 'bg-gray-900 shadow-lg' : 'bg-white shadow-sm'
-          } pt-6 sm:p-6`}
-        >
+        <div className="nested-note-taker rounded-lg bg-white shadow-sm dark:bg-gray-900 dark:shadow-lg pt-6 sm:p-6">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 space-y-2 sm:space-y-0 sm:space-x-2">
             <Button
               onClick={handleAddRootTopic}
               variant="outline"
-              className={`w-full sm:w-auto ${isDarkMode && 'text-white'}`}
+              className="w-full sm:w-auto dark:text-white"
             >
               <Plus className="mr-2 h-4 w-4" /> Add Root Topic
             </Button>
             <Button
               onClick={handleEditRoot}
               variant="outline"
-              className={`w-full sm:w-auto ${isDarkMode && 'text-white'}`}
+              className="w-full sm:w-auto dark:text-white"
             >
               <Edit className="mr-2 h-4 w-4" /> Edit Root
             </Button>
@@ -239,7 +233,7 @@ const NestedNoteTaker: React.FC = () => {
           open={showEmptyRootWarning}
           onOpenChange={setShowEmptyRootWarning}
         >
-          <DialogContent className="bg-white">
+          <DialogContent className="bg-lightGray2">
             <DialogHeader>
               <DialogTitle>
                 <AlertCircle className="h-6 w-6 text-yellow-500 inline mr-2" />
@@ -257,7 +251,7 @@ const NestedNoteTaker: React.FC = () => {
         </Dialog>
 
         <Dialog open={showRootEditModal} onOpenChange={setShowRootEditModal}>
-          <DialogContent className="bg-white">
+          <DialogContent className="bg-lightGray2">
             <DialogHeader>
               <DialogTitle>Edit Root Topic</DialogTitle>
               <DialogDescription>
@@ -292,7 +286,7 @@ const NestedNoteTaker: React.FC = () => {
           open={showResetConfirmation}
           onOpenChange={setShowResetConfirmation}
         >
-          <DialogContent className="bg-white">
+          <DialogContent className="bg-lightGray2">
             <DialogHeader>
               <DialogTitle>Confirm Reset</DialogTitle>
               <DialogDescription>

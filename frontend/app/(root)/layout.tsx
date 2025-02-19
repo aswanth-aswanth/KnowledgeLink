@@ -5,7 +5,6 @@ import Header from '@/components/layouts/Header';
 import { ReduxProvider } from '@/lib/redux-provider';
 import { checkTokenExpiration, selectAuthState } from '@/store/authSlice';
 import { store, AppDispatch } from '@/store';
-import { useDarkMode } from '@/hooks/useDarkMode';
 import { useNotifications } from '@/hooks/useNotifications';
 import { useSelector, useDispatch } from 'react-redux';
 import { initializeSocket } from '@/store/socketSlice';
@@ -23,7 +22,6 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
 };
 
 const LayoutContent = ({ children }: { children: React.ReactNode }) => {
-  const { isDarkMode } = useDarkMode();
   const { user, token, isAuthenticated } = useSelector(selectAuthState);
   const dispatch = useDispatch<AppDispatch>();
   const userEmail = user?.email;

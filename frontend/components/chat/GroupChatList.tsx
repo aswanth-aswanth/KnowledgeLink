@@ -1,19 +1,14 @@
-import React from "react";
-import { Users } from "lucide-react";
-import { GroupChatListProps } from "@/types/chat";
+import React from 'react';
+import { Users } from 'lucide-react';
+import { GroupChatListProps } from '@/types/chat';
 
 export const GroupChatList: React.FC<GroupChatListProps> = ({
   groupChats,
-  isDarkMode,
   onChatSelect,
 }) => {
   return (
     <div>
-      <h3
-        className={`text-sm font-medium mt-10 ${
-          isDarkMode ? "text-gray-400" : "text-gray-500"
-        } mb-2`}
-      >
+      <h3 className="text-sm font-medium mt-10 text-gray-500 dark:text-gray-400 mb-2">
         YOUR GROUP CHATS
       </h3>
       <ul className="space-y-4">
@@ -32,7 +27,7 @@ export const GroupChatList: React.FC<GroupChatListProps> = ({
                 </span>
               </div>
               <span className="text-xs w-[170px] truncate">
-                {chat.lastMessage || "No messages yet"}
+                {chat.lastMessage || 'No messages yet'}
               </span>
             </div>
           </li>

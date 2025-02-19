@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useDarkMode } from '@/hooks/useDarkMode';
 import apiClient from '@/api/apiClient';
 import { useParams, useRouter } from 'next/navigation';
 
@@ -20,7 +19,6 @@ interface User {
 
 export default function AdminUserProfile() {
   const dispatch = useDispatch();
-  const { isDarkMode } = useDarkMode();
   const params = useParams();
   const router = useRouter();
   const userId = Array.isArray(params.userId)

@@ -15,7 +15,6 @@ const Topic: React.FC<TopicPropsRoadmapViewer> = ({
   roadmapId,
 }) => {
   const {
-    isDarkMode,
     isExpanded,
     isEditing,
     editedContent,
@@ -30,14 +29,12 @@ const Topic: React.FC<TopicPropsRoadmapViewer> = ({
       <TopicHeader
         topicName={topic.name}
         level={level}
-        isDarkMode={isDarkMode}
         isExpanded={isExpanded}
         toggleExpand={() => toggleExpand(setExpandedTopics)}
       />
       {isExpanded && (
         <>
           <TopicContent
-            isDarkMode={isDarkMode}
             isEditMode={isEditMode}
             isEditing={isEditing}
             content={topic.content}

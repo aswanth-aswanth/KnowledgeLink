@@ -4,7 +4,6 @@ import { useParams, usePathname } from 'next/navigation';
 import RoadmapViewer from '@/components/roadmap/RoadmapViewer';
 import apiClient from '@/api/apiClient';
 import { Button } from '@/components/ui/button';
-import { useDarkMode } from '@/hooks/useDarkMode';
 import {
   Dialog,
   DialogContent,
@@ -48,7 +47,6 @@ export default function RoadmapPage() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [contributions, setContributions] = useState({});
-  const { isDarkMode } = useDarkMode();
 
   useEffect(() => {
     if (params.id) {
@@ -100,7 +98,7 @@ export default function RoadmapPage() {
   return (
     <div>
       <div className="flex justify-between items-center mb-4 pt-10">
-        <h1 className="text-2xl font-bold text-gray-600">
+        <h1 className="text-2xl font-bold text-gray-600 dark:text-white">
           {/* Roadmap: {roadmapData.title} */}
         </h1>
         {pathname.split('/')[1] !== 'roadmap-viewer' && (
@@ -108,9 +106,7 @@ export default function RoadmapPage() {
             <Button
               onClick={() => setIsEditMode(!isEditMode)}
               variant="outline"
-              className={`mr-2 md:mr-16 lg:mr-32 ${
-                isDarkMode && 'text-white '
-              }`}
+              className="mr-2 md:mr-16 lg:mr-32 dark:text-white"
             >
               {isEditMode ? 'View Mode' : 'Edit Mode'}
             </Button>
@@ -130,7 +126,7 @@ export default function RoadmapPage() {
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="bg-white">
+        <DialogContent className="bg-white dark:bg-gray-800">
           <DialogHeader>
             <DialogTitle>Confirm Submission</DialogTitle>
             <DialogDescription>

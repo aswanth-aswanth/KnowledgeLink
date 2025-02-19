@@ -1,5 +1,5 @@
-import React from "react";
-import { MessageListProps } from "@/types/chatwindow";
+import React from 'react';
+import { MessageListProps } from '@/types/chatwindow';
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -10,10 +10,10 @@ import {
   AlertDialogFooter,
   AlertDialogCancel,
   AlertDialogAction,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
-import { BiCheckDouble } from "react-icons/bi";
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
+import { Trash2 } from 'lucide-react';
+import { BiCheckDouble } from 'react-icons/bi';
 
 export const MessageList: React.FC<MessageListProps> = ({
   messages,
@@ -22,7 +22,6 @@ export const MessageList: React.FC<MessageListProps> = ({
   setHoveredMessageId,
   handleDeleteMessage,
   formatTime,
-  isDarkMode,
   chatContainerRef,
   messagesEndRef,
   handleScroll,
@@ -39,8 +38,8 @@ export const MessageList: React.FC<MessageListProps> = ({
             key={message.id}
             className={`flex ${
               message.senderId === currentUserId
-                ? "justify-end"
-                : "justify-start"
+                ? 'justify-end'
+                : 'justify-start'
             }`}
             onMouseEnter={() => setHoveredMessageId(message.id)}
             onMouseLeave={() => setHoveredMessageId(null)}
@@ -48,8 +47,8 @@ export const MessageList: React.FC<MessageListProps> = ({
             <div
               className={`max-w-xs sm:mr-2 lg:max-w-md px-4 py-2 rounded-[6px] relative ${
                 message.senderId === currentUserId
-                  ? "bg-green-500 text-white dark:bg-[#005c4b] dark:text-white"
-                  : "bg-gray-200 dark:bg-gray-700 dark:text-white"
+                  ? 'bg-green-500 text-white dark:bg-[#005c4b] dark:text-white'
+                  : 'bg-gray-200 dark:bg-gray-700 dark:text-white'
               }`}
             >
               <p>{message.content}</p>
@@ -57,8 +56,8 @@ export const MessageList: React.FC<MessageListProps> = ({
                 <p
                   className={`text-[0.6rem] flex items-center gap-1 mt-1 ${
                     message.senderId === currentUserId
-                      ? "text-white dark:text-gray-400"
-                      : "text-gray-600 dark:text-gray-400"
+                      ? 'text-white dark:text-gray-400'
+                      : 'text-gray-600 dark:text-gray-400'
                   }`}
                 >
                   {formatTime(message.createdAt)}
@@ -75,52 +74,26 @@ export const MessageList: React.FC<MessageListProps> = ({
                       <Button
                         variant="ghost"
                         size="icon"
-                        className={`absolute -right-8 top-0 ${
-                          isDarkMode ? "text-red-400" : "text-red-500"
-                        }`}
+                        className="absolute -right-8 top-0 text-red-500 dark:text-red-400"
                       >
-                        <Trash2
-                          className={`h-4 w-4 ${
-                            isDarkMode ? "text-red-400" : "text-red-500"
-                          }`}
-                        />
+                        <Trash2 className="h-4 w-4 text-red-500 dark:text-red-400" />
                       </Button>
                     </AlertDialogTrigger>
-                    <AlertDialogContent
-                      className={`${
-                        isDarkMode ? "bg-gray-700 text-white" : "bg-white"
-                      }`}
-                    >
+                    <AlertDialogContent className="bg-white dark:bg-gray-700 text-black dark:text-white">
                       <AlertDialogHeader>
-                        <AlertDialogTitle
-                          className={`${isDarkMode ? "text-white" : ""}`}
-                        >
-                          Are you sure?
-                        </AlertDialogTitle>
-                        <AlertDialogDescription
-                          className={`${isDarkMode ? "text-gray-300" : ""}`}
-                        >
+                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                        <AlertDialogDescription className="text-gray-600 dark:text-gray-300">
                           This action cannot be undone. This will permanently
                           delete the message.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
-                        <AlertDialogCancel
-                          className={`${
-                            isDarkMode
-                              ? "bg-gray-700 text-white hover:bg-gray-600"
-                              : ""
-                          }`}
-                        >
+                        <AlertDialogCancel className="bg-white dark:bg-gray-700 text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600">
                           Cancel
                         </AlertDialogCancel>
                         <AlertDialogAction
                           onClick={() => handleDeleteMessage(message.id)}
-                          className={`${
-                            isDarkMode
-                              ? "bg-red-600 text-white hover:bg-red-700"
-                              : ""
-                          }`}
+                          className="bg-red-600 text-white hover:bg-red-700"
                         >
                           Delete
                         </AlertDialogAction>

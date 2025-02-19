@@ -1,20 +1,19 @@
-import React from "react";
+import React from 'react';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { CreateGroupModalProps } from "@/types/chat";
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { CreateGroupModalProps } from '@/types/chat';
 
 export const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
   isOpen,
   onOpenChange,
-  isDarkMode,
   groupName,
   setGroupName,
   modalSearchTerm,
@@ -26,13 +25,9 @@ export const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
 }) => {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent
-        className={`sm:max-w-[425px] ${
-          isDarkMode ? "bg-gray-800 text-white" : "bg-white"
-        }`}
-      >
+      <DialogContent className="sm:max-w-[425px] bg-white dark:bg-gray-800 dark:text-white">
         <DialogHeader>
-          <DialogTitle className={isDarkMode ? "text-white" : "text-black"}>
+          <DialogTitle className="text-black dark:text-white">
             Create Group
           </DialogTitle>
         </DialogHeader>
@@ -40,9 +35,7 @@ export const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
           <div className="grid grid-cols-4 items-center gap-4">
             <Label
               htmlFor="group-name"
-              className={`text-right ${
-                isDarkMode ? "text-gray-300" : "text-gray-700"
-              }`}
+              className="text-right text-gray-700 dark:text-gray-300"
             >
               Name
             </Label>
@@ -50,17 +43,13 @@ export const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
               id="group-name"
               value={groupName}
               onChange={(e) => setGroupName(e.target.value)}
-              className={`col-span-3 ${
-                isDarkMode ? "bg-gray-700 text-white" : "bg-white"
-              }`}
+              className="col-span-3 bg-white dark:bg-gray-700 dark:text-white"
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label
               htmlFor="participants"
-              className={`text-right ${
-                isDarkMode ? "text-gray-300" : "text-gray-700"
-              }`}
+              className="text-right text-gray-700 dark:text-gray-300"
             >
               Participants
             </Label>
@@ -70,13 +59,9 @@ export const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
                 placeholder="Search users..."
                 value={modalSearchTerm}
                 onChange={(e) => setModalSearchTerm(e.target.value)}
-                className={isDarkMode ? "bg-gray-700 text-white" : "bg-white"}
+                className="bg-white dark:bg-gray-700 dark:text-white"
               />
-              <div
-                className={`mt-2 max-h-40 overflow-y-auto ${
-                  isDarkMode ? "text-gray-200" : "text-gray-800"
-                }`}
-              >
+              <div className="mt-2 max-h-40 overflow-y-auto text-gray-800 dark:text-gray-200">
                 {modalSearchResults.map((user) => (
                   <div
                     key={user._id}
@@ -87,10 +72,10 @@ export const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
                       id={`user-${user._id}`}
                       checked={selectedParticipants.includes(user._id)}
                       onChange={() => toggleParticipant(user._id)}
-                      className={isDarkMode ? "bg-gray-600" : "bg-white"}
+                      className="bg-white dark:bg-gray-600"
                     />
                     <img
-                      src={user.image || "/pngwing.com.png"}
+                      src={user.image || '/pngwing.com.png'}
                       alt={user.username}
                       className="w-8 h-8 rounded-full"
                     />
@@ -105,11 +90,7 @@ export const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
           <Button
             type="submit"
             onClick={handleCreateGroup}
-            className={
-              isDarkMode
-                ? "bg-blue-600 hover:bg-blue-700"
-                : "bg-blue-500 hover:bg-blue-600"
-            }
+            className="bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
           >
             Create Group
           </Button>

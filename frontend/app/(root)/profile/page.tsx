@@ -9,14 +9,12 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useDarkMode } from '@/hooks/useDarkMode';
 import apiClient from '@/api/apiClient';
 import { RootState } from '@/store';
 
 export default function Profile() {
   const dispatch = useDispatch();
   const router = useRouter();
-  const { isDarkMode } = useDarkMode();
 
   const { isAuthenticated, user } = useSelector(
     (state: RootState) => state.auth
@@ -117,28 +115,24 @@ export default function Profile() {
   };
 
   return (
-    <div
-      className={`flex min-h-[91.9vh] items-center justify-center ${
-        isDarkMode ? 'bg-gray-800' : 'bg-gray-200'
-      } p-6`}
-    >
-      <Card className="w-full max-w-lg shadow-lg bg-white overflow-hidden rounded-lg">
-        <CardHeader className="p-4 bg-gray-300">
-          <CardTitle className="text-xl font-bold text-center text-gray-800">
+    <div className="flex min-h-[91.9vh] items-center justify-center bg-gray-200 dark:bg-gray-800 p-6">
+      <Card className="w-full max-w-lg shadow-lg bg-white dark:bg-gray-900 overflow-hidden rounded-lg">
+        <CardHeader className="p-4 bg-gray-300 dark:bg-gray-700">
+          <CardTitle className="text-xl font-bold text-center text-gray-800 dark:text-gray-200">
             Edit Your Profile
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6 py-10 my-3">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="flex flex-col items-center mb-4">
-              <Avatar className="w-24 h-24 border-2 border-gray-300 shadow-md">
+              <Avatar className="w-24 h-24 border-2 border-gray-300 dark:border-gray-600 shadow-md">
                 <AvatarImage src={imagePreview || user?.imageUrl} />
-                <AvatarFallback className="text-xl bg-gray-400 text-gray-700">
+                <AvatarFallback className="text-xl bg-gray-400 dark:bg-gray-600 text-gray-700 dark:text-gray-300">
                   {username.charAt(0)}
                 </AvatarFallback>
               </Avatar>
               <Label htmlFor="profile-image" className="cursor-pointer mt-4">
-                <span className="text-sm font-semibold px-3 py-1 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 transition duration-300">
+                <span className="text-sm font-semibold px-3 py-1 rounded-full bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-500 transition duration-300">
                   Change Profile Picture
                 </span>
                 <Input
@@ -154,7 +148,7 @@ export default function Profile() {
             <div>
               <Label
                 htmlFor="username"
-                className="text-md font-semibold text-gray-800"
+                className="text-md font-semibold text-gray-800 dark:text-gray-200"
               >
                 Username
               </Label>
@@ -162,7 +156,7 @@ export default function Profile() {
                 id="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 transition duration-300"
+                className="mt-1 block w-full px-3 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-600 transition duration-300"
                 placeholder="Enter your username"
               />
             </div>
@@ -170,7 +164,7 @@ export default function Profile() {
             <div>
               <Label
                 htmlFor="bio"
-                className="text-md font-semibold text-gray-800"
+                className="text-md font-semibold text-gray-800 dark:text-gray-200"
               >
                 Bio
               </Label>
@@ -178,7 +172,7 @@ export default function Profile() {
                 id="bio"
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 transition duration-300"
+                className="mt-1 block w-full px-3 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-600 transition duration-300"
                 rows={4}
                 placeholder="Tell us about yourself"
               />

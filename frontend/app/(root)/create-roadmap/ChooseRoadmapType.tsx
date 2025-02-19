@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
-import { useRouter } from "next/navigation";
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useRouter } from 'next/navigation';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,20 +11,18 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import RadioGroupForm from "../../../components/forms/RadioGroupForm";
-import { useDarkMode } from "@/hooks/useDarkMode";
-import { RootState } from "@/store";
-import UserSearch from "../../../components/shared/UserSearch";
-import { ChooseRoadmapTypeProps } from "@/types/roadmap";
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
+import RadioGroupForm from '../../../components/forms/RadioGroupForm';
+import { RootState } from '@/store';
+import UserSearch from '../../../components/shared/UserSearch';
+import { ChooseRoadmapTypeProps } from '@/types/roadmap';
 
 export default function ChooseRoadmapType({
   onContinue,
   roadmapType,
   setRoadmapType,
 }: ChooseRoadmapTypeProps) {
-  const { isDarkMode } = useDarkMode();
   const [showAuthWarning, setShowAuthWarning] = useState(false);
   const [showRoadmapTypeDialog, setShowRoadmapTypeDialog] = useState(false);
   const [showUserSearch, setShowUserSearch] = useState(false);
@@ -43,13 +41,13 @@ export default function ChooseRoadmapType({
   };
 
   const handleSignIn = () => {
-    router.push("/sign-in");
+    router.push('/sign-in');
   };
 
   const handleContinue = () => {
     if (
-      roadmapType === "expert_collaboration" ||
-      roadmapType === "moderator_submission"
+      roadmapType === 'expert_collaboration' ||
+      roadmapType === 'moderator_submission'
     ) {
       setShowUserSearch(true);
       setShowRoadmapTypeDialog(false);
@@ -69,7 +67,7 @@ export default function ChooseRoadmapType({
     <>
       <Button
         variant="outline"
-        className={`${isDarkMode ? "bg-dark-900 text-white" : ""}`}
+        className="dark:bg-dark-900 dark:text-white"
         onClick={handleSubmit}
       >
         Submit
@@ -79,9 +77,7 @@ export default function ChooseRoadmapType({
         open={showRoadmapTypeDialog}
         onOpenChange={setShowRoadmapTypeDialog}
       >
-        <AlertDialogContent
-          className={`${isDarkMode ? "bg-gray-800 text-white" : "bg-white"}`}
-        >
+        <AlertDialogContent className="text-text bg-lightGray2">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-3xl font-bold mb-8">
               Choose the type of roadmap
@@ -102,9 +98,7 @@ export default function ChooseRoadmapType({
       </AlertDialog>
 
       <AlertDialog open={showUserSearch} onOpenChange={setShowUserSearch}>
-        <AlertDialogContent
-          className={`${isDarkMode ? "bg-gray-800 text-white" : "bg-white"}`}
-        >
+        <AlertDialogContent className="text-text bg-lightGray2">
           <AlertDialogHeader>
             <AlertDialogTitle>Add Members</AlertDialogTitle>
             <AlertDialogDescription>
@@ -115,9 +109,7 @@ export default function ChooseRoadmapType({
       </AlertDialog>
 
       <AlertDialog open={showAuthWarning} onOpenChange={setShowAuthWarning}>
-        <AlertDialogContent
-          className={`${isDarkMode ? "bg-gray-800 text-white" : "bg-white"}`}
-        >
+        <AlertDialogContent className="text-text bg-lightGray2">
           <AlertDialogHeader>
             <AlertDialogTitle>Authentication Required</AlertDialogTitle>
             <AlertDialogDescription>

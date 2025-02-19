@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 import {
   Table,
   TableBody,
@@ -8,7 +8,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,14 +16,12 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { MoreHorizontal, Search } from "lucide-react";
-import { useDarkMode } from "@/hooks/useDarkMode";
-import { cn } from "@/lib/utils";
-import apiClient from "@/api/apiClient";
-import { useRouter } from "next/navigation";
+} from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { MoreHorizontal, Search } from 'lucide-react';
+import apiClient from '@/api/apiClient';
+import { useRouter } from 'next/navigation';
 
 interface User {
   _id: string;
@@ -35,14 +33,13 @@ interface User {
 }
 
 export default function UsersList() {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const [users, setUsers] = useState<User[]>([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const { isDarkMode } = useDarkMode();
   const router = useRouter();
-  console.count("userlist");
+  console.count('userlist');
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -58,7 +55,7 @@ export default function UsersList() {
         setPage((prevPage) => prevPage + 1);
       }
     } catch (error) {
-      console.error("Error fetching users:", error);
+      console.error('Error fetching users:', error);
     }
     setLoading(false);
   };
@@ -74,15 +71,8 @@ export default function UsersList() {
   );
 
   return (
-    <div
-      className={cn("p-4 rounded-lg", isDarkMode ? "bg-gray-800" : "bg-white")}
-    >
-      <h1
-        className={cn(
-          "text-2xl font-bold mb-4",
-          isDarkMode ? "text-white" : "text-gray-800"
-        )}
-      >
+    <div className="p-4 rounded-lg bg-white dark:bg-gray-800">
+      <h1 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">
         All Users
       </h1>
       <div className="flex flex-col sm:flex-row justify-between items-center mb-4">
@@ -92,12 +82,7 @@ export default function UsersList() {
             placeholder="Search users..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className={cn(
-              "pl-10",
-              isDarkMode
-                ? "bg-gray-700 text-white"
-                : "bg-gray-100 text-gray-800"
-            )}
+            className="pl-10 bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-white"
           />
           <Search
             className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
@@ -125,7 +110,7 @@ export default function UsersList() {
                 >
                   <img
                     src={`${
-                      user.image == "" ? "/defaultUserImage.png" : user?.image
+                      user.image == '' ? '/defaultUserImage.png' : user?.image
                     }`}
                     className="rounded-full w-10 h-10"
                     alt=""
@@ -141,7 +126,10 @@ export default function UsersList() {
                         <MoreHorizontal className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="bg-white">
+                    <DropdownMenuContent
+                      align="end"
+                      className="bg-white dark:bg-gray-800"
+                    >
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
                       <DropdownMenuItem>Edit User</DropdownMenuItem>
                       <DropdownMenuItem>View Details</DropdownMenuItem>
@@ -162,13 +150,9 @@ export default function UsersList() {
           <Button
             onClick={() => fetchUsers()}
             disabled={loading}
-            className={cn(
-              isDarkMode
-                ? "bg-blue-600 hover:bg-blue-700"
-                : "bg-blue-500 hover:bg-blue-600"
-            )}
+            className="bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
           >
-            {loading ? "Loading..." : "Load More"}
+            {loading ? 'Loading...' : 'Load More'}
           </Button>
         </div>
       )}

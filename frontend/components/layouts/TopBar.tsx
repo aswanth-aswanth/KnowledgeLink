@@ -1,12 +1,12 @@
-import { Moon, Sun, LogOut } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useDarkMode } from "@/hooks/useDarkMode";
-import { useDispatch } from "react-redux";
-import { clearAuthState } from "@/store/authSlice";
+import { Moon, Sun, LogOut } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useDarkMode } from '@/hooks/useDarkMode';
+import { useDispatch } from 'react-redux';
+import { clearAuthState } from '@/store/authSlice';
 
 export function TopBar({ children }: { children?: React.ReactNode }) {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
-  console.log("isDarkMode : ", isDarkMode);
+  console.log('isDarkMode : ', isDarkMode);
   const dispatch = useDispatch();
 
   const handleLogout = () => {

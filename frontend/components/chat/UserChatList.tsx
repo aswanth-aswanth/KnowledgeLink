@@ -1,18 +1,13 @@
-import React from "react";
-import { UserChatListProps } from "@/types/chat";
+import React from 'react';
+import { UserChatListProps } from '@/types/chat';
 
 export const UserChatList: React.FC<UserChatListProps> = ({
   userChats,
-  isDarkMode,
   onChatSelect,
 }) => {
   return (
     <div>
-      <h3
-        className={`text-sm font-medium ${
-          isDarkMode ? "text-gray-400" : "text-gray-500"
-        } mb-2`}
-      >
+      <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
         YOUR CHATS
       </h3>
       <ul className="space-y-4">
@@ -23,7 +18,7 @@ export const UserChatList: React.FC<UserChatListProps> = ({
             onClick={() => onChatSelect(chat.chatId)}
           >
             <img
-              src={chat.image || "/pngwing.com.png"}
+              src={chat.image || '/pngwing.com.png'}
               alt={chat.username}
               className="w-8 h-8 rounded-full"
             />
@@ -35,7 +30,7 @@ export const UserChatList: React.FC<UserChatListProps> = ({
                 </span>
               </div>
               <span className="text-xs w-[170px] truncate">
-                {chat.lastMessage || "No messages yet"}
+                {chat.lastMessage || 'No messages yet'}
               </span>
             </div>
           </li>

@@ -8,7 +8,6 @@ import Notifications from '@/components/shared/Notifications';
 import Image from 'next/image';
 import defaultUserImage from '@/public/defaultUserImage.png';
 import { useRouter } from 'next/navigation';
-import { useDarkMode } from '@/hooks/useDarkMode';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,7 +22,6 @@ import ThemeSwitcher from '@/components/ThemeSwitcher';
 
 export default function Header() {
   const { isAuthenticated, user } = useSelector(selectAuthState);
-  const { isDarkMode, toggleDarkMode } = useDarkMode();
   const dispatch = useDispatch();
   const router = useRouter();
   useEffect(() => {
@@ -40,21 +38,15 @@ export default function Header() {
   };
 
   return (
-    <header
-      className={`flex items-center justify-between p-2 relative z-50 max-w-[100vw] overflow-hidden shadow-md bg-header text-text`}
-    >
+    <header className="flex items-center justify-between p-2 relative z-50 max-w-[100vw] overflow-hidden shadow-md bg-header text-text">
       <div className="flex items-center">
         <Hamburger />
-        <div className="flex-grow mx-2 sm:mx-4 ">
+        <div className="flex-grow mx-2 sm:mx-4">
           <div className="relative">
             <input
               type="text"
               placeholder="Search..."
-              className={`w-full py-2 pl-10 pr-4 max-w-full rounded-xl focus:outline-none focus:ring-2 focus:shadow-outline ${
-                isDarkMode
-                  ? 'text-gray-200 bg-gray-700 focus:bg-gray-600 focus:ring-blue-400'
-                  : 'text-gray-700 bg-gray-100 focus:bg-gray-200'
-              }`}
+              className="w-full py-2 pl-10 pr-4 max-w-full rounded-xl focus:outline-none focus:ring-2 focus:shadow-outline text-gray-700 bg-gray-100 focus:bg-gray-200 dark:text-gray-200 dark:bg-gray-700 dark:focus:bg-gray-600 dark:focus:ring-blue-400"
             />
             <FiSearch className="absolute top-3 left-3 text-gray-400" />
           </div>
@@ -77,82 +69,42 @@ export default function Header() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
-              className={`w-56 ${
-                isDarkMode
-                  ? 'bg-gray-800 border-gray-700 text-white'
-                  : 'bg-white'
-              }`}
+              className="w-56 bg-white dark:bg-gray-800 dark:border-gray-700 dark:text-white"
               align="end"
               forceMount
             >
               <DropdownMenuLabel className="font-normal">
                 <div className="flex flex-col space-y-1">
-                  <p
-                    className={`text-sm font-medium leading-none ${
-                      isDarkMode ? 'text-white' : 'text-gray-900'
-                    }`}
-                  >
+                  <p className="text-sm font-medium leading-none text-gray-900 dark:text-white">
                     {user.name}
                   </p>
-                  <p
-                    className={`text-xs leading-none ${
-                      isDarkMode ? 'text-gray-400' : 'text-gray-500'
-                    }`}
-                  >
+                  <p className="text-xs leading-none text-gray-500 dark:text-gray-400">
                     {user.email}
                   </p>
                 </div>
               </DropdownMenuLabel>
-              <DropdownMenuSeparator
-                className={isDarkMode ? 'bg-gray-700' : 'bg-gray-200'}
-              />
+              <DropdownMenuSeparator className="bg-gray-200 dark:bg-gray-700" />
               <DropdownMenuItem
                 onClick={() => router.push('/profile')}
-                className={
-                  isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-                }
+                className="hover:bg-gray-100 dark:hover:bg-gray-700"
               >
-                <FiUser
-                  className={`mr-2 h-4 w-4 ${
-                    isDarkMode ? 'text-gray-400' : 'text-gray-500'
-                  }`}
-                />
-                <span className={isDarkMode ? 'text-white' : 'text-gray-900'}>
-                  Profile
-                </span>
+                <FiUser className="mr-2 h-4 w-4 text-gray-500 dark:text-gray-400" />
+                <span className="text-gray-900 dark:text-white">Profile</span>
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => router.push('/settings')}
-                className={
-                  isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-                }
+                className="hover:bg-gray-100 dark:hover:bg-gray-700"
               >
-                <FiSettings
-                  className={`mr-2 h-4 w-4 ${
-                    isDarkMode ? 'text-gray-400' : 'text-gray-500'
-                  }`}
-                />
-                <span className={isDarkMode ? 'text-white' : 'text-gray-900'}>
-                  Settings
-                </span>
+                <FiSettings className="mr-2 h-4 w-4 text-gray-500 dark:text-gray-400" />
+                <span className="text-gray-900 dark:text-white">Settings</span>
               </DropdownMenuItem>
-              <DropdownMenuSeparator
-                className={isDarkMode ? 'bg-gray-700' : 'bg-gray-200'}
-              />
+              <DropdownMenuSeparator className="bg-gray-200 dark:bg-gray-700" />
               <DropdownMenuItem
                 onClick={handleLogout}
-                className={
-                  isDarkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-                }
+                className="hover:bg-gray-100 dark:hover:bg-gray-700"
               >
-                <FiLogOut
-                  className={`mr-2 h-4 w-4 ${
-                    isDarkMode ? 'text-gray-400' : 'text-gray-500'
-                  }`}
-                />
-                <span className={isDarkMode ? 'text-white' : 'text-gray-900'}>
-                  Log out
-                </span>
+                <FiLogOut className="mr-2 h-4 w-4 text-gray-500 dark:text-gray-400" />
+                <span className="text-gray-900 dark:text-white">Log out</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

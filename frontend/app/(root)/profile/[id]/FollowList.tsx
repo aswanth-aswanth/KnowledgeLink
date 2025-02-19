@@ -1,7 +1,7 @@
 // components/FollowList.tsx
-import React from "react";
-import Image from "next/image";
-import { FaUserCircle } from "react-icons/fa";
+import React from 'react';
+import Image from 'next/image';
+import { FaUserCircle } from 'react-icons/fa';
 
 interface FollowUser {
   _id: string;
@@ -12,33 +12,16 @@ interface FollowUser {
 
 interface FollowListProps {
   users: FollowUser[];
-  isDarkMode: boolean;
   onClose: () => void;
 }
 
-const FollowList: React.FC<FollowListProps> = ({
-  users,
-  isDarkMode,
-  onClose,
-}) => {
+const FollowList: React.FC<FollowListProps> = ({ users, onClose }) => {
   return (
-    <div
-      className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${
-        isDarkMode ? "bg-black bg-opacity-50" : "bg-gray-500 bg-opacity-50"
-      }`}
-    >
-      <div
-        className={`relative w-full max-w-md p-6 rounded-lg shadow-lg ${
-          isDarkMode ? "bg-gray-800 text-white" : "bg-white text-gray-900"
-        }`}
-      >
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-500 bg-opacity-50 dark:bg-black dark:bg-opacity-50">
+      <div className="relative w-full max-w-md p-6 rounded-lg shadow-lg bg-white text-gray-900 dark:bg-gray-800 dark:text-white">
         <button
           onClick={onClose}
-          className={`absolute top-2 right-2 text-2xl ${
-            isDarkMode
-              ? "text-gray-300 hover:text-white"
-              : "text-gray-600 hover:text-gray-900"
-          }`}
+          className="absolute top-2 right-2 text-2xl text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
         >
           &times;
         </button>
@@ -59,11 +42,7 @@ const FollowList: React.FC<FollowListProps> = ({
               )}
               <div>
                 <p className="font-semibold">{user.username}</p>
-                <p
-                  className={`text-sm ${
-                    isDarkMode ? "text-gray-400" : "text-gray-600"
-                  }`}
-                >
+                <p className="text-sm text-gray-600 dark:text-gray-400">
                   {user.email}
                 </p>
               </div>

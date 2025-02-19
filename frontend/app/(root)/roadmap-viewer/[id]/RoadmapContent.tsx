@@ -15,7 +15,6 @@ export default function RoadmapContent() {
     contributions,
     rectangles,
     connections,
-    isDiagramLoading,
     pathname,
     handleContentChange,
     handleSubmit,
@@ -31,7 +30,6 @@ export default function RoadmapContent() {
   return (
     <>
       <DiagramSection
-        isDiagramLoading={isDiagramLoading}
         rectangles={rectangles}
         connections={connections}
         roadmapData={roadmapData}

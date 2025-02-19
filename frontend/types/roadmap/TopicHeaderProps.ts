@@ -1,7 +1,6 @@
 export interface TopicHeaderProps {
-    topicName: string;
-    level: string;
-    isDarkMode: boolean;
-    isExpanded: boolean;
-    toggleExpand: () => void;
-};
+  topicName: string;
+  level: string;
+  isExpanded: boolean;
+  toggleExpand: () => void;
+}

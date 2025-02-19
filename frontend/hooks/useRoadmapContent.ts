@@ -18,7 +18,6 @@ export function useRoadmapContent() {
   );
   const [rectangles, setRectangles] = useState<any[]>([]);
   const [connections, setConnections] = useState<any[]>([]);
-  const [isDiagramLoading, setIsDiagramLoading] = useState<boolean>(true);
   const [scale, setScale] = useState(1);
   const { toast } = useToast();
 
@@ -90,7 +89,6 @@ export function useRoadmapContent() {
   };
 
   const getDiagramData = async (roadmapData: any) => {
-    setIsDiagramLoading(true);
     try {
       if (roadmapData.uniqueId) {
         const result = await fetchDiagramData(roadmapData);
@@ -99,8 +97,6 @@ export function useRoadmapContent() {
       }
     } catch (error) {
       console.log('Error : ', error);
-    } finally {
-      setIsDiagramLoading(false);
     }
   };
 
@@ -113,7 +109,6 @@ export function useRoadmapContent() {
     contributions,
     rectangles,
     connections,
-    isDiagramLoading,
     pathname,
     handleContentChange,
     handleSubmit,

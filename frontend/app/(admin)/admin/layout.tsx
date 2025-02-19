@@ -1,13 +1,12 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { Sidebar } from "@/components/layouts/Sidebar";
-import { TopBar } from "@/components/layouts/TopBar";
-import { Button } from "@/components/ui/button";
-import { Menu } from "lucide-react";
-import { useDarkMode } from "@/hooks/useDarkMode";
-import { cn } from "@/lib/utils";
-import AdminAuthWrapper from "../AdminAuthWrapper";
+import { useEffect, useState } from 'react';
+import { Sidebar } from '@/components/layouts/Sidebar';
+import { TopBar } from '@/components/layouts/TopBar';
+import { Button } from '@/components/ui/button';
+import { Menu } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import AdminAuthWrapper from '../AdminAuthWrapper';
 
 export default function DashboardLayout({
   children,
@@ -15,8 +14,6 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { isDarkMode } = useDarkMode();
-  console.log("IsDark layout : ", isDarkMode);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -29,18 +26,13 @@ export default function DashboardLayout({
 
   return (
     <AdminAuthWrapper>
-      <div
-        className={cn(
-          "flex h-screen",
-          isDarkMode ? "bg-gray-900 dark text-white" : "bg-white text-gray-900"
-        )}
-      >
+      <div className="flex h-screen bg-white text-gray-900 dark:bg-gray-900 dark:text-white">
         <div
           className={cn(
-            "fixed inset-y-0 left-0 transform",
-            sidebarOpen ? "translate-x-0" : "-translate-x-full",
-            "md:relative md:translate-x-0 transition duration-200 ease-in-out z-30",
-            isDarkMode ? "bg-gray-800" : "bg-gray-100"
+            'fixed inset-y-0 left-0 transform',
+            sidebarOpen ? 'translate-x-0' : '-translate-x-full',
+            'md:relative md:translate-x-0 transition duration-200 ease-in-out z-30',
+            'bg-gray-100 dark:bg-gray-800'
           )}
         >
           <Sidebar />
@@ -50,23 +42,13 @@ export default function DashboardLayout({
             <Button
               variant="ghost"
               size="icon"
-              className={cn(
-                "md:hidden",
-                isDarkMode
-                  ? "text-white hover:bg-gray-700"
-                  : "text-gray-900 hover:bg-gray-200"
-              )}
+              className="md:hidden text-gray-900 hover:bg-gray-200 dark:text-white dark:hover:bg-gray-700"
               onClick={() => setSidebarOpen(!sidebarOpen)}
             >
               <Menu className="h-5 w-5" />
             </Button>
           </TopBar>
-          <main
-            className={cn(
-              "flex-1 overflow-y-auto p-4",
-              isDarkMode ? "bg-gray-900" : "bg-gray-50"
-            )}
-          >
+          <main className="flex-1 overflow-y-auto p-4 bg-gray-50 dark:bg-gray-900">
             {children}
           </main>
         </div>

@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import { useRouter } from 'next/navigation';
-import { useDarkMode } from '@/hooks/useDarkMode';
 import { deleteMessage, fetchChatMessages } from '@/api';
 import {
   Message,
@@ -25,7 +24,6 @@ export const useChatWindow = ({
   const [selectedUser, setSelectedUser] = useState<Chat | null>(null);
   const router = useRouter();
   const [hoveredMessageId, setHoveredMessageId] = useState<string | null>(null);
-  const { isDarkMode } = useDarkMode();
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -184,7 +182,6 @@ export const useChatWindow = ({
     newMessage,
     setNewMessage,
     selectedUser,
-    isDarkMode,
     chatContainerRef,
     messagesEndRef,
     hoveredMessageId,

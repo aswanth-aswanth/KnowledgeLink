@@ -1,28 +1,22 @@
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { MessageCircleMore } from "lucide-react";
-import { User } from "@/types/chat";
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { MessageCircleMore } from 'lucide-react';
+import { User } from '@/types/chat';
 
 interface SearchResultsProps {
   searchResults: User[];
-  isDarkMode: boolean;
   handleStartConversation: (participantId: string) => void;
 }
 
 export const SearchResults: React.FC<SearchResultsProps> = ({
   searchResults,
-  isDarkMode,
   handleStartConversation,
 }) => {
   if (searchResults.length === 0) return null;
 
   return (
     <div className="mb-6">
-      <h3
-        className={`text-sm font-medium ${
-          isDarkMode ? "text-gray-400" : "text-gray-500"
-        } mb-2`}
-      >
+      <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
         SEARCH RESULTS
       </h3>
       <ul className="space-y-2">
@@ -33,7 +27,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
           >
             <div className="flex items-center space-x-3">
               <img
-                src={user.image || "/pngwing.com.png"}
+                src={user.image || '/pngwing.com.png'}
                 alt={user.username}
                 className="w-8 h-8 rounded-full"
               />

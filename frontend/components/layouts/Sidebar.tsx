@@ -1,37 +1,35 @@
 // components/Sidebar.tsx
-import { useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 import {
   ChevronDown,
   LayoutDashboard,
   Users,
   Settings,
   BarChart,
-} from "lucide-react";
-import { useDarkMode } from "@/hooks/useDarkMode";
+} from 'lucide-react';
 
 const navItems = [
   {
-    title: "Users",
+    title: 'Users',
     icon: Users,
-    href: "/admin/users",
-    subItems: [{ title: "View All Users", href: "/admin/users/userlist" }],
+    href: '/admin/users',
+    subItems: [{ title: 'View All Users', href: '/admin/users/userlist' }],
   },
   {
-    title: "Roadmaps",
+    title: 'Roadmaps',
     icon: Users,
-    href: "/admin/roadmaps",
-    subItems: [{ title: "View All Roadmaps", href: "/admin/roadmaps" }],
+    href: '/admin/roadmaps',
+    subItems: [{ title: 'View All Roadmaps', href: '/admin/roadmaps' }],
   },
 ];
 
 export function Sidebar() {
   const pathname = usePathname();
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
-  const { isDarkMode } = useDarkMode();
 
   const toggleSubmenu = (title: string) => {
     setOpenSubmenu(openSubmenu === title ? null : title);
@@ -40,8 +38,8 @@ export function Sidebar() {
   return (
     <aside
       className={cn(
-        "w-64 h-screen overflow-y-auto py-4 px-3 bg-background border-r",
-        isDarkMode ? "border-gray-800" : "border-gray-200"
+        'w-64 h-screen overflow-y-auto py-4 px-3 dark:bg-gray-900 border-r',
+        'dark:border-gray-800 border-gray-200'
       )}
     >
       <div className="mb-5 px-2">
@@ -53,8 +51,8 @@ export function Sidebar() {
             <Button
               variant="ghost"
               className={cn(
-                "w-full justify-start text-left font-normal",
-                pathname === item.href && "bg-accent"
+                'w-full justify-start text-left font-normal',
+                pathname === item.href && 'bg-accent'
               )}
               onClick={() => item.subItems && toggleSubmenu(item.title)}
             >
@@ -63,8 +61,8 @@ export function Sidebar() {
               {item.subItems && (
                 <ChevronDown
                   className={cn(
-                    "ml-auto h-4 w-4 transition-transform duration-200",
-                    openSubmenu === item.title && "transform rotate-180"
+                    'ml-auto h-4 w-4 transition-transform duration-200',
+                    openSubmenu === item.title && 'transform rotate-180'
                   )}
                 />
               )}
@@ -76,9 +74,9 @@ export function Sidebar() {
                     <Button
                       variant="ghost"
                       className={cn(
-                        "w-full justify-start text-left font-normal",
+                        'w-full justify-start text-left font-normal',
                         pathname === subItem.href &&
-                          "bg-accent dark:text-blue-300"
+                          'bg-accent dark:text-blue-300'
                       )}
                     >
                       {subItem.title}

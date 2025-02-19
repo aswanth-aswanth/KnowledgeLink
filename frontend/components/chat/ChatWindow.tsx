@@ -1,9 +1,9 @@
-import React from "react";
-import { useChatWindow } from "@/hooks/useChatWindow";
-import { ChatHeader } from "@/components/chat/ChatHeader";
-import { MessageList } from "@/components/chat/MessageList";
-import { MessageInput } from "@/components/chat/MessageInput";
-import { ChatWindowProps } from "@/types/chatwindow";
+import React from 'react';
+import { useChatWindow } from '@/hooks/useChatWindow';
+import { ChatHeader } from '@/components/chat/ChatHeader';
+import { MessageList } from '@/components/chat/MessageList';
+import { MessageInput } from '@/components/chat/MessageInput';
+import { ChatWindowProps } from '@/types/chatwindow';
 
 export default function ChatWindow({
   selectedChatId,
@@ -19,7 +19,6 @@ export default function ChatWindow({
     newMessage,
     setNewMessage,
     selectedUser,
-    isDarkMode,
     chatContainerRef,
     messagesEndRef,
     hoveredMessageId,
@@ -53,7 +52,6 @@ export default function ChatWindow({
         setHoveredMessageId={setHoveredMessageId}
         handleDeleteMessage={handleDeleteMessage}
         formatTime={formatTime}
-        isDarkMode={isDarkMode}
         chatContainerRef={chatContainerRef}
         messagesEndRef={messagesEndRef}
         handleScroll={handleScroll}

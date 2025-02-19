@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
-import Sidebar from "./Sidebar";
-import ChatWindow from "./ChatWindow";
-import { useDarkMode } from "@/hooks/useDarkMode";
-import { ChatRoomProps } from "@/types/chat";
-import useChat from "@/hooks/useChat";
+import React, { useState, useEffect } from 'react';
+import Sidebar from './Sidebar';
+import ChatWindow from './ChatWindow';
+import { ChatRoomProps } from '@/types/chat';
+import useChat from '@/hooks/useChat';
 
 export default function ChatRoom({
   socket,
@@ -11,7 +10,6 @@ export default function ChatRoom({
   joinChatRoom,
   token,
 }: ChatRoomProps) {
-  const { isDarkMode } = useDarkMode();
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   const { userChats, setUserChats, fetchUserChats } = useChat();
@@ -27,14 +25,9 @@ export default function ChatRoom({
   };
 
   return (
-    <div
-      className={`flex h-screen md:h-[90.9vh] ${
-        isDarkMode ? "bg-gray-900" : "bg-gray-100"
-      }`}
-    >
+    <div className="flex h-screen md:h-[90.9vh] bg-gray-100 dark:bg-gray-900">
       <Sidebar
         socket={socket}
-        isDarkMode={isDarkMode}
         onChatSelect={handleChatSelect}
         isVisible={isSidebarVisible}
         onClose={() => setIsSidebarVisible(false)}
@@ -47,7 +40,7 @@ export default function ChatRoom({
           socket={socket}
           sendMessage={sendMessage}
           joinChatRoom={joinChatRoom}
-          token={token ?? ""}
+          token={token ?? ''}
           onOpenSidebar={() => setIsSidebarVisible(true)}
           userChats={userChats}
         />
