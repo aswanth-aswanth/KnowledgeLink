@@ -12,6 +12,17 @@ export const login = async (data: LoginData) => {
   }
 };
 
+export const logout = async () => {
+  try {
+    const response = await apiClient.post('/auth/logout');
+    return response.data;
+  } catch (e) {
+    const error = e as Error;
+    console.error('Error in logout api:', error.message);
+    throw error;
+  }
+};
+
 export const refreshToken = async () => {
   try {
     const response = await apiClient.post('/auth/refresh-token');
@@ -285,6 +296,19 @@ export const getFollowings = async (userId: string) => {
   } catch (e) {
     const error = e as Error;
     console.error('Error in getFollowings api:', error.message);
+    throw error;
+  }
+};
+
+export const updateUserApi = async (formData: any, headers: any) => {
+  try {
+    const response = await apiClient.patch('/profile/user', formData, {
+      headers,
+    });
+    return response.data;
+  } catch (e) {
+    const error = e as Error;
+    console.error('Error in updateUser api:', error.message);
     throw error;
   }
 };

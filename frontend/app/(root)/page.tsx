@@ -8,20 +8,10 @@ import PopularContributors from '@/components/shared/PopularContributors';
 import TrendingArticles from '@/components/shared/TrendingArticles';
 import Tabs from '@/components/shared/Tabs';
 import Roadmaps from '@/components/roadmap/Roadmaps';
-import { saveToLocalStorage } from '@/lib/utils';
 
 const TabNavigation: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('Explore');
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const token = searchParams.get('token');
-
-  useEffect(() => {
-    if (token) {
-      saveToLocalStorage('token', token);
-      router.push('/');
-    }
-  }, [token, router]);
 
   const tabs = [
     { name: 'Explore', icon: '🌎' },

@@ -1,21 +1,20 @@
 'use client';
+
 import React, { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Header from '@/components/layouts/Header';
 import { ReduxProvider } from '@/lib/redux-provider';
-import { checkTokenExpiration, selectAuthState } from '@/store/authSlice';
-import { store, AppDispatch } from '@/store';
-import { useNotifications } from '@/hooks/useNotifications';
 import { useSelector, useDispatch } from 'react-redux';
+import { selectAuthState } from '@/store/selectors';
+import { AppDispatch, store } from '@/store';
 import { initializeSocket } from '@/store/socketSlice';
+import AuthUpdater from '@/components/auth/AuthUpdater'; // <-- Import here
+import { useNotifications } from '@/hooks/useNotifications';
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
-  useEffect(() => {
-    store.dispatch(checkTokenExpiration());
-  }, []);
-
   return (
     <ReduxProvider>
+      <AuthUpdater /> {/* Runs on each route change */}
       <LayoutContent>{children}</LayoutContent>
     </ReduxProvider>
   );
@@ -38,7 +37,7 @@ const LayoutContent = ({ children }: { children: React.ReactNode }) => {
   const isChatPage = pathname === '/chat';
 
   return (
-    <div className={'flex flex-col min-h-screen bg-background'}>
+    <div className="flex flex-col min-h-screen bg-background">
       <div className={`${isChatPage && 'hidden md:block'}`}>
         <Header />
       </div>

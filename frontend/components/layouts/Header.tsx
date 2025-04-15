@@ -1,41 +1,67 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { FiSearch, FiUser, FiLogOut, FiSettings } from 'react-icons/fi';
 import { useSelector, useDispatch } from 'react-redux';
-import { clearAuthState, checkTokenExpiration } from '@/store/authSlice';
+import { logoutUser } from '@/store/authSlice';
 import { selectAuthState } from '@/store/selectors';
 import { Hamburger } from './Hamburger';
 import Notifications from '@/components/shared/Notifications';
+import { useRouter } from 'next/navigation';
+import ThemeSwitcher from '@/components/ThemeSwitcher';
 import Image from 'next/image';
 import defaultUserImage from '@/public/defaultUserImage.png';
-import { useRouter } from 'next/navigation';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import ConfigurableDropdown, {
+  DropdownItem,
+} from '@/components/shared/ConfigurableDropdown';
 import { Button } from '@/components/ui/button';
-import apiClient from '@/api/apiClient';
-import ThemeSwitcher from '@/components/ThemeSwitcher';
 
 export default function Header() {
   const { isAuthenticated, user } = useSelector(selectAuthState);
   const dispatch = useDispatch();
   const router = useRouter();
-  useEffect(() => {
-    dispatch(checkTokenExpiration());
-  }, [dispatch]);
 
   const handleLogout = async () => {
-    try {
-      dispatch(clearAuthState());
-      await apiClient.post('/auth/logout');
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
+    dispatch(logoutUser());
   };
+
+  const dropdownItems: DropdownItem[] = [
+    {
+      key: 'profile',
+      label: 'Profile',
+      icon: (
+        <FiUser className="mr-2 h-4 w-4 text-gray-500 dark:text-gray-400" />
+      ),
+      onClick: () => router.push('/profile'),
+    },
+    {
+      key: 'settings',
+      label: 'Settings',
+      icon: (
+        <FiSettings className="mr-2 h-4 w-4 text-gray-500 dark:text-gray-400" />
+      ),
+      onClick: () => router.push('/settings'),
+      separator: true,
+    },
+    {
+      key: 'logout',
+      label: 'Log out',
+      icon: (
+        <FiLogOut className="mr-2 h-4 w-4 text-gray-500 dark:text-gray-400" />
+      ),
+      onClick: handleLogout,
+    },
+  ];
+
+  const dropdownTrigger = (
+    <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+      <Image
+        src={user?.imageUrl || defaultUserImage}
+        alt="User Image"
+        className="w-[30px] h-[30px] rounded-full max-w-max cursor-pointer"
+        width={32}
+        height={32}
+      />
+    </Button>
+  );
 
   return (
     <header className="flex items-center justify-between p-2 relative z-50 max-w-[100vw] overflow-hidden shadow-md bg-header text-text">
@@ -56,58 +82,11 @@ export default function Header() {
         <ThemeSwitcher />
         <Notifications />
         {isAuthenticated && user ? (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                <Image
-                  src={user.imageUrl || defaultUserImage}
-                  alt="User Image"
-                  className="w-[30px] h-[30px] rounded-full max-w-max cursor-pointer"
-                  width={32}
-                  height={32}
-                />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              className="w-56 bg-white dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-              align="end"
-              forceMount
-            >
-              <DropdownMenuLabel className="font-normal">
-                <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium leading-none text-gray-900 dark:text-white">
-                    {user.name}
-                  </p>
-                  <p className="text-xs leading-none text-gray-500 dark:text-gray-400">
-                    {user.email}
-                  </p>
-                </div>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator className="bg-gray-200 dark:bg-gray-700" />
-              <DropdownMenuItem
-                onClick={() => router.push('/profile')}
-                className="hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                <FiUser className="mr-2 h-4 w-4 text-gray-500 dark:text-gray-400" />
-                <span className="text-gray-900 dark:text-white">Profile</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => router.push('/settings')}
-                className="hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                <FiSettings className="mr-2 h-4 w-4 text-gray-500 dark:text-gray-400" />
-                <span className="text-gray-900 dark:text-white">Settings</span>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator className="bg-gray-200 dark:bg-gray-700" />
-              <DropdownMenuItem
-                onClick={handleLogout}
-                className="hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                <FiLogOut className="mr-2 h-4 w-4 text-gray-500 dark:text-gray-400" />
-                <span className="text-gray-900 dark:text-white">Log out</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <ConfigurableDropdown
+            items={dropdownItems}
+            trigger={dropdownTrigger}
+            align="end"
+          />
         ) : (
           <div
             className="hover:bg-gray-200 dark:hover:bg-gray-600 p-2 cursor-pointer rounded-full"

@@ -2,14 +2,13 @@ export type Tab = {
   name: string;
   icon: string;
   dbName?: string;
-}
+};
 export type TabsProps = {
   tabs: Tab[];
   activeTab: string;
   onTabClick: (tabName: string, dbName: string) => void;
   tabFor: string;
-}
-// src/types/index.ts
+};
 
 
 export interface Topic {
@@ -26,8 +25,6 @@ export interface TopicsState {
   rootId: string;
   editorData?: any | null;
 }
-
-
 
 export interface Message {
   chatId: string;
@@ -47,4 +44,20 @@ export interface User {
 export interface Channel {
   id: string;
   name: string;
+}
+
+export interface User {
+  id: string;
+  userId?: string;
+  name: string;
+  email: string;
+  imageUrl?: string;
+  bio?: string;
+  role?: string;
+}
+
+export interface AuthState {
+  isAuthenticated: boolean;
+  user: User | null;
+  token: string | null;
 }

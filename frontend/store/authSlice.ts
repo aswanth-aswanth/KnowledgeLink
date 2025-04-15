@@ -1,9 +1,10 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { jwtDecode } from 'jwt-decode';
-import { isTokenExpired } from '@/lib/auth';
 import apiClient from '@/api/apiClient';
 import axios from 'axios';
 import { getFromLocalStorage, removeFromLocalStorage } from '@/lib/utils';
+import { isTokenExpired } from '@/lib/auth';
+import { logout } from '@/api';
 
 export interface User {
   id: string;
@@ -21,14 +22,12 @@ interface AuthState {
   token: string | null;
 }
 
-// Initial state
 const initialState: AuthState = {
   isAuthenticated: false,
   user: null,
   token: null,
 };
 
-// Async thunk
 export const updateUserProfile = createAsyncThunk(
   'auth/updateUserProfile',
   async (formData: FormData, { rejectWithValue }) => {
@@ -46,7 +45,58 @@ export const updateUserProfile = createAsyncThunk(
   }
 );
 
-// Slice
+export const checkTokenExpiration = createAsyncThunk(
+  'auth/checkTokenExpiration',
+  async (_, { dispatch }) => {
+    if (typeof window === 'undefined') return;
+
+    const storedToken = getFromLocalStorage('token');
+    console.log('storedToken : ', storedToken);
+    console.log('isTokenExpired(storedToken) : ', isTokenExpired(storedToken));
+    if (!storedToken || isTokenExpired(storedToken)) {
+      removeFromLocalStorage('token');
+      dispatch(clearAuthState());
+      return;
+    }
+
+    const decoded = jwtDecode<{
+      id: string;
+      username: string;
+      email: string;
+      image?: string;
+      role?: string;
+    }>(storedToken);
+
+    dispatch(
+      setAuthState({
+        isAuthenticated: true,
+        token: storedToken,
+        user: {
+          id: decoded.id,
+          name: decoded.username,
+          email: decoded.email,
+          imageUrl: decoded.image,
+          role: decoded.role,
+        },
+      })
+    );
+  }
+);
+
+export const logoutUser = createAsyncThunk(
+  'auth/logoutUser',
+  async (_, { dispatch, rejectWithValue }) => {
+    try {
+      await logout();
+      removeFromLocalStorage('token');
+      dispatch(clearAuthState());
+    } catch (error) {
+      console.error('Logout failed:', error);
+      return rejectWithValue('Logout failed');
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -67,43 +117,6 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.user = null;
       state.token = null;
-      if (typeof window !== 'undefined') {
-        removeFromLocalStorage('token');
-      }
-    },
-    checkTokenExpiration: (state) => {
-      if (typeof window !== 'undefined') {
-        const storedToken = getFromLocalStorage('token');
-        if (storedToken) {
-          if (isTokenExpired(storedToken)) {
-            removeFromLocalStorage('token');
-            state.isAuthenticated = false;
-            state.user = null;
-            state.token = null;
-          } else {
-            const decoded = jwtDecode<{
-              id: string;
-              username: string;
-              email: string;
-              image?: string;
-              role?: string;
-            }>(storedToken);
-            state.isAuthenticated = true;
-            state.user = {
-              id: decoded.id,
-              name: decoded.username,
-              email: decoded.email,
-              imageUrl: decoded.image,
-              role: decoded.role,
-            };
-            state.token = storedToken;
-          }
-        } else {
-          state.isAuthenticated = false;
-          state.user = null;
-          state.token = null;
-        }
-      }
     },
     updateUser: (state, action: PayloadAction<User>) => {
       state.user = action.payload;
@@ -116,14 +129,7 @@ const authSlice = createSlice({
   },
 });
 
-// Export actions and reducer
-export const {
-  setAuthState,
-  clearAuthState,
-  checkTokenExpiration,
-  updateUser,
-} = authSlice.actions;
+export const { setAuthState, clearAuthState, updateUser } = authSlice.actions;
 export const authReducer = authSlice.reducer;
 
-// Selector
 export const selectAuthState = (state: { auth: AuthState }) => state.auth;
