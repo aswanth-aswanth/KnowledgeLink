@@ -1,12 +1,18 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
-import { NextRouter } from 'next/router';
-import { getFromLocalStorage, removeFromLocalStorage } from '@/lib/utils';
+import {
+  getFromLocalStorage,
+  removeFromLocalStorage,
+  saveToLocalStorage,
+} from '@/lib/utils';
 import { isTokenExpired } from '@/lib/auth';
-import { logout, register, updateUserApi } from '@/api';
+import { login, logout, register, updateUserApi } from '@/api';
 import { RegistrationFormData } from '@/lib/validation/registration.validation';
+import { LoginFormData } from '@/lib/validation/login.validation';
 import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
+type NextRouter = ReturnType<typeof useRouter>;
 
 export interface User {
   id: string;
@@ -33,6 +39,59 @@ const initialState: AuthState = {
   isLoading: false,
   error: null,
 };
+
+export const loginUser = createAsyncThunk(
+  'auth/loginUser',
+  async (
+    { formData, router }: { formData: LoginFormData; router?: NextRouter },
+    { rejectWithValue, dispatch }
+  ) => {
+    try {
+      const response = await login({
+        email: formData.email,
+        password: formData.password,
+      });
+
+      const token = response.token;
+      saveToLocalStorage('token', token);
+
+      const decoded = jwtDecode<{
+        id: string;
+        username: string;
+        email: string;
+        image?: string;
+        role?: string;
+      }>(token);
+
+      dispatch(
+        setAuthState({
+          isAuthenticated: true,
+          token: token,
+          user: {
+            id: decoded.id,
+            name: decoded.username,
+            email: decoded.email,
+            imageUrl: decoded.image,
+            role: decoded.role,
+          },
+        })
+      );
+
+      toast('Login successful!', {
+        icon: '👏',
+      });
+
+      if (router) {
+        router.push('/');
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        return rejectWithValue(error.response.data?.error || 'Login failed');
+      }
+      return rejectWithValue('An unexpected error occurred');
+    }
+  }
+);
 
 export const registerUser = createAsyncThunk(
   'auth/registerUser',
@@ -184,6 +243,18 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(updateUserProfile.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(loginUser.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(loginUser.fulfilled, (state) => {
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
       });
