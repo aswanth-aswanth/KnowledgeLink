@@ -23,6 +23,21 @@ export const logout = async () => {
   }
 };
 
+export const register = async (payload: {
+  username: string;
+  email: string;
+  password: string;
+}) => {
+  try {
+    const response = await apiClient.post('/auth/register', payload);
+    return response.data;
+  } catch (e) {
+    const error = e as Error;
+    console.error('Error in logout api:', error.message);
+    throw error;
+  }
+};
+
 export const refreshToken = async () => {
   try {
     const response = await apiClient.post('/auth/refresh-token');

@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { useSearchParams } from "next/navigation";
-import toast from "react-hot-toast";
-import RegisterForm from "./RegisterForm";
-import SocialLoginButtons from "./SocialLoginButtons";
+import { useSearchParams } from 'next/navigation';
+import toast from 'react-hot-toast';
+import RegisterForm from './RegisterForm';
+import SocialLoginButtons from './SocialLoginButtons';
 
 const Registration = () => {
   const searchParams = useSearchParams();
-  const error = searchParams.get("error");
+  const error = searchParams.get('error');
 
   if (error) {
-    toast.error("Google authentication was unsuccessful. Please try again.");
+    toast.error('Google authentication was unsuccessful. Please try again.');
   }
 
   return (

@@ -1,78 +1,34 @@
-import apiClient from "@/api/apiClient";
-import { registrationSchema } from "@/lib/validation/authSchemas";
-import { AxiosError } from "axios";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import React, { useState } from "react";
-import toast from "react-hot-toast";
+import { useDispatch, useSelector } from 'react-redux';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import Link from 'next/link';
+import { registerUser } from '@/store/authSlice';
+import { AppDispatch, RootState } from '@/store';
+import {
+  RegistrationFormData,
+  registrationSchema,
+} from '@/lib/validation/registration.validation';
+import { useRouter } from 'next/navigation';
 
 export default function RegisterForm() {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const dispatch = useDispatch<AppDispatch>();
+  const { isLoading, error } = useSelector((state: RootState) => state.auth);
   const router = useRouter();
-  const searchParams = useSearchParams();
 
-  const error = searchParams.get("error");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RegistrationFormData>({
+    resolver: zodResolver(registrationSchema),
+  });
 
-  if (error) {
-    toast.error("Google authentication was unsuccessful. Please try again.");
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    const registrationData = {
-      username,
-      email,
-      password,
-      confirmPassword,
-    };
-
-    const parsed = registrationSchema.safeParse(registrationData);
-
-    if (!parsed.success) {
-      const errorMessages = parsed.error.errors.map((err) => err.message);
-      errorMessages.forEach((errorMsg) => toast.error(errorMsg));
-      setIsLoading(false);
-      return;
-    }
-
-    console.log("Registration submitted", registrationData);
-
-    try {
-      const response = await apiClient.post(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/auth/register`,
-        {
-          username,
-          email,
-          password,
-        }
-      );
-      console.log("Response : ", response);
-
-      toast("Registration successful!", {
-        icon: "👏",
-      });
-      router.push("/sign-in");
-    } catch (error) {
-      if (error instanceof AxiosError && error.response) {
-        const errorMsg = error.response.data?.error || "An error occurred";
-        toast.error(errorMsg);
-      } else {
-        console.error("Unexpected error:", error);
-        toast.error("An unexpected error occurred");
-      }
-    } finally {
-      setIsLoading(false);
-    }
+  const onSubmit = (data: RegistrationFormData) => {
+    dispatch(registerUser({ formData: data, router }));
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div>
         <label
           htmlFor="username"
@@ -83,12 +39,16 @@ export default function RegisterForm() {
         <input
           id="username"
           type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-          required
+          {...register('username')}
+          className={`mt-1 block w-full px-3 py-2 border ${
+            errors.username ? 'border-red-500' : 'border-gray-300'
+          } rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
         />
+        {errors.username && (
+          <p className="mt-1 text-sm text-red-600">{errors.username.message}</p>
+        )}
       </div>
+
       <div>
         <label
           htmlFor="email"
@@ -99,12 +59,16 @@ export default function RegisterForm() {
         <input
           id="email"
           type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-          required
+          {...register('email')}
+          className={`mt-1 block w-full px-3 py-2 border ${
+            errors.email ? 'border-red-500' : 'border-gray-300'
+          } rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
         />
+        {errors.email && (
+          <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
+        )}
       </div>
+
       <div>
         <label
           htmlFor="password"
@@ -115,12 +79,16 @@ export default function RegisterForm() {
         <input
           id="password"
           type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-          required
+          {...register('password')}
+          className={`mt-1 block w-full px-3 py-2 border ${
+            errors.password ? 'border-red-500' : 'border-gray-300'
+          } rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
         />
+        {errors.password && (
+          <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
+        )}
       </div>
+
       <div>
         <label
           htmlFor="confirmPassword"
@@ -131,12 +99,19 @@ export default function RegisterForm() {
         <input
           id="confirmPassword"
           type="password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-          required
+          {...register('confirmPassword')}
+          className={`mt-1 block w-full px-3 py-2 border ${
+            errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
+          } rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
         />
+        {errors.confirmPassword && (
+          <p className="mt-1 text-sm text-red-600">
+            {errors.confirmPassword.message}
+          </p>
+        )}
       </div>
+
+      {error && <p className="text-sm text-red-600 text-center">{error}</p>}
 
       <button
         type="submit"
@@ -149,12 +124,13 @@ export default function RegisterForm() {
             <span className="ml-2">Signing up...</span>
           </div>
         ) : (
-          "Sign up"
+          'Sign up'
         )}
       </button>
+
       <p className="text-center text-sm">
-        Already have an account?
-        <Link href={"sign-in"} className="text-blue-500">
+        Already have an account?{' '}
+        <Link href="/sign-in" className="text-blue-500">
           Login here.
         </Link>
       </p>

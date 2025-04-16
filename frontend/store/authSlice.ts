@@ -1,10 +1,12 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { jwtDecode } from 'jwt-decode';
-import apiClient from '@/api/apiClient';
 import axios from 'axios';
+import { NextRouter } from 'next/router';
 import { getFromLocalStorage, removeFromLocalStorage } from '@/lib/utils';
 import { isTokenExpired } from '@/lib/auth';
-import { logout } from '@/api';
+import { logout, register, updateUserApi } from '@/api';
+import { RegistrationFormData } from '@/lib/validation/registration.validation';
+import toast from 'react-hot-toast';
 
 export interface User {
   id: string;
@@ -20,19 +22,54 @@ interface AuthState {
   isAuthenticated: boolean;
   user: User | null;
   token: string | null;
+  isLoading: boolean;
+  error: string | null;
 }
 
 const initialState: AuthState = {
   isAuthenticated: false,
   user: null,
   token: null,
+  isLoading: false,
+  error: null,
 };
+
+export const registerUser = createAsyncThunk(
+  'auth/registerUser',
+  async (
+    {
+      formData,
+      router,
+    }: { formData: RegistrationFormData; router?: NextRouter },
+    { rejectWithValue }
+  ) => {
+    try {
+      await register({
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+      });
+
+      toast('Registration is successful');
+      if (router) {
+        router.push('/sign-in');
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        return rejectWithValue(
+          error.response.data?.error || 'Registration failed'
+        );
+      }
+      return rejectWithValue('An unexpected error occurred');
+    }
+  }
+);
 
 export const updateUserProfile = createAsyncThunk(
   'auth/updateUserProfile',
   async (formData: FormData, { rejectWithValue }) => {
     try {
-      const response = await apiClient.patch('/profile/user', formData, {
+      const response = await updateUserApi(formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       return response.data;
@@ -51,8 +88,6 @@ export const checkTokenExpiration = createAsyncThunk(
     if (typeof window === 'undefined') return;
 
     const storedToken = getFromLocalStorage('token');
-    console.log('storedToken : ', storedToken);
-    console.log('isTokenExpired(storedToken) : ', isTokenExpired(storedToken));
     if (!storedToken || isTokenExpired(storedToken)) {
       removeFromLocalStorage('token');
       dispatch(clearAuthState());
@@ -112,20 +147,46 @@ const authSlice = createSlice({
       state.isAuthenticated = action.payload.isAuthenticated;
       state.user = action.payload.user;
       state.token = action.payload.token;
+      state.isLoading = false;
+      state.error = null;
     },
     clearAuthState: (state) => {
       state.isAuthenticated = false;
       state.user = null;
       state.token = null;
+      state.isLoading = false;
+      state.error = null;
     },
     updateUser: (state, action: PayloadAction<User>) => {
       state.user = action.payload;
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(updateUserProfile.fulfilled, (state, action) => {
-      state.user = action.payload;
-    });
+    builder
+      .addCase(registerUser.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(registerUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(registerUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(updateUserProfile.fulfilled, (state, action) => {
+        state.user = action.payload;
+        state.isLoading = false;
+      })
+      .addCase(updateUserProfile.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(updateUserProfile.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      });
   },
 });
 
