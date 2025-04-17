@@ -7,7 +7,7 @@ import Rectangle from './components/Rectangle';
 import Connection from './components/Connection';
 import Toolbar from './components/Toolbar';
 import { useSelector } from 'react-redux';
-import { RootState } from '@/store';
+import { RootState } from '@/redux';
 import apiClient from '@/api/apiClient';
 import toast from 'react-hot-toast';
 

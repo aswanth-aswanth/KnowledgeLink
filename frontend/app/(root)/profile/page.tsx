@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useRouter } from 'next/navigation';
-import { checkTokenExpiration } from '@/store/authSlice';
+import { checkTokenExpiration } from '@/redux/authSlice';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import apiClient from '@/api/apiClient';
-import { RootState } from '@/store';
+import { RootState } from '@/redux';
 
 export default function Profile() {
   const dispatch = useDispatch();

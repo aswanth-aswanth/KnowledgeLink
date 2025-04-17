@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { RootState } from "@/store";
+import { RootState } from "@/redux";
 import { useCallback } from "react";
 
 export default function useSocket() {

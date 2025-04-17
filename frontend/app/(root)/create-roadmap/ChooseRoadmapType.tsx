@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import RadioGroupForm from '../../../components/forms/RadioGroupForm';
-import { RootState } from '@/store';
+import { RootState } from '@/redux';
 import UserSearch from '../../../components/shared/UserSearch';
 import { ChooseRoadmapTypeProps } from '@/types/roadmap';
 

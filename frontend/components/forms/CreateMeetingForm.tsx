@@ -16,7 +16,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
-import { RootState } from "@/store";
+import { RootState } from "@/redux";
 import { FaUserCircle } from "react-icons/fa";
 import apiClient from "@/api/apiClient";
 

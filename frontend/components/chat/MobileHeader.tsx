@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { selectAuthState, clearAuthState } from "@/store/authSlice";
+import { selectAuthState, clearAuthState } from "@/redux/authSlice";
 import { useRouter } from "next/navigation";
 import { FiLogOut, FiArrowLeft } from "react-icons/fi";
 import { Button } from "@/components/ui/button";

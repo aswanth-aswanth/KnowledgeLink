@@ -3,8 +3,8 @@ import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
 import {
   selectContributors,
   selectContributorsLoading,
-} from '@/store/home/home.selectors';
-import { fetchContributors } from '@/store/home/home.slice';
+} from '@/redux/home/home.selectors';
+import { fetchContributors } from '@/redux/home/home.slice';
 import { useRouter } from 'next/navigation';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';

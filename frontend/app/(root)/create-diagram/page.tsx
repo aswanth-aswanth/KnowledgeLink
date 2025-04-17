@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { RootState } from '@/store';
+import { RootState } from '@/redux';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Editor from './Editor';

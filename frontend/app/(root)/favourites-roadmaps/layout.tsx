@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { ReduxProvider } from '@/lib/redux-provider';
-import { checkTokenExpiration } from '@/store/authSlice';
-import { store } from '@/store';
+import { checkTokenExpiration } from '@/redux/authSlice';
+import { store } from '@/redux';
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   React.useEffect(() => {

@@ -2,8 +2,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
-import { registerUser } from '@/store/authSlice';
-import { AppDispatch, RootState } from '@/store';
+import { registerUser } from '@/redux/authSlice';
+import { AppDispatch, RootState } from '@/redux';
 import {
   RegistrationFormData,
   registrationSchema,

@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Tabs from '@/components/shared/Tabs';
 import { Tab } from '@/types';
 import { Provider } from 'react-redux';
-import { store } from '@/store';
+import { store } from '@/redux';
 import { CreatePostButton } from './CreatePostButton';
 import { CreatePostModal } from '../../../components/forms/CreatePostModal';
 import { PostFeed } from '../../../components/social/PostFeed';

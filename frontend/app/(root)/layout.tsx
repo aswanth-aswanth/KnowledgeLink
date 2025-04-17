@@ -5,9 +5,9 @@ import { usePathname } from 'next/navigation';
 import Header from '@/components/layouts/Header';
 import { ReduxProvider } from '@/lib/redux-provider';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectAuthState } from '@/store/selectors';
-import { AppDispatch, store } from '@/store';
-import { initializeSocket } from '@/store/socketSlice';
+import { selectAuthState } from '@/redux/selectors';
+import { AppDispatch, store } from '@/redux';
+import { initializeSocket } from '@/redux/socketSlice';
 import AuthUpdater from '@/components/auth/AuthUpdater'; // <-- Import here
 import { useNotifications } from '@/hooks/useNotifications';
 

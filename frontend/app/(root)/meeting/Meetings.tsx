@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "@/store";
+import { RootState } from "@/redux";
 import { CreateMeetingForm } from "../../../components/forms/CreateMeetingForm";
 import { MeetingList } from "./MeetingList";
 import apiClient from "@/api/apiClient";

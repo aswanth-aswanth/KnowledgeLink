@@ -1,8 +1,8 @@
 import React from 'react';
 import { FiSearch, FiUser, FiLogOut, FiSettings } from 'react-icons/fi';
 import { useSelector, useDispatch } from 'react-redux';
-import { logoutUser } from '@/store/authSlice';
-import { selectAuthState } from '@/store/selectors';
+import { logoutUser } from '@/redux/authSlice';
+import { selectAuthState } from '@/redux/selectors';
 import { Hamburger } from './Hamburger';
 import Notifications from '@/components/shared/Notifications';
 import { useRouter } from 'next/navigation';

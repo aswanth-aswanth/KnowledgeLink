@@ -1,4 +1,4 @@
-import { RootState } from '@/store';
+import { RootState } from '@/redux';
 
 export const selectContributors = (state: RootState) => state.home.contributors;
 export const selectContributorsLoading = (state: RootState) =>

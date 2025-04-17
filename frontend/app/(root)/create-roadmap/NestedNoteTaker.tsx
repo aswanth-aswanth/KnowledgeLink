@@ -4,13 +4,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { Plus, Trash, Edit, AlertCircle } from 'lucide-react';
 import { v4 as uuid } from 'uuid';
-import { RootState, AppDispatch } from '@/store';
+import { RootState, AppDispatch } from '@/redux';
 import {
   addTopic,
   resetTopics,
   setEditorData,
   setRootTitleAndContent,
-} from '@/store/topicsSlice';
+} from '@/redux/topicsSlice';
 import ChooseRoadmapType from './ChooseRoadmapType';
 import TopicNode from './TopicNode';
 import { Button } from '@/components/ui/button';

@@ -1,7 +1,7 @@
 import React from "react";
 import { JitsiMeeting } from "@jitsi/react-sdk";
 import { useSelector } from "react-redux";
-import { RootState } from "@/store";
+import { RootState } from "@/redux";
 
 interface JitsiMeetComponentProps {
   roomName: string;

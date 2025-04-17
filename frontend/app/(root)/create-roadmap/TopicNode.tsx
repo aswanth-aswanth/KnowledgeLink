@@ -1,12 +1,12 @@
 import React, { useCallback, useState, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState, AppDispatch } from '@/store';
+import { RootState, AppDispatch } from '@/redux';
 import {
   updateTopic,
   deleteTopic,
   addTopic,
   toggleExpand,
-} from '@/store/topicsSlice';
+} from '@/redux/topicsSlice';
 import {
   ChevronDown,
   ChevronRight,
