@@ -327,3 +327,14 @@ export const updateUserApi = async (formData: any, headers: any) => {
     throw error;
   }
 };
+
+export const getContributors = async () => {
+  try {
+    const response = await apiClient.get(`/profile/users`);
+    return response.data;
+  } catch (e) {
+    const error = e as Error;
+    console.error('Error in getContributors api:', error.message);
+    throw error;
+  }
+};

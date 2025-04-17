@@ -1,11 +1,26 @@
-import { configureStore, combineReducers, Action, ThunkAction } from '@reduxjs/toolkit';
-import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
+import {
+  configureStore,
+  combineReducers,
+  Action,
+  ThunkAction,
+} from '@reduxjs/toolkit';
+import {
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from 'redux-persist';
 import localForage from 'localforage';
 
 import topicsReducer from './topicsSlice';
 import darkmodeReducer from './darkmodeSlice';
 import { authReducer } from './authSlice';
 import socketReducer from './socketSlice';
+import { homeReducer } from './home/home.slice';
 
 const createNoopStorage = () => ({
   getItem: () => Promise.resolve(null),
@@ -13,9 +28,8 @@ const createNoopStorage = () => ({
   removeItem: () => Promise.resolve(),
 });
 
-const storage = typeof window !== 'undefined'
-  ? localForage
-  : createNoopStorage();
+const storage =
+  typeof window !== 'undefined' ? localForage : createNoopStorage();
 
 const persistConfig = {
   key: 'root',
@@ -28,6 +42,7 @@ const rootReducer = combineReducers({
   auth: authReducer,
   darkmode: darkmodeReducer,
   socket: socketReducer,
+  home: homeReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -37,7 +52,15 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER, 'socket/setSocket'],
+        ignoredActions: [
+          FLUSH,
+          REHYDRATE,
+          PAUSE,
+          PERSIST,
+          PURGE,
+          REGISTER,
+          'socket/setSocket',
+        ],
         ignoredPaths: ['socket.socket'],
       },
     }),
@@ -47,7 +70,8 @@ export const persistor = persistStore(store);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
-export type AppThunk<ReturnType = void> = ThunkAction<ReturnType,
+export type AppThunk<ReturnType = void> = ThunkAction<
+  ReturnType,
   RootState,
   unknown,
   Action<string>

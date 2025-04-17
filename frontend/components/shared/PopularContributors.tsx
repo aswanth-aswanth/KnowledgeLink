@@ -1,28 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Skeleton } from '@/components/ui/skeleton';
-import apiClient from '@/api/apiClient';
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
+import {
+  selectContributors,
+  selectContributorsLoading,
+} from '@/store/home/home.selectors';
+import { fetchContributors } from '@/store/home/home.slice';
 import { useRouter } from 'next/navigation';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 export default function PopularContributors() {
-  const [contributors, setContributors] = useState<any | []>([]);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useAppDispatch();
+  const contributors = useAppSelector(selectContributors);
+  const isLoading = useAppSelector(selectContributorsLoading);
   const router = useRouter();
 
-  const getUsers = async () => {
-    try {
-      const res = await apiClient.get('/profile/users');
-      setContributors(res.data);
-    } catch (error) {
-      console.log('Error fetching contributors:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    getUsers();
-  }, []);
+    dispatch(fetchContributors());
+  }, [dispatch]);
 
   const ContributorSkeleton = () => (
     <div className="flex flex-col items-center text-center w-max">
@@ -36,14 +31,14 @@ export default function PopularContributors() {
     <>
       <p className="text-text font-medium text-lg mt-6 mb-8">Popular writers</p>
       <div
-        className={`flex gap-8 sm:gap-12 md:gap-28 max-w-[1224px] overflow-x-auto py-8 bg-background text-text2`}
-        style={{ overflowX: 'auto', scrollbarWidth: 'none' }}
+        className="flex gap-8 sm:gap-12 md:gap-28 max-w-[1224px] overflow-x-auto py-8 bg-background text-text2"
+        style={{ scrollbarWidth: 'none' }}
       >
-        {loading
+        {isLoading
           ? Array(5)
               .fill(0)
               .map((_, index) => <ContributorSkeleton key={index} />)
-          : contributors.map((contributor: any, index: string) => (
+          : contributors?.map((contributor: any, index: number) => (
               <div
                 key={index}
                 className="flex flex-col items-center text-center w-max"
