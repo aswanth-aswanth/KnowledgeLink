@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import apiClient from '@/api/apiClient';
-import { getContributors } from '@/api';
+import { getContributors, getRandomTopics, getRoadmapsByType } from '@/api';
 
 export interface Contributor {
   _id: string;
@@ -17,12 +16,21 @@ interface Article {
   date: string;
 }
 
+interface Roadmap {
+  _id: string;
+  title: string;
+  description: string;
+  likes: number;
+}
+
 interface HomeState {
   contributors: Contributor[];
   isContributorsLoading: boolean;
   contributorsError: string | null;
   trendingArticles: Article[];
   isLoadingTrendingArticles: boolean;
+  roadmapData: Roadmap[];
+  isLoadingRoadmapData: boolean;
 }
 
 const initialState: HomeState = {
@@ -31,6 +39,8 @@ const initialState: HomeState = {
   contributorsError: null,
   trendingArticles: [],
   isLoadingTrendingArticles: false,
+  roadmapData: [],
+  isLoadingRoadmapData: false,
 };
 
 export const fetchContributors = createAsyncThunk(
@@ -48,10 +58,16 @@ export const fetchContributors = createAsyncThunk(
 export const fetchTrendingArticles = createAsyncThunk(
   'home/fetchTrendingArticles',
   async (count: number) => {
-    const res = await apiClient.get(
-      `/recommendation/random-topics?count=${count}`
-    );
-    return res.data as Article[];
+    const res = await getRandomTopics(count);
+    return res as Article[];
+  }
+);
+
+export const fetchRoadmapsByType = createAsyncThunk(
+  'home/fetchRoadmapsByType',
+  async (type: string) => {
+    const res = await getRoadmapsByType(type);
+    return res as Roadmap[];
   }
 );
 
@@ -82,6 +98,16 @@ const homeSlice = createSlice({
       })
       .addCase(fetchTrendingArticles.rejected, (state) => {
         state.isLoadingTrendingArticles = false;
+      })
+      .addCase(fetchRoadmapsByType.pending, (state) => {
+        state.isLoadingRoadmapData = true;
+      })
+      .addCase(fetchRoadmapsByType.fulfilled, (state, action) => {
+        state.roadmapData = action.payload;
+        state.isLoadingRoadmapData = false;
+      })
+      .addCase(fetchRoadmapsByType.rejected, (state) => {
+        state.isLoadingRoadmapData = false;
       });
   },
 });

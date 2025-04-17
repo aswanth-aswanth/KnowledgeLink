@@ -338,3 +338,27 @@ export const getContributors = async () => {
     throw error;
   }
 };
+
+export const getRoadmapsByType = async (type: string) => {
+  try {
+    const response = await apiClient.get(`/roadmap/type?type=${type}`);
+    return response.data;
+  } catch (e) {
+    const error = e as Error;
+    console.error('Error in getRoadmapsByType api:', error.message);
+    throw error;
+  }
+};
+
+export const getRandomTopics = async (count: number) => {
+  try {
+    const response = await apiClient.get(
+      `/recommendation/random-topics?count=${count}`
+    );
+    return response.data;
+  } catch (e) {
+    const error = e as Error;
+    console.error('Error in getRandomTopics api:', error.message);
+    throw error;
+  }
+};

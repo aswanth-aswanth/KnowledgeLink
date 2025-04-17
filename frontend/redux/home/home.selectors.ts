@@ -9,3 +9,6 @@ export const selectTrendingArticles = (state: RootState) =>
   state.home.trendingArticles;
 export const selectIsLoadingTrendingArticles = (state: RootState) =>
   state.home.isLoadingTrendingArticles;
+export const selectRoadmapData = (state: RootState) => state.home.roadmapData;
+export const selectIsLoadingRoadmapData = (state: RootState) =>
+  state.home.isLoadingRoadmapData;
