@@ -8,7 +8,7 @@ import {
   setAuthState,
   clearAuthState,
   checkTokenExpiration,
-} from '@/redux/authSlice';
+} from '@/redux/auth/auth.slice';
 import { saveToLocalStorage, removeFromLocalStorage } from '@/lib/utils';
 import { isTokenExpired } from '@/lib/auth';
 

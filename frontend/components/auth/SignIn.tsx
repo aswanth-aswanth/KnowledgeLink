@@ -1,7 +1,7 @@
 'use client';
 import apiClient from '@/api/apiClient';
 import { saveToLocalStorage } from '@/lib/utils';
-import { checkTokenExpiration } from '@/redux/authSlice';
+import { checkTokenExpiration } from '@/redux/auth/auth.slice';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';

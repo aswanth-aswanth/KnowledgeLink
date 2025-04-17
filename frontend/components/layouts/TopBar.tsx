@@ -2,7 +2,7 @@ import { Moon, Sun, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useDarkMode } from '@/hooks/useDarkMode';
 import { useDispatch } from 'react-redux';
-import { clearAuthState } from '@/redux/authSlice';
+import { clearAuthState } from '@/redux/auth/auth.slice';
 
 export function TopBar({ children }: { children?: React.ReactNode }) {
   const { isDarkMode, toggleDarkMode } = useDarkMode();

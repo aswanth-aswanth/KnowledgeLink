@@ -1,9 +1,10 @@
-import React from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { selectAuthState, clearAuthState } from "@/redux/authSlice";
-import { useRouter } from "next/navigation";
-import { FiLogOut, FiArrowLeft } from "react-icons/fi";
-import { Button } from "@/components/ui/button";
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useRouter } from 'next/navigation';
+import { FiLogOut, FiArrowLeft } from 'react-icons/fi';
+import { Button } from '@/components/ui/button';
+import { selectAuthState } from '@/redux/auth/auth.selectors';
+import { clearAuthState } from '@/redux/auth/auth.slice';
 
 const MobileHeader: React.FC = () => {
   const { user } = useSelector(selectAuthState);
@@ -12,11 +13,11 @@ const MobileHeader: React.FC = () => {
 
   const handleLogout = () => {
     dispatch(clearAuthState());
-    router.push("/sign-in");
+    router.push('/sign-in');
   };
 
   const handleBack = () => {
-    router.push("/");
+    router.push('/');
   };
 
   return (

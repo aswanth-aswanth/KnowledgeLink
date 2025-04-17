@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { ReduxProvider } from '@/lib/redux-provider';
-import { checkTokenExpiration } from '@/redux/authSlice';
+import { checkTokenExpiration } from '@/redux/auth/auth.slice';
 import { store } from '@/redux';
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {

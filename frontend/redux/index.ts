@@ -18,7 +18,7 @@ import localForage from 'localforage';
 
 import topicsReducer from './topicsSlice';
 import darkmodeReducer from './darkmodeSlice';
-import { authReducer } from './authSlice';
+import { authReducer } from './auth/auth.slice';
 import socketReducer from './socketSlice';
 import { homeReducer } from './home/home.slice';
 

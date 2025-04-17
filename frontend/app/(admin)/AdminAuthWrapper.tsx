@@ -1,8 +1,8 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { checkTokenExpiration } from '@/redux/authSlice';
-import { selectAuthState } from '@/redux/selectors';
+import { checkTokenExpiration } from '@/redux/auth/auth.slice';
+import { selectAuthState } from '@/redux/auth/auth.selectors';
 import SignIn from '@/components/auth/SignIn';
 
 const AdminAuthWrapper = ({ children }: { children: React.ReactNode }) => {

@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
-import { loginUser } from '@/redux/authSlice';
+import { loginUser } from '@/redux/auth/auth.slice';
 import { AppDispatch, RootState } from '@/redux';
 import { LoginFormData, loginSchema } from '@/lib/validation/login.validation';
 import { useRouter } from 'next/navigation';
