@@ -9,16 +9,28 @@ export interface Contributor {
   image?: string;
 }
 
+interface Article {
+  name: string;
+  question: string;
+  content: string;
+  author: string;
+  date: string;
+}
+
 interface HomeState {
   contributors: Contributor[];
   isContributorsLoading: boolean;
   contributorsError: string | null;
+  trendingArticles: Article[];
+  isLoadingTrendingArticles: boolean;
 }
 
 const initialState: HomeState = {
   contributors: [],
   isContributorsLoading: false,
   contributorsError: null,
+  trendingArticles: [],
+  isLoadingTrendingArticles: false,
 };
 
 export const fetchContributors = createAsyncThunk(
@@ -30,6 +42,16 @@ export const fetchContributors = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to fetch contributors');
     }
+  }
+);
+
+export const fetchTrendingArticles = createAsyncThunk(
+  'home/fetchTrendingArticles',
+  async (count: number) => {
+    const res = await apiClient.get(
+      `/recommendation/random-topics?count=${count}`
+    );
+    return res.data as Article[];
   }
 );
 
@@ -50,6 +72,16 @@ const homeSlice = createSlice({
       .addCase(fetchContributors.rejected, (state, action) => {
         state.contributorsError = action.payload as string;
         state.isContributorsLoading = false;
+      })
+      .addCase(fetchTrendingArticles.pending, (state) => {
+        state.isLoadingTrendingArticles = true;
+      })
+      .addCase(fetchTrendingArticles.fulfilled, (state, action) => {
+        state.trendingArticles = action.payload;
+        state.isLoadingTrendingArticles = false;
+      })
+      .addCase(fetchTrendingArticles.rejected, (state) => {
+        state.isLoadingTrendingArticles = false;
       });
   },
 });

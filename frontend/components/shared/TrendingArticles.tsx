@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+'use client';
+
+import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -7,50 +9,31 @@ import {
   CardFooter,
 } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import apiClient from '@/api/apiClient';
 import DOMPurify from 'dompurify';
-
-interface Article {
-  name: string;
-  question: string;
-  content: string;
-  author: string;
-  date: string;
-}
+import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
+import { fetchTrendingArticles } from '@/redux/home/home.slice';
+import {
+  selectTrendingArticles,
+  selectIsLoadingTrendingArticles,
+} from '@/redux/home/home.selectors';
 
 const TrendingArticles = () => {
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useAppDispatch();
+  const articles = useAppSelector(selectTrendingArticles);
+  const loading = useAppSelector(selectIsLoadingTrendingArticles);
   const [count, setCount] = useState(6);
 
-  const fetchArticles = async () => {
-    setLoading(true);
-    try {
-      const response = await apiClient<Article[]>(
-        `/recommendation/random-topics?count=${count}`
-      );
-      console.log('response trending : ', response);
-      setArticles((prevArticles) => [...response.data]);
-    } catch (error) {
-      console.error('Error fetching articles:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchArticles();
-  }, [count]);
+    dispatch(fetchTrendingArticles(count));
+  }, [dispatch, count]);
 
   const handleLoadMore = () => {
     setCount((prev) => prev + 6);
   };
 
-  const createMarkup = (html: string) => {
-    return {
-      __html: DOMPurify.sanitize(html),
-    };
-  };
+  const createMarkup = (html: string) => ({
+    __html: DOMPurify.sanitize(html),
+  });
 
   const SkeletonCard = () => (
     <Card className="flex min-h-[305px] border dark:border-gray-700 flex-col bg-lightGray">
@@ -73,10 +56,8 @@ const TrendingArticles = () => {
   );
 
   return (
-    <div className={'max-w-6xl mx-auto sm:p-8 bg-lightGray2 text-text'}>
-      <h2 className={'text-2xl font-bold mb-8 text-text3 '}>
-        Trending Articles
-      </h2>
+    <div className="max-w-6xl mx-auto sm:p-8 bg-lightGray2 text-text">
+      <h2 className="text-2xl font-bold mb-8 text-text3">Trending Articles</h2>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {loading
           ? Array(count)
@@ -85,18 +66,15 @@ const TrendingArticles = () => {
           : articles.map((article, index) => (
               <Card
                 key={index}
-                className="flex min-h-[305px] border-none flex-col  bg-white dark:bg-gray-800 dark:text-white 
-                 hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+                className="flex min-h-[305px] border-none flex-col bg-white dark:bg-gray-800 dark:text-white hover:shadow-lg transition-shadow duration-300 cursor-pointer"
               >
                 <CardHeader className="pb-2">
-                  <h3
-                    className={`text-xl font-semibold text-text mb-2 line-clamp-2`}
-                  >
+                  <h3 className="text-xl font-semibold text-text mb-2 line-clamp-2">
                     {article.name}
                   </h3>
                 </CardHeader>
                 <CardContent className="flex-grow overflow-auto p-3 max-h-[380px]">
-                  <h4 className="text-lg font-medium  text-text3 mb-2">
+                  <h4 className="text-lg font-medium text-text3 mb-2">
                     {article.question}
                   </h4>
                   <div
@@ -120,7 +98,7 @@ const TrendingArticles = () => {
           onClick={handleLoadMore}
           disabled={loading}
           variant="default"
-          className="dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-300 "
+          className="dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-300"
         >
           {loading ? 'Loading...' : 'Load more'}
         </Button>
