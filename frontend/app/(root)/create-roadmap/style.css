@@ -1,0 +1,36 @@
+.yoopta-action-menu-list-content {
+  color: black;
+}
+
+.dark .yoopta-block-actions button {
+  color: #fff !important;
+}
+
+.dark .yoopta-table-block button {
+  color: black !important;
+}
+
+.yoopta-block-options-menu-content {
+  color: black;
+}
+
+.dark .yoo-accordion-select-none {
+  color: white;
+}
+
+.dark .yoopta-button svg {
+  stroke: white !important;
+}
+
+.dark .yoopta-mark-code {
+  background-color: #8787874a !important;
+  color: #ffffff !important;
+}
+
+.dark .yoopta-button {
+  color: black !important;
+}
+
+.yoopta-editor {
+  padding-bottom: 20px !important;
+}

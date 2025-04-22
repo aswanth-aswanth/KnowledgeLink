@@ -1,13 +1,8 @@
 import React from 'react';
-import NestedNodeTaker from '@/app/(root)/create-roadmap/NestedNoteTaker';
-import { ReduxProvider } from '@/lib/redux-provider';
+import RoadmapEditor from '@/app/(root)/create-roadmap/RoadmapEditor';
 
 const Home: React.FC = () => {
-  return (
-    <ReduxProvider>
-      <NestedNodeTaker />
-    </ReduxProvider>
-  );
+  return <RoadmapEditor />;
 };
 
 export default Home;

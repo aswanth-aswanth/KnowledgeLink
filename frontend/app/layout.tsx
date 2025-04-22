@@ -19,7 +19,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${lato.variable}`}>
       <body>
-        <ThemeProvider attribute="class">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem={false}
+        >
           {children}
           <Toaster position="bottom-right" reverseOrder={false} />
         </ThemeProvider>

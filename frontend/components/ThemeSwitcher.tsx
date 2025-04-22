@@ -25,8 +25,9 @@ export default function ThemeSwitcher() {
       {isDarkMode ? (
         <FiSun className="w-5 h-5 text-yellow-400" />
       ) : (
-        <FiMoon className="w-5 h-5 text-white-700" />
+        <FiMoon className="w-5 h-5 text-gray-800" />
       )}
     </button>
   );
 }
+``;

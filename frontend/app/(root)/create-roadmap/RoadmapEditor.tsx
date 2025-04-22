@@ -4,29 +4,26 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { Plus, Trash, Edit, AlertCircle } from 'lucide-react';
 import { v4 as uuid } from 'uuid';
+import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { RootState, AppDispatch } from '@/redux';
 import {
   addTopic,
   resetTopics,
   setEditorData,
   setRootTitleAndContent,
+  reorderTopics,
+  moveTopicToParent,
 } from '@/redux/topicsSlice';
 import ChooseRoadmapType from './ChooseRoadmapType';
-import TopicNode from './TopicNode';
+import RoadmapTopicNode from './RoadmapTopicNode';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/components/ui/use-toast';
+import { Droppable } from 'react-beautiful-dnd';
+import CustomDialog from '@/components/shared/CustomDialog';
 
-const NestedNoteTaker: React.FC = () => {
+const RoadmapEditor: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const rootTopic = useSelector(
     (state: RootState) => state.topics.topics[state.topics.rootId]
@@ -51,11 +48,11 @@ const NestedNoteTaker: React.FC = () => {
     setShowRootEditModal(false);
   }, [dispatch, rootTitle, rootContent]);
 
-  const handleAddRootTopic = useCallback(() => {
+  const handleAddTopicToRoot = useCallback(() => {
     const newTopic = {
       id: uuid().slice(0, 13),
       name: 'New Topic',
-      content: '',
+      content: '', // Changed from empty array to empty string to match the type
       no: `${rootTopic.children.length + 1}`,
       children: [],
       isExpanded: false,
@@ -67,7 +64,7 @@ const NestedNoteTaker: React.FC = () => {
     setShowResetConfirmation(true);
   }, []);
 
-  const confirmResetTopics = useCallback(() => {
+  const handleConfirmReset = useCallback(() => {
     dispatch(resetTopics());
     setShowResetConfirmation(false);
     toast({
@@ -76,26 +73,68 @@ const NestedNoteTaker: React.FC = () => {
     });
   }, [dispatch]);
 
+  const handleDragEnd = useCallback(
+    (result: DropResult) => {
+      const { destination, source, draggableId } = result;
+
+      // If dropped outside a droppable area
+      if (!destination) return;
+
+      // If dropped in the same position
+      if (
+        destination.droppableId === source.droppableId &&
+        destination.index === source.index
+      ) {
+        return;
+      }
+
+      // If reordering within the same parent
+      if (destination.droppableId === source.droppableId) {
+        dispatch(
+          reorderTopics({
+            parentId: destination.droppableId,
+            oldIndex: source.index,
+            newIndex: destination.index,
+          })
+        );
+        return;
+      }
+
+      // If moving to a different parent
+      dispatch(
+        moveTopicToParent({
+          topicId: draggableId,
+          oldParentId: source.droppableId,
+          newParentId: destination.droppableId,
+          oldIndex: source.index,
+          newIndex: destination.index,
+        })
+      );
+    },
+    [dispatch]
+  );
+
   const currentTopicsState = useSelector((state: RootState) => state.topics);
-  console.log('Current topic state : ', currentTopicsState);
+
+  interface MediaFile {
+    file: File;
+    placeholder: string;
+    topicId: string;
+  }
 
   function transformTopics(topics: any) {
     const root = topics.root;
     const newRootId = uuid().slice(0, 13);
-    const mediaFiles: { file: File; placeholder: string; topicId: string }[] =
-      [];
+    const mediaFiles: MediaFile[] = [];
 
     function populateChildren(node: any) {
       const { isExpanded, ...cleanedNode } = node;
       const topicId = uuid().slice(0, 13);
 
-      // Process content to extract media files and replace with placeholders
-      const processedContent = processContent(cleanedNode.content, topicId);
-
       return {
         uniqueId: topicId,
         name: cleanedNode.name,
-        content: processedContent,
+        content: cleanedNode.content,
         tags: [],
         children: node.children.map((childId: string) => {
           const childNode = topics[childId];
@@ -172,17 +211,15 @@ const NestedNoteTaker: React.FC = () => {
   const handleContinue = useCallback(
     (selectedRoadmapType: string, selectedMembers: any[]) => {
       const transformedTopics: any = transformTopics(currentTopicsState.topics);
-      console.log('TransformedTopics title : ', transformedTopics.title);
-      console.log(
-        'TransformedTopics description : ',
-        transformedTopics.description
-      );
+
       if (!transformedTopics.title || !transformedTopics.description) {
         setShowEmptyRootWarning(true);
         return;
       }
-      console.log('handleContinue : ', selectedMembers);
-      transformedTopics.members = selectedMembers.map((member) => member._id);
+
+      transformedTopics.members = selectedMembers.map(
+        (member: any) => member._id
+      );
       transformedTopics.type = selectedRoadmapType;
       dispatch(setEditorData(transformedTopics));
       router.push('/create-diagram');
@@ -191,12 +228,12 @@ const NestedNoteTaker: React.FC = () => {
   );
 
   return (
-    <>
+    <DragDropContext onDragEnd={handleDragEnd}>
       <div className="max-w-6xl mx-auto sm:px-6 lg:px-8">
         <div className="nested-note-taker rounded-lg bg-white shadow-sm dark:bg-gray-900 dark:shadow-lg pt-6 sm:p-6">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 space-y-2 sm:space-y-0 sm:space-x-2">
             <Button
-              onClick={handleAddRootTopic}
+              onClick={handleAddTopicToRoot}
               variant="outline"
               className="w-full sm:w-auto dark:text-white"
             >
@@ -217,9 +254,21 @@ const NestedNoteTaker: React.FC = () => {
               <Trash className="mr-2 h-4 w-4" /> Reset
             </Button>
           </div>
-          {rootTopic.children.map((childId) => (
-            <TopicNode key={childId} id={childId} />
-          ))}
+
+          <Droppable droppableId={rootTopic.id} type="root-topic-list">
+            {(provided) => (
+              <div
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+                className="root-topic-list"
+              >
+                {rootTopic.children.map((childId, index) => (
+                  <RoadmapTopicNode key={childId} id={childId} index={index} />
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
         </div>
         <div className="flex justify-end py-8">
           <ChooseRoadmapType
@@ -229,48 +278,28 @@ const NestedNoteTaker: React.FC = () => {
           />
         </div>
 
-        <Dialog
+        <CustomDialog
           open={showEmptyRootWarning}
           onOpenChange={setShowEmptyRootWarning}
-        >
-          <DialogContent className="bg-lightGray2">
-            <DialogHeader>
-              <DialogTitle>
-                <AlertCircle className="h-6 w-6 text-yellow-500 inline mr-2" />
-                Empty Root Topic
-              </DialogTitle>
-              <DialogDescription>
-                The root title and content cannot be empty. Please add a title
-                and content to the root topic before submitting the roadmap.
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter>
-              <Button onClick={() => setShowEmptyRootWarning(false)}>OK</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+          title={
+            <>
+              <AlertCircle className="h-6 w-6 text-yellow-500 inline mr-2" />
+              Empty Root Topic
+            </>
+          }
+          description="The root title and content cannot be empty. Please add a title and content to the root topic before submitting the roadmap."
+          footer={
+            <Button onClick={() => setShowEmptyRootWarning(false)}>OK</Button>
+          }
+        />
 
-        <Dialog open={showRootEditModal} onOpenChange={setShowRootEditModal}>
-          <DialogContent className="bg-lightGray2">
-            <DialogHeader>
-              <DialogTitle>Edit Root Topic</DialogTitle>
-              <DialogDescription>
-                Update the title and content of the root topic.
-              </DialogDescription>
-            </DialogHeader>
-            <Input
-              value={rootTitle}
-              onChange={(e) => setRootTitle(e.target.value)}
-              placeholder="Root Title"
-              className="mb-4"
-            />
-            <Textarea
-              value={rootContent}
-              onChange={(e) => setRootContent(e.target.value)}
-              placeholder="Root Content"
-              rows={4}
-            />
-            <DialogFooter>
+        <CustomDialog
+          open={showRootEditModal}
+          onOpenChange={setShowRootEditModal}
+          title="Edit Root Topic"
+          description="Update the title and content of the root topic."
+          footer={
+            <>
               <Button
                 variant="outline"
                 onClick={() => setShowRootEditModal(false)}
@@ -278,38 +307,45 @@ const NestedNoteTaker: React.FC = () => {
                 Cancel
               </Button>
               <Button onClick={handleSaveRoot}>Save</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+            </>
+          }
+        >
+          <Input
+            value={rootTitle}
+            onChange={(e) => setRootTitle(e.target.value)}
+            placeholder="Root Title"
+            className="mb-4"
+          />
+          <Textarea
+            value={rootContent}
+            onChange={(e) => setRootContent(e.target.value)}
+            placeholder="Root Content"
+            rows={4}
+          />
+        </CustomDialog>
 
-        <Dialog
+        <CustomDialog
           open={showResetConfirmation}
           onOpenChange={setShowResetConfirmation}
-        >
-          <DialogContent className="bg-lightGray2">
-            <DialogHeader>
-              <DialogTitle>Confirm Reset</DialogTitle>
-              <DialogDescription>
-                Are you sure you want to reset all topics? This action cannot be
-                undone.
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter>
+          title="Confirm Reset"
+          description="Are you sure you want to reset all topics? This action cannot be undone."
+          footer={
+            <>
               <Button
                 variant="outline"
                 onClick={() => setShowResetConfirmation(false)}
               >
                 Cancel
               </Button>
-              <Button variant="destructive" onClick={confirmResetTopics}>
+              <Button variant="destructive" onClick={handleConfirmReset}>
                 Reset
               </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+            </>
+          }
+        />
       </div>
-    </>
+    </DragDropContext>
   );
 };
 
-export default NestedNoteTaker;
+export default RoadmapEditor;

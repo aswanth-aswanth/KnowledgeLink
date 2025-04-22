@@ -1,70 +1,51 @@
 import mongoose, { Schema } from "mongoose";
 import { IRoadmap, ITopic } from "../../interfaces/IRoadmap";
 
-const TopicSchema: Schema<ITopic> = new Schema({
-    _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
-    name: { type: String, required: true },
-    uniqueId: { type: String },
-    content: { type: String },
-    contributorId: { type: String, default: "" },
-    tags: { type: [String], default: [] },
-    likes: { type: [String], default: [] },
-    children: [{
-        _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
-        name: { type: String, required: true },
-        uniqueId: { type: String },
-        content: { type: String },
-        contributorId: { type: String, default: "" },
-        tags: { type: [String], default: [] },
-        likes: { type: [String], default: [] },
-        children: [{
-            _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
-            name: { type: String, required: true },
-            content: { type: String },
-            uniqueId: { type: String },
-            contributorId: { type: String, default: "" },
-            tags: { type: [String], default: [] },
-            likes: { type: [String], default: [] },
-            children: [{ type: Schema.Types.ObjectId, ref: 'Topic' }]
-        }]
-    }]
-}, { _id: false });
+// Recursive Topic schema to allow arbitrary nesting
+const TopicSchema = new Schema<ITopic>({
+  _id: { type: Schema.Types.ObjectId, auto: true },
+  name: { type: String, required: true },
+  uniqueId: { type: String },
+  content: { type: Schema.Types.Mixed, default: {} },
+  contributorId: { type: String, default: "" },
+  tags: { type: [String], default: [] },
+  likes: { type: [String], default: [] },
+  // `children` will be added recursively below
+  children: [] as unknown[],
+});
 
-const RoadmapSchema: Schema<IRoadmap> = new Schema({
-    _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
+// Embed TopicSchema into its own `children` field for recursion
+TopicSchema.add({ children: [TopicSchema] });
+
+// Roadmap schema
+const RoadmapSchema = new Schema<IRoadmap>(
+  {
+    _id: { type: Schema.Types.ObjectId, auto: true },
     title: { type: String, required: true },
-    description: { type: String },
+    description: { type: String, default: "" },
     type: {
-        type: String,
-        required: true,
-        enum: ['expert_collaboration', 'public_voting', 'moderator_submission']
+      type: String,
+      enum: ["expert_collaboration", "public_voting", "moderator_submission"],
+      required: true,
     },
     tags: { type: [String], default: [] },
     uniqueId: { type: String },
     members: { type: [String], default: [] },
     creatorId: { type: String, required: true },
-    topics: {
-        type: new Schema({
-            _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
-            name: { type: String, required: true },
-            content: { type: String },
-            uniqueId: { type: String },
-            contributorId: { type: String, default: "" },
-            tags: { type: [String], default: [] },
-            likes: { type: [String], default: [] },
-            children: [TopicSchema]
-        }),
-        required: true
-    },
-    media: [{
+
+    // Embed the recursive TopicSchema
+    topics: { type: TopicSchema, required: true },
+
+    media: [
+      {
         type: { type: String },
         url: { type: String },
-        topicId: { type: String, required: false }
-    }],
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now }
-});
+        topicId: { type: String },
+      },
+    ],
+  },
+  { timestamps: true }
+);
 
-const Roadmap = mongoose.model<IRoadmap>('Roadmap', RoadmapSchema);
-
-export default Roadmap;
+// Create and export the model
+export default mongoose.model<IRoadmap>("Roadmap", RoadmapSchema);
