@@ -5,8 +5,10 @@ import { usePathname } from 'next/navigation';
 
 import YooptaEditor, {
   createYooptaEditor,
+  SlateElement,
   YooptaContentValue,
   YooptaOnChangeOptions,
+  YooptaPlugin,
 } from '@yoopta/editor';
 
 import Paragraph from '@yoopta/paragraph';
@@ -145,7 +147,7 @@ interface TopicNode2Props {
     newValue: YooptaContentValue,
     options: YooptaOnChangeOptions
   ) => void;
-  readOnly: Boolean;
+  readOnly: boolean;
 }
 
 const TopicContentEditor: React.FC<TopicNode2Props> = ({
@@ -191,7 +193,11 @@ const TopicContentEditor: React.FC<TopicNode2Props> = ({
     <div className={containerClass} ref={selectionRef} tabIndex={0}>
       <YooptaEditor
         editor={editor}
-        plugins={plugins}
+        plugins={
+          plugins as unknown as Readonly<
+            YooptaPlugin<Record<string, SlateElement>>[]
+          >
+        }
         tools={TOOLS}
         marks={MARKS}
         selectionBoxRoot={selectionRef}
