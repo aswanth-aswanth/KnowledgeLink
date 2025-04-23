@@ -1,6 +1,14 @@
 import { ChevronDown, ChevronRight } from 'lucide-react';
 
-const ExpandToggleButton = ({ isExpanded, onClick }) => (
+interface ExpandToggleButtonProps {
+  isExpanded: boolean;
+  onClick: () => void;
+}
+
+const ExpandToggleButton: React.FC<ExpandToggleButtonProps> = ({
+  isExpanded,
+  onClick,
+}) => (
   <button
     onClick={onClick}
     className="p-1 sm:p-2 rounded-md flex-shrink-0 text-gray-400 hover:bg-gray-100 dark:text-gray-500 dark:hover:bg-gray-800 focus:outline-none"
