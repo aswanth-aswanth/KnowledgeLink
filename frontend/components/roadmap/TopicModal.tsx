@@ -106,3 +106,5 @@ const TopicModal: React.FC<TopicModalProps> = ({ topic, onClose }) => {
     </div>
   );
 };
+
+export default TopicModal;
