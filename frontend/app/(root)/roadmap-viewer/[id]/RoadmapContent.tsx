@@ -4,6 +4,7 @@ import EditModeButtons from './EditModeButtons';
 import ConfirmationDialog from './ConfirmationDialog';
 import { useRoadmapContent } from '@/hooks/useRoadmapContent';
 import RoadmapViewerSection from './RoadmapViewerSection';
+import RotatingSquaresAnimation from './loading';
 
 export default function RoadmapContent() {
   const {
@@ -24,7 +25,7 @@ export default function RoadmapContent() {
   } = useRoadmapContent();
 
   if (!roadmapData) {
-    return <div>Loading...</div>;
+    return <RotatingSquaresAnimation />;
   }
 
   return (

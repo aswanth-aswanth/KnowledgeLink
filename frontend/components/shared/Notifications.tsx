@@ -96,7 +96,7 @@ export default function NotificationPopover() {
           className="p-2 outline-none border-none relative rounded-full dark:hover:bg-gray-700 hover:bg-gray-100 transition duration-300 ease-in-out"
         >
           <GoBell className="text-xl bg-transparent dark:text-gray-200 text-gray-600" />
-          {displayCount != 0 && (
+          {displayCount && displayCount != 0 && (
             <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
               {displayCount}
             </span>

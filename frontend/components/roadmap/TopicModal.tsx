@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { X, Minimize2, Maximize2 } from 'lucide-react';
-import DOMPurify from 'dompurify';
 import { TopicModalProps } from '@/types/roadmap';
+import TopicContentEditor from '@/app/(root)/create-roadmap/TopicContentEditor';
 
 const TopicModal: React.FC<TopicModalProps> = ({ topic, onClose }) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -27,30 +27,22 @@ const TopicModal: React.FC<TopicModalProps> = ({ topic, onClose }) => {
     setIsFullscreen(!isFullscreen);
   };
 
-  const createMarkup = (html: string) => {
-    return {
-      __html: DOMPurify.sanitize(html, {
-        ADD_TAGS: ['video'],
-        ADD_ATTR: ['controls', 'src'],
-      }),
-    };
-  };
-
   const renderTopic = (t: any) => (
     <div className="mb-8 lg:max-w-[68vw] scroll-smooth mx-auto">
       <h3 className="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">
         {t.name}
       </h3>
-      <div
-        className="mb-6 text-lg leading-relaxed text-gray-600 dark:text-gray-300"
-        dangerouslySetInnerHTML={createMarkup(t.content)}
+      <TopicContentEditor
+        value={t.content}
+        onChange={() => {}}
+        readOnly={true}
       />
       {t.children && t.children.length > 0 && (
         <div className="ml-6 mt-4">
           <div className="cursor-pointer font-semibold mb-4 text-lg text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100">
             Subtopics
           </div>
-          <div className="ml-4 border-l-2 pl-4 mt-2 space-y-6 border-gray-300">
+          <div className="ml-4 pl-4 mt-2 space-y-6 ">
             {t.children.map((child: any, index: number) => (
               <div key={index} className="mb-4">
                 {renderTopic(child)}
@@ -96,7 +88,7 @@ const TopicModal: React.FC<TopicModalProps> = ({ topic, onClose }) => {
           </div>
         </div>
         <div
-          className={`p-4 sm:p-8 overflow-y-auto scrollbar-hide ${
+          className={`p-4 sm:p-8 overflow-y-auto ${
             isFullscreen ? 'h-[calc(100vh-80px)]' : 'max-h-[calc(90vh-80px)]'
           }`}
         >

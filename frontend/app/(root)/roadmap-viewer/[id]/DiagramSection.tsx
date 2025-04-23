@@ -1,4 +1,3 @@
-import { Skeleton } from '@/components/ui/skeleton';
 import ViewDiagram from '@/components/shared/ViewDiagram';
 import { DiagramSectionProps } from '@/types/roadmap';
 
