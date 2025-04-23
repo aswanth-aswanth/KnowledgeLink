@@ -42,7 +42,7 @@ const Following: React.FC = () => {
           onTabClick={(value: string) => {
             if (value === 'Explore') router.push('/');
           }}
-          tabFor="explore"
+          tabFor="Explore"
         />
       </div>
       <div className="flex flex-col mb-6 items-center font-semibold gap-4 text-xs text-gray-700 dark:text-white mt-4">
