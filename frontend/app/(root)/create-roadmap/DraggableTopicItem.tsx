@@ -12,6 +12,7 @@ import { TopicNodeProps } from '@/types/roadmap';
 import TopicContentEditor from './TopicContentEditor';
 import TopicHeader from './TopicHeader';
 import NestedTopicList from './NestedTopicList';
+import { YooptaContentValue, YooptaOnChangeOptions } from '@yoopta/editor';
 
 const DraggableTopicItem: React.FC<TopicNodeProps> = ({ id, index }) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -40,7 +41,7 @@ const DraggableTopicItem: React.FC<TopicNodeProps> = ({ id, index }) => {
     const newTopic = {
       id: Date.now().toString(),
       name: 'New Topic',
-      content: '',
+      content: '{}', // Initialize with empty object JSON string
       no: `${topic.no}-${topic.children.length + 1}`,
       children: [],
       isExpanded: false,
@@ -52,9 +53,22 @@ const DraggableTopicItem: React.FC<TopicNodeProps> = ({ id, index }) => {
     dispatch(toggleExpand(id));
   }, [dispatch, id]);
 
+  // Parse string content to YooptaContentValue or provide empty object if parsing fails
+  const parsedContent = useCallback((content: string): YooptaContentValue => {
+    try {
+      return JSON.parse(content) as YooptaContentValue;
+    } catch (e) {
+      // Return an empty object if parsing fails
+      return {} as YooptaContentValue;
+    }
+  }, []);
+
   const handleEditorChange = useCallback(
-    (newValue: any) => {
-      dispatch(updateTopic({ id, updates: { content: newValue } }));
+    (newValue: YooptaContentValue, options: YooptaOnChangeOptions) => {
+      // Convert YooptaContentValue to string before storing
+      dispatch(
+        updateTopic({ id, updates: { content: JSON.stringify(newValue) } })
+      );
     },
     [dispatch, id]
   );
@@ -79,7 +93,7 @@ const DraggableTopicItem: React.FC<TopicNodeProps> = ({ id, index }) => {
           {topic.isExpanded && (
             <div className="ml-2 sm:ml-6 mt-2">
               <TopicContentEditor
-                value={topic.content}
+                value={parsedContent(topic.content)}
                 onChange={handleEditorChange}
                 readOnly={false}
               />

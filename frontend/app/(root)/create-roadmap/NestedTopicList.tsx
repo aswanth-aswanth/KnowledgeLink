@@ -1,7 +1,7 @@
 import { RootState } from '@/redux';
 import { Droppable } from 'react-beautiful-dnd';
 import { useSelector } from 'react-redux';
-import DraggableTopicItem from './RoadmapTopicNode';
+import DraggableTopicItem from './DraggableTopicItem';
 
 interface NestedTopicListProps {
   parentId: string;

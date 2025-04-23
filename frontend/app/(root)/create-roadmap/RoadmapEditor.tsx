@@ -15,7 +15,7 @@ import {
   moveTopicToParent,
 } from '@/redux/topicsSlice';
 import ChooseRoadmapType from './ChooseRoadmapType';
-import RoadmapTopicNode from './RoadmapTopicNode';
+import RoadmapTopicNode from './DraggableTopicItem';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
