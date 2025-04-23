@@ -4,13 +4,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { checkTokenExpiration } from '@/redux/auth/auth.slice';
 import { selectAuthState } from '@/redux/auth/auth.selectors';
 import SignIn from '@/components/auth/SignIn';
+import { useAppDispatch } from '@/hooks/useRedux';
 
 const AdminAuthWrapper = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
   const { isAuthenticated, user } = useSelector(selectAuthState);
-  const dispatch = useDispatch();
-  console.log('isAuthenticated : ', isAuthenticated);
-  console.log('user : ', user);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(checkTokenExpiration());
