@@ -1,6 +1,6 @@
 import React from 'react';
 import { FiSearch, FiUser, FiLogOut, FiSettings } from 'react-icons/fi';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { logoutUser } from '@/redux/auth/auth.slice';
 import { selectAuthState } from '@/redux/auth/auth.selectors';
 import { Hamburger } from './Hamburger';
@@ -13,10 +13,11 @@ import ConfigurableDropdown, {
   DropdownItem,
 } from '@/components/shared/ConfigurableDropdown';
 import { Button } from '@/components/ui/button';
+import { useAppDispatch } from '@/hooks/useRedux';
 
 export default function Header() {
   const { isAuthenticated, user } = useSelector(selectAuthState);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const router = useRouter();
 
   const handleLogout = async () => {
