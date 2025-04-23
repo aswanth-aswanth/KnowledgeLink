@@ -11,9 +11,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import apiClient from '@/api/apiClient';
 import { RootState } from '@/redux';
+import { useAppDispatch } from '@/hooks/useRedux';
 
 export default function Profile() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const router = useRouter();
 
   const { isAuthenticated, user } = useSelector(
