@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { checkTokenExpiration } from '@/redux/auth/auth.slice';
 import { Button } from '@/components/ui/button';
