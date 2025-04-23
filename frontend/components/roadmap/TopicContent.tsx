@@ -41,7 +41,11 @@ const TopicContent: React.FC<TopicContentProps> = ({
     ) : (
       <>
         {console.log('content : ', content)}
-        <TopicContentEditor value={content} readOnly={true} />
+        <TopicContentEditor
+          onChange={() => {}}
+          value={content}
+          readOnly={true}
+        />
         {/* // <div
       //   className="h-min p-2 mb-2 sm:indent-4 rounded-xl transition-all duration-200 tracking-wider text-[0.9rem] leading-[1.8rem] bg-gray-50 text-gray-600 dark:bg-gray-800 dark:text-white"
       //   dangerouslySetInnerHTML={{ __html: content }}
