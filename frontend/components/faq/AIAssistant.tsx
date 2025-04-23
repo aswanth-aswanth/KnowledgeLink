@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import AIResponseDisplay from './AIResponseDisplay';
+import { YooptaContentValue } from '@yoopta/editor';
 
 interface AIAssistantProps {
   topicName: string;
-  topicContent: string;
+  topicContent: YooptaContentValue;
   onAskAI: (question: string) => Promise<string>;
 }
 
@@ -24,10 +25,7 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
   const [promptStates, setPromptStates] = useState<PromptState>({});
 
   const prompts = [
-    `I'm learning about ${topicName}. This is the content: ${topicContent.substring(
-      0,
-      50
-    )}... Can you explain this topic in simple terms?`,
+    `I'm learning about ${topicName}. This is the content: ${topicContent} Can you explain this topic in simple terms?`,
     `Can you provide a detailed explanation of ${topicName}, focusing on its key aspects?`,
     `What are the practical applications of ${topicName} in real-world scenarios?`,
     `What are some common misconceptions or mistakes people make when learning about ${topicName}?`,
@@ -35,8 +33,15 @@ const AIAssistant: React.FC<AIAssistantProps> = ({
 
   const togglePrompt = async (prompt: string) => {
     setPromptStates((prevStates) => {
-      const currentState = prevStates[prompt] || { isExpanded: false, response: null, isLoading: false };
-      const newState = { ...currentState, isExpanded: !currentState.isExpanded };
+      const currentState = prevStates[prompt] || {
+        isExpanded: false,
+        response: null,
+        isLoading: false,
+      };
+      const newState = {
+        ...currentState,
+        isExpanded: !currentState.isExpanded,
+      };
 
       if (newState.isExpanded && !newState.response && !newState.isLoading) {
         newState.isLoading = true;
@@ -84,7 +89,11 @@ interface PromptItemProps {
   togglePrompt: (prompt: string) => void;
 }
 
-const PromptItem: React.FC<PromptItemProps> = ({ prompt, promptState, togglePrompt }) => {
+const PromptItem: React.FC<PromptItemProps> = ({
+  prompt,
+  promptState,
+  togglePrompt,
+}) => {
   const isExpanded = promptState?.isExpanded || false;
   const isLoading = promptState?.isLoading || false;
   const response = promptState?.response || null;
