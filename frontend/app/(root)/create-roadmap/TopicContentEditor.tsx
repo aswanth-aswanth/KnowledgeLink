@@ -1,4 +1,8 @@
+'use client';
+
 import React, { useMemo, useRef, useEffect, useCallback } from 'react';
+import { usePathname } from 'next/navigation';
+
 import YooptaEditor, {
   createYooptaEditor,
   YooptaContentValue,
@@ -35,9 +39,7 @@ import LinkTool, { DefaultLinkToolRender } from '@yoopta/link-tool';
 
 import './style.css';
 
-// Placeholder upload function—replace with your own implementation as needed
 const uploadToCloudinary = async (file: File, resourceType: string) => {
-  // Replace this with actual upload code
   return {
     secure_url: URL.createObjectURL(file),
     width: 300,
@@ -151,14 +153,11 @@ const TopicContentEditor: React.FC<TopicNode2Props> = ({
   onChange,
   readOnly = false,
 }) => {
-  // Create a dedicated editor instance
+  const pathname = usePathname();
   const editor = useMemo(() => createYooptaEditor(), []);
-  // Ref for the container to detect focus
   const selectionRef = useRef<HTMLDivElement>(null);
-  // Ref to store the last dispatched value for deduplication
   const lastValueRef = useRef<YooptaContentValue>(value);
 
-  // Sync the ref when value prop changes
   useEffect(() => {
     lastValueRef.current = value;
   }, [value]);
@@ -167,17 +166,14 @@ const TopicContentEditor: React.FC<TopicNode2Props> = ({
     editor.insertBlock('Paragraph', { at: 1, focus: true });
   }, []);
 
-  // Internal onChange: only dispatch for focused editor and when value truly changes
   const internalOnChange = useCallback(
     (newValue: YooptaContentValue, options: YooptaOnChangeOptions) => {
-      // Only handle changes if this editor has focus
       if (
         selectionRef.current &&
         !selectionRef.current.contains(document.activeElement)
       ) {
         return;
       }
-      // Prevent redundant updates
       if (JSON.stringify(lastValueRef.current) === JSON.stringify(newValue)) {
         return;
       }
@@ -187,12 +183,12 @@ const TopicContentEditor: React.FC<TopicNode2Props> = ({
     [onChange]
   );
 
+  const containerClass = pathname.includes('roadmap-viewer')
+    ? 'md:px-1 flex justify-center'
+    : 'md:px-36 flex justify-center';
+
   return (
-    <div
-      className="md:px-36 flex justify-center"
-      ref={selectionRef}
-      tabIndex={0}
-    >
+    <div className={containerClass} ref={selectionRef} tabIndex={0}>
       <YooptaEditor
         editor={editor}
         plugins={plugins}
