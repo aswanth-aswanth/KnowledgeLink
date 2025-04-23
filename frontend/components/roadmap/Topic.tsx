@@ -54,7 +54,7 @@ const Topic: React.FC<TopicPropsRoadmapViewer> = ({
           )}
         </>
       )}
-      {topic.children.map((child, index) => (
+      {topic?.children?.map((child, index) => (
         <Topic
           key={child.uniqueId}
           topic={child}

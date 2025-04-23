@@ -22,7 +22,7 @@ const RoadmapViewer: React.FC<RoadmapViewerProps> = ({
       <p className="mb-6 px-2 sm:px-0 dark:text-gray-300 text-gray-600">
         {transformedTopics.description}
       </p>
-      {transformedTopics.topics.children.map((child, index) => (
+      {transformedTopics?.topics?.children?.map((child, index) => (
         <Topic
           key={child.uniqueId}
           topic={child}
