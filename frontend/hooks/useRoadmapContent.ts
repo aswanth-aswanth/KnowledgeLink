@@ -92,8 +92,9 @@ export function useRoadmapContent() {
     try {
       if (roadmapData.uniqueId) {
         const result = await fetchDiagramData(roadmapData);
-        setRectangles(result[0].rectangles);
-        setConnections(result[1].connections);
+        console.log('diagram data : ', result);
+        setRectangles(result?.rectangles);
+        setConnections(result?.connections);
       }
     } catch (error) {
       console.log('Error : ', error);

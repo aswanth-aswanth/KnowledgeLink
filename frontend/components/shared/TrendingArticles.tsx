@@ -50,12 +50,12 @@ const ArticleCard = ({ article }: { article: any }) => {
     <Card className="flex min-h-[305px] flex-col bg-white dark:bg-gray-800 dark:text-white border-none hover:shadow-lg transition-shadow duration-300 cursor-pointer">
       <CardHeader className="pb-2">
         <h3 className="text-xl font-semibold text-text mb-2 line-clamp-2">
-          {article.name}
+          {article?.name}
         </h3>
       </CardHeader>
       <CardContent className="flex-grow p-3 overflow-auto max-h-[380px]">
-        <h4 className="text-lg font-medium text-text3 mb-2">
-          {article.question}
+        <h4 className="text-gray-700 article-content sm:px-4">
+          {article?.summary}
         </h4>
         <div
           className="text-text3"
@@ -77,7 +77,7 @@ const TrendingArticles = () => {
   const articles = useAppSelector(selectTrendingArticles);
   const isLoading = useAppSelector(selectIsLoadingTrendingArticles);
   const [count, setCount] = useState(6);
-
+  console.log('articles', articles);
   useEffect(() => {
     dispatch(fetchTrendingArticles(count));
   }, [dispatch, count]);

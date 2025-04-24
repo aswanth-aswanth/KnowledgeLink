@@ -38,7 +38,7 @@ export default function PopularContributors() {
           ? Array(5)
               .fill(0)
               .map((_, index) => <ContributorSkeleton key={index} />)
-          : contributors?.map((contributor: any, index: number) => (
+          : contributors?.users?.map((contributor: any, index: number) => (
               <div
                 key={index}
                 className="flex flex-col items-center text-center w-max"
