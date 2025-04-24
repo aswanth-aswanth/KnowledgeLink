@@ -50,7 +50,7 @@ const Tabs: React.FC<TabsProps> = ({
           className={cn(
             'relative flex flex-col sm:flex-row items-center space-x-2 px-2 py-4 md:py-2 rounded-md transition-all duration-300 ease-in-out',
             activeTab === tab.name
-              ? 'dark:text-blue-400 dark:bg-blue-900 text-blue-600 bg-blue-50'
+              ? 'text-blue-600 bg-blue-50 dark:text-blue-400 dark:bg-blue-900'
               : ' dark:text-gray-50 dark:hover:text-gray-100 dark:hover:bg-gray-700 text-gray-500 hover:text-gray-700 hover:bg-gray-100',
             tabFor === 'Explore' ? 'flex-1' : 'px-4 py-2',
             tabClassName,
@@ -63,7 +63,7 @@ const Tabs: React.FC<TabsProps> = ({
           <span
             className={cn(
               'font-medium',
-              'dark:text-white text-gray-800',
+              'dark:text-white ',
               'text-xs sm:text-sm md:text-lg'
             )}
           >

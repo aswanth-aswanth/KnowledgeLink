@@ -95,24 +95,23 @@ const Roadmaps = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto sm:p-8 bg-lightGray2 text-text">
-      <h2 className="text-3xl font-bold text-center mb-10 text-text3">
+    <>
+      <h2 className="text-3xl font-bold text-center mt-6 mb-8 text-text3">
         Roadmap Explorer
       </h2>
-
       <div className="flex justify-center mb-8">
         <Tabs
           tabs={tabs}
           activeTab={activeTab}
           onTabClick={handleTabClick}
           tabFor={'Expert Collaboration Roadmap'}
+          className="flex flex-col sm:flex-row gap-8"
         />
       </div>
-
-      <div className="flex flex-wrap justify-center gap-4">
+      <div className="flex flex-wrap justify-center mt-14 gap-4">
         {renderRoadmaps()}
       </div>
-    </div>
+    </>
   );
 };
 
