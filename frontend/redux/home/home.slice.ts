@@ -82,7 +82,7 @@ const homeSlice = createSlice({
         state.contributorsError = null;
       })
       .addCase(fetchContributors.fulfilled, (state, action) => {
-        state.contributors = action.payload;
+        state.contributors = action.payload?.users;
         state.isContributorsLoading = false;
       })
       .addCase(fetchContributors.rejected, (state, action) => {
