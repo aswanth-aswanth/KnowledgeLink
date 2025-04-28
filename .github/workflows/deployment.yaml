@@ -1,0 +1,25 @@
+name: Deploy to Production1
+
+on:
+  push:
+    branches:
+      - production1
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v4
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.AWS_SERVER_IP }}
+          username: ${{ secrets.AWS_USERNAME }}
+          key: ${{ secrets.AWS_PRIVATE_KEY }}
+          script: |
+            cd /home/ubuntu/KnowledgeLink/frontend
+            git pull origin production1
+            pm2 restart all
