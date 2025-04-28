@@ -43,7 +43,7 @@ const TopicContent: React.FC<TopicContentProps> = ({
         {console.log('content : ', content)}
         <TopicContentEditor
           onChange={() => {}}
-          value={content}
+          value={typeof content === 'string' ? JSON.parse(content) : content}
           readOnly={true}
         />
         {/* // <div
