@@ -22,4 +22,6 @@ jobs:
           script: |
             cd /home/ubuntu/KnowledgeLink/frontend
             git pull origin production1
-            pm2 restart all
+            npm install
+            npm run build
+            pm2 restart frontend
