@@ -54,7 +54,7 @@ const ArticleCard = ({ article }: { article: any }) => {
         </h3>
       </CardHeader>
       <CardContent className="flex-grow p-3 overflow-auto max-h-[380px]">
-        <h4 className="text-gray-700 article-content sm:px-4">
+        <h4 className="text-gray-700 article-content sm:px-4 dark:text-white">
           {article?.summary}
         </h4>
         <div
@@ -95,7 +95,7 @@ const TrendingArticles = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto sm:p-8 md:bg-gray-100">
+    <div className="max-w-6xl mx-auto sm:p-8 md:bg-gray-100 dark:bg-transparent">
       <h2 className="text-2xl font-bold mb-8 text-text3">Trending Articles</h2>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

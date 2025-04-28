@@ -13,12 +13,8 @@ import YooptaEditor, {
 
 import Paragraph from '@yoopta/paragraph';
 import Blockquote from '@yoopta/blockquote';
-import Embed from '@yoopta/embed';
-import Image from '@yoopta/image';
 import Link from '@yoopta/link';
 import Callout from '@yoopta/callout';
-import Video from '@yoopta/video';
-import File from '@yoopta/file';
 import Accordion from '@yoopta/accordion';
 import { NumberedList, BulletedList, TodoList } from '@yoopta/lists';
 import {
@@ -40,17 +36,6 @@ import Toolbar, { DefaultToolbarRender } from '@yoopta/toolbar';
 import LinkTool, { DefaultLinkToolRender } from '@yoopta/link-tool';
 
 import './style.css';
-
-const uploadToCloudinary = async (file: File, resourceType: string) => {
-  return {
-    secure_url: URL.createObjectURL(file),
-    width: 300,
-    height: 200,
-    format: file.type,
-    name: file.name,
-    bytes: file.size,
-  };
-};
 
 const plugins = [
   Paragraph,
@@ -74,54 +59,6 @@ const plugins = [
   TodoList,
   Code,
   Link,
-  Embed,
-  Image.extend({
-    options: {
-      async onUpload(file: File) {
-        const data = await uploadToCloudinary(file, 'image');
-        return {
-          src: data.secure_url,
-          alt: 'uploaded image',
-          sizes: {
-            width: data.width,
-            height: data.height,
-          },
-        };
-      },
-    },
-  }),
-  Video.extend({
-    options: {
-      onUpload: async (file: File) => {
-        const data = await uploadToCloudinary(file, 'video');
-        return {
-          src: data.secure_url,
-          alt: 'uploaded video',
-          sizes: {
-            width: data.width,
-            height: data.height,
-          },
-        };
-      },
-      onUploadPoster: async (file: File) => {
-        const image = await uploadToCloudinary(file, 'image');
-        return image.secure_url;
-      },
-    },
-  }),
-  File.extend({
-    options: {
-      onUpload: async (file: File) => {
-        const response = await uploadToCloudinary(file, 'auto');
-        return {
-          src: response.secure_url,
-          format: response.format,
-          name: response.name,
-          size: response.bytes,
-        };
-      },
-    },
-  }),
 ];
 
 const TOOLS = {
