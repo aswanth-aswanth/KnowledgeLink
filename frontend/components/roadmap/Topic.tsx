@@ -43,7 +43,7 @@ const Topic: React.FC<TopicPropsRoadmapViewer> = ({
             handleEditClick={handleEditClick}
             handleSaveClick={handleSaveClick}
           />
-          {expandedTopics.includes(topic.uniqueId) && (
+          {/* {expandedTopics.includes(topic.uniqueId) && (
             <FAQSection
               roadmapId={roadmapId}
               topicUniqueId={topic.uniqueId}
@@ -51,7 +51,7 @@ const Topic: React.FC<TopicPropsRoadmapViewer> = ({
               topicName={topic.name}
               topicContent={topic.content}
             />
-          )}
+          )} */}
         </>
       )}
       {topic?.children?.map((child, index) => (
