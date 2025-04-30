@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import TopicHeader from '@/components/roadmap/TopicHeader';
 import TopicContent from '@/components/roadmap/TopicContent';
 import FAQSection from '@/components/faq/FAQSection';
 import { TopicPropsRoadmapViewer } from '@/types/roadmap';
 import { useTopic } from '@/hooks/useTopic';
+import { HelpCircle } from 'lucide-react';
 
 const Topic: React.FC<TopicPropsRoadmapViewer> = ({
   topic,
@@ -14,6 +15,8 @@ const Topic: React.FC<TopicPropsRoadmapViewer> = ({
   onContentChange,
   roadmapId,
 }) => {
+  const [showFAQ, setShowFAQ] = useState(false);
+
   const {
     isExpanded,
     isEditing,
@@ -43,7 +46,34 @@ const Topic: React.FC<TopicPropsRoadmapViewer> = ({
             handleEditClick={handleEditClick}
             handleSaveClick={handleSaveClick}
           />
-          {/* {expandedTopics.includes(topic.uniqueId) && (
+
+          {/* Icon Toggle for FAQ */}
+          <div className="relative mt-2 flex items-center space-x-2 justify-center">
+            <div className="absolute right-0 -top-12">
+              <button
+                onClick={() => setShowFAQ((prev) => !prev)}
+                title={showFAQ ? 'Hide FAQ' : 'Show FAQ'}
+                className={`
+      flex items-center gap-2 sm:px-3 px-2 sm:py-1.5 py-1 rounded-full border
+      bg-white dark:bg-gray-800
+      text-gray-700 dark:text-gray-200
+      hover:bg-gray-100 dark:hover:bg-gray-700
+      border-gray-300 dark:border-gray-600
+      shadow-sm transition-all
+    `}
+              >
+                <HelpCircle
+                  className={`w-4 h-4 sm:w-5 sm:h-5 ${
+                    showFAQ
+                      ? 'text-blue-500 dark:text-blue-400'
+                      : 'text-gray-500 dark:text-gray-300'
+                  }`}
+                />
+              </button>
+            </div>
+          </div>
+
+          {showFAQ && (
             <FAQSection
               roadmapId={roadmapId}
               topicUniqueId={topic.uniqueId}
@@ -51,7 +81,7 @@ const Topic: React.FC<TopicPropsRoadmapViewer> = ({
               topicName={topic.name}
               topicContent={topic.content}
             />
-          )} */}
+          )}
         </>
       )}
       {topic?.children?.map((child, index) => (

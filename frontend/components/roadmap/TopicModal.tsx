@@ -32,8 +32,19 @@ const TopicModal: React.FC<TopicModalProps> = ({ topic, onClose }) => {
       <h3 className="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">
         {t.name}
       </h3>
+
       <TopicContentEditor
-        value={t.content}
+        value={
+          typeof t.content === 'string'
+            ? (() => {
+                try {
+                  return JSON.parse(t.content);
+                } catch {
+                  return t.content;
+                }
+              })()
+            : t.content
+        }
         onChange={() => {}}
         readOnly={true}
       />
@@ -64,7 +75,7 @@ const TopicModal: React.FC<TopicModalProps> = ({ topic, onClose }) => {
             : 'sm:w-11/12 max-w-4xl max-h-[90vh] sm:m-4 rounded-lg shadow-2xl'
         }`}
       >
-        <div className="sticky top-0 flex justify-between items-center p-4 sm:p-8 border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900">
+        <div className="sticky top-0 flex justify-between items-center p-4 sm:p-8 border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900 z-40">
           <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
             {topic.name}
           </h2>
